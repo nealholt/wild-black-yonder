@@ -1,41 +1,11 @@
 import pygame
 import math
 import game
-import colors
-
-def translate(location, angle, magnitude):
-	'''This is very similar to the PhysicalObject.move function.'''
-	vectx = math.cos(math.radians(angle))
-	vecty = math.sin(math.radians(angle))
-	x,y = location
-	return x+vectx*magnitude, y+vecty*magnitude
-
-
-#copied from stardog utils.py
-#setup images
-#if there is extended image support, load .gifs, otherwise load .bmps.
-#.bmps do not support transparency, so there might be black clipping.
-ext = ".bmp"
-if pygame.image.get_extended():
-	ext = ".gif"
-
-
-def loadImage(filename):
-	'''copied from stardog utils.py '''
-	try:
-		image = pygame.image.load(filename).convert()
-		#colorkey tells pygame what color to make transparent.
-		#We assume that the upper left most pixel's color is the color to make transparent.
-		colorkey = image.get_at((0,0))
-		image.set_colorkey(colorkey)
-	except pygame.error:
-		image = pygame.image.load("images/default" + ext).convert()
-		image.set_colorkey(colors.white)
-	return image
-
+from displayUtilities import loadImage, ext
+import geometry
 
 class PhysicalObject(pygame.sprite.Sprite):
-	def __init__(self, top=0, left=0, width=0, height=0, image_name=None):
+	def __init__(self, top=0.0, left=0.0, width=0, height=0, image_name=None):
 
 		#Sprite tutorial being used is here:
 		# http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
@@ -49,7 +19,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.targetSpeed = 0.0
 		self.maxSpeed = 5.0
 		#Acceleration in pixels per second squared. 
-		#Each second the speed goes up by this amount.
+		#Each frame the speed goes up by this amount.
 		self.dv = 1.0
 
 		#Rotation. All rotations are in degrees
@@ -62,6 +32,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.destination = (0.0, 0.0)
 
 		self.image_name = image_name
+
+		#The location of this object. It is two floats for accuracy, 
+		#because rectangles will be rounded to an integer which can cause 
+		#an inability to move diagonally at slow speeds because the integer 
+		#always rounds down.
+		self.loc = (left, top)
 
 		if self.image_name is None:
 			self.image = pygame.Surface([width, height])
@@ -76,7 +52,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()
-		self.rect.topleft = (left, top)
+		self.rect.topleft = self.loc
 
 		#For now calculate the radius as the average of the width and height.
 		#Divide by 4 because we average the width and height and also divide them in half
@@ -113,8 +89,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.topleft = temp
 
-	def getCenter(self):
-		return self.rect.center
 
 	def getX(self):
 		return self.rect.centerx
@@ -132,9 +106,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def setColor(self, color):
 	        self.image.fill(color)
 
-	def setClosest(self, closest_sprite, distance):
+	def setClosest(self, closest_sprite, dist):
 		self.closest_sprite = closest_sprite
-		self.dist_to_closest = distance
+		self.dist_to_closest = dist
 
 	def turnCounterClockwise(self, delta=None):
 		'''Turn in the desired direction.
@@ -166,7 +140,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		'''Slow to a stop near target destination.'''
 		itersToStop = self.speed / self.dv
 		if not self.speed == 0 and \
-		itersToStop >= self.distanceToDestination() / self.speed:
+		itersToStop >= geometry.distance(self.rect.center, self.destination) / self.speed:
 			self.decelerate()
 			self.targetSpeed = self.speed
 			return True
@@ -188,48 +162,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def decelerate(self):
 		self.speed = max(0, self.speed - self.dv)
 
-	def distanceToDestination(self, dest=None):
-		if dest is None:
-			x,y = self.destination
-		else:
-			x,y = dest
-		return math.sqrt( (self.rect.centerx-x)**2 + (self.rect.centery-y)**2 )
-
 	def setDestination(self,point):
 		'''Pre: point must be a tuple of integers or floats.'''
 		self.destination = point
 
 	def killDestination(self):
 		self.destination = None
-
-	def getShorterTurnDirection(self, target_angle):
-		'''Given a target angle, calculate the shorter direction to turn 
-		and how many degrees to turn in that direction.
-		Figuring out how to calculate this was a little tricky for me.
-		Drawing helped. The idea is that there are two different
-		distances between points when those points are on a ring.
-		True = clockwise
-		False = counterclockwise
-		'''
-		a = self.theta
-		b = target_angle
-		self_is_a = True
-		if b < a: #Ensure that a is the smaller of the two values.
-			a = target_angle
-			b = self.theta
-			self_is_a = False
-		dist1 = b-a
-		dist2 = (a+180)+(180-b) #a+180 is actually a - -180
-		if dist1 < dist2:
-			if self_is_a:
-				return True
-			else:
-				return False
-		else:
-			if self_is_a:
-				return False
-			else:
-				return True
 
 	def getAngleToTarget(self, target=None):
 		'''This is a major departure from the old implementation. 
@@ -243,7 +181,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		elif isinstance(target, tuple):
 			x,y = target
 		else:
-			x,y = target.getCenter()
+			x,y = target.rect.center
 		rise = y - self.rect.centery
 		run = x - self.rect.centerx
 		#As I understand it, this ought to return one angle to the target,
@@ -326,12 +264,13 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 
 	def move(self):
-		'''This is very similar to the translate function.'''
-		#Get new vector
-		vectx = math.cos(math.radians(self.theta))
-		vecty = math.sin(math.radians(self.theta))
-
-		self.rect = self.rect.move(vectx*self.speed, vecty*self.speed)
+		'''self.loc is a tuple of floats, but rect.topleft is always
+		converted to an integer because it has to be fitted to particular 
+		pixels. At low speeds, the rounding down of the integer tuple
+		can prevent diagonal motion. That's why we use self.loc instead.'''
+		self.loc = geometry.translate(self.loc, \
+			self.theta, self.speed)
+		self.rect.topleft = self.loc
 
 
 	def draw(self, offset=(0,0)):

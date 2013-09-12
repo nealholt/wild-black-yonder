@@ -4,7 +4,7 @@ import profiles
 import game
 import colors
 import objInstances
-import healthBar
+from geometry import distance, lineIntersectsCircle, angleToSlope, inSights
 
 class Ship(physicalObject.PhysicalObject):
 	def __init__(self, top=0, left=0, image_name='default'):
@@ -28,7 +28,7 @@ class Ship(physicalObject.PhysicalObject):
 
 
 	def setHealthBar(self):
-		self.myHealthBar = healthBar.HealthBar(width=20, height=10, ship=self, vertical=False, 
+		self.myHealthBar = objInstances.HealthBar(width=20, height=10, ship=self, vertical=False, 
 			current=self.health, total=self.maxhealth)
 		game.intangibles.add(self.myHealthBar)
 
@@ -54,7 +54,18 @@ class Ship(physicalObject.PhysicalObject):
 		#Force shot tells this to shoot even if a target 
 		#is not obviously in view. NPC's will not take such wild shots.
 		for w in self.weapons:
-			w.maybeShoot(self, force_shot=force_shot)
+			if w.cooldown == 0:
+				#The player can shoot whenever he wants
+				if force_shot:
+					w.shoot()
+				#NPCs need some intelligence when shooting
+				else:
+					angle = self.getAngleToTarget()
+					#Decide whether or not we can shoot
+					if inSights(self, self.destination,\
+					w.weapon_range, w.attack_angle) and\
+					self.clearLineOfSight():
+						w.shoot()
 
 
 	def cooldown(self):
@@ -62,14 +73,57 @@ class Ship(physicalObject.PhysicalObject):
 		for w in self.weapons:
 			w.cool()
 
+
+	def clearLineOfSight(self):
+		'''Pre: Sight_range is an int or float.
+		Post: Returns true if there are no whiskerables in the line of sight of this ship.
+		Useful for avoiding friendly fire.'''
+		#Get distance to target
+		dtt = distance(self.rect.center, self.destination)
+		#For each potential obstacle...
+		for w in game.whiskerables:
+			#Get distance to the obstacle
+			dist = distance(self.rect.center, w.rect.center)
+			#   If the distance to the obstacle is less than the distance 
+			#to the target then the obstacle might be obstructing our 
+			#sight of the target.
+			#   If the obstacle's distance is greater than zero then the 
+			#obstacle is not ourself.
+			#   If the angle to the obstacle is less than 80 degrees, then 
+			#the obstacle is in front of this ship.
+			if dist < dtt and dist > 0 and\
+			abs(self.getAngleToTarget(target=w.rect.center)) < 90:
+				#   If a line extending straight out from this ship
+				#intersects a circle around the obstacle, then our 
+				#sight is blocked.
+				m,b = self.getStraightAhead()
+				x,y = w.rect.center
+				r = w.radius
+				#I boost the radius by a 1.5 fudge factor to 
+				#help the NPCs avoid friendly fire.
+				if lineIntersectsCircle(m, b, x, y, r*1.5):
+					return False
+		return True
+
+
+	def getStraightAhead(self):
+		'''Pre: 
+		Post: returns slope and intercept of line extending straight 
+		ahead from this ship'''
+		slope = angleToSlope(self.theta)
+		x,y = self.rect.center
+		intercept = y - slope * x
+		return slope, intercept
+
+
 	def update(self, offset):
 		#for now we assume that every ship is hostile to the player
-		self.setDestination(game.player.getCenter())
+		self.setDestination(game.player.rect.center)
 
 		#Turn towards target
 		self.turnTowards()
 
-		d = self.distanceToDestination()
+		d = distance(self.rect.center, self.destination)
 		#If target is far, increase goal speed.
 		if d > 200:
 			self.targetSpeed = self.maxSpeed
@@ -91,7 +145,7 @@ class Ship(physicalObject.PhysicalObject):
 		self.move()
 
 		#draw
-		x,y = self.getCenter()
+		x,y = self.rect.center
 		pos = x - offset[0], y - offset[1]
 		self.drawAt(pos)
 

@@ -1,5 +1,7 @@
 import ship
 import profiles
+import weapon #TODO TESTING SPREAD SHOT
+
 
 class Player(ship.Ship):
 	def __init__(self, image_name):
@@ -8,6 +10,13 @@ class Player(ship.Ship):
 
 		profiles.shipProfile(self, profile='mk2')
 		self.setProfile()
+
+		#TODO TESTING SPREAD SHOT
+		w = weapon.Weapon()
+		weapon.setProfile('spread_mk3', w)
+		w.shooter = self
+		self.weapons = [w]
+
 
 		self.rect.topleft = (-100,-100)
 

@@ -4,9 +4,65 @@ import pygame
 import game
 import colors
 
-#Just flash some red and orange circles on the screen and throw out some debris.
+
+class Bullet(physicalObject.PhysicalObject):
+	def __init__(self, direction, top, left, dontClipMe, width=5, height=5):
+
+		physicalObject.PhysicalObject.__init__(self, top, left, width, height)
+
+		self.theta = direction
+
+		#How long this object will live. Unit is... frames?
+		self.timeToLive = 50
+
+		#dontClipMe is almost certainly the shooter of this bullet.
+		#This is important because bullets usually start out at a 
+		#location that is immediately clipping the shooter but we 
+		#don't want ships to blow themselves up.
+		self.dontClipMe = dontClipMe
+
+		self.is_a = game.BULLET
+
+		#A brief invulnerability is necessary so that spread shot 
+		#bullets don't collide with each other immediately and
+		#disappear. This might make self.dontClipMe redundant, but
+		#I don't care about such minor efficiency gains as removing 
+		#self.dontClipMe. At least not yet.
+		self.briefinvulnerability = 10
+
+
+	def update(self, offset):
+		if self.timeToLive <= 0:
+			#kill removes the calling sprite from all sprite groups
+			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
+			return True
+
+		self.timeToLive -= 1
+
+		self.move()
+
+		self.draw(offset)
+
+
+	def handleCollisionWith(self, other_sprite):
+		'''For now bullets die immediately regardless of what they hit.'''
+		died = False
+		if self.briefinvulnerability > 0:
+			self.briefinvulnerability -= 1
+			return died
+
+		#self.dontClipMe is usually the shooter of the bullet who would 
+		#otherwise immediately collide with it.
+		#For now, shoot through health packs with no effect.
+		if other_sprite != self.dontClipMe and not other_sprite.is_a == game.HEALTH:
+			died = True
+			#kill removes the calling sprite from all sprite groups
+			self.kill()
+		return died
+
 
 class Explosion(physicalObject.PhysicalObject):
+	'''Just flash some red and orange circles on the screen and throw out some debris.'''
 	def __init__(self, top, left):
 
 		physicalObject.PhysicalObject.__init__(self, top=top, left=left)
@@ -124,4 +180,75 @@ class HealthKit(physicalObject.PhysicalObject):
 			self.picked_up = True
 			other_sprite.gainHealth(self.health_amt)
 		return died
+
+
+class HealthBar(physicalObject.PhysicalObject):
+	def __init__(self, width=0, height=0, ship=None, vertical=False, current=100, total=100):
+		self.ship = ship
+
+		physicalObject.PhysicalObject.__init__(self, top=0, left=0)
+
+		#Boolean for whether to draw the healthbar horizontally or vertically.
+		self.vertical = vertical
+
+		#Current and total health or progress or whatever the bar is measuring
+		self.health = current
+		self.maxHealth = total
+
+		self.healthBarWidth = width
+		self.healthBarHeight = height
+
+
+	def update(self, offset):
+		heightAdjust = 0
+		if self.ship is None:
+			x,y = self.rect.topleft
+		else:
+			x,y = self.ship.rect.center
+			heightAdjust = self.ship.rect.height
+			self.health = self.ship.health
+		pos = x - offset[0], y - offset[1]
+
+		healthx = pos[0] - self.healthBarWidth/2
+		healthy = pos[1] - self.healthBarHeight - heightAdjust/2
+
+		tempRect = pygame.Rect(healthx, healthy, \
+			self.healthBarWidth, self.healthBarHeight)
+		pygame.draw.rect(game.screen, colors.red, tempRect, 0)
+
+		width = (self.health/float(self.maxHealth))*self.healthBarWidth
+		tempRect = pygame.Rect(healthx, healthy, width, self.healthBarHeight)
+		pygame.draw.rect(game.screen, colors.green, tempRect, 0)
+
+		self.drawAt(pos)
+
+
+	def draw(self):
+		pass
+
+
+class Follower(physicalObject.PhysicalObject):
+	def __init__(self, top, left):
+		'''This is the object that invisibly follows the player and the 
+		screen centers on it.
+		This mechanism was intended to give a sense of speed and direction.'''
+		physicalObject.PhysicalObject.__init__(self, top,left,10,10)
+
+		self.setColor((155,155,0))
+		self.maxSpeed = 10.0
+		self.dv = 0.5 #acceleration
+		#Turn rate:
+		self.dtheta = 10.0
+
+	def update(self, offset=(0,0)):
+		#Turn towards target
+		self.turnTowards()
+
+		#slow down if near target
+		if not self.park():
+			#Approach target speed
+			self.targetSpeed = self.maxSpeed
+			self.approachSpeed()
+
+		self.move()
 

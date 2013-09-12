@@ -7,6 +7,7 @@ def shipProfile(ship, profile='default'):
 		#Give enemy a weapon
 		w = weapon.Weapon()
 		weapon.setProfile('mk1', w)
+		w.shooter = ship
 		ship.weapons = [w] #Previously we appended the weapon, but since player is a subclass of ship, it was getting the default weapon AND its own weapon which caused a weird bug, especially with bullets colliding with themselves.
 		#Give enemy an engine
 		ship.engine = engine.Engine()
@@ -16,18 +17,11 @@ def shipProfile(ship, profile='default'):
 		#Give enemy a weapon
 		w = weapon.Weapon()
 		weapon.setProfile(profile, w)
+		w.shooter = ship
 		ship.weapons = [w] #Previously we appended the weapon, but since player is a subclass of ship, it was getting the default weapon AND its own weapon which caused a weird bug, especially with bullets colliding with themselves.
 		#Give enemy an engine
 		ship.engine = engine.Engine()
 		engine.setProfile(profile, ship.engine)
 		#return 'images/destroyer' #Return the image to use
 
-def followerProfile(pObject):
-	'''This is the object that invisibly follows the player and the screen centers on it.
-	This mechanism was intended to give a sense of speed and direction.'''
-	pObject.setColor((155,155,0))
-	pObject.maxSpeed = 10.0
-	pObject.dv = 0.5 #acceleration
-	#Turn rate:
-	pObject.dtheta = 10.0
 

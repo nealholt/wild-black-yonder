@@ -1,6 +1,7 @@
 import sys
 sys.path.append('code')
 import game
+from scenarios import testScenario00
 
 if __name__=="__main__":
 	print 'Camera options include:\n'+\
@@ -31,9 +32,15 @@ if __name__=="__main__":
 	'Press left arrow to turn counter-clockwise 30 degrees.\n'+\
 	'Press right arrow to turn clockwise 30 degrees.\n'+\
 	'Click on the screen to tell the starship to move towards the clicked point.\n'+\
+	'Press "m" to display a panel. m is for menu in this case. TESTING.\n'+\
 	'Press "p" to slow down and park at destination.\n'+\
 	'Press "s" to pause/unpause the game.\n'+\
 	'Press "q" to remove destination and simply fly in current direction.\n'
 
-	game = game.Game()
-	game.run()
+	game.game_obj.setCamera(camera_type)
+
+	#Initial test scenario
+	testScenario00()
+
+	game.game_obj.run()
+

@@ -1,26 +1,16 @@
 #game.py
-
 import pygame
-
-#The following sprite groups must be instantiated before importing scenarios because scenarios refers to them.
-tangibles = pygame.sprite.Group()
-intangibles = pygame.sprite.Group()
-#This last group will contain any sprites that will tickle whiskers
-whiskerables = pygame.sprite.Group()
-
 import random as rd
 import sys
 sys.path.append('code')
-
+import behaviors
 import player
 import scenarios
-import follower
 import colors
 import ship
 import testFunctions as test
-
+from displayUtilities import writeTextToScreen, displayShipLoc
 import menus
-
 from time import sleep
 
 DEBUG = True
@@ -47,87 +37,17 @@ MINSAFEDIST = 1024
 
 BGCOLOR = colors.black
 
+#instantiate sprite groups
+tangibles = pygame.sprite.Group()
+intangibles = pygame.sprite.Group()
+#This last group will contain any sprites that will tickle whiskers
+whiskerables = pygame.sprite.Group()
+
 #set up the display:
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 #Player must be created before scenario is called.
 player = player.Player('images/ship')
-
-
-def setClosestSprites():
-	'''Pre:
-	Post: For all ships in the whiskerables sprite list, the closest sprite 
-	and the distance to that sprite is set. This is used for helping NPC 
-	ships avoid collisions.'''
-	#Get all the whiskerable sprites in an array
-	sprite_list = whiskerables.sprites()
-	#TODO I'd like to make use of sorting like I do for collision checking with this, but recently it was gumming up the works, so I'm simplifying it for now.
-	#Sort them by their top point as is done when checking for collisions.
-	#sprite_list = sorted(sprite_list, \
-	#	key=lambda c: c.rect.topleft[1]+c.rect.height,\
-	#	reverse=True)
-	#For each sprite...
-	for i in xrange(len(sprite_list)):
-		#Get the next sprite to deal with.
-		A = sprite_list[i]
-		#only ships can avoid objects.
-		if A.is_a != SHIP: #TODO this could be more efficient by keeping another group that is just ships. Of course there is a cost there. It might be worth profiling at some point to see if this is better or another group that is just non-player ships is better.
-			continue
-		#Reset closest sprite and the distance to that sprite. Sprites 
-		#further than this distance will be ignored.
-		closest_sprite = None
-		least_dist = MINSAFEDIST
-		#search for too close sprites
-		for j in xrange(len(sprite_list)):
-			if j != i:
-				B = sprite_list[j]
-				dist = A.distanceToDestination(dest=B.getCenter()) - B.radius - A.radius
-				if dist < least_dist:
-					least_dist = dist
-					closest_sprite = B
-		'''#TODO this is the old way it was done when the sprite list was sorted, but I was accidentally missing checks on certain sprites so I simplified it for the time being.
-		#search forward for too close sprites
-		for j in xrange(i+1, len(sprite_list)):
-			B = sprite_list[j]
-			dist = A.distanceToDestination(dest=B.getCenter()) - B.radius - A.radius
-			if dist < least_dist:
-				least_dist = dist
-				closest_sprite = B
-				#break #TODO TESTING
-			#TODO TESTING
-			#elif abs(A.getX() - B.getX()) > least_dist:
-			#	break
-		#search backward for too close sprites
-		count_back = []
-		if i > 0:
-			count_back = range(0, i-1)
-			count_back.reverse()
-		for j in count_back:
-			B = sprite_list[j]
-			dist = A.distanceToDestination(dest=B.getCenter()) - B.radius - A.radius
-			if dist < least_dist:
-				least_dist = dist
-				closest_sprite = B
-				#break #TODO TESTING
-			#TODO TESTING
-			#elif abs(A.getX() - B.getX()) > least_dist:
-			#	break'''
-		#Set sprite A's closest sprite and the distance to that sprite.
-		#if not closest_sprite is None: print closest_sprite.image_name+' at '+str(least_dist) #TODO TESTING
-		A.setClosest(closest_sprite, least_dist)
-
-
-def writeTextToScreen(string='', font_size=12, color=colors.white, pos=(0,0)):
-	font = pygame.font.Font(None, font_size)
-	text = font.render(string, 1, color)
-	textpos = text.get_rect(center=pos)
-	screen.blit(text, textpos)
-
-
-def makeNewEnemy(x=0, y=0):
-	enemy_ship = ship.Ship(top=y, left=x, image_name='images/destroyer')
-	tangibles.add(enemy_ship)
-	whiskerables.add(enemy_ship)
 
 
 class Game:
@@ -144,10 +64,9 @@ class Game:
 		self.offsety = 0
 
 		self.timer = 0 #TODO this isn't being used, but could be.
-		self.camera = FIX_ON_PLAYER
 
-		if self.camera == FOLLOW_PLAYER:
-			self.follower = follower.Follower(0,0)
+		self.follower = None
+		self.camera = FIX_ON_PLAYER
 
 		self.getOffset = [self.fixedScreen, self.centerOnPlayer, self.followPlayer]
 
@@ -203,6 +122,7 @@ class Game:
 					#Check for event m key being pressed to remove the menu.
 					if event.type == pygame.KEYDOWN and event.key == 109: #m key
 						self.panel = None
+						break
 					#Pass all other events to the panel
 					else:
 						self.panel.handleEvent(event)
@@ -214,7 +134,7 @@ class Game:
 			#See what buttons may or may not have been pushed.
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
-					self.running = 0
+					self.running = False
 				elif event.type == pygame.MOUSEBUTTONDOWN:
 					self.mouse[event.button] = 1
 					self.mouse[0] = event.pos
@@ -240,10 +160,10 @@ class Game:
 							player.targetSpeed -\
 							player.maxSpeed/4)
 					elif event.key == 27: #escape key or red button
-						self.running = 0
+						self.running = False
 					elif event.key == 101: #e key
 						#enemy created for testing.
-						makeNewEnemy(x=-500, y=0)
+						scenarios.makeNewEnemy(x=-500, y=0)
 					elif event.key == 109: #m key
 						self.panel = menus.getTestingPanel()
 						continue
@@ -261,7 +181,7 @@ class Game:
 						' vs '+str(player.rect.width)
 						print 'Height: '+str(player.image.get_height())+\
 						' vs '+str(player.rect.height)
-						test.hitBoxTest(player.getCenter())
+						test.hitBoxTest(player.rect.center)
 					elif event.key == 47: 
 						#forward slash (question mark without shift) key 
 						#Useful for querying one time info.
@@ -307,20 +227,20 @@ class Game:
 
 			#remind follower of player's location
 			if self.camera == FOLLOW_PLAYER:
-				self.follower.setDestination(player.getCenter())
+				self.follower.setDestination(player.rect.center)
 
 			#draw black over the screen
 			#TODO as a game effect, it is super neato to temporarily NOT do this.
 			screen.fill(BGCOLOR)
 
 			#Check all collisions
-			self.collisionHandling()
+			behaviors.collisionHandling()
 
 			#update all sprites:
 
 			#First tell the ships what is closest to them
 			#so that they can avoid collisions
-			setClosestSprites()
+			behaviors.setClosestSprites()
 			#Get the offset based on the camera.
 			self.offsetx,self.offsety = self.getOffset[self.camera]()
 			#Finally update all the sprites
@@ -328,69 +248,15 @@ class Game:
 			tangibles.update((self.offsetx,self.offsety))
 
 			#Display player location for debugging.
-			self.displayPlayerLoc()
+			displayShipLoc(player)
 		#end round loop (until gameover)
 	#end game loop
 
 
-	def collisionHandling(self):
-		'''The following function comes from pseudo code from
-		 axisAlignedRectangleCollision.txt that has been modified.'''
-		#Get a list of all the sprites
-		sprite_list = tangibles.sprites()
-		#sort the list in descending order based on each 
-		#sprite's y coordinate (aka top) plus height.
-		#Remember that larger y coordinates indicate further down
-		#on the screen.
-		#Reverse tells sorted to be descending.
-		#rect.topleft[1] gets the y coordinate, top.
-		sprite_list = sorted(sprite_list, \
-			key=lambda c: c.rect.topleft[1]+c.rect.height,\
-			reverse=True)
-		#iterate over the sprite list
-		for i in xrange(len(sprite_list)):
-			A = sprite_list[i]
-			for j in xrange(i+1, len(sprite_list)):
-				B = sprite_list[j]
-				#if A's least y coord (A's top) is > B's
-				#largest y coord (B's bottom)
-				#then they don't overlap and none of the following
-				#sprites overlap A either becuase the list is sorted
-				#by bottom y coordinates.
-				#We therefore skip the rest of the sprites in the list.
-				if A.rect.topleft[1] > B.rect.topleft[1]+B.rect.height:
-					break
-				else:
-					#Otherwise, we need to see if they overlap
-					#in the x direction.
-					#if A's greatest x coord is < B's least x coord
-					#or B's greatest x coord is < A's least x coord
-					#then they don't overlap, but one of the following 
-					#sprites might still overlap so we move to the
-					#next sprite in the list.
-					#OLD WAY based on rectangles:
-					#if A.rect.topleft[0]+A.rect.width < B.rect.topleft[0]\
-					#or B.rect.topleft[0]+B.rect.width < A.rect.topleft[0]:
-					#NEW WAY based on circles:
-					#If the distance between our centers is larger than are 
-					#summed radii, then we have not collided.
-					if A.distanceToDestination(dest=B.getCenter()) > A.radius+B.radius:
-						pass
-					else:
-						#they overlap. They should handle 
-						#collisions with each other.
-						A_died = A.handleCollisionWith(B)
-						B.handleCollisionWith(A)
-						#If A has died, then don't worry about A
-						#colliding with anything else.
-						if A_died:
-							break
-
-
-	def displayPlayerLoc(self):
-		string = "Player X,Y: "+str(player.getX())+','+str(player.getY())+\
-			'. Speed: '+str(player.speed)+'. MaxSpeed: '+str(player.maxSpeed)
-		writeTextToScreen(string=string, font_size=36, color=colors.white, pos=(400,10))
+	def setCamera(self, camera):
+		self.camera = camera
+		if self.camera == FOLLOW_PLAYER:
+			self.follower = follower.Follower(0,0)
 
 
 	#Choices for the display follow in 3 functions:
@@ -418,3 +284,4 @@ class Game:
 
 #Create a game object. Currently only used by scenarios.py. I wonder if this indicates that there is a better way? TODO
 game_obj = Game()
+
