@@ -5,7 +5,9 @@ white = (255,255,255)
 red = (255,0,0)
 green = (0,64,0)
 pink = (255,100,100)
+yellow = (255,255,0)
 
+reddishgray = (77,43,43)
 
 def getRandHotColor():
 	return (rd.randint(100, 155), rd.randint(000, 100), rd.randint(0, 20))

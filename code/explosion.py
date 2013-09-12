@@ -112,13 +112,10 @@ class HealthKit(physicalObject.PhysicalObject):
 			self.timeToLive -= 1
 			#TODO the following drawing of text will not work with some camera modes. You probably want to make this something more like a generic method for text drawing.
 			#Display the amount of health that was here.
-			font = pygame.font.Font(None, 36)
-			string = '+'+str(self.health_amt)
-			text = font.render(string, 1, colors.green)
-			x,y = self.rect.topleft
-			pos = x - offset[0], y - offset[1]
-			textpos = text.get_rect(center=pos)
-			game.screen.blit(text, textpos)
+			pos = self.rect.topleft[0] - offset[0], \
+				self.rect.topleft[1] - offset[1]
+			game.writeTextToScreen(string='+'+str(self.health_amt), \
+				font_size=36, color=colors.green, pos=pos)
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''

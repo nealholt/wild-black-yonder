@@ -20,6 +20,8 @@ class Bullet(physicalObject.PhysicalObject):
 
 		self.is_a = game.BULLET
 
+		#self.briefinvulnerability = 10
+
 
 	def update(self, offset):
 		if self.timeToLive <= 0:
@@ -37,6 +39,10 @@ class Bullet(physicalObject.PhysicalObject):
 	def handleCollisionWith(self, other_sprite):
 		'''For now bullets die immediately regardless of what they hit.'''
 		died = False
+		#if self.briefinvulnerability > 0:
+		#	self.briefinvulnerability -= 1
+		#	return died
+
 		#self.dontClipMe is usually the shooter of the bullet who would 
 		#otherwise immediately collide with it.
 		#For now, shoot through health packs with no effect.

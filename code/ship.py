@@ -52,6 +52,11 @@ class Ship(physicalObject.PhysicalObject):
 			w.maybeShoot(self, force_shot=force_shot)
 
 
+	def cooldown(self):
+		'''Cool all our weapons'''
+		for w in self.weapons:
+			w.cool()
+
 	def update(self, offset):
 		#for now we assume that every ship is hostile to the player
 		self.setDestination(game.player.getCenter())
@@ -69,6 +74,8 @@ class Ship(physicalObject.PhysicalObject):
 		else:
 			self.targetSpeed = self.maxSpeed/2
 
+		#cooldown all the weapons
+		self.cooldown()
 		#Check for firing solutions
 		self.shoot()
 

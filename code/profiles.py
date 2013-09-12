@@ -7,7 +7,7 @@ def shipProfile(ship, profile='default'):
 		#Give enemy a weapon
 		w = weapon.Weapon()
 		weapon.setProfile('mk1', w)
-		ship.weapons.append(w)
+		ship.weapons = [w] #Previously we appended the weapon, but since player is a subclass of ship, it was getting the default weapon AND its own weapon which caused a weird bug, especially with bullets colliding with themselves.
 		#Give enemy an engine
 		ship.engine = engine.Engine()
 		engine.setProfile('mk1', ship.engine)
@@ -16,7 +16,7 @@ def shipProfile(ship, profile='default'):
 		#Give enemy a weapon
 		w = weapon.Weapon()
 		weapon.setProfile(profile, w)
-		ship.weapons.append(w)
+		ship.weapons = [w] #Previously we appended the weapon, but since player is a subclass of ship, it was getting the default weapon AND its own weapon which caused a weird bug, especially with bullets colliding with themselves.
 		#Give enemy an engine
 		ship.engine = engine.Engine()
 		engine.setProfile(profile, ship.engine)

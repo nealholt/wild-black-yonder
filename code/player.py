@@ -20,10 +20,11 @@ class Player(ship.Ship):
 
 
 	def update(self, offset=(0,0)):
-		'''The player's update function does nothing.
+		'''The player's update function does very little.
 		The player uses the special playerUpdate function
 		which is needed for when the screen follows or 
 		centers on the player.'''
+		self.cooldown() #cooldown all the weapons
 		pass
 
 

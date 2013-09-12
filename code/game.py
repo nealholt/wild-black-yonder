@@ -13,6 +13,7 @@ import ship
 import hitBoxTester as hbt
 
 import menus
+import drawable
 
 from time import sleep
 
@@ -163,6 +164,13 @@ def setClosestSprites():
 		A.setClosest(closest_sprite, least_dist)
 
 
+def writeTextToScreen(string='', font_size=12, color=colors.white, pos=(0,0)):
+	font = pygame.font.Font(None, font_size)
+	text = font.render(string, 1, color)
+	textpos = text.get_rect(center=pos)
+	screen.blit(text, textpos)
+
+
 def hitBoxTest(c):
 	#shoot a bunch of hit box testers 
 	#in towards the player
@@ -191,6 +199,59 @@ def hitBoxTest(c):
 	tangibles.add(h)
 	tangibles.add(h)
 
+
+def getTestingPanel():
+	border_padding = 100
+	top = border_padding
+	left = border_padding
+	height = HEIGHT-2*border_padding
+	width = WIDTH-2*border_padding
+	temp = pygame.Rect(left, top, width, height)
+
+	menu = menus.Panel(temp)
+
+	#First draw a white frame around the menu.
+	temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
+		color=colors.white, thickness=3)
+	menu.addDrawable(temp)
+
+	#Then draw the background for the menu
+	temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
+		color=colors.reddishgray)
+	menu.addDrawable(temp)
+
+	#Then draw the contents of the menu
+	horiz_space = 200
+	vert_space = 100
+	x1, y1 = horiz_space, HEIGHT/2
+	radius = 10
+	#panel made of a circle centered at start
+	temp = pygame.Rect(x1, y1, radius, radius)
+	subpanel = menus.Panel(temp)
+	temp = drawable.Circle(x1=x1, y1=y1, radius=radius, color=colors.yellow)
+	subpanel.addDrawable(temp)
+	menu.addPanel(subpanel)
+
+	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Infinite space']
+
+	x2 = horiz_space*2
+	for i in range(5):
+		j = i-2
+		y2 = HEIGHT/2+vert_space*j
+
+		temp = pygame.Rect(x2, y2, radius, radius)
+		subpanel = menus.Panel(temp)
+		temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
+		subpanel.addDrawable(temp)
+		temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\
+			font_size=24, color=colors.white)
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+
+		temp = drawable.Line(x1=x1, y1=y1, x2=x2, y2=y2)
+		menu.addDrawable(temp)
+
+	return menu
 
 
 class Game:
@@ -243,9 +304,17 @@ class Game:
 
 		#The in-round loop (while player is alive):
 		while self.running:
+			#frame maintainance:
+			pygame.display.flip()
+			self.clock.tick(FPS) #aim for FPS but adjust vars for self.fps.
+			self.fps = max(1, int(self.clock.get_fps()))
+			self.timer += 1. / self.fps
 
 			#Skip the rest of this loop until the game is unpaused.
 			if self.pause:
+				#Write paused in the middle of the screen
+				writeTextToScreen(string='PAUSED', font_size=128,\
+					pos=(WIDTH/3, HEIGHT/2))
 				#Check for another s key press to unpause the game.
 				for event in pygame.event.get():
 					if event.type == pygame.KEYDOWN and event.key == 115: #s key
@@ -264,7 +333,6 @@ class Game:
 					#Check for mousebutton event and pass it to the panel
 					if event.type == pygame.MOUSEBUTTONDOWN:
 						self.panel.handleEvent(event)
-				pygame.display.flip()
 				#Skip all the rest while displaying the menu.
 				#This effectively pauses the game.
 				continue
@@ -304,15 +372,15 @@ class Game:
 						#enemy created for testing.
 						self.makeNewEnemy()
 					elif event.key == 109: #m key
-						self.panel = menus.Panel(left=20,\
-							top=20, width=100, height=100)
+						self.panel = getTestingPanel()
+						continue
 					elif event.key == 112: #p key
 						player.parkingBrake()
 					elif event.key == 113: #q key
 						#Obliterate destination. Change to free flight.
 						player.killDestination()
 					elif event.key == 115: #s key
-						self.pauseGame(); continue
+						self.pause = not self.pause; continue
 					elif event.key == 116: #t key
 						#shoot a bunch of hit box testers 
 						#in towards the player
@@ -388,27 +456,8 @@ class Game:
 
 			#Display player location for debugging.
 			self.displayPlayerLoc()
-
-
-			#frame maintainance:
-			pygame.display.flip()
-			self.clock.tick(FPS) #aim for FPS but adjust vars for self.fps.
-			self.fps = max(1, int(self.clock.get_fps()))
-			self.timer += 1. / self.fps
 		#end round loop (until gameover)
 	#end game loop
-
-
-	def pauseGame(self):
-		self.pause = not self.pause
-		#Write paused in the middle of the screen
-		font = pygame.font.Font(None, 128)
-		string = 'PAUSED'
-		text = font.render(string, 1, colors.white)
-		pos = (WIDTH/3, HEIGHT/2)
-		textpos = text.get_rect(center=pos)
-		screen.blit(text, textpos)
-		pygame.display.flip()
 
 
 	def collisionHandling(self):
@@ -451,11 +500,8 @@ class Game:
 					#or B.rect.topleft[0]+B.rect.width < A.rect.topleft[0]:
 					#NEW WAY based on circles:
 					#If the distance between our centers is larger than are 
-					#summed radii, then we have no collided.
+					#summed radii, then we have not collided.
 					if A.distanceToDestination(dest=B.getCenter()) > A.radius+B.radius:
-
-					#TODO LEFT OFF HERE
-					
 						pass
 					else:
 						#they overlap. They should handle 
@@ -475,13 +521,13 @@ class Game:
 
 
 	def displayPlayerLoc(self):
-#		if self.timer > self.nextUpdate:
+		#Next line commented because I used to wait a little while to update, 
+		#but that was a premature optimization.
+		#if self.timer > self.nextUpdate:
 		self.nextUpdate += self.textUpdateInterval
-		font = pygame.font.Font(None, 36)
-		string = "Player X,Y: "+str(player.getX())+','+str(player.getY())+'. Speed: '+str(player.speed)+'. MaxSpeed: '+str(player.maxSpeed)
-		text = font.render(string, 1, colors.white)
-		textpos = text.get_rect(center=(400,10)) #center text at 400, 10
-		screen.blit(text, textpos)
+		string = "Player X,Y: "+str(player.getX())+','+str(player.getY())+\
+			'. Speed: '+str(player.speed)+'. MaxSpeed: '+str(player.maxSpeed)
+		writeTextToScreen(string=string, font_size=36, color=colors.white, pos=(400,10))
 
 
 	#Choices for the display follow in 3 functions:

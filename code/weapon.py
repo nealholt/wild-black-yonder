@@ -15,12 +15,14 @@ class Weapon():
 		self.spread=0 #spread of bullets fired
 		self.attack_angle = 1 #if within this angle to target, can shoot at target
 
+	def cool(self):
+		if self.cooldown > 0:
+			self.cooldown -= 1
+
 	def maybeShoot(self, shooter, force_shot=False):
 		'''Player will fire when able using force_shot. NPC's will fire 
 		when their gun is in range.'''
-		if self.cooldown > 0:
-			self.cooldown -= 1
-		else:
+		if self.cooldown == 0:
 			if force_shot:
 				self.shoot(shooter)
 			else:
