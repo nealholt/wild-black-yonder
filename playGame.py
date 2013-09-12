@@ -32,6 +32,7 @@ if __name__=="__main__":
 	'Press right arrow to turn clockwise 30 degrees.\n'+\
 	'Click on the screen to tell the starship to move towards the clicked point.\n'+\
 	'Press "p" to slow down and park at destination.\n'+\
+	'Press "s" to pause/unpause the game.\n'+\
 	'Press "q" to remove destination and simply fly in current direction.\n'
 
 	game = game.Game(camera=camera_type)

@@ -131,6 +131,8 @@ class Game:
 		#pygame setup:
 		self.clock = pygame.time.Clock()
 
+		self.pause = False
+
 
 	def run(self):
 		"""Runs the game."""
@@ -177,6 +179,9 @@ class Game:
 					elif event.key == 113: #q key
 						#Obliterate destination. Change to free flight.
 						player.killDestination()
+					elif event.key == 115: #s key
+						#Pause and unpause the game
+						self.pause = not self.pause
 					elif event.key == 116: #t key
 						#shoot a bunch of hit box testers 
 						#in towards the player
@@ -192,9 +197,21 @@ class Game:
 						str(player.destx)+','+\
 						str(player.desty)
 
+					#Separate if so other keys don't interfere with this.
+					if event.key == 32:
+						#Pressed space bar
+						#Force shot tells this to shoot even if a target 
+						#is not obviously in view. NPC's will not take 
+						#such wild shots.
+						player.shoot(force_shot=True)
+
 				elif event.type == pygame.KEYUP:
 					#Keep track of which keys are no longer being pushed.
 					self.keys[event.key % 322] = 0
+
+			#Skip the rest of this loop until the game is unpaused.
+			if self.pause:
+				continue
 
 			##This will make the player move towards the mouse 
 			##without any clicking involved.

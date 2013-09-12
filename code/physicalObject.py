@@ -223,9 +223,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 		negative Y values as is standard in math, but not computer 
 		science.
 		SHIT. It's still not working. I haven't wrapped my head around why.'''
+		#x,y = None,None
 		if target is None:
-			target = self.destination
-		x,y = target
+			x,y = self.destination
+		else:
+			x,y = target.getCenter()
 		rise = y - self.rect.centery
 		run = x - self.rect.centerx
 		#As I understand it, this ought to return one angle to the target,
@@ -274,8 +276,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		return self.rect.width*self.rect.height
 
 
-	#step 35: implement bounce off
-	#step 36: test bounce off by 1. bouncing off the larger enemy ship. 2. making the player use the larger ship and bouncing the enemy ship forward.
 	def bounceOff(self, other):
 		'''Other is another physical object that this physical object 
 		just struck and should bounce off of.
@@ -295,7 +295,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#new direction. Specifically, our angle should be 
 			#reflected over the line perpendicular to the line that
 			#passes through the center of this and other.
-			#TODO First pass for code:
+			#First pass for code follows. This is good enough for now.
 			if angleToOther < 0:
 				self.turnClockwise(90)
 			else:
@@ -307,7 +307,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#direction of the object that struck us.
 			#Specifically, change our angle to be halfway between 
 			#our angle and the angle of other.
-			#TODO First pass for code:
+			#First pass for code follows. This is good enough for now.
 			amountToTurn = (180 - abs(angleToOther))/2
 			if angleToOther < 0:
 				self.turnCounterClockwise(amountToTurn)
@@ -315,4 +315,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 				self.turnClockwise(amountToTurn)
 			#Use max because speed*2 might be zero.
 			self.speed = max(self.speed*2, 10)
+		#Move twice immediately to prevent multiple collisions.
+		self.move()
+		self.move()
 
