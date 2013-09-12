@@ -6,6 +6,7 @@ import sys
 sys.path.append('code')
 
 import player
+import enemy
 
 FPS = 30
 black = (0,0,0)
@@ -22,8 +23,9 @@ class Game:
 		self.height = screen.get_height()
 		self.mouseControl = True
 		self.timer = 0
-		self.systems = []
 		self.triggers = []
+
+		self.triggers.append(enemy.Enemy(self))
 
 		self.player = player.Player(self)
 		
@@ -40,8 +42,6 @@ class Game:
 
 	def run(self):
 		"""Runs the game."""
-		#print 'run reached in game. exiting now.'; exit(); #TODO TESTING
-
 		self.running = True
 
 		#The in-round loop (while player is alive):
@@ -69,10 +69,13 @@ class Game:
 					self.keys[event.key % 322] = 1
 
 					#TODO TESTING. Is there a better way to do this with bindings?
+					#see stardog for ideas
 					if event.key == 276: #Pressed left
-						self.player.turnCounterClockwise()
-					if event.key == 275: #Pressed right
-						self.player.turnClockwise()
+						pass
+					elif event.key == 275: #Pressed right
+						pass
+					elif event.key == 32: #Pressed space bar
+						self.player.shoot()
 					elif event.key == 27: #escape key or red button
 						self.running = 0
 
@@ -83,7 +86,8 @@ class Game:
 				if self.pause:
 					self.menu.handleEvent(event)
 
-			self.player.move()
+			#draw the layers:
+			self.screen.fill(black)
 
 			#unpaused:
 			#if not self.pause:
@@ -92,10 +96,9 @@ class Game:
 			#		trigger.update()
 			#	self.top_left = self.player.x - self.width / 2, \
 			#			self.player.y - self.height / 2
-
-			#draw the layers:
-			self.screen.fill(black)
-			self.player.draw()
+			self.player.update()
+			for trigger in self.triggers:
+				trigger.update()
 				
 			#frame maintainance:
 			pygame.display.flip()

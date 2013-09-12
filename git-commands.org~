@@ -22,6 +22,6 @@ Then I ran this next line which "Next, tell Git to take a snapshot of the conten
 
 I then repeated the 3 previous commands while copying each version of the game from the backups folder to the git repo.
 
-> git add . && git commit -m "I'm committing another version of the game from my backups folder."
+> git add . && git commit -m "I'm committing another version of the game."
 > git push
 
