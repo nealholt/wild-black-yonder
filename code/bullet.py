@@ -37,7 +37,10 @@ class Bullet(physicalObject.PhysicalObject):
 	def handleCollisionWith(self, other_sprite):
 		'''For now bullets die immediately regardless of what they hit.'''
 		died = False
-		if other_sprite != self.dontClipMe:
+		#self.dontClipMe is usually the shooter of the bullet who would 
+		#otherwise immediately collide with it.
+		#For now, shoot through health packs with no effect.
+		if other_sprite != self.dontClipMe and not other_sprite.is_a == game.HEALTH:
 			died = True
 			#kill removes the calling sprite from all sprite groups
 			self.kill()

@@ -38,26 +38,36 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 		self.destination = (0.0, 0.0)
 
-		if image_name is None:
+		self.image_name = image_name
+
+		if self.image_name is None:
 			self.image = pygame.Surface([width, height])
 			self.image.fill((100,255,100)) #Randomly chosen default color
 			self.base_image = self.image
 		else:
-			self.image = game.loadImage(image_name + game.ext)
+			self.image = game.loadImage(self.image_name + game.ext)
 			#Base image is needed because we need a reference to the
 			#original image that is never modified.
 			#self.base_image is used in updateImageAngle.
-			self.base_image = game.loadImage(image_name + game.ext)
+			self.base_image = game.loadImage(self.image_name + game.ext)
 			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (left, top)
 
+		#For now calculate the radius as the average of the width and height.
+		#Divide by 4 because we average the width and height and also divide them in half
+		#to calculate radius rather than diameter.
+		#Old way: This made the asteroids slightly too large.
+		#self.radius = max(int((self.rect.width+self.rect.height)/4), 1)
+		self.radius = max(int(min(self.rect.width,self.rect.height)/2), 1)
+
 		#What is this object.
 		self.is_a = game.OTHER
 
-		self.whisker_radius = max(self.rect.width, self.rect.height)
-		self.whisker_distance = self.whisker_radius*3
+		#We use closest_sprite to help the NPC's avoid objects.
+		self.closest_sprite = None
+		self.dist_to_closest = game.MINSAFEDIST
 
 
 	def handleCollisionWith(self, other_sprite):
@@ -70,48 +80,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		physicalObjects should have their own version of this 
 		function, but ship objects won't.'''
 		pass
-
-
-	def whiskers(self, offset, drawWhisker=False):
-		'''Create "whisker" sprites to check for tangible sprites 
-		to the front or sides in order to avoid collisions.'''
-		whisker = PhysicalObject(top=0, left=0, width=self.whisker_radius, 
-			height=self.whisker_radius)
-		whisker.speed = self.whisker_distance
-		#Whisker left
-		whisker.rect.topleft = self.rect.topleft
-		whisker.theta = self.theta
-		whisker.turnCounterClockwise(50) #rotate it less than 90 degrees out
-		whisker.move()
-		objectLeft = pygame.sprite.spritecollideany(whisker, game.whiskerables)
-		if drawWhisker: #TESTING
-			if objectLeft: whisker.image.fill((255,100,255))
-			x,y = whisker.rect.topleft
-			pos = x - offset[0], y - offset[1]
-			whisker.drawAt(pos)
-		#Whisker center
-		whisker.rect.topleft = self.rect.topleft
-		whisker.theta = self.theta
-		whisker.move()
-		objectCenter = pygame.sprite.spritecollideany(whisker, game.whiskerables)
-		if drawWhisker: #TESTING
-			if objectCenter: whisker.image.fill((255,100,255))
-			x,y = whisker.rect.topleft
-			pos = x - offset[0], y - offset[1]
-			whisker.drawAt(pos)
-		#Whisker right
-		whisker.rect.topleft = self.rect.topleft
-		whisker.theta = self.theta
-		whisker.turnClockwise(50) #rotate it less than 90 degrees out
-		whisker.move()
-		objectRight = pygame.sprite.spritecollideany(whisker, game.whiskerables)
-		if drawWhisker: #TESTING
-			if objectRight: whisker.image.fill((255,100,255))
-			x,y = whisker.rect.topleft
-			pos = x - offset[0], y - offset[1]
-			whisker.drawAt(pos)
-
-		return objectLeft,objectCenter,objectRight
 
 
 	def updateImageAngle(self):
@@ -140,6 +108,10 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 	def setColor(self, color):
 	        self.image.fill(color)
+
+	def setClosest(self, closest_sprite, distance):
+		self.closest_sprite = closest_sprite
+		self.dist_to_closest = distance
 
 	def turnCounterClockwise(self, delta=None):
 		'''Turn in the desired direction.
@@ -193,8 +165,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def decelerate(self):
 		self.speed = max(0, self.speed - self.dv)
 
-	def distanceToDestination(self):
-		x,y = self.destination
+	def distanceToDestination(self, dest=None):
+		if dest is None:
+			x,y = self.destination
+		else:
+			x,y = dest
 		return math.sqrt( (self.rect.centerx-x)**2 + (self.rect.centery-y)**2 )
 
 	def setDestination(self,point):
@@ -256,27 +231,72 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if angle_to_target > 180: angle_to_target -= 360
 		return angle_to_target
 
-	def turnTowards(self, objectLeft=False,objectCenter=False,objectRight=False):
-		"""This was copied out of scripts.py in stardog and modified slightly. 
-		Collision avoidance is all my own, however."""
+	def turnTowards(self):
+		"""This was copied out of scripts.py in stardog and 
+		modified slightly. Collision avoidance is all my 
+		own, however."""
+		#Collision avoidance: Avoid Collisions!
+		#The following can only be used to suppress
+		#turning if they are true. If false, they have no effect.
+		dontTurnLeft = False
+		dontTurnRight = False
+		#If there is a closest sprite, amend turning to avoid it.
+		if not self.closest_sprite is None:
+			angle = self.getAngleToTarget(target=self.closest_sprite)
+			#If the ship is at any angle closer than a right angle, consider altering its turn
+			abs_angle = abs(angle)
+			if abs_angle < 90:
+				#self.dist_to_closest is the distance from this sprite's
+				#center to self.closest_sprite's center. We need to factor 
+				#in the radius for these sprites.
+				actual_distance = self.dist_to_closest - \
+					self.radius-self.closest_sprite.radius
+				#TODO. These constants might need adjusted.
+				#Previously the following was just this commented out portion. I thought making it trickier might reduce the jiggle. It did not.
+				#if actual_distance + abs_angle < 30:
+				if actual_distance < 20:
+
+					#Too close. It's vital that we turn away from the object.
+					if angle < 0:
+						self.turnClockwise()
+						return True
+					else:
+						self.turnCounterClockwise()
+						return True
+				#elif actual_distance + abs_angle < 70:
+				elif actual_distance < 40:
+					#It's not too close yet, but don't get any closer.
+					if angle < 0:
+						dontTurnLeft = True
+					else:
+						dontTurnRight = True
+			#Reset closest sprite.
+			self.closest_sprite = None
+			self.dist_to_closest = game.MINSAFEDIST
+
+
 		angleToTarget = self.getAngleToTarget()
 		#If we need to turn more towards the target or there is an 
 		#object in front of us
-		if abs(angleToTarget) > self.acceptableError or objectCenter:
-			#Get the amount to turn. It may be less than the amount this
-			#object is capable of turning.
+		if abs(angleToTarget) > self.acceptableError:
+			#Get the amount to turn. It may be less than the 
+			#amount this object is capable of turning.
 			#Only turn this small amount if there is no object in
 			#front of us.
-			if abs(angleToTarget) < self.dtheta and not objectCenter:
-				self.turn(angleToTarget)
+			if abs(angleToTarget) < self.dtheta:
+				if dontTurnLeft and angleToTarget < 0:
+					pass
+				elif dontTurnRight and angleToTarget > 0:
+					pass
+				else:
+					self.turn(angleToTarget)
 			#Turn counter clockwise if that's the direction of our 
 			#target and there is no obstacle in that direction or
 			#if there is an obstacle in front of us and to the right.
-			elif (angleToTarget < 0 and not objectLeft) or \
-			(objectCenter and objectRight):
+			elif angleToTarget < 0 and not dontTurnLeft:
 				self.turnCounterClockwise()
 			#In all other cases turn clockwise
-			else:
+			elif not dontTurnRight:
 				self.turnClockwise()
 
 

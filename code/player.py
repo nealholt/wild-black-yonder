@@ -6,10 +6,10 @@ class Player(ship.Ship):
 
 		ship.Ship.__init__(self,image_name=image_name)
 
-		profiles.shipProfile(self, profile='mk3')
+		profiles.shipProfile(self, profile='mk2')
 		self.setProfile()
 
-		self.rect.topleft = (100,100)
+		self.rect.topleft = (-100,-100)
 
 		self.parkAtDestination = False
 

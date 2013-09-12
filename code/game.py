@@ -28,6 +28,11 @@ HEIGHT = 700
 BULLET = 0
 OTHER = 1
 SHIP = 2
+FIXEDBODY = 3
+HEALTH = 4
+
+#The least distance to check for a collision. Might need adjusted if we start using really big objects.
+MINSAFEDIST = 1024
 
 #set up the display:
 pygame.init()
@@ -44,9 +49,13 @@ if pygame.image.get_extended():
 	ext = ".gif"
 
 #START: copied from stardog utils.py
-def loadImage(filename, colorkey=colors.black):
+def loadImage(filename):
+	''' '''
 	try:
 		image = pygame.image.load(filename).convert()
+		#colorkey tells pygame what color to make transparent.
+		#We assume that the upper left most pixel's color is the color to make transparent.
+		colorkey = image.get_at((0,0))
 		image.set_colorkey(colorkey)
 	except pygame.error:
 		image = pygame.image.load("images/default" + ext).convert()
@@ -60,10 +69,94 @@ intangibles = pygame.sprite.Group()
 whiskerables = pygame.sprite.Group()
 
 #TODO Create a motionless object for reference purposes while testing.
-intangibles.add(explosion.FixedBody(0, 0))
+temp = explosion.FixedBody(0, -100, image_name='images/TyDfN_tiny') #little crystal
+tangibles.add(temp); whiskerables.add(temp)
+print 'Radius of TyDfN_tiny is '+str(temp.radius)
+temp = explosion.FixedBody(0, 0, image_name='images/asteroidBigRoundTidied') #largest asteroid
+tangibles.add(temp); whiskerables.add(temp)
+print 'Radius of asteroidBigRoundTidied is '+str(temp.radius)
+temp = explosion.FixedBody(500, 500, image_name='images/asteroidWild2') #medium asteroid
+tangibles.add(temp); whiskerables.add(temp)
+print 'Radius of asteroidWild2 is '+str(temp.radius)
+temp = explosion.FixedBody(500, 0, image_name='images/asteroidTempel') #small asteroid
+tangibles.add(temp); whiskerables.add(temp)
+print 'Radius of asteroidTempel is '+str(temp.radius)
+temp = explosion.FixedBody(-500, -500, image_name='images/Sikhote_small') #goldish metal rock
+tangibles.add(temp); whiskerables.add(temp)
+print 'Radius of Sikhote_small is '+str(temp.radius)
+temp = explosion.FixedBody(-500, 0, image_name='images/bournonite_30percent') #silvery metal rock
+tangibles.add(temp); whiskerables.add(temp)
+print 'Radius of bournonite_30percent is '+str(temp.radius)
+
+temp = explosion.HealthKit(-100, 0) #health pack
+tangibles.add(temp)
+
 
 player = player.Player('images/ship')
 tangibles.add(player)
+
+
+def setClosestSprites():
+	'''Pre:
+	Post: For all ships in the whiskerables sprite list, the closest sprite 
+	and the distance to that sprite is set. This is used for helping NPC 
+	ships avoid collisions.'''
+	#Get all the whiskerable sprites in an array
+	sprite_list = whiskerables.sprites()
+	#TODO I'd like to make use of sorting like I do for collision checking with this, but recently it was gumming up the works, so I'm simplifying it for now.
+	#Sort them by their top point as is done when checking for collisions.
+	#sprite_list = sorted(sprite_list, \
+	#	key=lambda c: c.rect.topleft[1]+c.rect.height,\
+	#	reverse=True)
+	#For each sprite...
+	for i in xrange(len(sprite_list)):
+		#Get the next sprite to deal with.
+		A = sprite_list[i]
+		#only ships can avoid objects.
+		if A.is_a != SHIP: #TODO this could be more efficient by keeping another group that is just ships. Of course there is a cost there. It might be worth profiling at some point to see if this is better or another group that is just non-player ships is better.
+			continue
+		#Reset closest sprite and the distance to that sprite. Sprites 
+		#further than this distance will be ignored.
+		closest_sprite = None
+		least_dist = MINSAFEDIST
+		#search for too close sprites
+		for j in xrange(len(sprite_list)):
+			if j != i:
+				B = sprite_list[j]
+				dist = A.distanceToDestination(dest=B.getCenter()) - B.radius - A.radius
+				if dist < least_dist:
+					least_dist = dist
+					closest_sprite = B
+		'''#TODO this is the old way it was done when the sprite list was sorted, but I was accidentally missing checks on certain sprites so I simplified it for the time being.
+		#search forward for too close sprites
+		for j in xrange(i+1, len(sprite_list)):
+			B = sprite_list[j]
+			dist = A.distanceToDestination(dest=B.getCenter()) - B.radius - A.radius
+			if dist < least_dist:
+				least_dist = dist
+				closest_sprite = B
+				#break #TODO TESTING
+			#TODO TESTING
+			#elif abs(A.getX() - B.getX()) > least_dist:
+			#	break
+		#search backward for too close sprites
+		count_back = []
+		if i > 0:
+			count_back = range(0, i-1)
+			count_back.reverse()
+		for j in count_back:
+			B = sprite_list[j]
+			dist = A.distanceToDestination(dest=B.getCenter()) - B.radius - A.radius
+			if dist < least_dist:
+				least_dist = dist
+				closest_sprite = B
+				#break #TODO TESTING
+			#TODO TESTING
+			#elif abs(A.getX() - B.getX()) > least_dist:
+			#	break'''
+		#Set sprite A's closest sprite and the distance to that sprite.
+		#if not closest_sprite is None: print closest_sprite.image_name+' at '+str(least_dist) #TODO TESTING
+		A.setClosest(closest_sprite, least_dist)
 
 
 def hitBoxTest(c):
@@ -252,10 +345,16 @@ class Game:
 			#Check all collisions
 			self.collisionHandling()
 
-			#update all sprites
+			#update all sprites:
+
+			#First tell the ships what is closest to them
+			#so that they can avoid collisions
+			setClosestSprites()
+			#Get the offset based on the camera.
 			self.offsetx,self.offsety = self.getOffset[self.camera]()
-			tangibles.update((self.offsetx,self.offsety))
+			#Finally update all the sprites
 			intangibles.update((self.offsetx,self.offsety))
+			tangibles.update((self.offsetx,self.offsety))
 
 			#Display player location for debugging.
 			self.displayPlayerLoc()
@@ -305,8 +404,16 @@ class Game:
 					#then they don't overlap, but one of the following 
 					#sprites might still overlap so we move to the
 					#next sprite in the list.
-					if A.rect.topleft[0]+A.rect.width < B.rect.topleft[0]\
-					or B.rect.topleft[0]+B.rect.width < A.rect.topleft[0]:
+					#OLD WAY based on rectangles:
+					#if A.rect.topleft[0]+A.rect.width < B.rect.topleft[0]\
+					#or B.rect.topleft[0]+B.rect.width < A.rect.topleft[0]:
+					#NEW WAY based on circles:
+					#If the distance between our centers is larger than are 
+					#summed radii, then we have no collided.
+					if A.distanceToDestination(dest=B.getCenter()) > A.radius+B.radius:
+
+					#TODO LEFT OFF HERE
+					
 						pass
 					else:
 						#they overlap. They should handle 
@@ -320,16 +427,17 @@ class Game:
 
 
 	def makeNewEnemy(self):
-		enemy_ship = ship.Ship(top=50, left=50, image_name='images/destroyer')
+		enemy_ship = ship.Ship(top=0, left=-500, image_name='images/destroyer')
 		tangibles.add(enemy_ship)
 		whiskerables.add(enemy_ship)
+
 
 	def displayPlayerLoc(self):
 #		if self.timer > self.nextUpdate:
 		self.nextUpdate += self.textUpdateInterval
 		font = pygame.font.Font(None, 36)
 		string = "Player X,Y: "+str(player.getX())+','+str(player.getY())+'. Speed: '+str(player.speed)+'. MaxSpeed: '+str(player.maxSpeed)
-		text = font.render(string, 1, (255, 255, 255)) #white
+		text = font.render(string, 1, colors.white)
 		textpos = text.get_rect(center=(400,10)) #center text at 400, 10
 		screen.blit(text, textpos)
 

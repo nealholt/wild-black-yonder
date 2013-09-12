@@ -1,6 +1,9 @@
+Taken from stardog:
 ship.bmp
 ship.gif
 default.gif
 default.bmp
 
-are all taken from stardog.
+Taken from http://www.earthlyissues.com/asteroids.htm
+all the asteroids
+

@@ -12,7 +12,6 @@ class Ship(physicalObject.PhysicalObject):
 		physicalObject.PhysicalObject.__init__(self, top=top, left=left,\
 						image_name=image_name)
 
-		self.name='default'
 		self.weapons=[]
 		self.engine=None
 
@@ -39,6 +38,9 @@ class Ship(physicalObject.PhysicalObject):
 	def takeDamage(self):
 		self.health -= 10
 
+	def gainHealth(self, amount):
+		self.health = min(self.maxhealth, self.health+amount)
+
 	def isDead(self):
 		return self.health <= 0
 
@@ -53,10 +55,6 @@ class Ship(physicalObject.PhysicalObject):
 	def update(self, offset):
 		#for now we assume that every ship is hostile to the player
 		self.setDestination(game.player.getCenter())
-
-		#Use whiskers to detect nearby units.
-		objectLeft,objectCenter,objectRight = self.whiskers(offset, 
-							drawWhisker=game.DEBUG)
 
 		#Turn towards target
 		self.turnTowards()
@@ -94,13 +92,24 @@ class Ship(physicalObject.PhysicalObject):
 		if other_sprite.is_a == game.BULLET:
 			if other_sprite.dontClipMe == self:
 				return died
+			else:
+				self.takeDamage()
 		elif other_sprite.is_a == game.SHIP:
 			#Check for bounce off
 			#For now, area stands in for mass and only the
 			#less massive object bounces off
 			if other_sprite.getArea() >= self.getArea():
 				self.bounceOff(other_sprite)
-		self.takeDamage()
+				self.takeDamage()
+		elif other_sprite.is_a == game.FIXEDBODY:
+			self.bounceOff(other_sprite)
+			return died
+		elif other_sprite.is_a == game.HEALTH:
+			#The health kit gives the player health. This is better because otherwise
+			#we have to deal with multiple collisions between player and health
+			#or a race condition over who gets updated first, the player sprite 
+			#or the health sprite.
+			return died
 		if self.isDead():
 			game.intangibles.add(explosion.Explosion(self.getY(),self.getX()))
 			#kill removes the calling sprite from all sprite groups

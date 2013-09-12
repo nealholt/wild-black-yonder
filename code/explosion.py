@@ -77,19 +77,54 @@ class Debris(physicalObject.PhysicalObject):
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
-		#print 'START\nbefore move'+str(self.rect.topleft)
 		self.move()
-		#print 'after move'+str(self.rect.topleft)
 		self.draw(offset)
-		#print 'after draw'+str(self.rect.topleft)
 
 
 class FixedBody(physicalObject.PhysicalObject):
 	'''A motionless body created for testing purposes.'''
-	def __init__(self, top, left):
+	def __init__(self, top, left, image_name=None):
 		physicalObject.PhysicalObject.__init__(self, top=top, left=left,\
-						width=40, height=40)
+						width=40, height=40, image_name=image_name)
+		self.is_a = game.FIXEDBODY
 
 	def update(self, offset):
 		self.draw(offset)
+
+
+class HealthKit(physicalObject.PhysicalObject):
+	'''A motionless body created for testing purposes.'''
+	def __init__(self, top, left):
+		physicalObject.PhysicalObject.__init__(self, top=top, left=left,
+						image_name='images/health')
+		self.is_a = game.HEALTH
+		self.health_amt = 10
+		self.picked_up = False
+		self.timeToLive = 30 #Time to live after being picked up.
+
+	def update(self, offset):
+		if not self.picked_up:
+			self.draw(offset)
+		elif self.timeToLive <=0:
+			#kill removes the calling sprite from all sprite groups
+			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
+		else:
+			self.timeToLive -= 1
+			#TODO the following drawing of text will not work with some camera modes. You probably want to make this something more like a generic method for text drawing.
+			#Display the amount of health that was here.
+			font = pygame.font.Font(None, 36)
+			string = '+'+str(self.health_amt)
+			text = font.render(string, 1, colors.green)
+			x,y = self.rect.topleft
+			pos = x - offset[0], y - offset[1]
+			textpos = text.get_rect(center=pos)
+			game.screen.blit(text, textpos)
+
+	def handleCollisionWith(self, other_sprite):
+		'''React to a collision with other_sprite.'''
+		died = False
+		if not self.picked_up and other_sprite.is_a == game.SHIP:
+			self.picked_up = True
+			other_sprite.gainHealth(self.health_amt)
+		return died
 
