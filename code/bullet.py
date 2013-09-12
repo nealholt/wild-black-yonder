@@ -1,3 +1,4 @@
+import pygame
 import physicalObject
 
 class Bullet(physicalObject.PhysicalObject):
@@ -14,9 +15,6 @@ class Bullet(physicalObject.PhysicalObject):
 		#How long this object will live in intervals
 		self.timeToLive = 50
 
-		#Don't clip this thing. Used to prevent bullet from clipping with its own shooter
-		self.dontClipMe = dontClipMe
-
 
 	def update(self):
 		if self.timeToLive <= 0:
@@ -25,8 +23,13 @@ class Bullet(physicalObject.PhysicalObject):
 
 		self.timeToLive -= 1
 
-		self.move()
 		self.draw()
 
-	def noClipWith(self, other):
-		return self.dontClipMe == other
+		#check if the object is due for an update
+		if pygame.time.get_ticks() < self.lastUpdate + self.interval:
+			return True
+		self.lastUpdate += self.interval
+
+		self.move()
+
+

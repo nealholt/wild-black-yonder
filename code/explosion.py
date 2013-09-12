@@ -21,13 +21,9 @@ class Explosion(physicalObject.PhysicalObject):
 			return True
 		self.timeToLive -= 1
 
-		self.game.spritegroup.add(Flash(self.game,self.rect.centery,self.rect.centerx))
-		self.game.spritegroup.add(Debris(self.game,self.rect.centery,self.rect.centerx))
+		self.game.allSprites.add(Flash(self.game,self.rect.centery,self.rect.centerx))
+		self.game.allSprites.add(Debris(self.game,self.rect.centery,self.rect.centerx))
 
-
-	def noClipWith(self, other):
-		'''Don't clip with anything.'''
-		return True
 
 
 class Flash(physicalObject.PhysicalObject):
@@ -51,10 +47,6 @@ class Flash(physicalObject.PhysicalObject):
 		self.timeToLive -= 1
 		self.draw()
 
-	def noClipWith(self, other):
-		'''Don't clip with anything.'''
-		return True
-
 
 class Debris(physicalObject.PhysicalObject):
 	def __init__(self, game, top, left):
@@ -70,10 +62,13 @@ class Debris(physicalObject.PhysicalObject):
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
-		self.move()
 		self.draw()
 
-	def noClipWith(self, other):
-		'''Don't clip with anything.'''
-		return True
+		#check if the object is due for an update
+		if pygame.time.get_ticks() < self.lastUpdate + self.interval:
+			return True
+		self.lastUpdate += self.interval
+
+		self.move()
+
 

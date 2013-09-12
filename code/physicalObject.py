@@ -48,6 +48,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.rect.topleft = (left, top)
 
 
+	def getX(self):
+		return self.rect.centerx
+
+	def getY(self):
+		return self.rect.centery
+
 	def noClipWith(self,other):
 		'''Everything defaults to clipping.'''
 		return False
@@ -176,11 +182,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 
 	def move(self):
-		#check if the object is due for an update
-		if pygame.time.get_ticks() < self.lastUpdate + self.interval:
-			return True
-		self.lastUpdate += self.interval
-
 		#Get new vector
 		vectx = math.cos(math.radians(self.theta))
 		vecty = math.sin(math.radians(self.theta))

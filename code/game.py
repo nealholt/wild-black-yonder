@@ -24,13 +24,17 @@ class Game:
 		self.height = screen.get_height()
 		self.mouseControl = True
 		self.timer = 0
-		self.spritegroup = pygame.sprite.Group()
 
+		self.playerSprites = pygame.sprite.Group()
 		self.player = player.Player(self)
 
-		self.spritegroup.add(enemy.Enemy(self,300,300))
-		self.spritegroup.add(self.player)
+		self.enemySprites = pygame.sprite.Group()
+		self.enemy = enemy.Enemy(self,300,300)
 		
+		self.allSprites = pygame.sprite.Group()
+		self.allSprites.add(self.player)
+		self.allSprites.add(self.enemy)
+
 		#key polling:
 		self.keys = []
 		for _i in range (322):
@@ -88,24 +92,38 @@ class Game:
 				if self.pause:
 					self.menu.handleEvent(event)
 
+			#remind enemy of player's location
+			self.enemy.setDestination(self.player.getX(),self.player.getY())
+
 			#draw the layers:
 			self.screen.fill(black)
 
-			#Check for all collisions. Naively at first.
-			sg = self.spritegroup.sprites()
-			limit = len(sg)
-			#Do it this way to prevent self collision and avoid redundant collision checks.
-			for i in range(limit):
-				for j in range(i + 1, limit):
-					#http://pygame.org/docs/ref/sprite.html#pygame.sprite.spritecollide
-					#http://www.pygame.org/docs/tut/SpriteIntro.html
-					if pygame.sprite.collide_rect(sg[i], sg[j]) and not sg[i].noClipWith(sg[j]) and not sg[j].noClipWith(sg[i]):
-						#print 'COLLISION'
-						self.spritegroup.add(explosion.Explosion(self, sg[i].rect.centery,sg[i].rect.centerx))
-						sg[i].kill()
-						sg[j].kill()
-						#add in a new enemy
-						self.spritegroup.add(enemy.Enemy(self, rd.randint(10, self.height-20), rd.randint(10, self.width-20)))
+
+
+			#Check if enemy collided with player fire
+			if pygame.sprite.spritecollideany(self.enemy, self.playerSprites):
+				self.allSprites.add(explosion.Explosion(self, self.enemy.getY(),self.enemy.getX()))
+				#kill old enemy
+				self.enemy.kill()
+				#add in a new enemy
+				top = rd.randint(10, self.height-20)
+				left = rd.randint(10, self.width-20)
+				self.enemy = enemy.Enemy(self, top, left)
+				self.allSprites.add(self.enemy)
+
+			#Check if player collided with enemy fire or the enemy itself
+			if pygame.sprite.spritecollideany(self.player, self.enemySprites):
+				self.player.kill()
+				self.running = False #Game over
+			if pygame.sprite.collide_rect(self.player, self.enemy):
+				self.player.kill()
+				self.running = False #Game over
+
+			#Check for all collisions between the two sprite groups
+			#Cancel each other out. Meaning that bullets kill bullets
+			collisions = pygame.sprite.groupcollide(self.enemySprites, self.playerSprites, True, True)
+
+
 
 			#unpaused:
 			#if not self.pause:
@@ -114,7 +132,7 @@ class Game:
 			#		trigger.update()
 			#	self.top_left = self.player.x - self.width / 2, \
 			#			self.player.y - self.height / 2
-			self.spritegroup.update()
+			self.allSprites.update()
 
 			#frame maintainance:
 			pygame.display.flip()

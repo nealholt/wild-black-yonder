@@ -1,3 +1,5 @@
+#TODO this is getting mighty similar to enemy. May be time to consolidate into one object
+
 import pygame
 import physicalObject
 import bullet
@@ -14,16 +16,19 @@ class Player(physicalObject.PhysicalObject):
 		#Go to max speed immediately.
 		self.targetSpeed = self.maxSpeed
 
-		#List of things not to collide with
-		self.noClipList = pygame.sprite.Group()
-
-
 	def shoot(self):
 		tempbullet = bullet.Bullet(self.game, self.theta, self.rect.centery, self.rect.centerx, self)
-		self.game.spritegroup.add(tempbullet)
-		self.noClipList.add(tempbullet)
+		self.game.allSprites.add(tempbullet)
+		self.game.playerSprites.add(tempbullet)
 
 	def update(self):
+		self.draw()
+
+		#check if the object is due for an update
+		if pygame.time.get_ticks() < self.lastUpdate + self.interval:
+			return True
+		self.lastUpdate += self.interval
+
 		#Turn towards target
 		self.turnTowards()
 
@@ -31,7 +36,5 @@ class Player(physicalObject.PhysicalObject):
 		self.approachSpeed()
 
 		self.move()
-		self.draw()
 
-	def noClipWith(self, other):
-		return self.noClipList.has(other)
+
