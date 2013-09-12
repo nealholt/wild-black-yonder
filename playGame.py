@@ -17,4 +17,5 @@ if __name__=="__main__":
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	screen.fill(black)
 	game = game.Game(screen)
+	print 'Click screen to move square. Space bar to shoot.'
 	game.run()

@@ -1,12 +1,13 @@
 #game.py
 
 import pygame
-
+import random as rd
 import sys
 sys.path.append('code')
 
 import player
 import enemy
+import explosion
 
 FPS = 30
 black = (0,0,0)
@@ -23,11 +24,12 @@ class Game:
 		self.height = screen.get_height()
 		self.mouseControl = True
 		self.timer = 0
-		self.triggers = []
-
-		self.triggers.append(enemy.Enemy(self))
+		self.spritegroup = pygame.sprite.Group()
 
 		self.player = player.Player(self)
+
+		self.spritegroup.add(enemy.Enemy(self,300,300))
+		self.spritegroup.add(self.player)
 		
 		#key polling:
 		self.keys = []
@@ -89,17 +91,31 @@ class Game:
 			#draw the layers:
 			self.screen.fill(black)
 
+			#Check for all collisions. Naively at first.
+			sg = self.spritegroup.sprites()
+			limit = len(sg)
+			#Do it this way to prevent self collision and avoid redundant collision checks.
+			for i in range(limit):
+				for j in range(i + 1, limit):
+					#http://pygame.org/docs/ref/sprite.html#pygame.sprite.spritecollide
+					#http://www.pygame.org/docs/tut/SpriteIntro.html
+					if pygame.sprite.collide_rect(sg[i], sg[j]) and not sg[i].noClipWith(sg[j]) and not sg[j].noClipWith(sg[i]):
+						#print 'COLLISION'
+						self.spritegroup.add(explosion.Explosion(self, sg[i].rect.centery,sg[i].rect.centerx))
+						sg[i].kill()
+						sg[j].kill()
+						#add in a new enemy
+						self.spritegroup.add(enemy.Enemy(self, rd.randint(10, self.height-20), rd.randint(10, self.width-20)))
+
 			#unpaused:
 			#if not self.pause:
 			#	#update action:
-			#	for trigger in self.triggers:
+			#	for trigger in self.spritegroup:
 			#		trigger.update()
 			#	self.top_left = self.player.x - self.width / 2, \
 			#			self.player.y - self.height / 2
-			self.player.update()
-			for trigger in self.triggers:
-				trigger.update()
-				
+			self.spritegroup.update()
+
 			#frame maintainance:
 			pygame.display.flip()
 			self.clock.tick(FPS)#aim for FPS but adjust vars for self.fps.

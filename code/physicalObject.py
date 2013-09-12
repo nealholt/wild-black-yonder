@@ -1,8 +1,16 @@
+#Todo left off at animation in the tutorial: http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
+
 import pygame
 import math
 
-class PhysicalObject:
+class PhysicalObject(pygame.sprite.Sprite):
 	def __init__(self, game, top, left, width, height):
+
+		#Sprite tutorial being used is here:
+		# http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
+		#Sprite class:
+		# http://pygame.org/docs/ref/sprite.html
+		pygame.sprite.Sprite.__init__(self)
 		#There is nothing particularly special about any of the following default values.
 
 		#update move every tenth of a second and no sooner.
@@ -13,6 +21,7 @@ class PhysicalObject:
 
 		#speed. All speeds will be in pixels per second.
 		self.speed = 0.0
+		self.targetSpeed = 0.0
 		self.maxSpeed = 50.0 * self.interval
 		#Acceleration in pixels per second squared. So each second the speed goes up by this amount.
 		self.dv = 1.0 * self.interval
@@ -31,9 +40,20 @@ class PhysicalObject:
 
 		self.game = game
 
-		self.color = (100,255,100)
-		self.rect = pygame.Rect(left, top, width, height)
+		self.image = pygame.Surface([width, height])
+	        self.image.fill((100,255,100))
 
+		self.rect = self.image.get_rect()
+
+		self.rect.topleft = (left, top)
+
+
+	def noClipWith(self,other):
+		'''Everything defaults to clipping.'''
+		return False
+
+	def setColor(self, color):
+	        self.image.fill(color)
 
 	def turnShallower(self):
 		#Ease out of the turn
@@ -60,6 +80,21 @@ class PhysicalObject:
 		self.theta = self.theta - self.dtheta
 		if self.theta < 0:
 			self.theta += 360
+
+	def park(self):
+		'''Slow to a stop near target destination.'''
+		itersToStop = self.speed / self.dv
+		if not self.speed == 0 and itersToStop >= self.distanceTo(self.destx,self.desty) / self.speed:
+			self.decelerate()
+			#TODO should this also change target speed?
+
+	def approachSpeed(self):
+		if abs(self.speed - self.targetSpeed) < self.dv:
+			self.speed = self.targetSpeed
+		elif self.speed < self.targetSpeed:
+				self.accelerate()
+		else:
+			self.decelerate()
 
 	def accelerate(self):
 		self.speed = min(self.maxSpeed, self.speed + self.dv)
@@ -154,5 +189,5 @@ class PhysicalObject:
 
 
 	def draw(self):
-		pygame.draw.rect(self.game.screen, self.color, self.rect)
+		self.game.screen.blit(self.image, self.rect)
 

@@ -1,27 +1,21 @@
 import physicalObject
 import bullet
 
-class Enemy:
-	def __init__(self, game):
+class Enemy(physicalObject.PhysicalObject):
+	def __init__(self, game, top, left):
 
-		left = 500
-		top = 500
-		width = 10
-		height = 10
-		self.po = physicalObject.PhysicalObject(game, top, left, width, height)
-		self.po.color = (100,255,255)
+		width = 20
+		height = 20
+		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
+		self.setColor((100,255,255))
 
-		self.game = game
+		#Go to max speed immediately.
+		self.targetSpeed = self.maxSpeed
 
-
-	def shoot(self):
-		self.game.triggers.append(bullet.Bullet(self.game, self.po.theta, self.po.rect.centery, self.po.rect.centerx))
-
-
-	def setDestination(self,x,y):
-		self.po.setDestination(x,y)
-
+		#Give enemy reduced max speed relative to player
+		self.maxSpeed = 20.0 * self.interval
+		self.maxdtheta = 30.0 * self.interval
 
 	def update(self):
-		self.po.draw()
+		self.draw()
 

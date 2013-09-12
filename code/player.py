@@ -1,40 +1,37 @@
+import pygame
 import physicalObject
 import bullet
 
-class Player:
+class Player(physicalObject.PhysicalObject):
 	def __init__(self, game):
 
 		left = 100
 		top = 100
 		width = 10
 		height = 10
-		self.po = physicalObject.PhysicalObject(game, top, left, width, height)
-		self.po.color = (100,255,100)
+		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
 
-		self.game = game
+		#Go to max speed immediately.
+		self.targetSpeed = self.maxSpeed
+
+		#List of things not to collide with
+		self.noClipList = pygame.sprite.Group()
 
 
 	def shoot(self):
-		self.game.triggers.append(bullet.Bullet(self.game, self.po.theta, self.po.rect.centery, self.po.rect.centerx))
-
-
-	def setDestination(self,x,y):
-		self.po.setDestination(x,y)
-
+		tempbullet = bullet.Bullet(self.game, self.theta, self.rect.centery, self.rect.centerx, self)
+		self.game.spritegroup.add(tempbullet)
+		self.noClipList.add(tempbullet)
 
 	def update(self):
 		#Turn towards target
-		self.po.turnTowards()
+		self.turnTowards()
 
-		#TODO can you fix this next bit to be a method in po?
-		#Change speed
-		#Calculate how long it will take to stop.
-		itersToStop = self.po.speed / self.po.dv
-		if not self.po.speed == 0 and itersToStop >= self.po.distanceTo(self.po.destx,self.po.desty) / self.po.speed:
-			self.po.decelerate()
-		else:
-			self.po.accelerate()
+		#Approach target speed
+		self.approachSpeed()
 
-		self.po.move()
-		self.po.draw()
+		self.move()
+		self.draw()
 
+	def noClipWith(self, other):
+		return self.noClipList.has(other)
