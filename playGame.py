@@ -16,7 +16,10 @@ if __name__=="__main__":
 		exit()
 	print 'You chose camera type: '+str(camera_type)
 
-	print 'INSTRUCTIONS: Press space bar to shoot.\nPress escape to quit.\nStarship will move towards the mouse.\n'
+	print 'INSTRUCTIONS: Press space bar to shoot.\n'+\
+	'Press escape to quit.\n'+\
+	'Press "e" to create an enemy ship that will attack the player.\n'+\
+	'Starship will move towards the mouse.\n'
 
 	game = game.Game(camera=camera_type)
 	game.run()

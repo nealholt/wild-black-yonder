@@ -28,12 +28,12 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 screen.fill(BLACK)
 
 enemySprites = pygame.sprite.Group()
-enemy_ship = enemy.Enemy(300,300) #TODO. enemy created for testing.
+enemy_ships = []
+
 
 allSprites = pygame.sprite.Group()
 #Note that the player is not amongst allSprites mostly for when the screen
 #fixes on or follows the player
-allSprites.add(enemy_ship)
 
 #TODO Create a motionless object for reference purposes while testing.
 allSprites.add(explosion.FixedBody(0, 0))
@@ -60,7 +60,7 @@ class Game:
 		self.textUpdateInterval = 1 #in seconds
 		self.nextUpdate = 0
 
-		self.player = player.Player()
+		self.player = player.Player('images/ship')
 
 		if self.camera == FOLLOW_PLAYER:
 			self.follower = follower.Follower(0,0)
@@ -85,22 +85,26 @@ class Game:
 		#The in-round loop (while player is alive):
 		while self.running:
 
-			#Set player destination to current mouse coordinates.
-			x,y = pygame.mouse.get_pos()
-			x += self.offsetx
-			y += self.offsety
-			self.player.setDestination(x,y)
+			##This will make the player move towards the mouse 
+			##without any clicking involved.
+			##Set player destination to current mouse coordinates.
+			#x,y = pygame.mouse.get_pos()
+			#x += self.offsetx
+			#y += self.offsety
+			#self.player.setDestination(x,y)
 
 			#event polling:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					self.running = 0
-				#elif event.type == pygame.MOUSEBUTTONDOWN:
-				#	self.mouse[event.button] = 1
-				#	self.mouse[0] = event.pos
-				#	#Set the destination of the player to be the mouse location clicked.
-				#	x,y = event.pos
-				#	self.player.setDestination(x,y)
+				elif event.type == pygame.MOUSEBUTTONDOWN:
+					self.mouse[event.button] = 1
+					self.mouse[0] = event.pos
+					#Set the destination of the player to be the mouse location
+					x,y = event.pos
+					x += self.offsetx
+					y += self.offsety
+					self.player.setDestination(x,y)
 				#elif event.type == pygame.MOUSEBUTTONUP:
 				#	self.mouse[event.button] = 0
 				#	self.mouse[0] = event.pos
@@ -118,14 +122,18 @@ class Game:
 						self.player.shoot()
 					elif event.key == 27: #escape key or red button
 						self.running = 0
+					elif event.key == 101: #e key
+						#enemy created for testing.
+						self.makeNewEnemy()
 
-					#print "TODO TESTING: key press "+str(event.key)
+					print "TODO TESTING: key press "+str(event.key)
 
 				#elif event.type == pygame.KEYUP:
 				#	self.keys[event.key % 322] = 0
 
 			#remind enemy of player's location
-			enemy_ship.setDestination(self.player.getX(),self.player.getY())
+			for e in enemy_ships:
+				e.setDestination(self.player.getX(),self.player.getY())
 			#remind follower of player's location
 			if self.camera == FOLLOW_PLAYER:
 				self.follower.setDestination(self.player.getX(),self.player.getY())
@@ -159,41 +167,47 @@ class Game:
 			self.player.kill()
 
 		else:
-			#Check if enemy collided with player fire
-			replacedEnemy = False
-			collisions = pygame.sprite.spritecollide(enemy_ship, playerSprites, False)
-			for c in collisions:
-				c.kill()
-				if not replacedEnemy:
-					replacedEnemy = True
-					self.replaceEnemy()
-
 			#Check if player collided with enemy fire
 			collisions = pygame.sprite.spritecollide(self.player, enemySprites, False)
 			for c in collisions:
 				c.kill()
 				self.player.takeDamage()
 
-			#check if player collided with the enemy
-			if pygame.sprite.collide_rect(self.player, enemy_ship):
-				self.replaceEnemy()
-				self.player.takeDamage()
+			self.checkEnemyCollisions()
 
 			#Check for all collisions between the two sprite groups.
 			#Cancel each other out. Meaning that bullets kill bullets
 			collisions = pygame.sprite.groupcollide(enemySprites, playerSprites, True, True)
 
+	def checkEnemyCollisions(self):
+		to_destroy = []
+		for i in xrange(len(enemy_ships)):
+			enemy = enemy_ships[i]
+			#Check if enemy collided with player fire
+			collisions = pygame.sprite.spritecollide(enemy, playerSprites, False)
+			if len(collisions) > 0:
+				if not i in to_destroy: to_destroy.append(i)
+				for c in collisions:
+					c.kill()
+			#check if player collided with the enemy
+			elif pygame.sprite.collide_rect(self.player, enemy):
+				if not i in to_destroy: to_destroy.append(i)
+				self.player.takeDamage()
+		#Blow up destroyed enemies. They only have one health each.
+		for td in to_destroy:
+			self.blowUpEnemy(td)
 
-	def replaceEnemy(self):
-		global enemy_ship
-		allSprites.add(explosion.Explosion(enemy_ship.getY(),enemy_ship.getX()))
-		#kill old enemy
-		enemy_ship.kill()
-		#add in a new enemy
+	def blowUpEnemy(self, index):
+		ship = enemy_ships.pop(index)
+		allSprites.add(explosion.Explosion(ship.getY(),ship.getX()))
+		ship.kill()
+
+	def makeNewEnemy(self):
 		top = rd.randint(10, self.height-20)
 		left = rd.randint(10, self.width-20)
 		enemy_ship = enemy.Enemy(top, left)
 		allSprites.add(enemy_ship)
+		enemy_ships.append(enemy_ship)
 
 	def displayPlayerLoc(self):
 #		if self.timer > self.nextUpdate:

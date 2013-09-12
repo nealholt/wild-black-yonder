@@ -31,7 +31,7 @@ class Enemy(physicalObject.PhysicalObject):
 		self.turnTowards()
 
 		#TODO use this hack to control rate of fire for now.
-		if rd.random() < 0.15: self.maybeShoot()
+		if rd.random() < 0.30: self.maybeShoot()
 
 		#Approach target speed
 		self.approachSpeed()
