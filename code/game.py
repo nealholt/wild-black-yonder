@@ -12,6 +12,10 @@ import colors
 import ship
 import hitBoxTester as hbt
 
+import menus
+
+from time import sleep
+
 DEBUG = True
 
 FPS = 30 #frames per second
@@ -230,6 +234,8 @@ class Game:
 
 		self.pause = False
 
+		self.panel = None
+
 
 	def run(self):
 		"""Runs the game."""
@@ -237,6 +243,32 @@ class Game:
 
 		#The in-round loop (while player is alive):
 		while self.running:
+
+			#Skip the rest of this loop until the game is unpaused.
+			if self.pause:
+				#Check for another s key press to unpause the game.
+				for event in pygame.event.get():
+					if event.type == pygame.KEYDOWN and event.key == 115: #s key
+						self.pause = not self.pause
+				#Skip the rest of this loop until the game is unpaused.
+				continue
+
+			#Display the panel
+			if not self.panel is None:
+				self.panel.draw()
+				#Check for another m key press to remove the panel.
+				for event in pygame.event.get():
+					#Check for event m key being pressed to remove the menu.
+					if event.type == pygame.KEYDOWN and event.key == 109: #m key
+						self.panel = None
+					#Check for mousebutton event and pass it to the panel
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						self.panel.handleEvent(event)
+				pygame.display.flip()
+				#Skip all the rest while displaying the menu.
+				#This effectively pauses the game.
+				continue
+
 			#event polling:
 			#See what buttons may or may not have been pushed.
 			for event in pygame.event.get():
@@ -271,14 +303,16 @@ class Game:
 					elif event.key == 101: #e key
 						#enemy created for testing.
 						self.makeNewEnemy()
+					elif event.key == 109: #m key
+						self.panel = menus.Panel(left=20,\
+							top=20, width=100, height=100)
 					elif event.key == 112: #p key
 						player.parkingBrake()
 					elif event.key == 113: #q key
 						#Obliterate destination. Change to free flight.
 						player.killDestination()
 					elif event.key == 115: #s key
-						#Pause and unpause the game
-						self.pause = not self.pause
+						self.pauseGame(); continue
 					elif event.key == 116: #t key
 						#shoot a bunch of hit box testers 
 						#in towards the player
@@ -305,10 +339,6 @@ class Game:
 				elif event.type == pygame.KEYUP:
 					#Keep track of which keys are no longer being pushed.
 					self.keys[event.key % 322] = 0
-
-			#Skip the rest of this loop until the game is unpaused.
-			if self.pause:
-				continue
 
 			##This will make the player move towards the mouse 
 			##without any clicking involved.
@@ -367,6 +397,18 @@ class Game:
 			self.timer += 1. / self.fps
 		#end round loop (until gameover)
 	#end game loop
+
+
+	def pauseGame(self):
+		self.pause = not self.pause
+		#Write paused in the middle of the screen
+		font = pygame.font.Font(None, 128)
+		string = 'PAUSED'
+		text = font.render(string, 1, colors.white)
+		pos = (WIDTH/3, HEIGHT/2)
+		textpos = text.get_rect(center=pos)
+		screen.blit(text, textpos)
+		pygame.display.flip()
 
 
 	def collisionHandling(self):
