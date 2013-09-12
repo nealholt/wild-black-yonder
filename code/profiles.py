@@ -30,6 +30,7 @@ def followerProfile(pObject):
 	This mechanism was intended to give a sense of speed and direction.'''
 	pObject.setColor((155,155,0))
 	pObject.maxSpeed = 10.0
+	pObject.dv = 0.5 #acceleration
 	#Go to max speed immediately.
 	pObject.targetSpeed = pObject.maxSpeed
 	#Turn rate:

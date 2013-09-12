@@ -33,12 +33,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.ddtheta = 1.0
 		self.maxdtheta = 9.0
 
-		self.acceptableError = 2.0 #you can be within this many degrees of the target
+		self.acceptableError = 0.5 #you can be within this many degrees of the target
 
 		self.destination = (0.0, 0.0)
 
 		self.image = pygame.Surface([width, height])
-	        self.image.fill((100,255,100)) #Random default color
+	        self.image.fill((100,255,100)) #Randomly chosen default color
 		self.base_image = self.image
 
 		self.rect = self.image.get_rect()
@@ -48,16 +48,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def updateImageAngle(self):
 		#Update display. Specifically, the angle of the ship.
 		#START: copied from stardog spaceship.py in draw function
-		#My angle system:
-		#E 0
-		#N 270
-		#W 180
-		#S 90
-		#Stardog's angle system:
-		#E 0
-		#N -90
-		#W 180
-		#S 90
 		#prew = self.image.get_width()
 		#preh = self.image.get_height()
 		#print 'before:'
@@ -265,7 +255,17 @@ class PhysicalObject(pygame.sprite.Sprite):
 		pos = self.rect.centerx - offset[0], self.rect.centery - offset[1]
 		game.screen.blit(self.image, pos)
 
-
 	def drawAt(self, position=(0,0)):
-		game.screen.blit(self.image, position)
+		pos = position[0] - self.rect.width/2, position[1] - self.rect.height/2
+		game.screen.blit(self.image, pos)
+
+		#TODO TESTING
+		#Draw an extra little image at top left and bottom left of this image
+		#image = pygame.Surface([5,5])
+	        #image.fill((200,100,100))
+		#x1, y1 = position
+		#x2, y2 = self.rect.topleft
+		#game.screen.blit(image, (x1-x2, y1-y2))
+
+
 
