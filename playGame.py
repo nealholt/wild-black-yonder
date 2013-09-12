@@ -7,7 +7,7 @@ if __name__=="__main__":
 	'   python playGame.py -camera 0 #for fixed view\n'+\
 	'   python playGame.py -camera 1 #for view centered on player\n'+\
 	'   python playGame.py -camera 2 #for view that follows player\n'
-	camera_type = 2
+	camera_type = game.FIX_ON_PLAYER
 	if '-camera' in sys.argv:
 		camera_type = int(sys.argv[ sys.argv.index('-camera') + 1 ])
 	if camera_type < 0 or camera_type > 2:

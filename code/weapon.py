@@ -21,29 +21,48 @@ class Weapon():
 		if self.cooldown > 0:
 			self.cooldown -= 1
 		else:
-			angle = shooter.getAngleToTarget()
-			#Decide whether or not we can shoot
-			if abs(angle) < self.attack_angle or force_shot:
-				for _ in range(self.bullet_num):
-					#Set bullet direction and starting location
-					angle = shooter.theta
-					if self.spread > 0:
-						angle += rd.randint(-self.spread, self.spread)
-					tempbullet = bullet.Bullet(angle, shooter.rect.centery,\
-						shooter.rect.centerx, shooter)
-					#Set bullet attributes
-					tempbullet.speed = self.bullet_speed
-					tempbullet.setColor(self.bullet_color)
-					tempbullet.timeToLive = self.bullet_lifespan
-					#Add bullet to the sprite groups
-					game.allSprites.add(tempbullet)
-					game.enemySprites.add(tempbullet)
-					#reset cooldown
-					self.cooldown = self.refire_rate
+			if force_shot:
+				self.shoot(shooter, is_player=True)
+			else:
+				angle = shooter.getAngleToTarget()
+				#Decide whether or not we can shoot
+				if abs(angle) < self.attack_angle:
+					for _ in range(self.bullet_num):
+						self.shoot(shooter)
+
+	def shoot(self, shooter, is_player=False):
+		#Set bullet direction and starting location
+		angle = shooter.theta
+		if self.spread > 0:
+			angle += rd.randint(-self.spread, self.spread)
+		tempbullet = bullet.Bullet(angle, shooter.rect.centery,\
+			shooter.rect.centerx, shooter)
+		#Set bullet attributes
+		tempbullet.speed = self.bullet_speed
+		tempbullet.setColor(self.bullet_color)
+		tempbullet.timeToLive = self.bullet_lifespan
+		#Add bullet to the sprite groups
+		game.allSprites.add(tempbullet)
+		if is_player:
+			game.playerSprites.add(tempbullet)
+		else:
+			game.enemySprites.add(tempbullet)
+		#reset cooldown
+		self.cooldown = self.refire_rate
 
 
 def setProfile(profile, weapon):
-	if profile == 'mk1':
+	if profile == 'mk0':
+		weapon.name='Laser Mk0'
+		weapon.refire_rate=1000 #Fires once every refire_rate frames
+		weapon.cooldown=0 #How long until next shot
+		weapon.bullet_speed=0
+		weapon.bullet_lifespan=0 #How long the bullet lasts before expiring
+		weapon.bullet_num=0 #number of bullets fired at a time
+		weapon.spread=0 #spread of bullets fired
+		weapon.attack_angle = 0
+		weapon.bullet_color=colors.pink
+	elif profile == 'mk1':
 		weapon.name='Laser Mk1'
 		weapon.refire_rate=10 #Fires once every refire_rate frames
 		weapon.cooldown=0 #How long until next shot

@@ -10,7 +10,7 @@ def centerAtLocWithDimensions(to_move, loc, width, height):
 
 
 class PhysicalObject(pygame.sprite.Sprite):
-	def __init__(self, top, left, width, height):
+	def __init__(self, top=0, left=0, width=0, height=0, image_name=None):
 
 		#Sprite tutorial being used is here:
 		# http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
@@ -31,17 +31,23 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.theta = 0.0
 		self.dtheta = 3.0
 
-		self.acceptableError = 0.5 #you can be within this many degrees of the target
+		#you can be within this many degrees of the target to stop turning
+		self.acceptableError = 0.5
 
 		self.destination = (0.0, 0.0)
 
-		self.image = pygame.Surface([width, height])
-	        self.image.fill((100,255,100)) #Randomly chosen default color
-		self.base_image = self.image
+		if image_name is None:
+			self.image = pygame.Surface([width, height])
+			self.image.fill((100,255,100)) #Randomly chosen default color
+			self.base_image = self.image
+		else:
+			self.image = game.loadImage(image_name + game.ext)
+			self.base_image = game.loadImage(image_name + game.ext) #TODO do I really need an image AND a base_image?
+			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()
-
 		self.rect.topleft = (left, top)
+
 
 	def updateImageAngle(self):
 		#Update display. Specifically, the angle of the ship.
@@ -52,7 +58,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#print self.image.get_width()
 		#print self.image.get_height()
 		self.image = pygame.transform.rotate(self.base_image, -self.theta).convert_alpha()
-
 		#print 'after:'
 		#print self.image.get_width()
 		#print self.image.get_height()
@@ -61,7 +66,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#self.rect = self.rect.move(prew - self.image.get_width(), preh - self.image.get_height())
 
 		#I tried the following instead under the hypothesis that just re-centering the image on the player's location rather then calculating offset would get rid of the wobble, but this doesn't seem to be any better.
-		centerAtLocWithDimensions(self.rect, self.getCenter(), self.image.get_width(), self.image.get_height())
+		#centerAtLocWithDimensions(self.rect, self.getCenter(), self.image.get_width(), self.image.get_height())
+
+		#Awesome! The following works. It also eliminates the need for centerAtLocWithDimensions AND it fixes the most egregious of the hit box issues.
+		temp = self.rect.topleft
+		self.rect = self.image.get_rect()
+		self.rect.topleft = temp
 
 		#The following is definitely worse than the previous, but it's still not perfect.
 		#self.rect = self.rect.move(self.image.get_width()-prew, self.image.get_height()-preh)
@@ -218,8 +228,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def turnTowards(self, angleOffset = 0):
 		"""This was copied out of scripts.py in stardog and modified slightly. """
 		angleToTarget = self.getAngleToTarget()
-		#turnClockwise = self.getShorterTurnDirection(self, target_angle)
-		#print angleToTarget
 		if abs(angleToTarget) > self.acceptableError:
 			#Get the amount to turn. It may be less than the total amount we can turn.
 			if abs(angleToTarget) < self.dtheta:
@@ -239,20 +247,13 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 
 	def draw(self, offset=(0,0)):
-		pos = self.rect.centerx - offset[0], self.rect.centery - offset[1]
+		x,y = self.rect.topleft
+		pos = x - offset[0], y - offset[1]
+		#self.image.fill((100,255,100)) #TODO TESTING. this is the hit box? 
 		game.screen.blit(self.image, pos)
 
 	def drawAt(self, position=(0,0)):
 		pos = position[0] - self.rect.width/2, position[1] - self.rect.height/2
+		#self.image.fill((100,255,100)) #TODO TESTING. this is the hit box? 
 		game.screen.blit(self.image, pos)
-
-		#TODO TESTING
-		#Draw an extra little image at top left and bottom left of this image
-		#image = pygame.Surface([5,5])
-	        #image.fill((200,100,100))
-		#x1, y1 = position
-		#x2, y2 = self.rect.topleft
-		#game.screen.blit(image, (x1-x2, y1-y2))
-
-
 

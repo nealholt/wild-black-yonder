@@ -10,7 +10,12 @@ class Engine():
 		self.dtheta=5 #the turning rate of a ship in degrees per ... per frame?
 
 def setProfile(profile, engine):
-	if profile == 'mk1':
+	if profile == 'mk0':
+		engine.name = 'Thrusters Mk0'
+		engine.maxSpeed = 0
+		engine.dv = 0
+		engine.dtheta = 0
+	elif profile == 'mk1':
 		engine.name = 'Thrusters Mk1'
 		engine.maxSpeed = 5
 		engine.dv = 2
