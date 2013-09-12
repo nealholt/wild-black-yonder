@@ -56,6 +56,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#What is this object.
 		self.is_a = game.OTHER
 
+		self.whisker_radius = max(self.rect.width, self.rect.height)
+		self.whisker_distance = self.whisker_radius*3
+
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
@@ -69,31 +72,44 @@ class PhysicalObject(pygame.sprite.Sprite):
 		pass
 
 
-	def whiskers(self):
+	def whiskers(self, offset, drawWhisker=False):
 		'''Create "whisker" sprites to check for tangible sprites 
 		to the front or sides in order to avoid collisions.'''
-#TODO LEFT OFF HERE
-		radius = 10 #TODO this should be based on the size of this physical object and designed so that it doesn't collide with itself
-		magnitude = 100 #TODO how far away from this physical object to place the whiskers. Again, we need to avoid self overlap
-		x,y = self.rect.topleft
+		whisker = PhysicalObject(top=0, left=0, width=self.whisker_radius, 
+			height=self.whisker_radius)
+		whisker.speed = self.whisker_distance
 		#Whisker left
-		whisker = PhysicalObject(top=x, left=y, width=radius, height=radius)
+		whisker.rect.topleft = self.rect.topleft
 		whisker.theta = self.theta
-		whisker.speed = magnitude
-		whisker.turnCounterClockwise(90)
+		whisker.turnCounterClockwise(50) #rotate it less than 90 degrees out
 		whisker.move()
-		objectLeft = pygame.sprite.spritecollide(whisker, tangibleSprites, False) #TODO change this to any collision for speed reasons.
+		objectLeft = pygame.sprite.spritecollideany(whisker, game.whiskerables)
+		if drawWhisker: #TESTING
+			if objectLeft: whisker.image.fill((255,100,255))
+			x,y = whisker.rect.topleft
+			pos = x - offset[0], y - offset[1]
+			whisker.drawAt(pos)
 		#Whisker center
 		whisker.rect.topleft = self.rect.topleft
 		whisker.theta = self.theta
 		whisker.move()
-		objectCenter = pygame.sprite.spritecollide(whisker, tangibleSprites, False) #TODO change this to any collision for speed reasons.
+		objectCenter = pygame.sprite.spritecollideany(whisker, game.whiskerables)
+		if drawWhisker: #TESTING
+			if objectCenter: whisker.image.fill((255,100,255))
+			x,y = whisker.rect.topleft
+			pos = x - offset[0], y - offset[1]
+			whisker.drawAt(pos)
 		#Whisker right
 		whisker.rect.topleft = self.rect.topleft
 		whisker.theta = self.theta
-		whisker.turnClockwise(90)
+		whisker.turnClockwise(50) #rotate it less than 90 degrees out
 		whisker.move()
-		objectRight = pygame.sprite.spritecollide(whisker, tangibleSprites, False) #TODO change this to any collision for speed reasons.
+		objectRight = pygame.sprite.spritecollideany(whisker, game.whiskerables)
+		if drawWhisker: #TESTING
+			if objectRight: whisker.image.fill((255,100,255))
+			x,y = whisker.rect.topleft
+			pos = x - offset[0], y - offset[1]
+			whisker.drawAt(pos)
 
 		return objectLeft,objectCenter,objectRight
 
@@ -240,15 +256,26 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if angle_to_target > 180: angle_to_target -= 360
 		return angle_to_target
 
-	def turnTowards(self):
-		"""This was copied out of scripts.py in stardog and modified slightly. """
+	def turnTowards(self, objectLeft=False,objectCenter=False,objectRight=False):
+		"""This was copied out of scripts.py in stardog and modified slightly. 
+		Collision avoidance is all my own, however."""
 		angleToTarget = self.getAngleToTarget()
-		if abs(angleToTarget) > self.acceptableError:
-			#Get the amount to turn. It may be less than the total amount we can turn.
-			if abs(angleToTarget) < self.dtheta:
+		#If we need to turn more towards the target or there is an 
+		#object in front of us
+		if abs(angleToTarget) > self.acceptableError or objectCenter:
+			#Get the amount to turn. It may be less than the amount this
+			#object is capable of turning.
+			#Only turn this small amount if there is no object in
+			#front of us.
+			if abs(angleToTarget) < self.dtheta and not objectCenter:
 				self.turn(angleToTarget)
-			elif angleToTarget < 0:
+			#Turn counter clockwise if that's the direction of our 
+			#target and there is no obstacle in that direction or
+			#if there is an obstacle in front of us and to the right.
+			elif (angleToTarget < 0 and not objectLeft) or \
+			(objectCenter and objectRight):
 				self.turnCounterClockwise()
+			#In all other cases turn clockwise
 			else:
 				self.turnClockwise()
 

@@ -12,6 +12,8 @@ import colors
 import ship
 import hitBoxTester as hbt
 
+DEBUG = True
+
 FPS = 30 #frames per second
 
 #"Camera" options
@@ -54,6 +56,8 @@ def loadImage(filename, colorkey=colors.black):
 
 tangibles = pygame.sprite.Group()
 intangibles = pygame.sprite.Group()
+#This last group will contain any sprites that will tickle whiskers
+whiskerables = pygame.sprite.Group()
 
 #TODO Create a motionless object for reference purposes while testing.
 intangibles.add(explosion.FixedBody(0, 0))
@@ -318,6 +322,7 @@ class Game:
 	def makeNewEnemy(self):
 		enemy_ship = ship.Ship(top=50, left=50, image_name='images/destroyer')
 		tangibles.add(enemy_ship)
+		whiskerables.add(enemy_ship)
 
 	def displayPlayerLoc(self):
 #		if self.timer > self.nextUpdate:

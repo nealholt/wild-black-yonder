@@ -19,7 +19,7 @@ class Ship(physicalObject.PhysicalObject):
 		self.health=50
 		self.maxhealth=50
 
-		profiles.shipProfile(self, profile='mk0')
+		profiles.shipProfile(self, profile='mk1')
 		self.setProfile()
 
 		self.myHealthBar = healthBar.HealthBar(width=20, height=10, ship=self, vertical=False, 
@@ -53,6 +53,10 @@ class Ship(physicalObject.PhysicalObject):
 	def update(self, offset):
 		#for now we assume that every ship is hostile to the player
 		self.setDestination(game.player.getCenter())
+
+		#Use whiskers to detect nearby units.
+		objectLeft,objectCenter,objectRight = self.whiskers(offset, 
+							drawWhisker=game.DEBUG)
 
 		#Turn towards target
 		self.turnTowards()
