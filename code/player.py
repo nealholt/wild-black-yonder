@@ -13,6 +13,8 @@ class Player(ship.Ship):
 
 		self.parkAtDestination = False
 
+		self.destination = None
+
 
 	def parkingBrake(self):
 		'''Change the truth value of park.'''

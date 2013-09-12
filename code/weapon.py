@@ -3,6 +3,30 @@ import game
 import random as rd
 import bullet
 
+def inSights(shooter, target_loc, weapon_range, angle_min):
+	'''Pre: shooter is a ship. target_loc is a tuple x,y. weapon_range is an int or float.
+	angle_min is a float or int representing the minimal angle to the target.
+	Post: returns true it the target is roughly in the sights of the shooter.
+	TODO this method should probably be moved elsewhere.'''
+	angle = shooter.getAngleToTarget(target=target_loc)
+	#Check angle to target.
+	#Also check that the target is roughly within this weapon's range.
+	return abs(angle) < angle_min and \
+	shooter.distanceToDestination(dest=target_loc) < weapon_range
+
+def clearLineOfSight(seer, sight_range, angle_min):
+	'''Pre: Seer is a ship. Sight_range is an int or float.
+	Post: Returns true if there are no whiskerables in the line of sight of this ship.
+	Useful for avoiding friendly fire.'''
+	for w in game.whiskerables:
+		center = w.getCenter()
+		dist = seer.distanceToDestination(dest=center)
+		if dist < sight_range and dist > 0 and\
+		abs(seer.getAngleToTarget(center)) < angle_min:
+			return False
+	return True
+
+
 class Weapon():
 	def __init__(self):
 		self.name='default'
@@ -14,6 +38,9 @@ class Weapon():
 		self.bullet_color=colors.pink
 		self.spread=0 #spread of bullets fired
 		self.attack_angle = 1 #if within this angle to target, can shoot at target
+		#1.2 is a fudge factor used so that the ship shoots slightly before 
+		#its target moves into range, in case the two ships are closing
+		self.weapon_range = self.bullet_speed*self.bullet_lifespan*1.2
 
 	def cool(self):
 		if self.cooldown > 0:
@@ -28,7 +55,9 @@ class Weapon():
 			else:
 				angle = shooter.getAngleToTarget()
 				#Decide whether or not we can shoot
-				if abs(angle) < self.attack_angle:
+				if inSights(shooter, shooter.destination, \
+				self.weapon_range, self.attack_angle) and\
+				clearLineOfSight(shooter, self.weapon_range, self.attack_angle):
 					for _ in range(self.bullet_num):
 						self.shoot(shooter)
 

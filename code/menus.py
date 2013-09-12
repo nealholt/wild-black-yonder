@@ -82,7 +82,7 @@ def getTestingPanel():
 	radius = 10
 	#panel made of a circle centered at start
 	subpanel = Panel()
-	#TODO subpanel.method = scenarios.testScenario00 #NOT READY FOR THIS YET
+	subpanel.method = scenarios.testScenario00
 	temp = drawable.Circle(x1=x1, y1=y1, radius=radius, color=colors.yellow)
 	subpanel.addDrawable(temp)
 	menu.addPanel(subpanel)

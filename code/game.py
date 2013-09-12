@@ -2,6 +2,7 @@
 
 import pygame
 
+#The following sprite groups must be instantiated before importing scenarios because scenarios refers to them.
 tangibles = pygame.sprite.Group()
 intangibles = pygame.sprite.Group()
 #This last group will contain any sprites that will tickle whiskers
@@ -49,12 +50,8 @@ BGCOLOR = colors.black
 #set up the display:
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-scenarios.testScenario00() #TODO Initial test scenario
-screen.fill(BGCOLOR)
-
-
+#Player must be created before scenario is called.
 player = player.Player('images/ship')
-tangibles.add(player)
 
 
 def setClosestSprites():
@@ -127,10 +124,15 @@ def writeTextToScreen(string='', font_size=12, color=colors.white, pos=(0,0)):
 	screen.blit(text, textpos)
 
 
+def makeNewEnemy(x=0, y=0):
+	enemy_ship = ship.Ship(top=y, left=x, image_name='images/destroyer')
+	tangibles.add(enemy_ship)
+	whiskerables.add(enemy_ship)
+
 
 class Game:
 	""" """
-	def __init__(self, camera=FIX_ON_PLAYER):
+	def __init__(self):
 		self.fps = FPS
 		self.top_left = 0, 0
 		self.width = screen.get_width()
@@ -141,11 +143,8 @@ class Game:
 		self.offsetx = 0
 		self.offsety = 0
 
-		self.timer = 0
-		self.camera = camera
-
-		self.textUpdateInterval = 1 #in seconds
-		self.nextUpdate = 0
+		self.timer = 0 #TODO this isn't being used, but could be.
+		self.camera = FIX_ON_PLAYER
 
 		if self.camera == FOLLOW_PLAYER:
 			self.follower = follower.Follower(0,0)
@@ -244,7 +243,7 @@ class Game:
 						self.running = 0
 					elif event.key == 101: #e key
 						#enemy created for testing.
-						self.makeNewEnemy()
+						makeNewEnemy(x=-500, y=0)
 					elif event.key == 109: #m key
 						self.panel = menus.getTestingPanel()
 						continue
@@ -388,17 +387,7 @@ class Game:
 							break
 
 
-	def makeNewEnemy(self):
-		enemy_ship = ship.Ship(top=0, left=-500, image_name='images/destroyer')
-		tangibles.add(enemy_ship)
-		whiskerables.add(enemy_ship)
-
-
 	def displayPlayerLoc(self):
-		#Next line commented because I used to wait a little while to update, 
-		#but that was a premature optimization.
-		#if self.timer > self.nextUpdate:
-		self.nextUpdate += self.textUpdateInterval
 		string = "Player X,Y: "+str(player.getX())+','+str(player.getY())+\
 			'. Speed: '+str(player.speed)+'. MaxSpeed: '+str(player.maxSpeed)
 		writeTextToScreen(string=string, font_size=36, color=colors.white, pos=(400,10))
@@ -425,3 +414,7 @@ class Game:
 		player.draw(offset)
 
 		return offset
+
+
+#Create a game object. Currently only used by scenarios.py. I wonder if this indicates that there is a better way? TODO
+game_obj = Game()

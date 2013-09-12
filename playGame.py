@@ -35,5 +35,5 @@ if __name__=="__main__":
 	'Press "s" to pause/unpause the game.\n'+\
 	'Press "q" to remove destination and simply fly in current direction.\n'
 
-	game = game.Game(camera=camera_type)
+	game = game.Game()
 	game.run()

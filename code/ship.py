@@ -21,11 +21,16 @@ class Ship(physicalObject.PhysicalObject):
 		profiles.shipProfile(self, profile='mk1')
 		self.setProfile()
 
+		self.myHealthBar = None
+		self.setHealthBar()
+
+		self.is_a = game.SHIP
+
+
+	def setHealthBar(self):
 		self.myHealthBar = healthBar.HealthBar(width=20, height=10, ship=self, vertical=False, 
 			current=self.health, total=self.maxhealth)
 		game.intangibles.add(self.myHealthBar)
-
-		self.is_a = game.SHIP
 
 
 	def setProfile(self):
