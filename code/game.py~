@@ -61,9 +61,7 @@ def writeTextToScreen(string='', font_size=12, color=colors.white, pos=(0,0)):
 
 
 def wipeOldScenario():
-	#In order to change immutable variables, you have to declare them global
-	global BGCOLOR, arena
-
+	global BGCOLOR
 	for sprt in tangibles: sprt.kill()
 	for sprt in intangibles: sprt.kill()
 	for sprt in whiskerables: sprt.kill()

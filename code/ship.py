@@ -38,6 +38,11 @@ class Ship(physicalObject.PhysicalObject):
 		self.maxSpeed = self.engine.maxSpeed
 		self.dv = self.engine.dv
 		self.dthea = self.engine.dtheta
+		self.speedIncrements = self.engine.speedIncrements
+		#Fraction of maxSpeed at which turn rate is maximal
+		self.maxTurnSpeed = self.engine.maxTurnSpeed
+		#Rate at which turn rate decays as speed moves away from maxTurnSpeed
+		self.turnRateDecay = self.engine.turnRateDecay
 
 
 	def takeDamage(self):

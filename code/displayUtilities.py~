@@ -159,7 +159,7 @@ class TimeLimit():
 		#Write the elapsed time to the top of the screen.
 		string = 'Time: '+formatTime(self.elapsed_time)+\
 			'. Alt Time: '+formatTime(alt_elapsed)+\
-			' Points:'+str(self.points)
+			'\nPoints:'+str(self.points)
 		game.writeTextToScreen(string=string, font_size=36,\
 				       color=colors.white, pos=(400,10))
 

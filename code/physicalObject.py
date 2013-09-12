@@ -3,9 +3,10 @@ import math
 import game
 from displayUtilities import loadImage, ext
 import geometry
+from colors import white
 
 class PhysicalObject(pygame.sprite.Sprite):
-	def __init__(self, centerx=0.0, centery=0.0, width=0, height=0, image_name=None):
+	def __init__(self, centerx=0.0, centery=0.0, width=0, height=0, image_name=None, color=white):
 
 		#Sprite tutorial being used is here:
 		# http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
@@ -13,6 +14,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		# http://pygame.org/docs/ref/sprite.html
 		pygame.sprite.Sprite.__init__(self)
 		#There is nothing particularly special about any of the following default values.
+
+		self.color = color
 
 		#speed. All speeds will be in pixels per second.
 		self.speed = 0.0
@@ -25,6 +28,14 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Rotation. All rotations are in degrees
 		self.theta = 0.0
 		self.dtheta = 3.0
+
+		#For simplicity, the player can set the target or goal speed in 
+		#increments equal to this fraction of the maxSpeed.
+		self.speedIncrements=1./4.
+		#Speed at which turn rate is maximal
+		self.maxTurnSpeed=self.maxSpeed*self.speedIncrements
+		#Rate at which turn rate decays as speed moves away from maxTurnSpeed
+		self.turnRateDecay=1.
 
 		#you can be within this many degrees of the target to stop turning
 		self.acceptableError = 0.5
@@ -41,7 +52,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 		if self.image_name is None:
 			self.image = pygame.Surface([width, height])
-			self.image.fill((100,255,100)) #Randomly chosen default color
+			self.image.fill(self.color)
 			self.base_image = self.image
 		else:
 			self.image = loadImage(self.image_name + ext)
@@ -99,17 +110,38 @@ class PhysicalObject(pygame.sprite.Sprite):
 		return False
 
 	def setColor(self, color):
+		self.color = color
 	        self.image.fill(color)
 
 	def setClosest(self, closest_sprite, dist):
 		self.closest_sprite = closest_sprite
 		self.dist_to_closest = dist
 
+	def calculateDTheta(self):
+		'''This is used for xwing vs tie fighter-style
+		maneuvering in which turn rate is reduced at 
+		higher speeds. The following formula gives the maximum turn rate of
+		self.dtheta only at 1/4 max velocity. The modifier on turn rate
+		breaks down as follows:
+		f(x) = -abs(x-1/4)+1
+		Speed	Turn
+		0	3/4
+		1/4	1
+		1/2	3/4
+		3/4	1/2
+		1	1/4
+		'''
+		return max((-self.turnRateDecay*\
+				abs((self.speed / self.maxSpeed) - \
+				self.maxTurnSpeed) + 1)\
+				* self.dtheta,\
+			0)
+
 	def turnCounterClockwise(self, delta=None):
 		'''Turn in the desired direction.
 		I'm using an angle system like stardog uses such that 
 		east=0, north=-90, west=180, south=90'''
-		if delta is None: delta = self.dtheta
+		if delta is None: delta = self.calculateDTheta()
 		self.theta -= delta
 		if self.theta < -180: self.theta += 360
 		self.updateImageAngle()
@@ -118,7 +150,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		'''Turn in the desired direction
 		I'm using an angle system like stardog uses such that 
 		east=0, north=-90, west=180, south=90'''
-		if delta is None: delta = self.dtheta
+		if delta is None: delta = self.calculateDTheta()
 		self.theta += delta
 		if self.theta > 180: self.theta -= 360
 		self.updateImageAngle()
@@ -136,7 +168,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		itersToStop = self.speed / self.dv
 		if not self.speed == 0 and \
 		itersToStop >= geometry.distance(self.rect.center, self.destination) / self.speed:
-			self.decelerate()
+			#Decelerate
+			self.speed = max(0, self.speed - self.dv)
 			self.targetSpeed = self.speed
 			return True
 		return False
@@ -147,15 +180,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if abs(self.speed - self.targetSpeed) < self.dv:
 			self.speed = self.targetSpeed
 		elif self.speed < self.targetSpeed:
-				self.accelerate()
+			#Accelerate
+			self.speed = min(self.maxSpeed, self.speed + self.dv)
 		else:
-			self.decelerate()
-
-	def accelerate(self):
-		self.speed = min(self.maxSpeed, self.speed + self.dv)
-
-	def decelerate(self):
-		self.speed = max(0, self.speed - self.dv)
+			#Decelerate
+			self.speed = max(0, self.speed - self.dv)
 
 	def setDestination(self,point):
 		'''Pre: point must be a tuple of integers or floats.'''
@@ -239,7 +268,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#amount this object is capable of turning.
 			#Only turn this small amount if there is no object in
 			#front of us.
-			if abs(angleToTarget) < self.dtheta:
+			if abs(angleToTarget) < self.calculateDTheta():
 				if dontTurnLeft and angleToTarget < 0:
 					pass
 				elif dontTurnRight and angleToTarget > 0:

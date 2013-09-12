@@ -274,12 +274,8 @@ class Gem(physicalObject.PhysicalObject):
 		if not self.picked_up and other_sprite.is_a == game.SHIP:
 			self.picked_up = True
 			#give money to the ship
-			#Not all game huds are equipped to handle points yet so we use this try catch.
-			#http://stackoverflow.com/questions/610883/how-to-know-if-an-object-has-an-attribute-in-python/610923#610923
-			try:
+			if not game.hud_helper.points is None:
 				game.hud_helper.points += self.points
-			except AttributeError:
-				pass
 		return died
 
 

@@ -100,16 +100,6 @@ def asteroids():
 
 def gemWild():
 	game.wipeOldScenario(); resetDust()
-	#Define an arena 2000 pixels across for the player and all the asteroids
-	#to bounce around inside
-	game.arena = 1000 #1000 pixel radius centered at zero, zero.
-	#Make the background color blue so that we can draw a black circle 
-	#to show where the arena is located.
-	game.BGCOLOR = colors.blue
-	#Draw a black circle and put it in intangibles to show the limits 
-	#of the arena
-	temp = objInstances.FixedCircle(x=0, y=0, radius=game.arena, color=colors.black)
-	game.intangibles.add(temp)
 	#Make 50 crystals centered around, but not on the player
 	for _ in range(50):
 		mindist = 200
