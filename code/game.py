@@ -39,7 +39,8 @@ def updateDust(offset):
 				rotateAngle(globalvars.player.theta, rotation),\
 				magnitude)
 		elif dist < globalvars.WIDTH:
-			globalvars.dust[i].update(offset)
+			globalvars.dust[i].update()
+			globalvars.dust[i].draw(offset)
 
 
 def run():
@@ -47,6 +48,7 @@ def run():
 	fps = globalvars.FPS
 	offsetx = 0
 	offsety = 0
+	offset = offsetx, offsety
 
 	#key polling:
 	#Use this to keep track of which keys are up and which 
@@ -169,6 +171,12 @@ def run():
 					    str(globalvars.player.image.get_height())+\
 					' vs '+str(globalvars.player.rect.height)
 					test.hitBoxTest(globalvars.player.rect.center)
+				elif event.key == 121: #y key
+					#Test efficiency of drawing stuff to the canvas
+					import cProfile
+					cProfile.runctx('for _ in range(10000): drawThoseOnScreen(globalvars.tangibles.sprites(), offset); pygame.display.flip()', globals(),locals(), 'profiling/drawTangibles.profile')
+					cProfile.runctx('for _ in range(10000): drawThoseOnScreen2(globalvars.tangibles.sprites(), offset); pygame.display.flip()', globals(),locals(), 'profiling/drawTangibles2.profile')
+
 				elif event.key == 47: 
 					#forward slash (question mark
 					#without shift) key.
@@ -272,20 +280,25 @@ def run():
 		#Get the offset based on the player location.
 		offsetx = globalvars.player.rect.centerx - globalvars.CENTERX
 		offsety = globalvars.player.rect.centery - globalvars.CENTERY
+		offset = offsetx, offsety
 		#Finally update all the sprites
 		for x in globalvars.intangibles:
 			#Returning true from update indicates that the intangible died.
-			if x.update((offsetx,offsety)):
-				globalvars.intangibles.remove(x)
-		updateDust((offsetx,offsety))
-		globalvars.tangibles.update((offsetx,offsety))
+			if x.update(): globalvars.intangibles.remove(x)
+		globalvars.tangibles.update()
 
-		#Redraw the player to make sure things like the arena 
-		#background aren't drawn overtop of the player.
+		#Draw all the things that are on the screen
+		#Draw intangibles
+		drawThoseOnScreen(globalvars.intangibles, offset)
+		#Update and draw the dust
+		updateDust(offset)
+		#Draw tangibles
+		drawThoseOnScreen(globalvars.tangibles.sprites(), offset)
+		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 
-		globalvars.hud_helper.update((offsetx,offsety))
+		globalvars.hud_helper.update(offset)
 
 		#Calculate how long we took in the above loop to estimate the number of frames per second
 		#Alert user if fraps drops below 25.
@@ -295,6 +308,37 @@ def run():
 			print 'Goal frames per second is 30. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
 	#end round loop (until gameover)
 #end game loop
+
+
+
+def drawThoseOnScreen(sprite_list, offset):
+	'''Takes a list of pygame sprites and the top left coordinates of the screen 
+	and draws only those sprites that are visible on screen.
+	I tested (see "y key" above) with and without checking whether or not each
+	sprite is on the screen before drawing it and I found checking to be more
+	efficient in multiple scenarios. The gain is less than I expected and
+	a major inefficiency in python seems to be function calls, making me wonder 
+	how important it is to wrap this into the run method, but I'm going to avoid 
+	that for now.'''
+	#draw_count = 0 #TESTING
+	left, top = offset
+	for sp in sprite_list:
+		'''If the sprite is on the screen, then draw it.
+		rect.right < left #Then not on screen
+		rect.bottom < top #Then not on screen
+		rect.top > top + globalvars.HEIGHT #Then not on screen
+		rect.left > left + globalvars.WIDTH #Then not on screen'''
+		if not( sp.rect.right < left or \
+		sp.rect.bottom < top or \
+		sp.rect.top > top + globalvars.HEIGHT or \
+		sp.rect.left > left + globalvars.WIDTH ):
+			sp.draw(offset)
+			#draw_count += 1 #TESTING
+	#print str(draw_count)+' objects on screen.' #TESTING
+
+def drawThoseOnScreen2(sprite_list, offset):
+	left, top = offset
+	for sp in sprite_list: sp.draw(offset)
 
 
 
@@ -375,7 +419,7 @@ def collisionHandling():
 	#Reverse tells sorted to be descending.
 	#rect.topleft[1] gets the y coordinate, top.
 	sprite_list = sorted(sprite_list, \
-		key=lambda c: c.rect.topleft[1]+c.rect.height,\
+		key=lambda c: c.rect.bottom,\
 		reverse=True)
 	#iterate over the sprite list
 	for i in xrange(len(sprite_list)):
@@ -388,7 +432,7 @@ def collisionHandling():
 			#sprites overlap A either becuase the list is sorted
 			#by bottom y coordinates.
 			#We therefore skip the rest of the sprites in the list.
-			if A.rect.topleft[1] > B.rect.topleft[1]+B.rect.height:
+			if A.rect.top > B.rect.bottom:
 				break
 			else:
 				#Otherwise, we need to see if they overlap

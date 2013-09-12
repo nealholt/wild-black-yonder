@@ -12,8 +12,11 @@ class HitBoxTester(physicalObject.PhysicalObject):
 		self.stopped = False
 		self.isHitBoxTester = True
 
-	def update(self):
-		if not self.stopped: self.move()
+	def update(self, offset):
+		if not self.stopped:
+			self.move()
+
+		self.draw(offset)
 
 	def handleCollisionWith(self, other_sprite):
 		self.stopped = True

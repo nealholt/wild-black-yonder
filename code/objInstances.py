@@ -30,22 +30,15 @@ class Bullet(physicalObject.PhysicalObject):
 		#disappear. This is only a bullet-on-bullet invulnerability
 		self.briefinvulnerability = 5
 
-
-	def update(self, offset):
+	def update(self):
 		if self.timeToLive <= 0:
 			#kill removes the calling sprite from all sprite groups
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
-
 		if self.briefinvulnerability > 0:
 			self.briefinvulnerability -= 1
-
 		self.timeToLive -= 1
-
 		self.move()
-
-		self.draw(offset)
-
 
 	def handleCollisionWith(self, other_sprite):
 		'''For now bullets die immediately regardless of what they hit.'''
@@ -71,7 +64,7 @@ class Explosion(physicalObject.PhysicalObject):
 		#How long this object will live
 		self.timeToLive = 7
 
-	def update(self, offset):
+	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
 			#kill removes the calling sprite from all sprite groups
@@ -82,6 +75,10 @@ class Explosion(physicalObject.PhysicalObject):
 		globalvars.intangibles.append(Flash(x=self.rect.centerx, y=self.rect.centery))
 		globalvars.intangibles.append(Debris(x=self.rect.centerx, y=self.rect.centery))
 		return False
+
+	def draw(self, offset):
+		'''Explosion objects aren't drawn. They create other objects to draw.'''
+		pass
 
 
 flashCenterRadius = 20
@@ -100,19 +97,19 @@ class Flash(physicalObject.PhysicalObject):
 		self.color = colors.getRandHotColor()
 		self.radius = rd.randint(flashRadiusMin, flashRadiusMax)
 
-	def update(self, offset):
+	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
 			#kill removes the calling sprite from all sprite groups
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
+		return False
 
+	def draw(self, offset):
 		x,y = self.rect.topleft
 		pos = x - offset[0], y - offset[1]
 		pygame.draw.circle(globalvars.screen, self.color, pos, self.radius, 0)
-		return False
-
 
 
 class Debris(physicalObject.PhysicalObject):
@@ -123,7 +120,7 @@ class Debris(physicalObject.PhysicalObject):
 		self.theta = rd.randint(-179, 180)
 		self.speed = rd.randint(7.0, 30.0)
 
- 	def update(self, offset):
+ 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
 			#kill removes the calling sprite from all sprite groups
@@ -131,7 +128,6 @@ class Debris(physicalObject.PhysicalObject):
 			return True
 		self.timeToLive -= 1
 		self.move()
-		self.draw(offset)
 		return False
 
 
@@ -143,9 +139,6 @@ class FixedBody(physicalObject.PhysicalObject):
 						image_name=image_name, color=color)
 		self.is_a = globalvars.FIXEDBODY
 
-	def update(self, offset):
-		self.draw(offset)
-
 
 class FixedCircle(physicalObject.PhysicalObject):
 	'''A motionless colored circle currently used to show the edges of the arena.'''
@@ -153,12 +146,16 @@ class FixedCircle(physicalObject.PhysicalObject):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
 		self.color = color
 		self.radius = radius
-		self.rect = pygame.draw.circle(globalvars.screen, self.color,\
-			self.rect.center, self.radius, 0)
+		#Override the parent class with the following so that we make sure the 
+		#circle is drawn correctly when only drawing objects that actually 
+		#appear on screen.
+		self.rect.width = self.radius*2
+		self.rect.height = self.radius*2
+		self.rect.center = x,y
 
-	def update(self, offset):
-		pos = self.rect.left - offset[0], \
-			self.rect.top - offset[1]
+	def draw(self, offset):
+		pos = self.rect.centerx - offset[0], \
+			self.rect.centery - offset[1]
 		pygame.draw.circle(globalvars.screen, self.color, \
 			pos, self.radius, 0)
 
@@ -206,15 +203,15 @@ class Asteroid(physicalObject.PhysicalObject):
 		#Choose a random speed
 		self.speed = rd.randint(speed_min, speed_max)
 
-	def update(self, offset):
+	def update(self):
+		'''Return true to be removed. Return False othewise.'''
 		#Rotate
 		if self.dtheta != 0: self.turn(self.dtheta)
 		#Move in a direction independent of rotation
 		self.loc = translate(self.loc, self.direction, self.speed)
 		self.rect.centerx = self.loc[0]
 		self.rect.centery = self.loc[1]
-		#draw
-		self.draw(offset)
+		return False
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
@@ -249,22 +246,28 @@ class Gem(physicalObject.PhysicalObject):
 		self.timeToLive = 30 #Time to live after being picked up.
 		self.points = 10
 
-	def update(self, offset):
+	def update(self):
+		'''Return true to be removed. Return False othewise.'''
 		if not self.picked_up:
 			#Rotate
 			self.turn(self.dtheta)
 			#Move in a direction independent of rotation
 			self.loc = translate(self.loc, \
 				self.direction, self.speed)
-			self.rect.centerx = self.loc[0]
-			self.rect.centery = self.loc[1]
-			#draw
-			self.draw(offset)
+			self.rect.center = self.loc[0], self.loc[1]
 		elif self.timeToLive <=0:
 			#kill removes the calling sprite from all sprite groups
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
+			return True
 		else:
 			self.timeToLive -= 1
+		return False
+
+	def draw(self, offset):
+		if not self.picked_up:
+			#Call parent's draw class
+			physicalObject.PhysicalObject.draw(self, offset)
+		else:
 			#Display the amount of health that was here.
 			pos = self.rect.left - offset[0], \
 				self.rect.top - offset[1]
@@ -296,14 +299,23 @@ class HealthKit(physicalObject.PhysicalObject):
 		self.picked_up = False
 		self.timeToLive = 30 #Time to live after being picked up.
 
-	def update(self, offset):
+	def update(self):
+		'''Return true to be removed. Return False othewise.'''
 		if not self.picked_up:
-			self.draw(offset)
+			pass
 		elif self.timeToLive <=0:
 			#kill removes the calling sprite from all sprite groups
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
+			return True
 		else:
 			self.timeToLive -= 1
+		return False
+
+	def draw(self, offset):
+		if not self.picked_up:
+			#Call parent's draw class
+			physicalObject.PhysicalObject.draw(self, offset)
+		else:
 			#Display the amount of health that was here.
 			pos = self.rect.left - offset[0], \
 				self.rect.top - offset[1]
@@ -335,19 +347,20 @@ class HealthBar(physicalObject.PhysicalObject):
 		self.healthBarWidth = width
 		self.healthBarHeight = height
 
+		self.heightAdjust = 0
+		if not self.ship is None:
+			self.heightAdjust = self.ship.rect.height
 
-	def update(self, offset):
-		heightAdjust = 0
-		if self.ship is None:
-			x,y = self.rect.center
-		else:
-			x,y = self.ship.rect.center
-			heightAdjust = self.ship.rect.height
+	def update(self):
+		if not self.ship is None:
+			self.rect.center = self.ship.rect.center
 			self.health = self.ship.health
-		pos = x - offset[0], y - offset[1]
+
+	def draw(self, offset):
+		pos = self.rect.centerx - offset[0], self.rect.centery - offset[1]
 
 		healthx = pos[0] - self.healthBarWidth/2
-		healthy = pos[1] - self.healthBarHeight - heightAdjust/2
+		healthy = pos[1] - self.healthBarHeight - self.heightAdjust/2
 
 		tempRect = pygame.Rect(healthx, healthy, \
 			self.healthBarWidth, self.healthBarHeight)
@@ -359,9 +372,6 @@ class HealthBar(physicalObject.PhysicalObject):
 
 		self.drawAt(pos)
 
-
-	def draw(self):
-		pass
 
 
 class Follower(physicalObject.PhysicalObject):
@@ -378,7 +388,7 @@ class Follower(physicalObject.PhysicalObject):
 		#Turn rate:
 		self.dtheta = 10.0
 
-	def update(self, offset=(0,0)):
+	def update(self):
 		#Turn towards target
 		self.turnTowards()
 

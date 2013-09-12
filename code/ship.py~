@@ -121,7 +121,7 @@ class Ship(physicalObject.PhysicalObject):
 		return slope, intercept
 
 
-	def update(self):
+	def update(self, offset):
 		#for now we assume that every ship is hostile to the player
 		self.setDestination(globalvars.player.rect.center)
 
@@ -149,8 +149,7 @@ class Ship(physicalObject.PhysicalObject):
 		#move
 		self.move()
 
-
-	def draw(self, offset):
+		#draw
 		x,y = self.rect.center
 		pos = x - offset[0], y - offset[1]
 		self.drawAt(pos)

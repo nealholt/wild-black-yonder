@@ -45,7 +45,7 @@ class Player(ship.Ship):
 		pass
 
 
-	def playerUpdate(self):
+	def playerUpdate(self, offset=(0,0)):
 		if not self.destination is None:
 			#Turn towards target
 			self.turnTowards()
