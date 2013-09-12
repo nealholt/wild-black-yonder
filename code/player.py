@@ -30,20 +30,10 @@ class Player(physicalObject.PhysicalObject):
 	def isDead(self):
 		return self.health <= 0
 
-	def update(self):
-		#Turn towards target
-		self.turnTowards()
-
-		#Approach target speed
-		self.approachSpeed()
-
-		self.move()
-
-		self.draw()
-
+	def drawHealthBarAt(self, x, y):
 		#Draw health bars
-		healthx = self.getX()-self.rect.width
-		healthy = self.getY()-self.rect.height-self.healthBarHeight
+		healthx = x-self.rect.width
+		healthy = y-self.rect.height-self.healthBarHeight
 
 		tempRect = pygame.Rect(healthx, healthy, self.healthBarWidth, self.healthBarHeight)
 		pygame.draw.rect(self.game.screen, (255,36,0), tempRect, 0) #Color red
@@ -51,5 +41,15 @@ class Player(physicalObject.PhysicalObject):
 		width = (self.health/self.maxHealth)*self.healthBarWidth
 		tempRect = pygame.Rect(healthx, healthy, width, self.healthBarHeight)
 		pygame.draw.rect(self.game.screen, (0,64,0), tempRect, 0) #Color green
+
+
+	def update(self, offset=(0,0)):
+		#Turn towards target
+		self.turnTowards()
+
+		#Approach target speed
+		self.approachSpeed()
+
+		self.move()
 
 

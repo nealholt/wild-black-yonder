@@ -8,8 +8,16 @@ sys.path.append('code')
 import player
 import enemy
 import explosion
+import follower
 
 FPS = 30
+
+#"Camera" options
+FIXED_VIEW = 0
+FIX_ON_PLAYER = 1
+FOLLOW_PLAYER = 2
+
+BLACK = (0,0,0)
 
 class Game:
 	""" """
@@ -19,17 +27,36 @@ class Game:
 		self.top_left = 0, 0
 		self.width = screen.get_width()
 		self.height = screen.get_height()
+		self.centerx = self.width / 2
+		self.centery = self.height / 2
+
+		self.offsetx = 0
+		self.offsety = 0
+
 		self.timer = 0
+		self.camera = FOLLOW_PLAYER #TODO Change camra view: FIXED_VIEW FIX_ON_PLAYER FOLLOW_PLAYER
+
+		self.textUpdateInterval = 1 #in seconds
+		self.nextUpdate = 0
 
 		self.playerSprites = pygame.sprite.Group()
 		self.player = player.Player(self)
 
 		self.enemySprites = pygame.sprite.Group()
 		self.enemy = enemy.Enemy(self,300,300)
-		
+
+		if self.camera == FOLLOW_PLAYER:
+			self.follower = follower.Follower(self,0,0)
+
+		self.getOffset = [self.fixedScreen, self.centerOnPlayer, self.followPlayer]
+
 		self.allSprites = pygame.sprite.Group()
-		self.allSprites.add(self.player)
+		#Note that the player is not amongst allSprites mostly for when the screen
+		#fixes on or follows the player
 		self.allSprites.add(self.enemy)
+
+		#Create a motionless object for reference purposes while testing.
+		self.allSprites.add(explosion.FixedBody(self, 0, 0))
 
 		#key polling:
 		self.keys = []
@@ -48,6 +75,13 @@ class Game:
 
 		#The in-round loop (while player is alive):
 		while self.running:
+
+			#Set player destination to current mouse coordinates.
+			x,y = pygame.mouse.get_pos()
+			x += self.offsetx
+			y += self.offsety
+			self.player.setDestination(x,y)
+
 			#event polling:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -83,16 +117,24 @@ class Game:
 
 			#remind enemy of player's location
 			self.enemy.setDestination(self.player.getX(),self.player.getY())
+			#remind follower of player's location
+			if self.camera == FOLLOW_PLAYER:
+				self.follower.setDestination(self.player.getX(),self.player.getY())
 
 			#draw black over the screen
 			#TODO as a game effect, it is super neato to temporarily NOT do this.
-			self.screen.fill((0,0,0)) #black
+			self.screen.fill(BLACK)
 
 			#Check all collisions
 			self.collisionChecks()
 
 			#update all sprites
-			self.allSprites.update()
+			self.offsetx,self.offsety = self.getOffset[self.camera]()
+			self.allSprites.update((self.offsetx,self.offsety))
+
+			#Display player location for debugging.
+			self.displayPlayerLoc()
+
 
 			#frame maintainance:
 			pygame.display.flip()
@@ -104,10 +146,7 @@ class Game:
 
 	def collisionChecks(self):
 		if self.player.isDead():
-			#This condition is simply trying to prevent the "infinite explosion" 
-			#effect when the player dies.
-			if self.allSprites.has(self.player):
-				self.allSprites.add(explosion.Explosion(self, self.player.getY(),self.player.getX()))
+			self.allSprites.add(explosion.Explosion(self, self.player.getY(),self.player.getX()))
 			self.player.kill()
 
 		else:
@@ -146,3 +185,36 @@ class Game:
 		self.enemy = enemy.Enemy(self, top, left)
 		self.allSprites.add(self.enemy)
 
+	def displayPlayerLoc(self):
+#		if self.timer > self.nextUpdate:
+		self.nextUpdate += self.textUpdateInterval
+		font = pygame.font.Font(None, 36)
+		string = "Player X,Y: "+str(self.player.getX())+','+str(self.player.getY())
+		text = font.render(string, 1, (255, 255, 255)) #white
+		textpos = text.get_rect(center=(400,10)) #center text at 400, 10
+		self.screen.blit(text, textpos)
+
+
+	#Choices for the display follow in 3 functions:
+
+	def fixedScreen(self):
+		offset = 0,0
+		self.player.update(offset)
+		self.player.draw()
+		self.player.drawHealthBarAt(self.player.getX(), self.player.getY())
+		return offset
+
+	def centerOnPlayer(self):
+		self.player.update((0,0))
+		self.player.drawAt((self.centerx, self.centery))
+		self.player.drawHealthBarAt(self.centerx, self.centery)
+		return self.player.getX() - self.centerx, self.player.getY() - self.centery
+
+	def followPlayer(self):
+		self.follower.update()
+		offset = self.follower.getX() - self.centerx, \
+			self.follower.getY() - self.centery
+		self.player.update(offset)
+		self.player.draw(offset)
+		self.player.drawHealthBarAt(self.player.getX() - offset[0], self.player.getY() - offset[1])
+		return offset

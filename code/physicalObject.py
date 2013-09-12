@@ -83,6 +83,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if not self.speed == 0 and itersToStop >= self.distanceTo(self.destx,self.desty) / self.speed:
 			self.decelerate()
 			self.targetSpeed = self.speed
+			return True
+		return False
 
 	def approachSpeed(self):
 		if abs(self.speed - self.targetSpeed) < self.dv:
@@ -143,6 +145,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.rect = self.rect.move(vectx*self.speed, vecty*self.speed)
 
 
-	def draw(self):
-		self.game.screen.blit(self.image, self.rect)
+	def draw(self, offset=(0,0)):
+		pos = self.rect.centerx - offset[0], self.rect.centery - offset[1]
+		self.game.screen.blit(self.image, pos)
+
+
+	def drawAt(self, position=(0,0)):
+		self.game.screen.blit(self.image, position)
 

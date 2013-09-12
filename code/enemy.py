@@ -26,7 +26,7 @@ class Enemy(physicalObject.PhysicalObject):
 			self.game.allSprites.add(tempbullet)
 			self.game.enemySprites.add(tempbullet)
 
-	def update(self):
+	def update(self, offset):
 		#Turn towards target
 		self.turnTowards()
 
@@ -38,5 +38,5 @@ class Enemy(physicalObject.PhysicalObject):
 
 		self.move()
 
-		self.draw()
+		self.draw(offset)
 

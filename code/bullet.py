@@ -15,7 +15,7 @@ class Bullet(physicalObject.PhysicalObject):
 		self.timeToLive = 50
 
 
-	def update(self):
+	def update(self, offset):
 		if self.timeToLive <= 0:
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
@@ -24,6 +24,6 @@ class Bullet(physicalObject.PhysicalObject):
 
 		self.move()
 
-		self.draw()
+		self.draw(offset)
 
 
