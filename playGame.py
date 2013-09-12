@@ -21,7 +21,8 @@ if __name__=="__main__":
 	'Press "m" to display a panel. m is for menu in this case. TESTING.\n'+\
 	'Press "p" to slow down and park at destination.\n'+\
 	'Press "s" to pause/unpause the game.\n'+\
-	'Press "q" to remove destination and simply fly in current direction.\n'
+	'Press "q" to remove destination and simply fly in current direction.\n'+\
+	'Press "z" to fire a missile.\n'
 
 	#Initial test scenario
 	testScenario00()

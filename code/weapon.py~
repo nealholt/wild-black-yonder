@@ -60,7 +60,7 @@ class Weapon():
 
 
 
-class MissileLauncher(): #TODO LEFT OFF HERE
+class MissileLauncher():
 	def __init__(self):
 		self.name='default'
 		self.refire_rate=10 #Fires once every refire_rate frames
@@ -72,7 +72,6 @@ class MissileLauncher(): #TODO LEFT OFF HERE
 			self.cooldown -= 1
 
 	def shoot(self):
-		pass
 
 
 

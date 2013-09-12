@@ -134,7 +134,7 @@ def run():
 			#	mouse[0] = event.pos
 			elif event.type == pygame.KEYDOWN:
 				keys[event.key % 322] = 1
-				#print "TODO TESTING: key press "+str(event.key)
+				print "TODO TESTING: key press "+str(event.key)
 
 				#Respond to key taps.
 				#Keys that we want to respond to holding them down
@@ -182,7 +182,9 @@ def run():
 					test.hitBoxTest(globalvars.player.rect.center)
 				elif event.key == 121: #y key
 					profileEverything(offset)
-				elif event.key == 47: 
+				elif event.key == 122: #z key
+					globalvars.player.fireMissile()
+				elif event.key == 47:
 					#forward slash (question mark
 					#without shift) key.
 					#Useful for querying one time info.

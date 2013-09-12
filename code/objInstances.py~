@@ -2,7 +2,7 @@ import physicalObject
 import random as rd
 import pygame
 import colors
-from geometry import translate
+from geometry import translate, distance
 import globalvars
 from misc import writeTextToScreen
 
@@ -54,6 +54,94 @@ class Bullet(physicalObject.PhysicalObject):
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
 		return died
+
+
+class Missile(physicalObject.PhysicalObject):
+	def __init__(self, shooter):
+
+		physicalObject.PhysicalObject.__init__(self, \
+			centerx=shooter.rect.centerx, \
+			centery=shooter.rect.centery,\
+			width=10, height=10)
+
+		#The missile assumes the shooter's direction and gets the shooter's 
+		#speed plus its own speed before settling down to its target velocity.
+		self.theta = shooter.theta
+		self.speed = 6. + shooter.speed
+		self.targetSpeed = 6.
+		self.dv = 0.1 #change in speed
+
+		#dontClipMe is almost certainly the shooter of this missile.
+		#This is important because bullets usually start out at a 
+		#location that is immediately clipping the shooter but we 
+		#don't want ships to blow themselves up.
+		self.dontClipMe = shooter
+
+		self.is_a = globalvars.BULLET
+
+		#Find nearest enemy ship and set it as target.
+		self.target = None
+		if self.isPlayer:
+			#Search through globalvars.whiskerables
+			closest = 999999.
+			for w in globalvars.whiskerables:
+				d = distance(w.rect.center, self.rect.center)
+				print d
+				if d < closest and w.is_a == globalvars.SHIP:
+					print 'nearer target found'
+					print closest
+					print d
+					self.target = w
+					closest = d
+		else:
+			self.target = globalvars.player
+		#TODO TESTING
+		'''
+		print 'Missile target is none '+str(self.target is None)
+		print 'Missile speed: '+str(self.speed)
+		print 'Missile goal speed: '+str(self.targetSpeed)
+		print 'Missile angle: '+str(self.theta)
+		print 'Missile delta angle: '+str(self.dtheta)
+		'''
+
+
+	def update(self):
+		#TODO seek target like an npc ship does
+		'''The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
+		#If the missile has no target, it will just kill itself and effectively not fire. Later, it might be cooler to have the missile just dumbfire and explode after a timeout.
+		if self.target is None:
+			print 'Missile has no target. Aborting firing sequence.'
+			self.kill()
+			return False
+
+		self.setDestination(self.target.rect.center)
+
+		#Turn towards target
+		self.turnTowards()
+
+		#modify speed
+		self.approachSpeed()
+
+		#move
+		self.move()
+
+
+
+	def handleCollisionWith(self, other_sprite):
+		'''For now missiles die immediately regardless of what they hit.'''
+		died = False
+		#self.dontClipMe is usually the shooter of the bullet who would 
+		#otherwise immediately collide with it.
+		#For now, shoot through health packs with no effect.
+		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.HEALTH:
+			#explode
+			globalvars.intangibles.append(Explosion(\
+				x=self.rect.centerx,y=self.rect.centery))
+			died = True
+			#kill removes the calling sprite from all sprite groups
+			self.kill()
+		return died
+
 
 
 class Explosion(physicalObject.PhysicalObject):
@@ -162,11 +250,11 @@ class FixedCircle(physicalObject.PhysicalObject):
 
 #When a rock is blown up, what comes out?
 subrocks = dict()
-subrocks['images/asteroidBigRoundTidied'] = ('asteroidWild2', 4)
-subrocks['images/asteroidWild2'] = ('asteroidTempel', 4)
-subrocks['images/asteroidTempel'] = ('debris', 10)
-subrocks['images/Sikhote_small'] = ('gem',1)
-subrocks['images/bournonite_30percent'] = ('gem', 3)
+subrocks['bigrock'] = ('bigrock', 4)
+subrocks['medrock'] = ('medrock', 4)
+subrocks['smallrock'] = ('debris', 10)
+subrocks['gold'] = ('gem',1)
+subrocks['silver'] = ('gem', 3)
 def splitRock(image_name, centerx=0, centery=0):
 	new_image, count = subrocks[image_name]
 	if new_image == 'gem':
@@ -181,7 +269,7 @@ def splitRock(image_name, centerx=0, centery=0):
 	else:
 		for _ in range(count):
 			temp = Asteroid(x=centerx, y=centery,
-				image_name='images/'+new_image)
+				image_name=new_image)
 			globalvars.tangibles.add(temp)
 			globalvars.whiskerables.add(temp)
 
@@ -227,17 +315,11 @@ class Asteroid(physicalObject.PhysicalObject):
 				splitRock(self.image_name,\
 					centerx=self.rect.centerx,\
 					centery=self.rect.centery)
-		#TODO. Fuck my balls. This isn't even working.
-		#Since changing other_sprite.rect.center to other_sprite.loc, this does now seem to be working.
+		#The following was added to automatically nudge apart any colliding asteroids, but populate space has been debugged so I feel that this is no longer needed at this time.
 		#elif other_sprite.is_a == globalvars.ASTEROID and self.speed == 0:
-		#	print 'collided with other asteroid'
-		#	#I'm using this case to nudge "stationary" asteroids away from 
-		#	#each other because for some odd reason, the populate space 
-		#	#function fails to place non-overlapping asteroids and I have 
-		#	#not been able to figure out why.
 		#	magnitude = max(self.radius, other_sprite.radius)
 		#	angle = self.getAngleToTarget(target=other_sprite)
-		#	other_sprite.loc = translate(other_sprite.rect.center, angle, magnitude)
+		#	other_sprite.translate(angle, magnitude)
 		return died
 
 
@@ -245,7 +327,7 @@ class Gem(physicalObject.PhysicalObject):
 	'''A valuable gem.'''
 	def __init__(self, x=0, y=0, speed_min=1.0, speed_max=5.0):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,
-						image_name='images/TyDfN_tiny')
+						image_name='gem')
 		self.is_a = globalvars.GEM
 		#Choose a random rotation
 		self.dtheta = rd.randint(-5, 5)
@@ -306,7 +388,7 @@ class HealthKit(physicalObject.PhysicalObject):
 	'''A motionless body created for testing purposes.'''
 	def __init__(self, x=0, y=0):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,
-						image_name='images/health')
+						image_name='health')
 		self.is_a = globalvars.HEALTH
 		self.health_amt = 10
 		self.picked_up = False

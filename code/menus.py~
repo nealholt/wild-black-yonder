@@ -159,7 +159,7 @@ def getRestartPanel():
 
 
 
-weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'spread_mk3', 'missile_mk1']
+weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'spread_mk3']
 def setWeaponsPanel():
 	'''Creates the weapon panel and sets the current panel to be the weapon panel.'''
 	menu = getStandardMenu()

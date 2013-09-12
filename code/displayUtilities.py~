@@ -47,7 +47,11 @@ image_list['bggalaxies'] = preLoadImage('images/galaxyLenses'+ext, transparency=
 
 
 def loadImage(imagename):
-	'''In theory, preloading the images and then getting copies of them when needed with the convert() method will be faster and more efficient than loading the image anew each time.'''
+	'''In theory, preloading the images and then getting copies of them when needed with the convert() method will be faster and more efficient than loading the image anew each time.
+	According to 
+	http://www.pygame.org/docs/ref/image.html
+	"The returned Surface will contain the same color format, colorkey and alpha transparency as the file it came from. You will often want to call Surface.convert() with no arguments, to create a copy that will draw more quickly on the screen."
+	'''
 	return image_list[imagename].convert()
 
 

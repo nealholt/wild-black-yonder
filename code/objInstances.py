@@ -2,7 +2,7 @@ import physicalObject
 import random as rd
 import pygame
 import colors
-from geometry import translate
+from geometry import translate, distance
 import globalvars
 from misc import writeTextToScreen
 
@@ -54,6 +54,94 @@ class Bullet(physicalObject.PhysicalObject):
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
 		return died
+
+
+class Missile(physicalObject.PhysicalObject):
+	def __init__(self, shooter):
+
+		physicalObject.PhysicalObject.__init__(self, \
+			centerx=shooter.rect.centerx, \
+			centery=shooter.rect.centery,\
+			width=10, height=10)
+
+		#The missile assumes the shooter's direction and gets the shooter's 
+		#speed plus its own speed before settling down to its target velocity.
+		self.theta = shooter.theta
+		self.speed = 6. + shooter.speed
+		self.targetSpeed = 6.
+		self.dv = 0.1 #change in speed
+
+		#dontClipMe is almost certainly the shooter of this missile.
+		#This is important because bullets usually start out at a 
+		#location that is immediately clipping the shooter but we 
+		#don't want ships to blow themselves up.
+		self.dontClipMe = shooter
+
+		self.is_a = globalvars.BULLET
+
+		#Find nearest enemy ship and set it as target.
+		self.target = None
+		if shooter.isPlayer:
+			#Search through globalvars.whiskerables
+			closest = 999999.
+			for w in globalvars.whiskerables:
+				d = distance(w.rect.center, self.rect.center)
+				print d
+				if d < closest and w.is_a == globalvars.SHIP:
+					print 'nearer target found'
+					print closest
+					print d
+					self.target = w
+					closest = d
+		else:
+			self.target = globalvars.player
+		#TODO TESTING
+		'''
+		print 'Missile target is none '+str(self.target is None)
+		print 'Missile speed: '+str(self.speed)
+		print 'Missile goal speed: '+str(self.targetSpeed)
+		print 'Missile angle: '+str(self.theta)
+		print 'Missile delta angle: '+str(self.dtheta)
+		'''
+
+
+	def update(self):
+		#TODO seek target like an npc ship does
+		'''The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
+		#If the missile has no target, it will just kill itself and effectively not fire. Later, it might be cooler to have the missile just dumbfire and explode after a timeout.
+		if self.target is None:
+			print 'Missile has no target. Aborting firing sequence.'
+			self.kill()
+			return False
+
+		self.setDestination(self.target.rect.center)
+
+		#Turn towards target
+		self.turnTowards()
+
+		#modify speed
+		self.approachSpeed()
+
+		#move
+		self.move()
+
+
+
+	def handleCollisionWith(self, other_sprite):
+		'''For now missiles die immediately regardless of what they hit.'''
+		died = False
+		#self.dontClipMe is usually the shooter of the bullet who would 
+		#otherwise immediately collide with it.
+		#For now, shoot through health packs with no effect.
+		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.HEALTH:
+			#explode
+			globalvars.intangibles.append(Explosion(\
+				x=self.rect.centerx,y=self.rect.centery))
+			died = True
+			#kill removes the calling sprite from all sprite groups
+			self.kill()
+		return died
+
 
 
 class Explosion(physicalObject.PhysicalObject):

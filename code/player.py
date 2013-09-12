@@ -1,7 +1,6 @@
 import ship
 import profiles
-import weapon #TODO TESTING SPREAD SHOT
-
+import weapon
 
 class Player(ship.Ship):
 	def __init__(self, image_name):
@@ -11,12 +10,9 @@ class Player(ship.Ship):
 		profiles.shipProfile(self, profile='mk3')
 		self.setProfile()
 
-		#TODO TESTING SPREAD SHOT
-		w = weapon.Weapon()
-		weapon.setProfile('spread_mk3', w)
-		w.shooter = self
-		self.weapons = [w]
-
+		#Initialize the player with just one weapon. Make it a spread shot.
+		self.weapons = [weapon.Weapon()]
+		self.setWeapon('spread_mk3')
 
 		self.health=300
 		self.maxhealth=300
@@ -28,7 +24,18 @@ class Player(ship.Ship):
 
 		self.destination = None
 
-		print 'TESTING player speed in player.py: '+str(self.speed)
+		self.isPlayer = True
+
+		#print 'TESTING player speed in player.py: '+str(self.speed)
+
+
+	def setWeapon(self, weaponId):
+		'''Pre: weaponId is a string such as 'spread_mk3'.
+		Assumes the player only has one weapon equipped.
+		Post: Changes the player's weapon.
+		This is called by the weapons panel in menus.py.'''
+		weapon.setProfile(weaponId, self.weapons[0])
+		self.weapons[0].shooter = self
 
 
 	def parkingBrake(self):

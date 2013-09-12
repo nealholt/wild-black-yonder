@@ -51,6 +51,7 @@ def loadImage(imagename):
 	According to 
 	http://www.pygame.org/docs/ref/image.html
 	"The returned Surface will contain the same color format, colorkey and alpha transparency as the file it came from. You will often want to call Surface.convert() with no arguments, to create a copy that will draw more quickly on the screen."
+	I tested this. It is WAAAAY faster.
 	'''
 	return image_list[imagename].convert()
 

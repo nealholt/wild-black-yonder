@@ -25,6 +25,7 @@ class Ship(physicalObject.PhysicalObject):
 		self.setHealthBar()
 
 		self.is_a = globalvars.SHIP
+		self.isPlayer = False
 
 
 	def setHealthBar(self):
@@ -71,6 +72,12 @@ class Ship(physicalObject.PhysicalObject):
 					w.weapon_range, w.attack_angle) and\
 					self.clearLineOfSight():
 						w.shoot()
+
+	def fireMissile(self):
+		''' '''
+		tempmissile = objInstances.Missile(self)
+		#Add missile to the sprite groups
+		globalvars.tangibles.add(tempmissile)
 
 
 	def cooldown(self):
@@ -122,6 +129,7 @@ class Ship(physicalObject.PhysicalObject):
 
 
 	def update(self):
+		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
 		#for now we assume that every ship is hostile to the player
 		self.setDestination(globalvars.player.rect.center)
 
