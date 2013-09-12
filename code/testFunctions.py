@@ -1,5 +1,5 @@
 import physicalObject
-import game
+from globalvars import tangibles
 
 class HitBoxTester(physicalObject.PhysicalObject):
 	'''Like a bullet, but these hit box testers will fly in from all angles and freeze on the screen where they collide with the player. this will reveal the true hit box so I can start to figure out why it isn't where I expect it to be.'''
@@ -30,20 +30,20 @@ def hitBoxTest(c):
 	#shoot a bunch of hit box testers 
 	#in towards the player
 	h=HitBoxTester(top=c[1]+50, left=c[0]+50, destination=c)
-	game.tangibles.add(h)
+	tangibles.add(h)
 	h=HitBoxTester(top=c[1]+50, left=c[0]-50, destination=c)
-	game.tangibles.add(h)
+	tangibles.add(h)
 	h=HitBoxTester(top=c[1]+50, left=c[0], destination=c)
-	game.tangibles.add(h)
+	tangibles.add(h)
 	h=HitBoxTester(top=c[1]-50, left=c[0]+50, destination=c)
-	game.tangibles.add(h)
+	tangibles.add(h)
 	h=HitBoxTester(top=c[1]-50, left=c[0]-50, destination=c)
-	game.tangibles.add(h)
+	tangibles.add(h)
 	h=HitBoxTester(top=c[1]-50, left=c[0], destination=c)
-	game.tangibles.add(h)
+	tangibles.add(h)
 	h=HitBoxTester(top=c[1], left=c[0]+50, destination=c)
-	game.tangibles.add(h)
+	tangibles.add(h)
 	h=HitBoxTester(top=c[1], left=c[0]-50, destination=c)
-	game.tangibles.add(h)
+	tangibles.add(h)
 
 

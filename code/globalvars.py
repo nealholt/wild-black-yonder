@@ -15,6 +15,7 @@ SHIP = 2
 FIXEDBODY = 3
 HEALTH = 4
 ASTEROID = 5
+GEM = 6
 
 #The least distance to check for a collision. Might need adjusted if we start using really big objects.
 MINSAFEDIST = 1024
@@ -40,3 +41,7 @@ hud_helper = None
 
 #If arena is set to anything other than zero, then the player will be forced to stay inside the arena and all other objects will also be pointed roughly in the direction of the center of the arena. This is used for 
 arena = 0
+
+#Display menus and the like on the panel.
+panel = None
+

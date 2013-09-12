@@ -26,5 +26,5 @@ if __name__=="__main__":
 	#Initial test scenario
 	testScenario00()
 
-	game.game_obj.run()
+	game.run()
 

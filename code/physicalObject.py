@@ -1,9 +1,9 @@
 import pygame
 import math
-import game
 from displayUtilities import loadImage, ext
 import geometry
 from colors import white
+import globalvars
 
 class PhysicalObject(pygame.sprite.Sprite):
 	def __init__(self, centerx=0.0, centery=0.0, width=0, height=0, image_name=None, color=white):
@@ -74,11 +74,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.radius = max(int(min(self.rect.width,self.rect.height)/2), 1)
 
 		#What is this object.
-		self.is_a = game.OTHER
+		self.is_a = globalvars.OTHER
 
 		#We use closest_sprite to help the NPC's avoid objects.
 		self.closest_sprite = None
-		self.dist_to_closest = game.MINSAFEDIST
+		self.dist_to_closest = globalvars.MINSAFEDIST
 
 
 	def handleCollisionWith(self, other_sprite):
@@ -95,11 +95,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 	def updateImageAngle(self):
 		self.image = pygame.transform.rotate(self.base_image, -self.theta).convert_alpha()
-		#Awesome! The following works. It fixes the most egregious 
-		#of the hit box issues and is probably as good as it gets.
-		temp = self.rect.topleft
-		self.rect = self.image.get_rect()
-		self.rect.topleft = temp
+		#WITH the following code, the ship rotates smoothly relative to its health bar, but since the screen centers on the player, these constant small adjustments cause all the images drawn relative to the player to jiggle.
+		#WITHOUT the following code, there is no jiggle, but the ships rotate a little more weirdly and the hit boxes might be slightly off.
+		#For now, I choose to run without the following code.
+		#temp = self.rect.topleft
+		#self.rect = self.image.get_rect()
+		#self.rect.topleft = temp
 
 
 	def noClipWith(self,other):
@@ -257,7 +258,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 						dontTurnRight = True
 			#Reset closest sprite.
 			self.closest_sprite = None
-			self.dist_to_closest = game.MINSAFEDIST
+			self.dist_to_closest = globalvars.MINSAFEDIST
 
 
 		angleToTarget = self.getAngleToTarget()
@@ -299,11 +300,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def draw(self, offset=(0,0)):
 		x,y = self.rect.topleft
 		pos = x - offset[0], y - offset[1]
-		game.screen.blit(self.image, pos)
+		globalvars.screen.blit(self.image, pos)
 
 	def drawAt(self, position=(0,0)):
 		pos = position[0] - self.rect.width/2, position[1] - self.rect.height/2
-		game.screen.blit(self.image, pos)
+		globalvars.screen.blit(self.image, pos)
 
 
 	def getArea(self):
@@ -324,16 +325,26 @@ class PhysicalObject(pygame.sprite.Sprite):
 		is hit from behind despite moving in the same direction as B.)
 		'''
 		angleToOther = self.getAngleToTarget(target=other)
-		if abs(angleToOther) < 90:
+		if abs(angleToOther) < 45:
 			#This object should bounce off other in a dramatically
 			#new direction. Specifically, our angle should be 
 			#reflected over the line perpendicular to the line that
 			#passes through the center of this and other.
 			#First pass for code follows. This is good enough for now.
 			if angleToOther < 0:
-				self.turnClockwise(90)
+				self.turnClockwise(110)
 			else:
-				self.turnCounterClockwise(90)
+				self.turnCounterClockwise(110)
+		elif abs(angleToOther) < 90:
+			#This object should bounce off other in a dramatically
+			#new direction. Specifically, our angle should be 
+			#reflected over the line perpendicular to the line that
+			#passes through the center of this and other.
+			#First pass for code follows. This is good enough for now.
+			if angleToOther < 0:
+				self.turnClockwise(65)
+			else:
+				self.turnCounterClockwise(65)
 		else:
 			#this should sort of be bounced to a higher speed, as 
 			#when an object is hit from behind.
@@ -347,9 +358,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 				self.turnCounterClockwise(amountToTurn)
 			else:
 				self.turnClockwise(amountToTurn)
-			#Use max because speed*2 might be zero.
-			self.speed = max(self.speed*2, 10)
-		#Move twice immediately to prevent multiple collisions.
-		self.move()
-		self.move()
+			#Use max because speed*1.5 might be zero.
+			self.speed = max(self.speed*1.5, 10)
+		#Prevent multiple consecutive collisions with the same object
+		limit = 10; i = 0 #also prevent infinite loops
+		while self.speed > 0 and geometry.distance(self.rect.center, other.rect.center) <= self.radius+other.radius and i < limit:
+			i+=1
+			self.move()
+
 

@@ -8,7 +8,7 @@ class Player(ship.Ship):
 
 		ship.Ship.__init__(self,image_name=image_name)
 
-		profiles.shipProfile(self, profile='mk2')
+		profiles.shipProfile(self, profile='mk3')
 		self.setProfile()
 
 		#TODO TESTING SPREAD SHOT

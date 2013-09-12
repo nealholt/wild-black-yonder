@@ -1,8 +1,8 @@
 import drawable
 import pygame
-import game
 import colors
 import scenarios
+import globalvars
 
 class Panel:
 	"""The basic building block of the menu system. """
@@ -60,8 +60,8 @@ def getTestingPanel():
 	border_padding = 100
 	top = border_padding
 	left = border_padding
-	height = game.HEIGHT-2*border_padding
-	width = game.WIDTH-2*border_padding
+	height = globalvars.HEIGHT-2*border_padding
+	width = globalvars.WIDTH-2*border_padding
 
 	menu = Panel()
 
@@ -78,7 +78,7 @@ def getTestingPanel():
 	#Then draw the contents of the menu
 	horiz_space = 200
 	vert_space = 100
-	x1, y1 = horiz_space, game.HEIGHT/2
+	x1, y1 = horiz_space, globalvars.HEIGHT/2
 	radius = 10
 	#panel made of a circle centered at start
 	subpanel = Panel()
@@ -93,7 +93,7 @@ def getTestingPanel():
 	x2 = horiz_space*2
 	for i in range(5):
 		j = i-2
-		y2 = game.HEIGHT/2+vert_space*j
+		y2 = globalvars.HEIGHT/2+vert_space*j
 
 		subpanel = Panel()
 		#http://www.secnetix.de/olli/Python/lambda_functions.hawk

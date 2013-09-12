@@ -7,14 +7,17 @@ def distance(p1, p2):
 
 
 adjustments = [(1,0),(0,1),(-1,0),(0,-1),(1,1),(-1,-1)]
-def getCoordsNearLoc(loc, mindist, maxdist):
-	'''Returns random coordinates with maxdistx in the x direction
-	and within maxdisty in the y direction of the location, loc, 
-	but not within bufferdist of the loc.'''
-	x = rd.randint(-maxdist, maxdist)+loc[0]
-	y = rd.randint(-maxdist, maxdist)+loc[1]
+def getCoordsNearLoc(loc, mindist, xmax, ymax):
+	'''Returns random coordinates in a rectangle centered at loc
+	where x is between -xmax and xmax and y is between -ymax 
+	and ymax but not within mindist of the loc.
+	This is used for the asteroids, gemwild, and race scenarios.'''
+	x = rd.randint(-xmax, xmax)+loc[0]
+	y = rd.randint(-ymax, ymax)+loc[1]
+	#Select a random direction in which to push away any x,y that is too close to loc
 	adjust = adjustments[ rd.randint(0,len(adjustments)-1) ]
 	while distance((x,y), loc) < mindist:
+		#Push x,y away from loc
 		x = x+adjust[0]
 		y = y+adjust[1]
 	return x,y

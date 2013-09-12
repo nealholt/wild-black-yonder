@@ -1,10 +1,10 @@
 import pygame
 import physicalObject
 import profiles
-import game
 import colors
 import objInstances
 from geometry import distance, lineIntersectsCircle, angleToSlope, inSights
+import globalvars
 
 class Ship(physicalObject.PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
@@ -24,13 +24,13 @@ class Ship(physicalObject.PhysicalObject):
 		self.myHealthBar = None
 		self.setHealthBar()
 
-		self.is_a = game.SHIP
+		self.is_a = globalvars.SHIP
 
 
 	def setHealthBar(self):
 		self.myHealthBar = objInstances.HealthBar(width=20, height=10, ship=self, vertical=False, 
 			current=self.health, total=self.maxhealth)
-		game.intangibles.add(self.myHealthBar)
+		globalvars.intangibles.append(self.myHealthBar)
 
 
 	def setProfile(self):
@@ -86,7 +86,7 @@ class Ship(physicalObject.PhysicalObject):
 		#Get distance to target
 		dtt = distance(self.rect.center, self.destination)
 		#For each potential obstacle...
-		for w in game.whiskerables:
+		for w in globalvars.whiskerables:
 			#Get distance to the obstacle
 			dist = distance(self.rect.center, w.rect.center)
 			#   If the distance to the obstacle is less than the distance 
@@ -123,7 +123,7 @@ class Ship(physicalObject.PhysicalObject):
 
 	def update(self, offset):
 		#for now we assume that every ship is hostile to the player
-		self.setDestination(game.player.rect.center)
+		self.setDestination(globalvars.player.rect.center)
 
 		#Turn towards target
 		self.turnTowards()
@@ -160,36 +160,37 @@ class Ship(physicalObject.PhysicalObject):
 		died = False
 		#Check for collisions with one's own bullets.
 		#Don't respond to such collisions.
-		if other_sprite.is_a == game.BULLET:
+		if other_sprite.is_a == globalvars.BULLET:
 			if other_sprite.dontClipMe == self:
 				return died
 			else:
 				self.takeDamage()
-		elif other_sprite.is_a == game.SHIP:
+		elif other_sprite.is_a == globalvars.SHIP:
 			#Check for bounce off
 			#For now, area stands in for mass and only the
 			#less massive object bounces off
 			if other_sprite.getArea() >= self.getArea():
 				self.bounceOff(other_sprite)
 				self.takeDamage()
-		elif other_sprite.is_a == game.FIXEDBODY:
+		elif other_sprite.is_a == globalvars.FIXEDBODY:
 			self.bounceOff(other_sprite)
 			return died
-		elif other_sprite.is_a == game.ASTEROID:
+		elif other_sprite.is_a == globalvars.ASTEROID:
 			self.bounceOff(other_sprite)
 			self.takeDamage()
 		#This if is not necessary since falling through has the same effect.
-		#elif other_sprite.is_a == game.HEALTH:
+		#elif other_sprite.is_a == globalvars.HEALTH:
 			#The health kit gives the player health. This is better because otherwise
 			#we have to deal with multiple collisions between player and health
 			#or a race condition over who gets updated first, the player sprite 
 			#or the health sprite.
 		#	return died
 		if self.isDead():
-			game.intangibles.add(objInstances.Explosion(\
+			globalvars.intangibles.append(objInstances.Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
+			globalvars.intangibles.remove(self.myHealthBar)
 			self.myHealthBar.kill()
 			died = True
 		return died

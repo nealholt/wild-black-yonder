@@ -1,6 +1,6 @@
 import pygame
-import game
 from colors import *
+import globalvars
 
 class Drawable:
 	def __init__(self, x1=0, y1=0, color=white):
@@ -24,7 +24,7 @@ class Rectangle(Drawable):
 		color_to_use = self.color
 		if not use_color is None:
 			color_to_use = use_color
-		pygame.draw.rect(game.screen, color_to_use, \
+		pygame.draw.rect(globalvars.screen, color_to_use, \
 			self.rect, self.thickness)
 
 
@@ -37,7 +37,7 @@ class Circle(Drawable):
 		color_to_use = self.color
 		if not use_color is None:
 			color_to_use = use_color
-		self.rect = pygame.draw.circle(game.screen, color_to_use, \
+		self.rect = pygame.draw.circle(globalvars.screen, color_to_use, \
 			(self.x1, self.y1), self.radius)
 
 
@@ -50,7 +50,7 @@ class Line(Drawable):
 		color_to_use = self.color
 		if not use_color is None:
 			color_to_use = use_color
-		self.rect = pygame.draw.line(game.screen, color_to_use, \
+		self.rect = pygame.draw.line(globalvars.screen, color_to_use, \
 			(self.x1, self.y1), self.p2)
 
 class Text(Drawable):
@@ -67,5 +67,5 @@ class Text(Drawable):
 		text = font.render(self.string, 1, color_to_use)
 		self.rect = text.get_rect(center=(self.x1, self.y1))
 		self.rect.left += self.rect.width/2 #Shift the text right by half its own width.
-		game.screen.blit(text, self.rect)
+		globalvars.screen.blit(text, self.rect)
 

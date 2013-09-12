@@ -1,7 +1,6 @@
 import colors
-import game
-import objInstances
-
+from objInstances import Bullet
+import globalvars
 
 class Weapon():
 	def __init__(self):
@@ -50,14 +49,14 @@ class Weapon():
 
 
 	def makeBullet(self, angle):
-		tempbullet = objInstances.Bullet(angle, self.shooter.rect.centerx,\
+		tempbullet = Bullet(angle, self.shooter.rect.centerx,\
 			self.shooter.rect.centery, self.shooter)
 		#Set bullet attributes
 		tempbullet.speed = self.bullet_speed
 		tempbullet.setColor(self.bullet_color)
 		tempbullet.timeToLive = self.bullet_lifespan
 		#Add bullet to the sprite groups
-		game.tangibles.add(tempbullet)
+		globalvars.tangibles.add(tempbullet)
 
 
 def setProfile(profile, weapon):
