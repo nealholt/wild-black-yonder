@@ -299,8 +299,8 @@ class FixedCircle(physicalObject.PhysicalObject):
 
 #When a rock is blown up, what comes out?
 subrocks = dict()
-subrocks['bigrock'] = ('medrock', 4)
-subrocks['medrock'] = ('smallrock', 4)
+subrocks['bigrock'] = ('bigrock', 4)
+subrocks['medrock'] = ('medrock', 4)
 subrocks['smallrock'] = ('debris', 10)
 subrocks['gold'] = ('gem',1)
 subrocks['silver'] = ('gem', 3)

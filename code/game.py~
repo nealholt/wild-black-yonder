@@ -134,7 +134,7 @@ def run():
 			#	mouse[0] = event.pos
 			elif event.type == pygame.KEYDOWN:
 				keys[event.key % 322] = 1
-				#print "TODO TESTING: key press "+str(event.key)
+				print "TODO TESTING: key press "+str(event.key)
 
 				#Respond to key taps.
 				#Keys that we want to respond to holding them down
