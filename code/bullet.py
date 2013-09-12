@@ -1,5 +1,6 @@
 import pygame
 import physicalObject
+import profiles
 
 class Bullet(physicalObject.PhysicalObject):
 	def __init__(self, game, direction, top, left, dontClipMe):
@@ -8,11 +9,9 @@ class Bullet(physicalObject.PhysicalObject):
 		height = 5
 		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
 
-		self.speed = 100.0 * self.interval
-		self.theta = direction
-		self.setColor((255,100,100))
+		profiles.bulletProfile(self, direction)
 
-		#How long this object will live in intervals
+		#How long this object will live. Unit is... frames?
 		self.timeToLive = 50
 
 
@@ -23,13 +22,8 @@ class Bullet(physicalObject.PhysicalObject):
 
 		self.timeToLive -= 1
 
-		self.draw()
-
-		#check if the object is due for an update
-		if pygame.time.get_ticks() < self.lastUpdate + self.interval:
-			return True
-		self.lastUpdate += self.interval
-
 		self.move()
+
+		self.draw()
 
 
