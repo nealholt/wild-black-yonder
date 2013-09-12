@@ -52,44 +52,43 @@ def loadImage(filename, colorkey=colors.black):
 	return image
 #END: copied from stardog utils.py
 
-#step 21: Goal: (Create separate sprite groups: tangible_sprites and intangible_sprite. Remove allSprites. Only check collisions on tangible sprites): delete this next line. Replace EVERY instance of allSprites with tangible_sprites.
-allSprites = pygame.sprite.Group()
+tangibles = pygame.sprite.Group()
+intangibles = pygame.sprite.Group()
 
-#step 22: this should be done to intangible_sprites
 #TODO Create a motionless object for reference purposes while testing.
-allSprites.add(explosion.FixedBody(0, 0))
+intangibles.add(explosion.FixedBody(0, 0))
 
 player = player.Player('images/ship')
-allSprites.add(player)
+tangibles.add(player)
 
 
 def hitBoxTest(c):
 	#shoot a bunch of hit box testers 
 	#in towards the player
 	h=hbt.HitBoxTester(top=c[1]+50, left=c[0]+50, destination=c)
-	allSprites.add(h)
-	allSprites.add(h)
+	tangibles.add(h)
+	tangibles.add(h)
 	h=hbt.HitBoxTester(top=c[1]+50, left=c[0]-50, destination=c)
-	allSprites.add(h)
-	allSprites.add(h)
+	tangibles.add(h)
+	tangibles.add(h)
 	h=hbt.HitBoxTester(top=c[1]+50, left=c[0], destination=c)
-	allSprites.add(h)
-	allSprites.add(h)
+	tangibles.add(h)
+	tangibles.add(h)
 	h=hbt.HitBoxTester(top=c[1]-50, left=c[0]+50, destination=c)
-	allSprites.add(h)
-	allSprites.add(h)
+	tangibles.add(h)
+	tangibles.add(h)
 	h=hbt.HitBoxTester(top=c[1]-50, left=c[0]-50, destination=c)
-	allSprites.add(h)
-	allSprites.add(h)
+	tangibles.add(h)
+	tangibles.add(h)
 	h=hbt.HitBoxTester(top=c[1]-50, left=c[0], destination=c)
-	allSprites.add(h)
-	allSprites.add(h)
+	tangibles.add(h)
+	tangibles.add(h)
 	h=hbt.HitBoxTester(top=c[1], left=c[0]+50, destination=c)
-	allSprites.add(h)
-	allSprites.add(h)
+	tangibles.add(h)
+	tangibles.add(h)
 	h=hbt.HitBoxTester(top=c[1], left=c[0]-50, destination=c)
-	allSprites.add(h)
-	allSprites.add(h)
+	tangibles.add(h)
+	tangibles.add(h)
 
 
 
@@ -234,15 +233,8 @@ class Game:
 
 			#update all sprites
 			self.offsetx,self.offsety = self.getOffset[self.camera]()
-			allSprites.update((self.offsetx,self.offsety))
-			#step 25: also call update on intangible_sprites
-
-			#step 28 (goal:update all the sprites, but only draw the ones that are on the screen.): take draw out of every physical object's update function including: bullet, stuff in explosion, hitBoxTester, ship.
-			#step 29: create a new sprite group called on_screen
-			#step 30: write a little code in the part of input that accepts the question mark which checks to see if the player is on the screen. You may want to simply create a rectangle that is the screen and see if the player collides with it. Print whether or not the player collides with it and test this with the fixed camera view.
-			#step 31: Then do the same thing with the enemy with a different camera view, checking to see that it has the correct behavior.
-			#step 32: add a bit of code in the run method that gets all tangibles and intangibles that collide with the screen rect (I think group collide might just return these nicely for you) and call draw on all the stuff in those functions.
-
+			tangibles.update((self.offsetx,self.offsety))
+			intangibles.update((self.offsetx,self.offsety))
 
 			#Display player location for debugging.
 			self.displayPlayerLoc()
@@ -261,7 +253,7 @@ class Game:
 		'''The following function comes from pseudo code from
 		 axisAlignedRectangleCollision.txt that has been modified.'''
 		#Get a list of all the sprites
-		sprite_list = allSprites.sprites()
+		sprite_list = tangibles.sprites()
 		#sort the list in descending order based on each 
 		#sprite's y coordinate (aka top) plus height.
 		#Remember that larger y coordinates indicate further down
@@ -306,54 +298,9 @@ class Game:
 							break
 
 
-	#step 26: delete the following functions from game.py: collisionChecks and checkEnemyCollisions
-	#step 27: test
-	def collisionChecks(self):
-		if player.isDead():
-			allSprites.add(explosion.Explosion(player.getY(),player.getX()))
-			#kill removes the calling sprite from all sprite groups
-			player.kill()
-
-		else:
-			#Check if player collided with enemy fire
-			#False tells the function not to autokill collided sprites
-			collisions = pygame.sprite.spritecollide(player, allSprites, False)
-			for c in collisions:
-				#TODO TESTING the following is VERY bad. I think it indicates that custom collision handlers between objects is totally the way to go.
-				if c.isHitBoxTester is None:
-					#kill removes the calling sprite 
-					#from all sprite groups
-					c.kill()
-					player.takeDamage()
-				else:
-					c.stopped = True
-
-			self.checkEnemyCollisions()
-
-
-	def checkEnemyCollisions(self):
-		to_destroy = []
-		for i in xrange(len(enemy_ships)):
-			enemy = enemy_ships[i]
-			if len(collisions) > 0:
-				for c in collisions:
-					#kill removes the calling sprite 
-					#from all sprite groups
-					c.kill()
-					enemy.takeDamage()
-				if enemy.isDead() and not i in to_destroy:
-					to_destroy.append(i)
-			#check if player collided with the enemy
-			elif pygame.sprite.collide_rect(player, enemy):
-				if not i in to_destroy: to_destroy.append(i)
-				player.takeDamage()
-		#Blow up destroyed enemies. They only have one health each.
-		for td in to_destroy:
-			self.blowUpEnemy(td)
-
 	def makeNewEnemy(self):
 		enemy_ship = ship.Ship(top=50, left=50, image_name='images/destroyer')
-		allSprites.add(enemy_ship)
+		tangibles.add(enemy_ship)
 
 	def displayPlayerLoc(self):
 #		if self.timer > self.nextUpdate:
@@ -370,13 +317,11 @@ class Game:
 	def fixedScreen(self):
 		player.playerUpdate()
 		player.draw()
-		player.drawHealthBarAt(player.getCenter())
 		return 0,0
 
 	def centerOnPlayer(self):
 		player.playerUpdate()
 		player.drawAt((self.centerx, self.centery))
-		player.drawHealthBarAt((self.centerx, self.centery))
 		return player.getX() - self.centerx, player.getY() - self.centery
 
 	def followPlayer(self):
@@ -387,7 +332,4 @@ class Game:
 		player.playerUpdate(offset)
 		player.draw(offset)
 
-		
-		pos = player.rect.centerx - offset[0], player.rect.centery - offset[1]
-		player.drawHealthBarAt(pos) #player.getX() - offset[0], player.getY() - offset[1])
 		return offset

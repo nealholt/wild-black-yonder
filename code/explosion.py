@@ -28,9 +28,9 @@ class Explosion(physicalObject.PhysicalObject):
 		#I am unwilling to spend any more time. DO NOT go down this hole.
 		top = self.rect.centery-offset[1]
 		left = self.rect.centerx-offset[0]
-		#step 24: these should be done to intangible_sprites
-		game.allSprites.add(Flash(top, left))
-		game.allSprites.add(Debris(self.rect.centery, self.rect.centerx))
+
+		game.intangibles.add(Flash(top, left))
+		game.intangibles.add(Debris(self.rect.centery, self.rect.centerx))
 
 
 

@@ -4,6 +4,7 @@ import profiles
 import game
 import colors
 import explosion
+import healthBar
 
 class Ship(physicalObject.PhysicalObject):
 	def __init__(self, top=0, left=0, image_name='default'):
@@ -18,14 +19,12 @@ class Ship(physicalObject.PhysicalObject):
 		self.health=50
 		self.maxhealth=50
 
-		self.healthBarWidth = 20
-		self.healthBarHeight = 10
-
 		profiles.shipProfile(self, profile='mk0')
 		self.setProfile()
 
-		#step 33: figure out how to only draw ship healthbars when on the screen: ship creates a physical object healthbar, and adds it to the intangibles, and maintains a pointer to it. ship doesn't draw it, but updates its location when the ship's update function is called. Might, probably want a healthbar object. Maybe it keeps track of the ship rather than the other way around. TODO LEFT OFF HERE. healthBar.py was created to keep track of healthbars and progress bars in general.
-		#step 34: test healthbars
+		self.myHealthBar = healthBar.HealthBar(width=20, height=10, ship=self, vertical=False, 
+			current=self.health, total=self.maxhealth)
+		game.intangibles.add(self.myHealthBar)
 
 		self.is_a = game.SHIP
 
@@ -36,18 +35,6 @@ class Ship(physicalObject.PhysicalObject):
 		self.dv = self.engine.dv
 		self.dthea = self.engine.dtheta
 
-
-	def drawHealthBarAt(self, offset):
-		'''Draw health bars'''
-		healthx = offset[0] - self.healthBarWidth/2
-		healthy = offset[1] - self.healthBarHeight - self.rect.height/2
-
-		tempRect = pygame.Rect(healthx, healthy, self.healthBarWidth, self.healthBarHeight)
-		pygame.draw.rect(game.screen, colors.red, tempRect, 0)
-
-		width = self.health/float(self.maxhealth)*self.healthBarWidth
-		tempRect = pygame.Rect(healthx, healthy, width, self.healthBarHeight)
-		pygame.draw.rect(game.screen, colors.green, tempRect, 0)
 
 	def takeDamage(self):
 		self.health -= 10
@@ -92,7 +79,6 @@ class Ship(physicalObject.PhysicalObject):
 		#draw
 		x,y = self.getCenter()
 		pos = x - offset[0], y - offset[1]
-		self.drawHealthBarAt(pos)
 		self.drawAt(pos)
 
 
@@ -112,10 +98,10 @@ class Ship(physicalObject.PhysicalObject):
 				self.bounceOff(other_sprite)
 		self.takeDamage()
 		if self.isDead():
-			#step 23: this should be done to intangible_sprites
-			game.allSprites.add(explosion.Explosion(self.getY(),self.getX()))
+			game.intangibles.add(explosion.Explosion(self.getY(),self.getX()))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
+			self.myHealthBar.kill()
 			died = True
 		return died
 

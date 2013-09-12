@@ -42,7 +42,7 @@ class Weapon():
 		tempbullet.setColor(self.bullet_color)
 		tempbullet.timeToLive = self.bullet_lifespan
 		#Add bullet to the sprite groups
-		game.allSprites.add(tempbullet)
+		game.tangibles.add(tempbullet)
 		#reset cooldown
 		self.cooldown = self.refire_rate
 

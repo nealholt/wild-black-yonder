@@ -11,9 +11,6 @@ class Player(ship.Ship):
 
 		self.rect.topleft = (100,100)
 
-		self.health = 100.0
-		self.maxhealth = 100.0
-
 		self.parkAtDestination = False
 
 
