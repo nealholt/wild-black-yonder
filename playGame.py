@@ -22,7 +22,10 @@ if __name__=="__main__":
 	'Press "p" to slow down and park at destination.\n'+\
 	'Press "s" to pause/unpause the game.\n'+\
 	'Press "q" to remove destination and simply fly in current direction.\n'+\
-	'Press "z" to fire a missile.\n'
+	'Press "t" for hit box test.\n'+\
+	'Press "s" to pause and unpause.\n'+\
+	'Press "y" profile the game.\n'+\
+	'\n'
 
 	#Initial test scenario
 	testScenario00()

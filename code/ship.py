@@ -5,6 +5,7 @@ import colors
 import objInstances
 from geometry import distance, lineIntersectsCircle, angleToSlope, inSights
 import globalvars
+import weapon
 
 class Ship(physicalObject.PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
@@ -26,6 +27,14 @@ class Ship(physicalObject.PhysicalObject):
 
 		self.is_a = globalvars.SHIP
 		self.isPlayer = False
+
+
+	def setWeapon(self, weaponId):
+		'''Pre: weaponId is a string such as 'spread_mk3'.
+		Assumes the ship only has one weapon equipped.
+		Post: Changes the player's weapon.
+		This is called by the weapons panel in menus.py.'''
+		self.weapons = [weapon.getWeapon(weaponId, self)]
 
 
 	def setHealthBar(self):
@@ -72,13 +81,6 @@ class Ship(physicalObject.PhysicalObject):
 					w.weapon_range, w.attack_angle) and\
 					self.clearLineOfSight():
 						w.shoot()
-
-	def fireMissile(self):
-		''' '''
-		tempmissile = objInstances.Missile(self)
-		#Add missile to the sprite groups
-		globalvars.tangibles.add(tempmissile)
-
 
 	def cooldown(self):
 		'''Cool all our weapons'''

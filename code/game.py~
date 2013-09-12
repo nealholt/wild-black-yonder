@@ -134,7 +134,7 @@ def run():
 			#	mouse[0] = event.pos
 			elif event.type == pygame.KEYDOWN:
 				keys[event.key % 322] = 1
-				#print "TODO TESTING: key press "+str(event.key)
+				print "TODO TESTING: key press "+str(event.key)
 
 				#Respond to key taps.
 				#Keys that we want to respond to holding them down
@@ -182,7 +182,7 @@ def run():
 					test.hitBoxTest(globalvars.player.rect.center)
 				elif event.key == 121: #y key
 					profileEverything(offset)
-				elif event.key == 47: 
+				elif event.key == 47:
 					#forward slash (question mark
 					#without shift) key.
 					#Useful for querying one time info.
@@ -457,15 +457,7 @@ def collisionHandling():
 				#then they don't overlap, but one of the following 
 				#sprites might still overlap so we move to the
 				#next sprite in the list.
-				#OLD WAY based on rectangles:
-				#if A.rect.topleft[0]+A.rect.width < B.rect.topleft[0]\
-				#or B.rect.topleft[0]+B.rect.width < A.rect.topleft[0]:
-				#NEW WAY based on circles:
-				#If the distance between our centers is larger than are 
-				#summed radii, then we have not collided.
-				if distance(A.rect.center, B.rect.center) > A.radius+B.radius:
-					pass
-				else:
+				if A.inCollision(B):
 					#they overlap. They should handle 
 					#collisions with each other.
 					A_died = A.handleCollisionWith(B)
@@ -473,7 +465,6 @@ def collisionHandling():
 					#If A has died, then don't worry about A
 					#colliding with anything else.
 					if A_died: break
-
 
 
 def profileEverything(offset):

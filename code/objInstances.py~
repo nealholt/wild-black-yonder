@@ -57,6 +57,9 @@ class Bullet(physicalObject.PhysicalObject):
 
 
 class Missile(physicalObject.PhysicalObject):
+	'''missile - new object that seeks nearest enemy target, damage and explosion on impact. 
+	initial direction is same as firer. initial speed is firer plus some amount. 
+	will not impact firer.'''
 	def __init__(self, shooter):
 
 		physicalObject.PhysicalObject.__init__(self, \
@@ -81,7 +84,7 @@ class Missile(physicalObject.PhysicalObject):
 
 		#Find nearest enemy ship and set it as target.
 		self.target = None
-		if self.isPlayer:
+		if shooter.isPlayer:
 			#Search through globalvars.whiskerables
 			closest = 999999.
 			for w in globalvars.whiskerables:
@@ -142,6 +145,51 @@ class Missile(physicalObject.PhysicalObject):
 			self.kill()
 		return died
 
+
+
+class Mine(physicalObject.PhysicalObject):
+	''' '''
+	def __init__(self, shooter):
+
+		physicalObject.PhysicalObject.__init__(self, \
+			centerx=shooter.rect.centerx, \
+			centery=shooter.rect.centery,\
+			width=10, height=10,\
+			color=colors.orange)
+
+		self.theta = 0.
+		self.speed = 0.
+		self.targetSpeed = 0.
+		self.dv = 0.0
+
+		#This is needed so that the shooter doesn't immediately take damage
+		#from his own mine.
+		self.dontClipMe = shooter
+
+		self.is_a = globalvars.BULLET
+
+		#A timer. This mine will explode on contact after this many frames.
+		self.explodeAfter = 60
+
+	def update(self):
+		''' '''
+		if self.explodeAfter > 0:
+			self.explodeAfter -= 1
+			#Now make the mine dangerous to everyone, including the person who laid it.
+			if self.explodeAfter == 0:
+				self.dontClipMe = None
+
+	def handleCollisionWith(self, other_sprite):
+		'''For now mines die immediately regardless of what they hit.'''
+		died = False
+		if self.explodeAfter == 0 or other_sprite.is_a == globalvars.BULLET:
+			#explode
+			globalvars.intangibles.append(Explosion(\
+				x=self.rect.centerx,y=self.rect.centery))
+			died = True
+			#kill removes the calling sprite from all sprite groups
+			self.kill()
+		return died
 
 
 class Explosion(physicalObject.PhysicalObject):

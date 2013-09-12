@@ -1,8 +1,9 @@
 import physicalObject
-from globalvars import tangibles
+import globalvars
 
 class HitBoxTester(physicalObject.PhysicalObject):
-	'''Like a bullet, but these hit box testers will fly in from all angles and freeze on the screen where they collide with the player. this will reveal the true hit box so I can start to figure out why it isn't where I expect it to be.'''
+	'''Like a bullet, but these hit box testers freeze on the screen where they collide 
+	with anything. this will reveal the true hit box of an object.'''
 	def __init__(self, top=0, left=0, destination=(0,0)):
 
 		physicalObject.PhysicalObject.__init__(self, top, left, width=5, height=5)
@@ -12,11 +13,8 @@ class HitBoxTester(physicalObject.PhysicalObject):
 		self.stopped = False
 		self.isHitBoxTester = True
 
-	def update(self, offset):
-		if not self.stopped:
-			self.move()
-
-		self.draw(offset)
+	def update(self):
+		if not self.stopped: self.move()
 
 	def handleCollisionWith(self, other_sprite):
 		self.stopped = True
@@ -25,25 +23,47 @@ class HitBoxTester(physicalObject.PhysicalObject):
 
 
 
+class HitBoxTestBullet(physicalObject.PhysicalObject):
+	'''Like a bullet, but these hit box testers freeze on the screen where they collide 
+	with anything. this will reveal the true hit box of an object.'''
+	def __init__(self, direction, x, y, dontClipMe, width=5, height=5):
+		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
+			width=width, height=height)
+		self.theta = direction
+		self.dontClipMe = dontClipMe
+		self.speed = 3
+		self.stopped = False
+		self.isHitBoxTester = True
 
-def hitBoxTest(c):
-	#shoot a bunch of hit box testers 
-	#in towards the player
-	h=HitBoxTester(top=c[1]+50, left=c[0]+50, destination=c)
-	tangibles.add(h)
-	h=HitBoxTester(top=c[1]+50, left=c[0]-50, destination=c)
-	tangibles.add(h)
-	h=HitBoxTester(top=c[1]+50, left=c[0], destination=c)
-	tangibles.add(h)
-	h=HitBoxTester(top=c[1]-50, left=c[0]+50, destination=c)
-	tangibles.add(h)
-	h=HitBoxTester(top=c[1]-50, left=c[0]-50, destination=c)
-	tangibles.add(h)
-	h=HitBoxTester(top=c[1]-50, left=c[0], destination=c)
-	tangibles.add(h)
-	h=HitBoxTester(top=c[1], left=c[0]+50, destination=c)
-	tangibles.add(h)
-	h=HitBoxTester(top=c[1], left=c[0]-50, destination=c)
-	tangibles.add(h)
+	def update(self):
+		if not self.stopped: self.move()
+
+	def handleCollisionWith(self, other_sprite):
+		self.stopped = True
+		died = True
+		return died
+
+
+
+def hitBoxTest(c, startdist=50):
+	'''shoot a bunch of hit box testers 
+	in towards the location c
+	start from startdist pixels away.'''
+	h=HitBoxTester(top=c[1]+startdist, left=c[0]+startdist, destination=c)
+	globalvars.tangibles.add(h)
+	h=HitBoxTester(top=c[1]+startdist, left=c[0]-startdist, destination=c)
+	globalvars.tangibles.add(h)
+	h=HitBoxTester(top=c[1]+startdist, left=c[0], destination=c)
+	globalvars.tangibles.add(h)
+	h=HitBoxTester(top=c[1]-startdist, left=c[0]+startdist, destination=c)
+	globalvars.tangibles.add(h)
+	h=HitBoxTester(top=c[1]-startdist, left=c[0]-startdist, destination=c)
+	globalvars.tangibles.add(h)
+	h=HitBoxTester(top=c[1]-startdist, left=c[0], destination=c)
+	globalvars.tangibles.add(h)
+	h=HitBoxTester(top=c[1], left=c[0]+startdist, destination=c)
+	globalvars.tangibles.add(h)
+	h=HitBoxTester(top=c[1], left=c[0]-startdist, destination=c)
+	globalvars.tangibles.add(h)
 
 

@@ -1,9 +1,10 @@
 import colors
-from objInstances import Bullet
+from objInstances import Bullet, Missile, Mine
 import globalvars
+from testFunctions import HitBoxTestBullet
 
 class Weapon():
-	def __init__(self):
+	def __init__(self, shooter):
 		self.name='default'
 		self.refire_rate=10 #Fires once every refire_rate frames
 		self.cooldown=0 #How long until next shot
@@ -16,7 +17,7 @@ class Weapon():
 		#1.2 is a fudge factor used so that the ship shoots slightly before 
 		#its target moves into range, in case the two ships are closing
 		self.weapon_range = self.bullet_speed*self.bullet_lifespan*1.2
-		self.shooter = None
+		self.shooter = shooter
 
 	def cool(self):
 		if self.cooldown > 0:
@@ -60,24 +61,84 @@ class Weapon():
 
 
 
-class MissileLauncher(): #TODO LEFT OFF HERE
-	def __init__(self):
-		self.name='default'
-		self.refire_rate=10 #Fires once every refire_rate frames
+class HitBoxTesterGun():
+	def __init__(self, shooter):
+		self.name='HitBoxTesterGun'
 		self.cooldown=0 #How long until next shot
-		self.shooter = None
+		self.bullet_speed=5
+		self.refire_rate=10 #Fires once every refire_rate frames
+		self.bullet_lifespan=150 #How long the bullet lasts before expiring
+		self.bullet_color=colors.yellow
+		self.shooter = shooter
 
 	def cool(self):
 		if self.cooldown > 0:
 			self.cooldown -= 1
 
 	def shoot(self):
-		pass
+		self.makeBullet(self.shooter.theta)
+		#reset cooldown
+		self.cooldown = self.refire_rate
+
+
+	def makeBullet(self, angle):
+		tempbullet = HitBoxTestBullet(angle, self.shooter.rect.centerx,\
+			self.shooter.rect.centery, self.shooter)
+		#Set bullet attributes
+		tempbullet.speed = self.bullet_speed
+		tempbullet.setColor(self.bullet_color)
+		tempbullet.timeToLive = self.bullet_lifespan
+		#Add bullet to the sprite groups
+		globalvars.tangibles.add(tempbullet)
 
 
 
+class MissileLauncher():
+	def __init__(self, shooter):
+		self.name='default'
+		self.refire_rate=120 #Fires once every refire_rate frames
+		self.cooldown=0 #How long until next shot
+		self.shooter = shooter
+		self.attack_angle = 10 #if within this angle to target, can shoot at target
+		self.weapon_range = 700
 
-def setProfile(profile, weapon):
+	def cool(self):
+		if self.cooldown > 0:
+			self.cooldown -= 1
+
+	def shoot(self):
+		tempmissile = Missile(self.shooter)
+		#Add missile to the sprite groups
+		globalvars.tangibles.add(tempmissile)
+		self.cooldown=self.refire_rate
+
+
+
+class MineLayer():
+	def __init__(self, shooter):
+		self.name='default'
+		self.refire_rate=10 #Fires once every refire_rate frames
+		self.cooldown=0 #How long until next shot
+		self.shooter = shooter
+		self.attack_angle = 10 #if within this angle to target, can shoot at target
+		self.weapon_range = 700
+
+	def cool(self):
+		if self.cooldown > 0:
+			self.cooldown -= 1
+
+	def shoot(self):
+		tempmine = Mine(self.shooter)
+		#Add mine to the sprite groups
+		globalvars.tangibles.add(tempmine)
+		#Add it to whiskerables so enemy ships will avoid it.
+		globalvars.whiskerables.add(tempmine)
+		self.cooldown=self.refire_rate
+
+
+
+def getWeapon(profile, weaponOwner):
+	weapon = Weapon(weaponOwner)
 	if profile == 'mk0':
 		weapon.name='Laser Mk0'
 		weapon.refire_rate=1000 #Fires once every refire_rate frames
@@ -128,4 +189,11 @@ def setProfile(profile, weapon):
 		weapon.spread=10 #spread of bullets fired
 		weapon.attack_angle = 3
 		weapon.bullet_color=colors.pink
+	elif profile == 'missile_mk1':
+		weapon = MissileLauncher(weaponOwner)
+	elif profile == 'mine':
+		weapon = MineLayer(weaponOwner)
+	elif profile == 'hit_box_test':
+		weapon = HitBoxTesterGun(weaponOwner)
+	return weapon
 

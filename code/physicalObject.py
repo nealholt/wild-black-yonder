@@ -1,6 +1,6 @@
 import pygame
 import math
-from displayUtilities import loadImage
+from displayUtilities import image_list
 import geometry
 from colors import white
 import globalvars
@@ -56,11 +56,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.image.fill(self.color)
 			self.base_image = self.image
 		else:
-			self.image = loadImage(self.image_name)
+			self.image = image_list[self.image_name].convert()
 			#Base image is needed because we need a reference to the
 			#original image that is never modified.
 			#self.base_image is used in updateImageAngle.
-			self.base_image = loadImage(self.image_name)
+			self.base_image = image_list[self.image_name].convert()
 			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()
@@ -73,6 +73,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Old way: This made the asteroids slightly too large.
 		#self.radius = max(int((self.rect.width+self.rect.height)/4), 1)
 		self.radius = max(int(min(self.rect.width,self.rect.height)/2), 1)
+
+		#If True, this physical object will perform rectangular collision detection.
+		#If False, this physical object will perform circular collision detection.
+		#The capital ship was the first object to use rectangular collision detection.
+		self.useRectangular = False
 
 		#What is this object.
 		self.is_a = globalvars.OTHER
@@ -164,6 +169,14 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.theta += delta
 		if self.theta > 180: self.theta -= 360
 		elif self.theta < -180: self.theta += 360
+		self.updateImageAngle()
+
+	def setAngle(self, angle):
+		'''I'm using an angle system like stardog uses such that 
+		east=0, north=-90, west=180, south=90'''
+		self.theta = angle
+		while self.theta > 180: self.theta -= 360
+		while self.theta < -180: self.theta += 360
 		self.updateImageAngle()
 
 	def park(self):
@@ -325,6 +338,28 @@ class PhysicalObject(pygame.sprite.Sprite):
 		return self.rect.width*self.rect.height
 
 
+	def inCollision(self, other):
+		'''Pre: Other is a physical object
+		Post: returns true if self and other are colliding.'''
+		#treat both objects as rectangles if either object wants to be
+		#treated as a rectangle.
+		#collision detect based on rectangles:
+		if self.useRectangular or other.useRectangular:
+			#If not that self's right most point is left of other's left most point
+			#or other's right most point is left of self's left most point
+			#then the two objects collided.
+			return not(self.rect.topleft[0]+self.rect.width < other.rect.topleft[0]\
+			or other.rect.topleft[0]+other.rect.width < self.rect.topleft[0])\
+			and not(self.rect.topleft[1]+self.rect.height < other.rect.topleft[1]\
+			or other.rect.topleft[1]+other.rect.height < self.rect.topleft[1])
+		#collision detect based on circles:
+		#If the distance between our centers is less than our 
+		#summed radii, then we have collided.
+		else:
+			return geometry.distance(self.rect.center, other.rect.center) < self.radius+other.radius
+
+
+
 	def bounceOff(self, other):
 		'''Other is another physical object that this physical object 
 		just struck and should bounce off of.
@@ -338,46 +373,58 @@ class PhysicalObject(pygame.sprite.Sprite):
 		Increase A's speed. Decrease B's speed. (This is the case where A 
 		is hit from behind despite moving in the same direction as B.)
 		'''
-		angleToOther = self.getAngleToTarget(target=other)
-		if abs(angleToOther) < 45:
-			#This object should bounce off other in a dramatically
-			#new direction. Specifically, our angle should be 
-			#reflected over the line perpendicular to the line that
-			#passes through the center of this and other.
-			#First pass for code follows. This is good enough for now.
-			if angleToOther < 0:
-				self.turnClockwise(110)
+		#If either object uses rectangular, we need to bounce off differently
+		if self.useRectangular or other.useRectangular:
+			#Determine if the collision is in the x direction or the y direction.
+			if self.rect.topleft[0]+self.rect.width > other.rect.topleft[0]+other.rect.width\
+			or other.rect.topleft[0] > self.rect.topleft[0]:
+				#horizontal collision
+				if self.theta > 0:
+					self.setAngle(180.0 - self.theta)
+				else:
+					self.setAngle(-180.0 - self.theta)
 			else:
-				self.turnCounterClockwise(110)
-		elif abs(angleToOther) < 90:
-			#This object should bounce off other in a dramatically
-			#new direction. Specifically, our angle should be 
-			#reflected over the line perpendicular to the line that
-			#passes through the center of this and other.
-			#First pass for code follows. This is good enough for now.
-			if angleToOther < 0:
-				self.turnClockwise(65)
-			else:
-				self.turnCounterClockwise(65)
+				#vertical collision
+				self.setAngle(-self.theta)
 		else:
-			#this should sort of be bounced to a higher speed, as 
-			#when an object is hit from behind.
-			#The angle will also change slightly to be more in the
-			#direction of the object that struck us.
-			#Specifically, change our angle to be halfway between 
-			#our angle and the angle of other.
-			#First pass for code follows. This is good enough for now.
-			amountToTurn = (180 - abs(angleToOther))/2
-			if angleToOther < 0:
-				self.turnCounterClockwise(amountToTurn)
+			angleToOther = self.getAngleToTarget(target=other)
+			if abs(angleToOther) < 45:
+				#This object should bounce off other in a dramatically
+				#new direction. Specifically, our angle should be 
+				#reflected over the line perpendicular to the line that
+				#passes through the center of this and other.
+				#First pass for code follows. This is good enough for now.
+				if angleToOther < 0:
+					self.turnClockwise(110)
+				else:
+					self.turnCounterClockwise(110)
+			elif abs(angleToOther) < 90:
+				#This object should bounce off other in a dramatically
+				#new direction. Specifically, our angle should be 
+				#reflected over the line perpendicular to the line that
+				#passes through the center of this and other.
+				#First pass for code follows. This is good enough for now.
+				if angleToOther < 0:
+					self.turnClockwise(65)
+				else:
+					self.turnCounterClockwise(65)
 			else:
-				self.turnClockwise(amountToTurn)
-			#Use max because speed*1.5 might be zero.
-			self.speed = max(self.speed*1.5, 10)
+				#this should sort of be bounced to a higher speed, as 
+				#when an object is hit from behind.
+				#The angle will also change slightly to be more in the
+				#direction of the object that struck us.
+				#Specifically, change our angle to be halfway between 
+				#our angle and the angle of other.
+				#First pass for code follows. This is good enough for now.
+				amountToTurn = (180 - abs(angleToOther))/2
+				if angleToOther < 0:
+					self.turnCounterClockwise(amountToTurn)
+				else:
+					self.turnClockwise(amountToTurn)
+				#Use max because speed*1.5 might be zero.
+				self.speed = max(self.speed*1.5, 10)
 		#Prevent multiple consecutive collisions with the same object
-		limit = 10; i = 0 #also prevent infinite loops
-		while self.speed > 0 and geometry.distance(self.rect.center, other.rect.center) <= self.radius+other.radius and i < limit:
-			i+=1
+		while self.speed > 0 and self.inCollision(other):
 			self.move()
 
 

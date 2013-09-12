@@ -182,8 +182,6 @@ def run():
 					test.hitBoxTest(globalvars.player.rect.center)
 				elif event.key == 121: #y key
 					profileEverything(offset)
-				elif event.key == 122: #z key
-					globalvars.player.fireMissile()
 				elif event.key == 47:
 					#forward slash (question mark
 					#without shift) key.
@@ -459,15 +457,7 @@ def collisionHandling():
 				#then they don't overlap, but one of the following 
 				#sprites might still overlap so we move to the
 				#next sprite in the list.
-				#OLD WAY based on rectangles:
-				#if A.rect.topleft[0]+A.rect.width < B.rect.topleft[0]\
-				#or B.rect.topleft[0]+B.rect.width < A.rect.topleft[0]:
-				#NEW WAY based on circles:
-				#If the distance between our centers is larger than are 
-				#summed radii, then we have not collided.
-				if distance(A.rect.center, B.rect.center) > A.radius+B.radius:
-					pass
-				else:
+				if A.inCollision(B):
 					#they overlap. They should handle 
 					#collisions with each other.
 					A_died = A.handleCollisionWith(B)
@@ -475,7 +465,6 @@ def collisionHandling():
 					#If A has died, then don't worry about A
 					#colliding with anything else.
 					if A_died: break
-
 
 
 def profileEverything(offset):

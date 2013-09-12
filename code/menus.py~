@@ -90,7 +90,7 @@ def getTestingPanel():
 
 	#Then draw the contents of the menu
 	horiz_space = 200
-	vert_space = 100
+	vert_space = 70
 	x1, y1 = horiz_space, globalvars.HEIGHT/2
 	radius = 10
 	#panel made of a circle centered at start
@@ -100,12 +100,13 @@ def getTestingPanel():
 	subpanel.addDrawable(temp)
 	menu.addPanel(subpanel)
 
-	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Infinite space']
-	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.infiniteSpace]
+	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Infinite space', 'Capital ship']
+	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.infiniteSpace, scenarios.capitalShipScenario]
 
 	x2 = horiz_space*2
-	for i in range(5):
-		j = i-2
+	methodLength = len(methods)
+	for i in range(methodLength):
+		j = i-methodLength/2
 		y2 = globalvars.HEIGHT/2+vert_space*j
 
 		subpanel = Panel()
@@ -159,14 +160,14 @@ def getRestartPanel():
 
 
 
-weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'spread_mk3']
+weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'spread_mk3', 'missile_mk1', 'mine']
 def setWeaponsPanel():
 	'''Creates the weapon panel and sets the current panel to be the weapon panel.'''
 	menu = getStandardMenu()
 	#Then draw the contents of the menu
 	for i in xrange(len(weaponsList)):
 		subpanel = Panel()
-		temp = drawable.Text(x1=globalvars.WIDTH/2-100, y1=(80*i+150), \
+		temp = drawable.Text(x1=globalvars.WIDTH/2-100, y1=(40*i+150), \
 			string=weaponsList[i], font_size=24, color=colors.white)
 		subpanel.addDrawable(temp)
 		#The following commented code does not work so I created an argument attribute for the panel object.

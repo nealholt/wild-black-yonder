@@ -5,13 +5,15 @@ import colors
 import random as rd
 from geometry import getCoordsNearLoc, translate, distance
 import ship
+import capitalShip
 import displayUtilities
 import globalvars
 import math
 import player
 
-def makeNewEnemy(x=0, y=0):
+def makeNewEnemy(x=0, y=0, weaponType='mk1'):
 	enemy_ship = ship.Ship(centerx=x, centery=y, image_name='destroyer')
+	enemy_ship.setWeapon(weaponType)
 	globalvars.tangibles.add(enemy_ship)
 	globalvars.whiskerables.add(enemy_ship)
 
@@ -185,7 +187,7 @@ def testScenario00(seed=0):
 
 	globalvars.BGCOLOR = colors.black
 
-	globalvars.BGIMAGE = displayUtilities.loadImage('bgjupiter' + displayUtilities.ext)
+	globalvars.BGIMAGE = displayUtilities.image_list['bgjupiter'].convert()
 
 	#Create motionless objects for reference purposes while testing.
 	temp = objInstances.FixedBody(0, -100, image_name='gem') #little crystal
@@ -317,14 +319,33 @@ def furball(seed=0):
 	wipeOldScenario(); resetDust()
 	globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
 
-	globalvars.BGIMAGE = displayUtilities.loadImage('bggalaxies' + displayUtilities.ext)
+	globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
 
 	#Make a few enemies near the player
-	for _ in range(3):
-		mindist = 200
-		maxdist = 800
-		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
-		makeNewEnemy(x=x, y=y)
+	mindist = 200
+	maxdist = 800
+	x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
+	makeNewEnemy(x=x, y=y)
+
+	x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
+	makeNewEnemy(x=x, y=y)
+
+	x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
+	makeNewEnemy(x=x, y=y, weaponType='missile_mk1') #The third enemy gets a missile.
+
+
+def capitalShipScenario(seed=0):
+	rd.seed(seed) #Fix the seed for the random number generator.
+
+	wipeOldScenario(); resetDust()
+	globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
+
+	globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
+
+	#Make the capital ship
+	enemy_ship = capitalShip.CapitalShip(centerx=0, centery=100, image_name='bigShip')
+	globalvars.tangibles.add(enemy_ship)
+	globalvars.whiskerables.add(enemy_ship)
 
 
 def infiniteSpace(seed=0):

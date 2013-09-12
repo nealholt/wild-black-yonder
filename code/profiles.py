@@ -5,20 +5,14 @@ import engine
 def shipProfile(ship, profile='default'):
 	if profile == 'default':
 		#Give enemy a weapon
-		w = weapon.Weapon()
-		weapon.setProfile('mk1', w)
-		w.shooter = ship
-		ship.weapons = [w] #Previously we appended the weapon, but since player is a subclass of ship, it was getting the default weapon AND its own weapon which caused a weird bug, especially with bullets colliding with themselves.
+		ship.setWeapon('mk1')
 		#Give enemy an engine
 		ship.engine = engine.Engine()
 		engine.setProfile('mk1', ship.engine)
 		#return 'destroyer' #Return the image to use
 	elif profile.startswith('mk'):
 		#Give enemy a weapon
-		w = weapon.Weapon()
-		weapon.setProfile(profile, w)
-		w.shooter = ship
-		ship.weapons = [w] #Previously we appended the weapon, but since player is a subclass of ship, it was getting the default weapon AND its own weapon which caused a weird bug, especially with bullets colliding with themselves.
+		ship.setWeapon(profile)
 		#Give enemy an engine
 		ship.engine = engine.Engine()
 		engine.setProfile(profile, ship.engine)

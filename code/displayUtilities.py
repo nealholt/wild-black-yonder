@@ -31,6 +31,11 @@ def preLoadImage(filename, transparency=True):
 
 
 #Keep a list of preloaded images
+'''In theory, preloading the images and then getting copies of them when needed with the convert() method will be faster and more efficient than loading the image anew each time.
+According to 
+http://www.pygame.org/docs/ref/image.html
+"The returned Surface will contain the same color format, colorkey and alpha transparency as the file it came from. You will often want to call Surface.convert() with no arguments, to create a copy that will draw more quickly on the screen."
+I tested this. It is WAAAAY faster.'''
 image_list = dict()
 image_list['bigrock'] = preLoadImage('images/asteroidBigRoundTidied'+ext) #large asteroid
 image_list['medrock'] = preLoadImage('images/asteroidWild2'+ext) #medium asteroid
@@ -43,17 +48,8 @@ image_list['health'] = preLoadImage('images/health'+ext) #health kit
 image_list['gem'] = preLoadImage('images/TyDfN_tiny'+ext) #gem
 image_list['bgjupiter'] = preLoadImage('images/ioOverJupiter'+ext, transparency=False) #background jupiter
 image_list['bggalaxies'] = preLoadImage('images/galaxyLenses'+ext, transparency=False) #background galaxies
+image_list['bigShip'] = preLoadImage('images/bigShip'+ext) #capital ship
 
-
-
-def loadImage(imagename):
-	'''In theory, preloading the images and then getting copies of them when needed with the convert() method will be faster and more efficient than loading the image anew each time.
-	According to 
-	http://www.pygame.org/docs/ref/image.html
-	"The returned Surface will contain the same color format, colorkey and alpha transparency as the file it came from. You will often want to call Surface.convert() with no arguments, to create a copy that will draw more quickly on the screen."
-	I tested this. It is WAAAAY faster.
-	'''
-	return image_list[imagename].convert()
 
 
 def trunc(f, n):
