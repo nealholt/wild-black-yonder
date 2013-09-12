@@ -72,12 +72,14 @@ def run():
 
 	#The in-round loop (while player is alive):
 	while running:
-		#Used for calculating actual frames per in order to determine 
-		#when we are dropping frames so that efficiency improvements can be made.
+		#Used for calculating actual frames per second in
+		#order to determine when we are dropping frames
+		#so that efficiency improvements can be made.
 		start_time = datetime.datetime.now()
 		#frame maintainance:
 		pygame.display.flip()
-		clock.tick(globalvars.FPS) #aim for FPS but adjust vars for fps.
+		#aim for globalvars.FPS frames per second.
+		clock.tick(globalvars.FPS) 
 		fps = max(1, int(clock.get_fps()))
 
 		#Skip the rest of this loop until the game is unpaused.
@@ -105,7 +107,7 @@ def run():
 					break
 				#Panel event handeling can make the panel itself None so we have 
 				#to check if the panel has become None for every event. If the
-				#panel has become none we break and ignore further input events.
+				#panel has become None we break and ignore further input events.
 				elif globalvars.panel is None:
 					break
 				#Pass all other events to the panel
@@ -129,7 +131,7 @@ def run():
 			#	mouse[0] = event.pos
 			elif event.type == pygame.KEYDOWN:
 				keys[event.key % 322] = 1
-				print "TODO TESTING: key press "+str(event.key)
+				#print "TODO TESTING: key press "+str(event.key)
 
 				#Respond to key taps.
 				#Keys that we want to respond to holding them down
@@ -337,6 +339,7 @@ def drawThoseOnScreen(sprite_list, offset):
 	#print str(draw_count)+' objects on screen.' #TESTING
 
 def drawThoseOnScreen2(sprite_list, offset):
+	'''Presumably slower version of the above method used for testing.'''
 	left, top = offset
 	for sp in sprite_list: sp.draw(offset)
 

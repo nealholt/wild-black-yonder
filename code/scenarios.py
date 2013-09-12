@@ -33,88 +33,85 @@ def resetDust():
 		d.rect.center = (x,y)
 
 
-def populateSpace():
+enemy = 0
+crystal = 1
+large_asteroid = 2
+medium_asteroid = 3
+small_asteroid = 4
+gold_metal = 5
+silver_metal = 6
+health = 7
+def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	'''This is the first draft of a method to randomly populate space with objects.
 	This is currently called by the racing minigame.
+	Pre: objects is an array of natural numbers specifying how
+	many of each of a variety of objects should be placed in the space.
+	width is a nat specifying the width of the rectangle of space to be populated.
+	height is a nat specifying the height.
+	center is where the center of the rectangle should be positioned.
+	Post: 
 	TODO TESTING.'''
+	#print 'TESTING populate '+str(width)+'x'+str(height)+' space centered at '+str(center)
 	#Test variables START
-	TESTING = True #Turn on and off testing.
+	TESTING = False #True #Turn on and off testing.
 	area_covered = 0
 	collisions = 0
 	num_removed = 0
 	#Test variables END
 
-	enemy = 0
-	crystal = 1
-	large_asteroid = 2
-	medium_asteroid = 3
-	small_asteroid = 4
-	gold_metal = 5
-	silver_metal = 6
-	health = 7
-
-	numbers = [0 for _ in range(health+1)]
-	numbers[enemy] = 3
-	numbers[crystal] = 5
-	numbers[large_asteroid] = 20
-	numbers[medium_asteroid] = 30
-	numbers[small_asteroid] = 40
-	numbers[gold_metal] = 5
-	numbers[silver_metal] = 6
-	numbers[health] = 7
-
+	rd.seed(seed) #Fix the seed for the random number generator.
+	
 	#Populate space in a semi narrow corridor between the player and the finish line
-	course_length = 3000 #actually half length because getCoordsNearLoc doubles it
-	course_height = 1000 #actually half height because getCoordsNearLoc doubles it
-	#Midway between player and destination
-	midway = course_length, 0
+	course_length = width/2 #actually half length because getCoordsNearLoc doubles it
+	course_height = height/2 #actually half height because getCoordsNearLoc doubles it
 
 	physical_objs = []
 
-	for _ in xrange(numbers[enemy]):
-		x,y = getCoordsNearLoc(midway, 0, course_length, course_height)
+	for _ in xrange(objects[enemy]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(ship.Ship(centerx=x, centery=y, image_name='images/destroyer'))
 
-	for _ in xrange(numbers[crystal]):
-		x,y = getCoordsNearLoc(midway, 0, course_length, course_height)
+	for _ in xrange(objects[crystal]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		#Make gems stationary in the race for now.
 		physical_objs.append(objInstances.Gem(x=x, y=y, speed_min=0., speed_max=0.))
 
-	for _ in xrange(numbers[large_asteroid]):
-		x,y = getCoordsNearLoc(midway, 0, course_length, course_height)
+	for _ in xrange(objects[large_asteroid]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/asteroidBigRoundTidied'))
 
-	for _ in xrange(numbers[medium_asteroid]):
-		x,y = getCoordsNearLoc(midway, 0, course_length, course_height)
+	for _ in xrange(objects[medium_asteroid]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/asteroidWild2'))
 
-	for _ in xrange(numbers[small_asteroid]):
-		x,y = getCoordsNearLoc(midway, 0, course_length, course_height)
+	for _ in xrange(objects[small_asteroid]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/asteroidTempel'))
 
-	for _ in xrange(numbers[gold_metal]):
-		x,y = getCoordsNearLoc(midway, 0, course_length, course_height)
+	for _ in xrange(objects[gold_metal]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/Sikhote_small'))
 
-	for _ in xrange(numbers[silver_metal]):
-		x,y = getCoordsNearLoc(midway, 0, course_length, course_height)
+	for _ in xrange(objects[silver_metal]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/bournonite_30percent'))
 
-	for _ in xrange(numbers[health]):
-		x,y = getCoordsNearLoc(midway, 0, course_length, course_height)
+	for _ in xrange(objects[health]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.HealthKit(x, y))
 
 	#Prevent collisions.
 	#The following copied from collisionHandling()
 	physical_objs = sorted(physical_objs, \
-			key=lambda c: c.rect.topleft[1]+c.rect.height,\
+			key=lambda c: c.rect.bottom,\
 			reverse=True)
 	#Nudge objects that collide apart.
+	#This code is the same as the code used in setClosestSprites and collisionHandling
 	for i in xrange(len(physical_objs)):
 		A = physical_objs[i]
 		for j in xrange(i+1, len(physical_objs)):
 			B = physical_objs[j]
-			if A.rect.topleft[1] > B.rect.topleft[1]+B.rect.height:
+			if A.rect.top > B.rect.bottom:
 				break
 			else:
 				if distance(A.rect.center, B.rect.center) > A.radius+B.radius:
@@ -124,15 +121,44 @@ def populateSpace():
 					if TESTING: collisions += 1
 					magnitude = max(A.radius, B.radius)*2
 					angle = A.getAngleToTarget(target=B)
-					B.rect.center = translate(B.rect.center, angle, magnitude)
+					B.translate(angle, magnitude)
+
+	#Next objects that still collide are merely abandoned as lost causes. Maybe someday later I will change this.
+	#The following is redundant with the pygame.sprite.spritecollideany check later on. Maybe I should bring this back if it turns out to be way more efficient.
+	#physical_objs = sorted(physical_objs, \
+	#		key=lambda c: c.rect.bottom,\
+	#		reverse=True)
+	#i = 0
+	#while i < len(physical_objs):
+	#	A = physical_objs[i]
+	#	for j in xrange(i+1, len(physical_objs)):
+	#		B = physical_objs[j]
+	#		if A.rect.top > B.rect.bottom:
+	#			break
+	#		else:
+	#			if distance(A.rect.center, B.rect.center) > A.radius+B.radius:
+	#				pass
+	#			else:
+	#				#They collide. Remove the ith object
+	#				physical_objs.pop(i)
+	#				if TESTING: num_removed += 1
+	#				i -= 1
+	#				break
+	#	i += 1
+
+
 	#Put everything in tangibles and whiskerables unless they collide with any tangibles.
+	toreturn = pygame.sprite.Group()
 	for p in physical_objs:
-		if pygame.sprite.spritecollideany(p, globalvars.tangibles):
-			if TESTING: num_removed += 1
-		else:
+		temp = pygame.sprite.spritecollideany(p, globalvars.tangibles)
+		#print temp
+		if temp is None:
 			if TESTING: area_covered += math.pi*p.radius**2
 			globalvars.tangibles.add(p)
 			globalvars.whiskerables.add(p)
+			toreturn.add(p)
+		else:
+			if TESTING: num_removed += 1
 
 	#Print testing feedback
 	if TESTING:
@@ -142,8 +168,9 @@ def populateSpace():
 		print 'fraction of area covered '+str(area_covered / temp)
 		print 'Initial collisions: '+str(collisions)
 		print 'Objects removed: '+str(num_removed)
-		print 'from a total of '+str(sum(numbers))+' objects.'
-		print 'Fraction of objects removed: '+str(float(num_removed)/float(sum(numbers)))
+		print 'from a total of '+str(sum(objects))+' objects.'
+		print 'Fraction of objects removed: '+str(float(num_removed)/float(sum(objects)))
+	return toreturn
 
 
 def testScenario00(seed=0):
@@ -274,7 +301,25 @@ def race(seed=0):
 	globalvars.player.targetSpeed = 0.0
 	finish_line = (6000, 0)
 	globalvars.hud_helper = displayUtilities.TimeTrialAssistant(finish_line)
-	populateSpace() #TODO TESTING
+
+	#determine what sorts of obstacles to put on the race course.
+	numbers = [0 for _ in range(health+1)]
+	numbers[enemy] = 3
+	numbers[crystal] = 5
+	numbers[large_asteroid] = 20
+	numbers[medium_asteroid] = 30
+	numbers[small_asteroid] = 40
+	numbers[gold_metal] = 5
+	numbers[silver_metal] = 6
+	numbers[health] = 7
+
+	#Populate space in a semi narrow corridor between the player and the finish line
+	course_length = 6000 #pixels
+	course_height = 1000 #pixels
+	#Midway between player and destination
+	midway = (course_length/2, 0)
+
+	populateSpace(objects=numbers, width=course_length, height=course_height, center=midway, seed=rd.random())
 
 
 def furball(seed=0):
@@ -297,7 +342,137 @@ def furball(seed=0):
 def infiniteSpace(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
-	#wipeOldScenario(); resetDust()
-	#globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
+	wipeOldScenario(); resetDust()	
+	#Reset the player's location to 0,0 and his speed to zero
+	globalvars.player.loc = (0.0, 0.0)
+	globalvars.player.speed = 0.0
+	globalvars.player.targetSpeed = 0.0
+	finish_line = (6000, 0)
+	globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
+
 	print 'infinite space. TODO Not yet implemented. Will require some interesting new functions.'
+
+	#determine what sorts of obstacles to put in space for now I'm just trying to demonstrate the wonky overlap of objects so I can debug it.
+	numbers = [0 for _ in range(health+1)]
+	numbers[large_asteroid] = 1
+	numbers[medium_asteroid] = 2
+	#numbers[small_asteroid] = 3
+
+	#8 cells of populated space around user with different random seeds until you find one that gives you a collision.
+	#populateSpace(objects=numbers, width=500, height=500, center=(500,0), seed=0)
+	#populateSpace(objects=numbers, width=500, height=500, center=(500,500), seed=1)
+	#populateSpace(objects=numbers, width=500, height=500, center=(0,500), seed=2)
+	#populateSpace(objects=numbers, width=500, height=500, center=(-500,0), seed=3)
+	#populateSpace(objects=numbers, width=500, height=500, center=(-500,-500), seed=4)
+	#populateSpace(objects=numbers, width=500, height=500, center=(0,-500), seed=5)
+	#populateSpace(objects=numbers, width=500, height=500, center=(-500,500), seed=6)
+	#populateSpace(objects=numbers, width=500, height=500, center=(500,-500), seed=7)
+
+	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
+	globalvars.hud_helper = InfiniteSpaceGenerator()
+
+
+def getObstacles(seed=0):
+	'''TODO later I want to get profiles instead of pure random number generation. '''
+	rd.seed(seed) #Fix the seed for the random number generator.
+	numbers = [0 for _ in range(health+1)]
+	numbers[enemy] = 0 #rd.randint(0,2)
+	numbers[crystal] = rd.randint(0,1)
+	numbers[large_asteroid] = rd.randint(0,2)
+	numbers[medium_asteroid] = rd.randint(1,4)
+	numbers[small_asteroid] = rd.randint(2,4)
+	numbers[gold_metal] = rd.randint(0,2)
+	numbers[silver_metal] = rd.randint(0,2)
+	numbers[health] = rd.randint(0,1)
+	return numbers
+
+
+def populateSpaceHelper(seed=0, length=0, x=0, y=0):
+	obstacles = getObstacles(seed=seed)
+	return populateSpace(objects=obstacles, width=length, height=length, center=(x*length, y*length), seed=seed)
+
+
+class InfiniteSpaceGenerator():
+	'''An object which will deterministically but randomly generate
+	objects in space based on the player's location.'''
+        def __init__(self, seed=0):
+		#Distance above which to depopulate the grid cells.
+		self.depopulatedistance = 4
+		self.seed = seed
+		self.dict = dict()
+		self.space_length = 1000
+		#Keep local track of the player's location.
+		#This can make the update more efficient.
+		self.playerx = None
+		self.playery = None
+		#Get the player's location.
+		#Player's location divided by the length of each cell is the square the player is currently in.
+		px,py = globalvars.player.rect.center
+		#print 'Testing: player\'s location'+str((px,py))
+		px = px / self.space_length
+		py = py / self.space_length
+		#Generate obstacles in player's location and put them in the dictionary. You might want to modify populateSpace to return its newly created physical objects so they can be tracked here for easy removal later.
+		loc = str(px).zfill(3)+str(py).zfill(3)
+		self.dict[loc] = populateSpaceHelper(\
+				seed=loc, \
+				length=self.space_length, \
+				x=px, y=py)
+		#print 'testing keys in the dictionary: '+str(self.dict.keys())
+		#print 'end of InfiniteSpaceGenerator'
+
+	def update(self, offset):
+		#Display player's location
+		displayUtilities.displayShipLoc(globalvars.player)
+		#Get the player's location.
+		px,py = globalvars.player.rect.center
+		#Player's location divided by the length of each cell is the 
+		#square the player is currently in.
+		px = px / self.space_length
+		py = py / self.space_length
+		#Check to see if the player has moved into a
+		#different grid cell
+		if px == self.playerx and py == self.playery:
+			#Nothing has changed, so do nothing
+			return False
+		#print 'testing: player has moved into a new grid cell. previous cell was '+str((self.playerx, self.playery))
+		#Update records of player's location
+		self.playerx = px
+		self.playery = py
+		#If any grid cells more than distance 2 from the player are populated, then depopulate them. (you can loop through dictionary keys and calculate the distance for each to determine this). Distance of 1 includes all 4 cardinal directions and all 4 diagonals for a total of 8 neighbors of any location.
+		for key in self.dict.keys():
+			x = int(key[0:3])
+			y = int(key[3:6])
+			#Get the "grid distance" between the player's location and the x,y location. Grid distance is the distance on a grid allowing diagonal moves. It's pretty easy to verify that this is the larger of the differences between x1 and x2, and y1 and y2.
+			dist = max(abs(px-x), abs(py-y))
+			if dist > self.depopulatedistance:
+				#print 'testing '+str((x,y))+' is more than distance 2 from '+str((px,py))+' so we\'re gonna kill all the stuff in '+str((px,py))
+				#print 'testing prior length of dictionary ('+str(len(self.dict.keys()))+') and tangibles ('+str(len(globalvars.tangibles.sprites()))+')'
+				#Kill all of these too distant objects.
+				for spr in self.dict[key]: spr.kill()
+				#remove them from the dictionary.
+				del self.dict[key]
+				#print 'testing post length of dictionary ('+str(len(self.dict.keys()))+') and tangibles ('+str(len(globalvars.tangibles.sprites()))+')'
+		#Make sure all 8 grid cells around the player are populated.
+		#If not, populate them.
+		#check if these are in the dictionary and if not, populate them.
+
+		#-1,-1 -1,0 -1,2
+		# 0,0  0,1  0,2
+ 		# 1,0  1,1  1,2
+
+		#use modular arithmetic. to check what needs to be populated and reduce code length.
+		#px,py = playercenter
+		#for i in range(9):
+		#  x = i/3 + px -1
+		#  y = i%3 + py -1
+		for i in range(9):
+			x = i/3 + px -1
+			y = i%3 + py -1
+			#print x,y #TESTING
+			loc = str(x).zfill(3)+str(y).zfill(3)
+			if not loc in self.dict.keys():
+				#print 'testing the location '+str(loc)+' is empty so we are populating it'
+				self.dict[loc] = populateSpaceHelper(\
+					seed=loc, length=self.space_length, \
+					x=x, y=y)
 

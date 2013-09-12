@@ -196,7 +196,7 @@ class Asteroid(physicalObject.PhysicalObject):
 		self.is_a = globalvars.ASTEROID
 		self.health_amt = 100
 		#Choose a random rotation
-		self.dtheta = rd.randint(-2, 2)
+		#self.dtheta = rd.randint(-2, 2) #TODO temporarily remove rotation because it gums up the hit box and causes us to drop frames when there are a lot of objects.
 		#Choose a random direction. This is different from theta 
 		#which will only determine image rotation.
 		self.direction = rd.randint(-179, 180)
@@ -206,7 +206,7 @@ class Asteroid(physicalObject.PhysicalObject):
 	def update(self):
 		'''Return true to be removed. Return False othewise.'''
 		#Rotate
-		if self.dtheta != 0: self.turn(self.dtheta)
+		#if self.dtheta != 0: self.turn(self.dtheta) #TODO temporarily remove rotation because it gums up the hit box and causes us to drop frames when there are a lot of objects.
 		#Move in a direction independent of rotation
 		self.loc = translate(self.loc, self.direction, self.speed)
 		self.rect.centerx = self.loc[0]
@@ -215,6 +215,8 @@ class Asteroid(physicalObject.PhysicalObject):
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
+		#print 'asteroid collision '+str(other_sprite.is_a)
+		#print self.speed
 		died = False
 		if other_sprite.is_a == globalvars.BULLET:
 			self.health_amt -= 10
@@ -225,6 +227,11 @@ class Asteroid(physicalObject.PhysicalObject):
 				splitRock(self.image_name,\
 					centerx=self.rect.centerx,\
 					centery=self.rect.centery)
+		#The following was added to automatically nudge apart any colliding asteroids, but populate space has been debugged so I feel that this is no longer needed at this time.
+		#elif other_sprite.is_a == globalvars.ASTEROID and self.speed == 0:
+		#	magnitude = max(self.radius, other_sprite.radius)
+		#	angle = self.getAngleToTarget(target=other_sprite)
+		#	other_sprite.translate(angle, magnitude)
 		return died
 
 

@@ -48,6 +48,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#because rectangles will be rounded to an integer which can cause 
 		#an inability to move diagonally at slow speeds because the integer 
 		#always rounds down.
+		#The downside of this is that there are now two valid location variables self.loc and self.rect.center, both of which need to be maintained and kept equal to each other.
 		self.loc = (centerx, centery)
 
 		if self.image_name is None:
@@ -298,10 +299,22 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.rect.centery = self.loc[1]
 
 
+	def translate(self, angle, magnitude):
+		self.loc = geometry.translate(self.loc, \
+			angle, magnitude)
+		self.rect.centerx = self.loc[0]
+		self.rect.centery = self.loc[1]
+
+
 	def draw(self, offset=(0,0)):
 		x,y = self.rect.topleft
 		pos = x - offset[0], y - offset[1]
 		globalvars.screen.blit(self.image, pos)
+		#TODO TESTING. Useful for looking at hit boxes.
+		#Get a copy of the rect to draw at the proper offset position
+		#temprect = pygame.Rect(self.rect.left, self.rect.top, self.rect.width, self.rect.height)
+		#temprect.topleft = pos
+		#pygame.draw.rect(globalvars.screen, white, temprect)
 
 	def drawAt(self, position=(0,0)):
 		pos = position[0] - self.rect.width/2, position[1] - self.rect.height/2

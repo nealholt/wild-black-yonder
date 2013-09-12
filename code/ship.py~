@@ -121,7 +121,7 @@ class Ship(physicalObject.PhysicalObject):
 		return slope, intercept
 
 
-	def update(self, offset):
+	def update(self):
 		#for now we assume that every ship is hostile to the player
 		self.setDestination(globalvars.player.rect.center)
 
@@ -149,7 +149,8 @@ class Ship(physicalObject.PhysicalObject):
 		#move
 		self.move()
 
-		#draw
+
+	def draw(self, offset):
 		x,y = self.rect.center
 		pos = x - offset[0], y - offset[1]
 		self.drawAt(pos)
@@ -158,6 +159,7 @@ class Ship(physicalObject.PhysicalObject):
 	def handleCollisionWith(self, other_sprite):
 		'''For now ships take damage regardless of what they hit.'''
 		died = False
+		print 'ship ran into a '+str(other_sprite.is_a)
 		#Check for collisions with one's own bullets.
 		#Don't respond to such collisions.
 		if other_sprite.is_a == globalvars.BULLET:

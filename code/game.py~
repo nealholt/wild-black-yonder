@@ -72,12 +72,14 @@ def run():
 
 	#The in-round loop (while player is alive):
 	while running:
-		#Used for calculating actual frames per in order to determine 
-		#when we are dropping frames so that efficiency improvements can be made.
+		#Used for calculating actual frames per second in
+		#order to determine when we are dropping frames
+		#so that efficiency improvements can be made.
 		start_time = datetime.datetime.now()
 		#frame maintainance:
 		pygame.display.flip()
-		clock.tick(globalvars.FPS) #aim for FPS but adjust vars for fps.
+		#aim for globalvars.FPS frames per second.
+		clock.tick(globalvars.FPS) 
 		fps = max(1, int(clock.get_fps()))
 
 		#Skip the rest of this loop until the game is unpaused.
@@ -105,7 +107,7 @@ def run():
 					break
 				#Panel event handeling can make the panel itself None so we have 
 				#to check if the panel has become None for every event. If the
-				#panel has become none we break and ignore further input events.
+				#panel has become None we break and ignore further input events.
 				elif globalvars.panel is None:
 					break
 				#Pass all other events to the panel
@@ -173,10 +175,6 @@ def run():
 					test.hitBoxTest(globalvars.player.rect.center)
 				elif event.key == 121: #y key
 					#Test efficiency of drawing stuff to the canvas
-					#import timeit
-					#temp = timeit.timeit('game.drawThoseOnScreen(game.globalvars.tangibles.sprites(), offset); pygame.display.flip()', number=1000, setup="import game; import pygame; offset=(0,0)")
-					#print 'Time taken to draw tangible sprites on the screen 1000 times and flip the display is '+str(temp)+' seconds.'
-
 					import cProfile
 					cProfile.runctx('for _ in range(10000): drawThoseOnScreen(globalvars.tangibles.sprites(), offset); pygame.display.flip()', globals(),locals(), 'profiling/drawTangibles.profile')
 					cProfile.runctx('for _ in range(10000): drawThoseOnScreen2(globalvars.tangibles.sprites(), offset); pygame.display.flip()', globals(),locals(), 'profiling/drawTangibles2.profile')
@@ -341,6 +339,7 @@ def drawThoseOnScreen(sprite_list, offset):
 	#print str(draw_count)+' objects on screen.' #TESTING
 
 def drawThoseOnScreen2(sprite_list, offset):
+	'''Presumably slower version of the above method used for testing.'''
 	left, top = offset
 	for sp in sprite_list: sp.draw(offset)
 

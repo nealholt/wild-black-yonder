@@ -146,38 +146,14 @@ class FixedCircle(physicalObject.PhysicalObject):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
 		self.color = color
 		self.radius = radius
-
-		#print self.rect.center
-		#print self.rect.topleft
-		#print self.rect.bottomright
-
-		#print self.rect.center; exit()
-		#self.rect = pygame.draw.circle(globalvars.screen, self.color,\
-		#	self.rect.center, self.radius, 0)
-		#print self.rect.center
-		#print self.rect.topleft
-		#print self.rect.bottomright
-		#exit()
-		#TODO TESTING. The following is trying to keep the circle drawn properly in asteroids with the new code that does not draw things if they are off screen.
+		#Override the parent class with the following so that we make sure the 
+		#circle is drawn correctly when only drawing objects that actually 
+		#appear on screen.
 		self.rect.width = self.radius*2
 		self.rect.height = self.radius*2
 		self.rect.center = x,y
-		#self.rect.top = self.rect.centery - self.radius
-		#self.rect.left = self.rect.centerx - self.radius
-		#self.rect.right = self.rect.centerx + self.radius
-		#self.rect.bottom = self.rect.centery + self.radius
-
 
 	def draw(self, offset):
-		print 'Circle center: '+str(self.rect.center)
-		print 'left '+str(self.rect.left)
-		print 'right '+str(self.rect.right)
-		print 'top '+str(self.rect.top)
-		print 'bottom '+str(self.rect.bottom)
-		print 'offset: '+str(offset)
-		#print 'height '+str(self.rect.height)
-		#print 'width '+str(self.rect.width)
-		#print 'radius '+str(self.radius)
 		pos = self.rect.centerx - offset[0], \
 			self.rect.centery - offset[1]
 		pygame.draw.circle(globalvars.screen, self.color, \
@@ -220,7 +196,7 @@ class Asteroid(physicalObject.PhysicalObject):
 		self.is_a = globalvars.ASTEROID
 		self.health_amt = 100
 		#Choose a random rotation
-		self.dtheta = rd.randint(-2, 2)
+		#self.dtheta = rd.randint(-2, 2) #TODO temporarily remove rotation because it gums up the hit box and causes us to drop frames when there are a lot of objects.
 		#Choose a random direction. This is different from theta 
 		#which will only determine image rotation.
 		self.direction = rd.randint(-179, 180)
@@ -230,7 +206,7 @@ class Asteroid(physicalObject.PhysicalObject):
 	def update(self):
 		'''Return true to be removed. Return False othewise.'''
 		#Rotate
-		if self.dtheta != 0: self.turn(self.dtheta)
+		#if self.dtheta != 0: self.turn(self.dtheta) #TODO temporarily remove rotation because it gums up the hit box and causes us to drop frames when there are a lot of objects.
 		#Move in a direction independent of rotation
 		self.loc = translate(self.loc, self.direction, self.speed)
 		self.rect.centerx = self.loc[0]
@@ -239,6 +215,8 @@ class Asteroid(physicalObject.PhysicalObject):
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
+		#print 'asteroid collision '+str(other_sprite.is_a)
+		#print self.speed
 		died = False
 		if other_sprite.is_a == globalvars.BULLET:
 			self.health_amt -= 10
@@ -249,6 +227,17 @@ class Asteroid(physicalObject.PhysicalObject):
 				splitRock(self.image_name,\
 					centerx=self.rect.centerx,\
 					centery=self.rect.centery)
+		#TODO. Fuck my balls. This isn't even working.
+		#Since changing other_sprite.rect.center to other_sprite.loc, this does now seem to be working.
+		#elif other_sprite.is_a == globalvars.ASTEROID and self.speed == 0:
+		#	print 'collided with other asteroid'
+		#	#I'm using this case to nudge "stationary" asteroids away from 
+		#	#each other because for some odd reason, the populate space 
+		#	#function fails to place non-overlapping asteroids and I have 
+		#	#not been able to figure out why.
+		#	magnitude = max(self.radius, other_sprite.radius)
+		#	angle = self.getAngleToTarget(target=other_sprite)
+		#	other_sprite.loc = translate(other_sprite.rect.center, angle, magnitude)
 		return died
 
 
