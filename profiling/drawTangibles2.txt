@@ -1,18 +1,18 @@
-Wed Apr 17 17:24:47 2013    profiling/drawTangibles2.profile
+Sat Apr 27 17:28:55 2013    profiling/drawTangibles2.profile
 
-         210003 function calls in 7.527 seconds
+         210003 function calls in 5.492 seconds
 
    Ordered by: cumulative time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.016    0.016    7.527    7.527 <string>:1(<module>)
-    10000    0.035    0.000    7.497    0.001 code/game.py:350(drawThoseOnScreen2)
-    70000    0.060    0.000    7.400    0.000 code/physicalObject.py:309(draw)
-    80000    7.372    0.000    7.372    0.000 {method 'blit' of 'pygame.Surface' objects}
-    10000    0.011    0.000    0.112    0.000 code/objInstances.py:321(draw)
-    10000    0.008    0.000    0.051    0.000 code/ship.py:153(draw)
-    10000    0.011    0.000    0.042    0.000 code/physicalObject.py:319(drawAt)
-    10000    0.011    0.000    0.014    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:271(sprites)
+        1    0.016    0.016    5.492    5.492 <string>:1(<module>)
+    10000    0.037    0.000    5.463    0.001 code/game.py:353(drawThoseOnScreen2)
+    70000    0.067    0.000    5.363    0.000 code/physicalObject.py:309(draw)
+    80000    5.328    0.000    5.328    0.000 {method 'blit' of 'pygame.Surface' objects}
+    10000    0.011    0.000    0.083    0.000 code/objInstances.py:321(draw)
+    10000    0.010    0.000    0.053    0.000 code/ship.py:153(draw)
+    10000    0.011    0.000    0.043    0.000 code/physicalObject.py:319(drawAt)
+    10000    0.010    0.000    0.013    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:271(sprites)
     10000    0.003    0.000    0.003    0.000 {method 'keys' of 'dict' objects}
         1    0.000    0.000    0.000    0.000 {range}
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
