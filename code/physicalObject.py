@@ -2,13 +2,6 @@ import pygame
 import math
 import game
 
-def centerAtLocWithDimensions(to_move, loc, width, height):
-	'''Move the given image so that it is centered at the given location.'''
-	x,y = loc
-	to_move.move(x - width/2, y - height/2)
-
-
-
 class PhysicalObject(pygame.sprite.Sprite):
 	def __init__(self, top=0, left=0, width=0, height=0, image_name=None):
 
@@ -42,7 +35,10 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.base_image = self.image
 		else:
 			self.image = game.loadImage(image_name + game.ext)
-			self.base_image = game.loadImage(image_name + game.ext) #TODO do I really need an image AND a base_image?
+			#Base image is needed because we need a reference to the
+			#original image that is never modified.
+			#self.base_image is used in updateImageAngle.
+			self.base_image = game.loadImage(image_name + game.ext)
 			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()
@@ -50,50 +46,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 
 	def updateImageAngle(self):
-		#Update display. Specifically, the angle of the ship.
-		#START: copied from stardog spaceship.py in draw function
-		#prew = self.image.get_width()
-		#preh = self.image.get_height()
-		#print 'before:'
-		#print self.image.get_width()
-		#print self.image.get_height()
 		self.image = pygame.transform.rotate(self.base_image, -self.theta).convert_alpha()
-		#print 'after:'
-		#print self.image.get_width()
-		#print self.image.get_height()
-
-		#Move slightly to account for the padding from rotation
-		#self.rect = self.rect.move(prew - self.image.get_width(), preh - self.image.get_height())
-
-		#I tried the following instead under the hypothesis that just re-centering the image on the player's location rather then calculating offset would get rid of the wobble, but this doesn't seem to be any better.
-		#centerAtLocWithDimensions(self.rect, self.getCenter(), self.image.get_width(), self.image.get_height())
-
-		#Awesome! The following works. It also eliminates the need for centerAtLocWithDimensions AND it fixes the most egregious of the hit box issues.
+		#Awesome! The following works. It fixes the most egregious 
+		#of the hit box issues and is probably as good as it gets.
 		temp = self.rect.topleft
 		self.rect = self.image.get_rect()
 		self.rect.topleft = temp
-
-		#The following is definitely worse than the previous, but it's still not perfect.
-		#self.rect = self.rect.move(self.image.get_width()-prew, self.image.get_height()-preh)
-
-		#imageOffset compensates for the extra padding from the rotation.
-		#imageOffset = [- self.image.get_width() / 2,\
-		#		- self.image.get_height() / 2]
-		#print imageOffset
-		#self.rect = self.rect.move(imageOffset[0], imageOffset[1])
-		#offset is where on the input surface to blit the ship.
-		#if offset:
-		#	pos =[self.x  - offset[0] + pos[0] + imageOffset[0], \
-		#		self.y  - offset[1] + pos[1] + imageOffset[1]]
-
-		#draw to buffer:
-		#surface.blit(self.image, pos)
-
-		#draw to input surface:
-		#pos[0] += - imageOffset[0] - self.radius
-		#pos[1] += - imageOffset[1] - self.radius
-		#surface.blit(buffer, pos) 
-		#END: copied from stardog spaceship.py in draw function
 
 	def getCenter(self):
 		return self.rect.center
@@ -249,11 +207,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def draw(self, offset=(0,0)):
 		x,y = self.rect.topleft
 		pos = x - offset[0], y - offset[1]
-		#self.image.fill((100,255,100)) #TODO TESTING. this is the hit box? 
 		game.screen.blit(self.image, pos)
 
 	def drawAt(self, position=(0,0)):
 		pos = position[0] - self.rect.width/2, position[1] - self.rect.height/2
-		#self.image.fill((100,255,100)) #TODO TESTING. this is the hit box? 
 		game.screen.blit(self.image, pos)
 
