@@ -1,7 +1,7 @@
 import pygame
 import math
 import game
-
+import colors
 
 def translate(location, angle, magnitude):
 	'''This is very similar to the PhysicalObject.move function.'''
@@ -9,6 +9,29 @@ def translate(location, angle, magnitude):
 	vecty = math.sin(math.radians(angle))
 	x,y = location
 	return x+vectx*magnitude, y+vecty*magnitude
+
+
+#copied from stardog utils.py
+#setup images
+#if there is extended image support, load .gifs, otherwise load .bmps.
+#.bmps do not support transparency, so there might be black clipping.
+ext = ".bmp"
+if pygame.image.get_extended():
+	ext = ".gif"
+
+
+def loadImage(filename):
+	'''copied from stardog utils.py '''
+	try:
+		image = pygame.image.load(filename).convert()
+		#colorkey tells pygame what color to make transparent.
+		#We assume that the upper left most pixel's color is the color to make transparent.
+		colorkey = image.get_at((0,0))
+		image.set_colorkey(colorkey)
+	except pygame.error:
+		image = pygame.image.load("images/default" + ext).convert()
+		image.set_colorkey(colors.white)
+	return image
 
 
 class PhysicalObject(pygame.sprite.Sprite):
@@ -45,11 +68,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.image.fill((100,255,100)) #Randomly chosen default color
 			self.base_image = self.image
 		else:
-			self.image = game.loadImage(self.image_name + game.ext)
+			self.image = loadImage(self.image_name + ext)
 			#Base image is needed because we need a reference to the
 			#original image that is never modified.
 			#self.base_image is used in updateImageAngle.
-			self.base_image = game.loadImage(self.image_name + game.ext)
+			self.base_image = loadImage(self.image_name + ext)
 			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()
@@ -217,6 +240,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#x,y = None,None
 		if target is None:
 			x,y = self.destination
+		elif isinstance(target, tuple):
+			x,y = target
 		else:
 			x,y = target.getCenter()
 		rise = y - self.rect.centery

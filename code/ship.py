@@ -3,7 +3,7 @@ import physicalObject
 import profiles
 import game
 import colors
-import explosion
+import objInstances
 import healthBar
 
 class Ship(physicalObject.PhysicalObject):
@@ -118,7 +118,7 @@ class Ship(physicalObject.PhysicalObject):
 			#or the health sprite.
 			return died
 		if self.isDead():
-			game.intangibles.add(explosion.Explosion(self.getY(),self.getX()))
+			game.intangibles.add(objInstances.Explosion(self.getY(),self.getX()))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
 			self.myHealthBar.kill()

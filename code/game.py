@@ -1,19 +1,24 @@
 #game.py
 
 import pygame
+
+tangibles = pygame.sprite.Group()
+intangibles = pygame.sprite.Group()
+#This last group will contain any sprites that will tickle whiskers
+whiskerables = pygame.sprite.Group()
+
 import random as rd
 import sys
 sys.path.append('code')
 
 import player
-import explosion
+import scenarios
 import follower
 import colors
 import ship
-import hitBoxTester as hbt
+import testFunctions as test
 
 import menus
-import drawable
 
 from time import sleep
 
@@ -39,62 +44,13 @@ HEALTH = 4
 #The least distance to check for a collision. Might need adjusted if we start using really big objects.
 MINSAFEDIST = 1024
 
+BGCOLOR = colors.black
+
 #set up the display:
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-screen.fill(colors.black)
-
-
-#copied from stardog utils.py
-#setup images
-#if there is extended image support, load .gifs, otherwise load .bmps.
-#.bmps do not support transparency, so there might be black clipping.
-ext = ".bmp"
-if pygame.image.get_extended():
-	ext = ".gif"
-
-#START: copied from stardog utils.py
-def loadImage(filename):
-	''' '''
-	try:
-		image = pygame.image.load(filename).convert()
-		#colorkey tells pygame what color to make transparent.
-		#We assume that the upper left most pixel's color is the color to make transparent.
-		colorkey = image.get_at((0,0))
-		image.set_colorkey(colorkey)
-	except pygame.error:
-		image = pygame.image.load("images/default" + ext).convert()
-		image.set_colorkey(colors.white)
-	return image
-#END: copied from stardog utils.py
-
-tangibles = pygame.sprite.Group()
-intangibles = pygame.sprite.Group()
-#This last group will contain any sprites that will tickle whiskers
-whiskerables = pygame.sprite.Group()
-
-#TODO Create a motionless object for reference purposes while testing.
-temp = explosion.FixedBody(0, -100, image_name='images/TyDfN_tiny') #little crystal
-tangibles.add(temp); whiskerables.add(temp)
-print 'Radius of TyDfN_tiny is '+str(temp.radius)
-temp = explosion.FixedBody(0, 0, image_name='images/asteroidBigRoundTidied') #largest asteroid
-tangibles.add(temp); whiskerables.add(temp)
-print 'Radius of asteroidBigRoundTidied is '+str(temp.radius)
-temp = explosion.FixedBody(500, 500, image_name='images/asteroidWild2') #medium asteroid
-tangibles.add(temp); whiskerables.add(temp)
-print 'Radius of asteroidWild2 is '+str(temp.radius)
-temp = explosion.FixedBody(500, 0, image_name='images/asteroidTempel') #small asteroid
-tangibles.add(temp); whiskerables.add(temp)
-print 'Radius of asteroidTempel is '+str(temp.radius)
-temp = explosion.FixedBody(-500, -500, image_name='images/Sikhote_small') #goldish metal rock
-tangibles.add(temp); whiskerables.add(temp)
-print 'Radius of Sikhote_small is '+str(temp.radius)
-temp = explosion.FixedBody(-500, 0, image_name='images/bournonite_30percent') #silvery metal rock
-tangibles.add(temp); whiskerables.add(temp)
-print 'Radius of bournonite_30percent is '+str(temp.radius)
-
-temp = explosion.HealthKit(-100, 0) #health pack
-tangibles.add(temp)
+scenarios.testScenario00() #TODO Initial test scenario
+screen.fill(BGCOLOR)
 
 
 player = player.Player('images/ship')
@@ -170,88 +126,6 @@ def writeTextToScreen(string='', font_size=12, color=colors.white, pos=(0,0)):
 	textpos = text.get_rect(center=pos)
 	screen.blit(text, textpos)
 
-
-def hitBoxTest(c):
-	#shoot a bunch of hit box testers 
-	#in towards the player
-	h=hbt.HitBoxTester(top=c[1]+50, left=c[0]+50, destination=c)
-	tangibles.add(h)
-	tangibles.add(h)
-	h=hbt.HitBoxTester(top=c[1]+50, left=c[0]-50, destination=c)
-	tangibles.add(h)
-	tangibles.add(h)
-	h=hbt.HitBoxTester(top=c[1]+50, left=c[0], destination=c)
-	tangibles.add(h)
-	tangibles.add(h)
-	h=hbt.HitBoxTester(top=c[1]-50, left=c[0]+50, destination=c)
-	tangibles.add(h)
-	tangibles.add(h)
-	h=hbt.HitBoxTester(top=c[1]-50, left=c[0]-50, destination=c)
-	tangibles.add(h)
-	tangibles.add(h)
-	h=hbt.HitBoxTester(top=c[1]-50, left=c[0], destination=c)
-	tangibles.add(h)
-	tangibles.add(h)
-	h=hbt.HitBoxTester(top=c[1], left=c[0]+50, destination=c)
-	tangibles.add(h)
-	tangibles.add(h)
-	h=hbt.HitBoxTester(top=c[1], left=c[0]-50, destination=c)
-	tangibles.add(h)
-	tangibles.add(h)
-
-
-def getTestingPanel():
-	border_padding = 100
-	top = border_padding
-	left = border_padding
-	height = HEIGHT-2*border_padding
-	width = WIDTH-2*border_padding
-	temp = pygame.Rect(left, top, width, height)
-
-	menu = menus.Panel(temp)
-
-	#First draw a white frame around the menu.
-	temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
-		color=colors.white, thickness=3)
-	menu.addDrawable(temp)
-
-	#Then draw the background for the menu
-	temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
-		color=colors.reddishgray)
-	menu.addDrawable(temp)
-
-	#Then draw the contents of the menu
-	horiz_space = 200
-	vert_space = 100
-	x1, y1 = horiz_space, HEIGHT/2
-	radius = 10
-	#panel made of a circle centered at start
-	temp = pygame.Rect(x1, y1, radius, radius)
-	subpanel = menus.Panel(temp)
-	temp = drawable.Circle(x1=x1, y1=y1, radius=radius, color=colors.yellow)
-	subpanel.addDrawable(temp)
-	menu.addPanel(subpanel)
-
-	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Infinite space']
-
-	x2 = horiz_space*2
-	for i in range(5):
-		j = i-2
-		y2 = HEIGHT/2+vert_space*j
-
-		temp = pygame.Rect(x2, y2, radius, radius)
-		subpanel = menus.Panel(temp)
-		temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\
-			font_size=24, color=colors.white)
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-
-		temp = drawable.Line(x1=x1, y1=y1, x2=x2, y2=y2)
-		menu.addDrawable(temp)
-
-	return menu
 
 
 class Game:
@@ -330,8 +204,8 @@ class Game:
 					#Check for event m key being pressed to remove the menu.
 					if event.type == pygame.KEYDOWN and event.key == 109: #m key
 						self.panel = None
-					#Check for mousebutton event and pass it to the panel
-					if event.type == pygame.MOUSEBUTTONDOWN:
+					#Pass all other events to the panel
+					else:
 						self.panel.handleEvent(event)
 				#Skip all the rest while displaying the menu.
 				#This effectively pauses the game.
@@ -372,7 +246,7 @@ class Game:
 						#enemy created for testing.
 						self.makeNewEnemy()
 					elif event.key == 109: #m key
-						self.panel = getTestingPanel()
+						self.panel = menus.getTestingPanel()
 						continue
 					elif event.key == 112: #p key
 						player.parkingBrake()
@@ -388,7 +262,7 @@ class Game:
 						' vs '+str(player.rect.width)
 						print 'Height: '+str(player.image.get_height())+\
 						' vs '+str(player.rect.height)
-						hitBoxTest(player.getCenter())
+						test.hitBoxTest(player.getCenter())
 					elif event.key == 47: 
 						#forward slash (question mark without shift) key 
 						#Useful for querying one time info.
@@ -438,7 +312,7 @@ class Game:
 
 			#draw black over the screen
 			#TODO as a game effect, it is super neato to temporarily NOT do this.
-			screen.fill(colors.black)
+			screen.fill(BGCOLOR)
 
 			#Check all collisions
 			self.collisionHandling()
