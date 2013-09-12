@@ -2,6 +2,15 @@ import pygame
 import math
 import game
 
+
+def translate(location, angle, magnitude):
+	'''This is very similar to the PhysicalObject.move function.'''
+	vectx = math.cos(math.radians(angle))
+	vecty = math.sin(math.radians(angle))
+	x,y = location
+	return x+vectx*magnitude, y+vecty*magnitude
+
+
 class PhysicalObject(pygame.sprite.Sprite):
 	def __init__(self, top=0, left=0, width=0, height=0, image_name=None):
 
@@ -43,6 +52,50 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (left, top)
+
+		#What is this object.
+		self.is_a = game.OTHER
+
+
+	def handleCollisionWith(self, other_sprite):
+		'''React to a collision with other_sprite.'''
+		pass
+
+
+	def update(self):
+		'''This is called by game.py. Mostly objects implementing 
+		physicalObjects should have their own version of this 
+		function, but ship objects won't.'''
+		pass
+
+
+	def whiskers(self):
+		'''Create "whisker" sprites to check for tangible sprites 
+		to the front or sides in order to avoid collisions.'''
+#TODO LEFT OFF HERE
+		radius = 10 #TODO this should be based on the size of this physical object and designed so that it doesn't collide with itself
+		magnitude = 100 #TODO how far away from this physical object to place the whiskers. Again, we need to avoid self overlap
+		x,y = self.rect.topleft
+		#Whisker left
+		whisker = PhysicalObject(top=x, left=y, width=radius, height=radius)
+		whisker.theta = self.theta
+		whisker.speed = magnitude
+		whisker.turnCounterClockwise(90)
+		whisker.move()
+		objectLeft = pygame.sprite.spritecollide(whisker, tangibleSprites, False) #TODO change this to any collision for speed reasons.
+		#Whisker center
+		whisker.rect.topleft = self.rect.topleft
+		whisker.theta = self.theta
+		whisker.move()
+		objectCenter = pygame.sprite.spritecollide(whisker, tangibleSprites, False) #TODO change this to any collision for speed reasons.
+		#Whisker right
+		whisker.rect.topleft = self.rect.topleft
+		whisker.theta = self.theta
+		whisker.turnClockwise(90)
+		whisker.move()
+		objectRight = pygame.sprite.spritecollide(whisker, tangibleSprites, False) #TODO change this to any collision for speed reasons.
+
+		return objectLeft,objectCenter,objectRight
 
 
 	def updateImageAngle(self):
@@ -164,13 +217,15 @@ class PhysicalObject(pygame.sprite.Sprite):
 			else:
 				return True
 
-	def getAngleToTarget(self):
+	def getAngleToTarget(self, target=None):
 		'''This is a major departure from the old implementation. 
 		THIS will pretend that up is positive Y values and down is 
 		negative Y values as is standard in math, but not computer 
 		science.
 		SHIT. It's still not working. I haven't wrapped my head around why.'''
-		x,y = self.destination
+		if target is None:
+			target = self.destination
+		x,y = target
 		rise = y - self.rect.centery
 		run = x - self.rect.centerx
 		#As I understand it, this ought to return one angle to the target,
@@ -183,7 +238,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if angle_to_target > 180: angle_to_target -= 360
 		return angle_to_target
 
-	def turnTowards(self, angleOffset = 0):
+	def turnTowards(self):
 		"""This was copied out of scripts.py in stardog and modified slightly. """
 		angleToTarget = self.getAngleToTarget()
 		if abs(angleToTarget) > self.acceptableError:
@@ -197,6 +252,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 
 	def move(self):
+		'''This is very similar to the translate function.'''
 		#Get new vector
 		vectx = math.cos(math.radians(self.theta))
 		vecty = math.sin(math.radians(self.theta))
@@ -212,4 +268,51 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def drawAt(self, position=(0,0)):
 		pos = position[0] - self.rect.width/2, position[1] - self.rect.height/2
 		game.screen.blit(self.image, pos)
+
+
+	def getArea(self):
+		return self.rect.width*self.rect.height
+
+
+	#step 35: implement bounce off
+	#step 36: test bounce off by 1. bouncing off the larger enemy ship. 2. making the player use the larger ship and bouncing the enemy ship forward.
+	def bounceOff(self, other):
+		'''Other is another physical object that this physical object 
+		just struck and should bounce off of.
+
+		two objects, A and B, collide. let theta be the angle of the line from the 
+		center of A to the center of B. Let A be the smaller of the two. let 
+		theta' be a line perpendicular to theta. If A's direction is less 
+		than 90 degrees from pointing at B then reflect A's direction over 
+		theta'. Reduce both objects' speeds. 
+		else move A's direction half way to theta in the direction away from B. 
+		Increase A's speed. Decrease B's speed. (This is the case where A 
+		is hit from behind despite moving in the same direction as B.)
+		'''
+		angleToOther = self.getAngleToTarget(target=other)
+		if abs(angleToOther) < 90:
+			#This object should bounce off other in a dramatically
+			#new direction. Specifically, our angle should be 
+			#reflected over the line perpendicular to the line that
+			#passes through the center of this and other.
+			#TODO First pass for code:
+			if angleToOther < 0:
+				self.turnClockwise(90)
+			else:
+				self.turnCounterClockwise(90)
+		else:
+			#this should sort of be bounced to a higher speed, as 
+			#when an object is hit from behind.
+			#The angle will also change slightly to be more in the
+			#direction of the object that struck us.
+			#Specifically, change our angle to be halfway between 
+			#our angle and the angle of other.
+			#TODO First pass for code:
+			amountToTurn = (180 - abs(angleToOther))/2
+			if angleToOther < 0:
+				self.turnCounterClockwise(amountToTurn)
+			else:
+				self.turnClockwise(amountToTurn)
+			#Use max because speed*2 might be zero.
+			self.speed = max(self.speed*2, 10)
 

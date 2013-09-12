@@ -22,6 +22,11 @@ FOLLOW_PLAYER = 2
 WIDTH = 900
 HEIGHT = 700
 
+#Used by physicalObject to define what each physicalObject is.
+BULLET = 0
+OTHER = 1
+SHIP = 2
+
 #set up the display:
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -47,47 +52,43 @@ def loadImage(filename, colorkey=colors.black):
 	return image
 #END: copied from stardog utils.py
 
-
-enemySprites = pygame.sprite.Group()
-enemy_ships = []
-
-
+#step 21: Goal: (Create separate sprite groups: tangible_sprites and intangible_sprite. Remove allSprites. Only check collisions on tangible sprites): delete this next line. Replace EVERY instance of allSprites with tangible_sprites.
 allSprites = pygame.sprite.Group()
-#Note that the player is not amongst allSprites mostly for when the screen
-#fixes on or follows the player
 
+#step 22: this should be done to intangible_sprites
 #TODO Create a motionless object for reference purposes while testing.
 allSprites.add(explosion.FixedBody(0, 0))
 
-playerSprites = pygame.sprite.Group()
+player = player.Player('images/ship')
+allSprites.add(player)
 
 
 def hitBoxTest(c):
 	#shoot a bunch of hit box testers 
 	#in towards the player
 	h=hbt.HitBoxTester(top=c[1]+50, left=c[0]+50, destination=c)
-	enemySprites.add(h)
+	allSprites.add(h)
 	allSprites.add(h)
 	h=hbt.HitBoxTester(top=c[1]+50, left=c[0]-50, destination=c)
-	enemySprites.add(h)
+	allSprites.add(h)
 	allSprites.add(h)
 	h=hbt.HitBoxTester(top=c[1]+50, left=c[0], destination=c)
-	enemySprites.add(h)
+	allSprites.add(h)
 	allSprites.add(h)
 	h=hbt.HitBoxTester(top=c[1]-50, left=c[0]+50, destination=c)
-	enemySprites.add(h)
+	allSprites.add(h)
 	allSprites.add(h)
 	h=hbt.HitBoxTester(top=c[1]-50, left=c[0]-50, destination=c)
-	enemySprites.add(h)
+	allSprites.add(h)
 	allSprites.add(h)
 	h=hbt.HitBoxTester(top=c[1]-50, left=c[0], destination=c)
-	enemySprites.add(h)
+	allSprites.add(h)
 	allSprites.add(h)
 	h=hbt.HitBoxTester(top=c[1], left=c[0]+50, destination=c)
-	enemySprites.add(h)
+	allSprites.add(h)
 	allSprites.add(h)
 	h=hbt.HitBoxTester(top=c[1], left=c[0]-50, destination=c)
-	enemySprites.add(h)
+	allSprites.add(h)
 	allSprites.add(h)
 
 
@@ -110,8 +111,6 @@ class Game:
 
 		self.textUpdateInterval = 1 #in seconds
 		self.nextUpdate = 0
-
-		self.player = player.Player('images/ship')
 
 		if self.camera == FOLLOW_PLAYER:
 			self.follower = follower.Follower(0,0)
@@ -161,38 +160,38 @@ class Game:
 					#will be dealt with below.
 					if event.key == 273: #Pressed up arrow
 						#increase speed by one quarter of max up to max.
-						self.player.targetSpeed = min(self.player.maxSpeed,\
-									self.player.targetSpeed +\
-									self.player.maxSpeed/4)
+						player.targetSpeed = min(player.maxSpeed,\
+									player.targetSpeed +\
+									player.maxSpeed/4)
 					elif event.key == 274: #Pressed down arrow
 						#decrease speed by one quarter of max down to zero.
-						self.player.targetSpeed = max(0,\
-							self.player.targetSpeed -\
-							self.player.maxSpeed/4)
+						player.targetSpeed = max(0,\
+							player.targetSpeed -\
+							player.maxSpeed/4)
 					elif event.key == 27: #escape key or red button
 						self.running = 0
 					elif event.key == 101: #e key
 						#enemy created for testing.
 						self.makeNewEnemy()
 					elif event.key == 112: #p key
-						self.player.parkingBrake()
+						player.parkingBrake()
 					elif event.key == 113: #q key
 						#Obliterate destination. Change to free flight.
-						self.player.killDestination()
+						player.killDestination()
 					elif event.key == 116: #t key
 						#shoot a bunch of hit box testers 
 						#in towards the player
-						print 'Width: '+str(self.player.image.get_width())+\
-						' vs '+str(self.player.rect.width)
-						print 'Height: '+str(self.player.image.get_height())+\
-						' vs '+str(self.player.rect.height)
-						hitBoxTest(self.player.getCenter())
+						print 'Width: '+str(player.image.get_width())+\
+						' vs '+str(player.rect.width)
+						print 'Height: '+str(player.image.get_height())+\
+						' vs '+str(player.rect.height)
+						hitBoxTest(player.getCenter())
 					elif event.key == 47: 
 						#forward slash (question mark without shift) key 
 						#Useful for querying one time info.
 						print 'Print player destination: '+\
-						str(self.player.destx)+','+\
-						str(self.player.desty)
+						str(player.destx)+','+\
+						str(player.desty)
 
 				elif event.type == pygame.KEYUP:
 					#Keep track of which keys are no longer being pushed.
@@ -205,38 +204,45 @@ class Game:
 				x,y = pygame.mouse.get_pos()
 				x += self.offsetx
 				y += self.offsety
-				self.player.setDestination((x,y))
+				player.setDestination((x,y))
 
 			#Respond to key holds.
 			#Keys that we want to respond to tapping them
 			#will be dealt with above.
 			if self.keys[276]: #Pressed left arrow
-				self.player.turnCounterClockwise()
+				player.turnCounterClockwise()
 			elif self.keys[275]: #Pressed right arrow
-				self.player.turnClockwise()
+				player.turnClockwise()
 			#This is not part of the above else if.
 			#You can shoot and turn at the same time.
 			if self.keys[32]: #Pressed space bar
-				self.player.shoot()
+				#Force shot tells this to shoot even if a target 
+				#is not obviously in view. NPC's will not take such wild shots.
+				player.shoot(force_shot=True)
 
 
-			#remind enemy of player's location
-			for e in enemy_ships:
-				e.setDestination(self.player.getCenter())
 			#remind follower of player's location
 			if self.camera == FOLLOW_PLAYER:
-				self.follower.setDestination(self.player.getCenter())
+				self.follower.setDestination(player.getCenter())
 
 			#draw black over the screen
 			#TODO as a game effect, it is super neato to temporarily NOT do this.
 			screen.fill(colors.black)
 
 			#Check all collisions
-			self.collisionChecks()
+			self.collisionHandling()
 
 			#update all sprites
 			self.offsetx,self.offsety = self.getOffset[self.camera]()
 			allSprites.update((self.offsetx,self.offsety))
+			#step 25: also call update on intangible_sprites
+
+			#step 28 (goal:update all the sprites, but only draw the ones that are on the screen.): take draw out of every physical object's update function including: bullet, stuff in explosion, hitBoxTester, ship.
+			#step 29: create a new sprite group called on_screen
+			#step 30: write a little code in the part of input that accepts the question mark which checks to see if the player is on the screen. You may want to simply create a rectangle that is the screen and see if the player collides with it. Print whether or not the player collides with it and test this with the fixed camera view.
+			#step 31: Then do the same thing with the enemy with a different camera view, checking to see that it has the correct behavior.
+			#step 32: add a bit of code in the run method that gets all tangibles and intangibles that collide with the screen rect (I think group collide might just return these nicely for you) and call draw on all the stuff in those functions.
+
 
 			#Display player location for debugging.
 			self.displayPlayerLoc()
@@ -250,69 +256,110 @@ class Game:
 		#end round loop (until gameover)
 	#end game loop
 
+
+	def collisionHandling(self):
+		'''The following function comes from pseudo code from
+		 axisAlignedRectangleCollision.txt that has been modified.'''
+		#Get a list of all the sprites
+		sprite_list = allSprites.sprites()
+		#sort the list in descending order based on each 
+		#sprite's y coordinate (aka top) plus height.
+		#Remember that larger y coordinates indicate further down
+		#on the screen.
+		#Reverse tells sorted to be descending.
+		#rect.topleft[1] gets the y coordinate, top.
+		sprite_list = sorted(sprite_list, \
+			key=lambda c: c.rect.topleft[1]+c.rect.height,\
+			reverse=True)
+		#iterate over the sprite list
+		for i in xrange(len(sprite_list)):
+			A = sprite_list[i]
+			for j in xrange(i+1, len(sprite_list)):
+				B = sprite_list[j]
+				#if A's least y coord (A's top) is > B's
+				#largest y coord (B's bottom)
+				#then they don't overlap and none of the following
+				#sprites overlap A either becuase the list is sorted
+				#by bottom y coordinates.
+				#We therefore skip the rest of the sprites in the list.
+				if A.rect.topleft[1] > B.rect.topleft[1]+B.rect.height:
+					break
+				else:
+					#Otherwise, we need to see if they overlap
+					#in the x direction.
+					#if A's greatest x coord is < B's least x coord
+					#or B's greatest x coord is < A's least x coord
+					#then they don't overlap, but one of the following 
+					#sprites might still overlap so we move to the
+					#next sprite in the list.
+					if A.rect.topleft[0]+A.rect.width < B.rect.topleft[0]\
+					or B.rect.topleft[0]+B.rect.width < A.rect.topleft[0]:
+						pass
+					else:
+						#they overlap. They should handle 
+						#collisions with each other.
+						A_died = A.handleCollisionWith(B)
+						B.handleCollisionWith(A)
+						#If A has died, then don't worry about A
+						#colliding with anything else.
+						if A_died:
+							break
+
+
+	#step 26: delete the following functions from game.py: collisionChecks and checkEnemyCollisions
+	#step 27: test
 	def collisionChecks(self):
-		if self.player.isDead():
-			allSprites.add(explosion.Explosion(self.player.getY(),self.player.getX()))
-			self.player.kill()
+		if player.isDead():
+			allSprites.add(explosion.Explosion(player.getY(),player.getX()))
+			#kill removes the calling sprite from all sprite groups
+			player.kill()
 
 		else:
 			#Check if player collided with enemy fire
 			#False tells the function not to autokill collided sprites
-			collisions = pygame.sprite.spritecollide(self.player, enemySprites, False)
+			collisions = pygame.sprite.spritecollide(player, allSprites, False)
 			for c in collisions:
 				#TODO TESTING the following is VERY bad. I think it indicates that custom collision handlers between objects is totally the way to go.
 				if c.isHitBoxTester is None:
+					#kill removes the calling sprite 
+					#from all sprite groups
 					c.kill()
-					self.player.takeDamage()
+					player.takeDamage()
 				else:
 					c.stopped = True
 
 			self.checkEnemyCollisions()
 
-			#Check for all collisions between the two sprite groups.
-			#Cancel each other out. Meaning that bullets kill bullets
-			#The true, true here will tell members of both groups to instantly kill each other.
-			#TODO I don't really like this. It seems too blunt.
-			collisions = pygame.sprite.groupcollide(enemySprites, playerSprites,\
-								True, True)
 
 	def checkEnemyCollisions(self):
 		to_destroy = []
 		for i in xrange(len(enemy_ships)):
 			enemy = enemy_ships[i]
-			#Check if enemy collided with player fire
-			#False tells the function not to autokill collided sprites
-			collisions = pygame.sprite.spritecollide(enemy, 
-					playerSprites, False)
 			if len(collisions) > 0:
 				for c in collisions:
+					#kill removes the calling sprite 
+					#from all sprite groups
 					c.kill()
 					enemy.takeDamage()
 				if enemy.isDead() and not i in to_destroy:
 					to_destroy.append(i)
 			#check if player collided with the enemy
-			elif pygame.sprite.collide_rect(self.player, enemy):
+			elif pygame.sprite.collide_rect(player, enemy):
 				if not i in to_destroy: to_destroy.append(i)
-				self.player.takeDamage()
+				player.takeDamage()
 		#Blow up destroyed enemies. They only have one health each.
 		for td in to_destroy:
 			self.blowUpEnemy(td)
 
-	def blowUpEnemy(self, index):
-		ship = enemy_ships.pop(index)
-		allSprites.add(explosion.Explosion(ship.getY(),ship.getX()))
-		ship.kill()
-
 	def makeNewEnemy(self):
 		enemy_ship = ship.Ship(top=50, left=50, image_name='images/destroyer')
 		allSprites.add(enemy_ship)
-		enemy_ships.append(enemy_ship)
 
 	def displayPlayerLoc(self):
 #		if self.timer > self.nextUpdate:
 		self.nextUpdate += self.textUpdateInterval
 		font = pygame.font.Font(None, 36)
-		string = "Player X,Y: "+str(self.player.getX())+','+str(self.player.getY())+'. Speed: '+str(self.player.speed)+'. MaxSpeed: '+str(self.player.maxSpeed)
+		string = "Player X,Y: "+str(player.getX())+','+str(player.getY())+'. Speed: '+str(player.speed)+'. MaxSpeed: '+str(player.maxSpeed)
 		text = font.render(string, 1, (255, 255, 255)) #white
 		textpos = text.get_rect(center=(400,10)) #center text at 400, 10
 		screen.blit(text, textpos)
@@ -321,26 +368,26 @@ class Game:
 	#Choices for the display follow in 3 functions:
 
 	def fixedScreen(self):
-		self.player.update()
-		self.player.draw()
-		self.player.drawHealthBarAt(self.player.getCenter())
+		player.playerUpdate()
+		player.draw()
+		player.drawHealthBarAt(player.getCenter())
 		return 0,0
 
 	def centerOnPlayer(self):
-		self.player.update()
-		self.player.drawAt((self.centerx, self.centery))
-		self.player.drawHealthBarAt((self.centerx, self.centery))
-		return self.player.getX() - self.centerx, self.player.getY() - self.centery
+		player.playerUpdate()
+		player.drawAt((self.centerx, self.centery))
+		player.drawHealthBarAt((self.centerx, self.centery))
+		return player.getX() - self.centerx, player.getY() - self.centery
 
 	def followPlayer(self):
 		self.follower.update()
 		offset = self.follower.getX() - self.centerx, \
 			self.follower.getY() - self.centery
 		self.follower.drawAt((self.centerx, self.centery)) #TODO temporarily draw for testing purposes.
-		self.player.update(offset)
-		self.player.draw(offset)
+		player.playerUpdate(offset)
+		player.draw(offset)
 
 		
-		pos = self.player.rect.centerx - offset[0], self.player.rect.centery - offset[1]
-		self.player.drawHealthBarAt(pos) #self.player.getX() - offset[0], self.player.getY() - offset[1])
+		pos = player.rect.centerx - offset[0], player.rect.centery - offset[1]
+		player.drawHealthBarAt(pos) #player.getX() - offset[0], player.getY() - offset[1])
 		return offset

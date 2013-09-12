@@ -22,7 +22,7 @@ class Weapon():
 			self.cooldown -= 1
 		else:
 			if force_shot:
-				self.shoot(shooter, is_player=True)
+				self.shoot(shooter)
 			else:
 				angle = shooter.getAngleToTarget()
 				#Decide whether or not we can shoot
@@ -30,7 +30,7 @@ class Weapon():
 					for _ in range(self.bullet_num):
 						self.shoot(shooter)
 
-	def shoot(self, shooter, is_player=False):
+	def shoot(self, shooter):
 		#Set bullet direction and starting location
 		angle = shooter.theta
 		if self.spread > 0:
@@ -43,10 +43,6 @@ class Weapon():
 		tempbullet.timeToLive = self.bullet_lifespan
 		#Add bullet to the sprite groups
 		game.allSprites.add(tempbullet)
-		if is_player:
-			game.playerSprites.add(tempbullet)
-		else:
-			game.enemySprites.add(tempbullet)
 		#reset cooldown
 		self.cooldown = self.refire_rate
 

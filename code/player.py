@@ -9,7 +9,7 @@ class Player(ship.Ship):
 		profiles.shipProfile(self, profile='mk1')
 		self.setProfile()
 
-		self.is_player=True
+		self.rect.topleft = (100,100)
 
 		self.health = 100.0
 		self.maxhealth = 100.0
@@ -23,6 +23,14 @@ class Player(ship.Ship):
 
 
 	def update(self, offset=(0,0)):
+		'''The player's update function does nothing.
+		The player uses the special playerUpdate function
+		which is needed for when the screen follows or 
+		centers on the player.'''
+		pass
+
+
+	def playerUpdate(self, offset=(0,0)):
 		if not self.destination is None:
 			#Turn towards target
 			self.turnTowards()

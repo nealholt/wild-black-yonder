@@ -7,7 +7,7 @@ class HitBoxTester(physicalObject.PhysicalObject):
 
 		physicalObject.PhysicalObject.__init__(self, top, left, width=5, height=5)
 		self.destination = destination
-		self.theta = self.getAngleToTarget()
+		self.theta = self.getAngleToTarget(self.destination)
 		self.speed = 3
 		self.stopped = False
 		self.isHitBoxTester = True
@@ -19,4 +19,9 @@ class HitBoxTester(physicalObject.PhysicalObject):
 
 		self.draw(offset)
 
+
+	def handleCollisionWith(self, other_sprite):
+		self.stopped = True
+		died = True
+		return died
 

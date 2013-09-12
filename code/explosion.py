@@ -17,6 +17,7 @@ class Explosion(physicalObject.PhysicalObject):
 
 	def update(self, offset):
 		if self.timeToLive <= 0:
+			#kill removes the calling sprite from all sprite groups
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
@@ -27,6 +28,7 @@ class Explosion(physicalObject.PhysicalObject):
 		#I am unwilling to spend any more time. DO NOT go down this hole.
 		top = self.rect.centery-offset[1]
 		left = self.rect.centerx-offset[0]
+		#step 24: these should be done to intangible_sprites
 		game.allSprites.add(Flash(top, left))
 		game.allSprites.add(Debris(self.rect.centery, self.rect.centerx))
 
@@ -53,6 +55,7 @@ class Flash(physicalObject.PhysicalObject):
 
 	def update(self, offset):
 		if self.timeToLive <= 0:
+			#kill removes the calling sprite from all sprite groups
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
@@ -70,6 +73,7 @@ class Debris(physicalObject.PhysicalObject):
 
  	def update(self, offset):
 		if self.timeToLive <= 0:
+			#kill removes the calling sprite from all sprite groups
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
