@@ -53,6 +53,13 @@ class Game:
 				elif event.type == pygame.MOUSEBUTTONDOWN:
 					self.mouse[event.button] = 1
 					self.mouse[0] = event.pos
+
+					x,y = event.pos
+					self.player.setDestination(x,y)
+
+					#print x
+					#print y
+
 				elif event.type == pygame.MOUSEBUTTONUP:
 					self.mouse[event.button] = 0
 					self.mouse[0] = event.pos
@@ -63,9 +70,9 @@ class Game:
 
 					#TODO TESTING. Is there a better way to do this with bindings?
 					if event.key == 276: #Pressed left
-						self.player.turnLeft()
+						self.player.turnCounterClockwise()
 					if event.key == 275: #Pressed right
-						self.player.turnRight()
+						self.player.turnClockwise()
 					elif event.key == 27: #escape key or red button
 						self.running = 0
 
@@ -75,7 +82,9 @@ class Game:
 					self.keys[event.key % 322] = 0
 				if self.pause:
 					self.menu.handleEvent(event)
-						
+
+			self.player.move()
+
 			#unpaused:
 			#if not self.pause:
 			#	#update action:
