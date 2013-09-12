@@ -15,6 +15,7 @@ class Follower(physicalObject.PhysicalObject):
 		#slow down if near target
 		if not self.park():
 			#Approach target speed
+			self.targetSpeed = self.maxSpeed
 			self.approachSpeed()
 
 		self.move()

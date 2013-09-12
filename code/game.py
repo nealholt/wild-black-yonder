@@ -91,7 +91,7 @@ class Game:
 			#x,y = pygame.mouse.get_pos()
 			#x += self.offsetx
 			#y += self.offsety
-			#self.player.setDestination(x,y)
+			#self.player.setDestination((x,y))
 
 			#event polling:
 			for event in pygame.event.get():
@@ -100,11 +100,12 @@ class Game:
 				elif event.type == pygame.MOUSEBUTTONDOWN:
 					self.mouse[event.button] = 1
 					self.mouse[0] = event.pos
-					#Set the destination of the player to be the mouse location
+					#Set the destination of the player 
+					#to be the mouse location
 					x,y = event.pos
 					x += self.offsetx
 					y += self.offsety
-					self.player.setDestination(x,y)
+					self.player.setDestination((x,y))
 				#elif event.type == pygame.MOUSEBUTTONUP:
 				#	self.mouse[event.button] = 0
 				#	self.mouse[0] = event.pos
@@ -113,18 +114,34 @@ class Game:
 				elif event.type == pygame.KEYDOWN:
 					#self.keys[event.key % 322] = 1
 
-					#if event.key == 276: #Pressed left
-					#	pass
-					#elif event.key == 275: #Pressed right
-					#	pass
-					#el
-					if event.key == 32: #Pressed space bar
+					if event.key == 273: #Pressed up arrow
+						#increase speed by one quarter of max up to max.
+						self.player.targetSpeed = min(self.player.maxSpeed, self.player.targetSpeed + self.player.maxSpeed/4)
+					elif event.key == 274: #Pressed down arrow
+						#decrease speed by one quarter of max down to zero.
+						self.player.targetSpeed = max(0, self.player.targetSpeed - self.player.maxSpeed/4)
+					elif event.key == 276: #Pressed left arrow
+						self.player.turnCounterClockwiseAmt(30)
+					elif event.key == 275: #Pressed right arrow
+						self.player.turnClockwiseAmt(30)
+					elif event.key == 32: #Pressed space bar
 						self.player.shoot()
 					elif event.key == 27: #escape key or red button
 						self.running = 0
 					elif event.key == 101: #e key
 						#enemy created for testing.
 						self.makeNewEnemy()
+					elif event.key == 112: #p key
+						self.player.parkingBrake()
+					elif event.key == 113: #q key
+						#Obliterate destination. Change to free flight.
+						self.player.killDestination()
+					elif event.key == 47: 
+						#forward slash (question mark without shift) key 
+						#Useful for querying one time info.
+						print 'Print player destination: '+\
+						str(self.player.destx)+','+\
+						str(self.player.desty)
 
 					print "TODO TESTING: key press "+str(event.key)
 
@@ -133,10 +150,10 @@ class Game:
 
 			#remind enemy of player's location
 			for e in enemy_ships:
-				e.setDestination(self.player.getX(),self.player.getY())
+				e.setDestination(self.player.getCenter())
 			#remind follower of player's location
 			if self.camera == FOLLOW_PLAYER:
-				self.follower.setDestination(self.player.getX(),self.player.getY())
+				self.follower.setDestination(self.player.getCenter())
 
 			#draw black over the screen
 			#TODO as a game effect, it is super neato to temporarily NOT do this.
@@ -213,7 +230,7 @@ class Game:
 #		if self.timer > self.nextUpdate:
 		self.nextUpdate += self.textUpdateInterval
 		font = pygame.font.Font(None, 36)
-		string = "Player X,Y: "+str(self.player.getX())+','+str(self.player.getY())
+		string = "Player X,Y: "+str(self.player.getX())+','+str(self.player.getY())+'. Speed: '+str(self.player.speed)+'. MaxSpeed: '+str(self.player.maxSpeed)
 		text = font.render(string, 1, (255, 255, 255)) #white
 		textpos = text.get_rect(center=(400,10)) #center text at 400, 10
 		screen.blit(text, textpos)

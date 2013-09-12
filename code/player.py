@@ -41,15 +41,21 @@ class Player(physicalObject.PhysicalObject):
 		self.healthBarWidth = 20
 		self.healthBarHeight = 10
 
+		self.parkAtDestination = False
+
 		#START: copied from stardog floaters.py
-		image = loadImage(image_name + ext)
+		self.base_image = loadImage(image_name + ext)
 		#rotate() takes a counter-clockwise angle. 
 		#self.image = pygame.transform.rotate(image, -self.dir).convert() #NEAL COMMENTED
-		self.image = pygame.transform.rotate(image, -self.theta).convert() #NEAL ADDED
+		self.image = pygame.transform.rotate(self.base_image, -self.theta).convert() #NEAL ADDED
 		#self.image.set_colorkey((0,0,0))
 		self.rect = self.image.get_rect()
 		#END: copied from stardog floaters.py
 
+
+	def parkingBrake(self):
+		'''Change the truth value of park.'''
+		self.parkAtDestination = not self.parkAtDestination
 
 	def shoot(self):
 		tempbullet = bullet.Bullet(self.theta, self.rect.centery, self.rect.centerx, self)
@@ -76,12 +82,18 @@ class Player(physicalObject.PhysicalObject):
 
 
 	def update(self, offset=(0,0)):
-		#Turn towards target
-		self.turnTowards()
+		if not self.destination is None:
+			#Turn towards target
+			self.turnTowards()
 
-		#Approach target speed
-		self.approachSpeed()
+			if self.parkAtDestination:
+				self.park()
+			else:
+				#Approach target speed
+				self.approachSpeed()
+		else:
+			#Approach target speed
+			self.approachSpeed()
 
 		self.move()
-
 
