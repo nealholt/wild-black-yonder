@@ -27,11 +27,12 @@ def playerProfile(pObject):
 
 
 def followerProfile(pObject):
-	'''This is the object that invisibly follows the player and the screen centers on it.'''
+	'''This is the object that invisibly follows the player and the screen centers on it.
+	This mechanism was intended to give a sense of speed and direction.'''
 	#Go to max speed immediately.
 	pObject.targetSpeed = pObject.maxSpeed
 
-	pObject.maxSpeed = 8.0
+	pObject.maxSpeed = 20.0
 	pObject.maxdtheta = 20.0
 
 	pObject.setColor((155,155,0))

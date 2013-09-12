@@ -21,7 +21,7 @@ BLACK = (0,0,0)
 
 class Game:
 	""" """
-	def __init__(self, screen):
+	def __init__(self, screen, camera=FOLLOW_PLAYER):
 		self.fps = FPS
 		self.screen = screen
 		self.top_left = 0, 0
@@ -34,7 +34,7 @@ class Game:
 		self.offsety = 0
 
 		self.timer = 0
-		self.camera = FOLLOW_PLAYER #TODO Change camra view: FIXED_VIEW FIX_ON_PLAYER FOLLOW_PLAYER
+		self.camera = camera
 
 		self.textUpdateInterval = 1 #in seconds
 		self.nextUpdate = 0
@@ -86,12 +86,12 @@ class Game:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					self.running = 0
-				elif event.type == pygame.MOUSEBUTTONDOWN:
-					self.mouse[event.button] = 1
-					self.mouse[0] = event.pos
-					#Set the destination of the player to be the mouse location clicked.
-					x,y = event.pos
-					self.player.setDestination(x,y)
+				#elif event.type == pygame.MOUSEBUTTONDOWN:
+				#	self.mouse[event.button] = 1
+				#	self.mouse[0] = event.pos
+				#	#Set the destination of the player to be the mouse location clicked.
+				#	x,y = event.pos
+				#	self.player.setDestination(x,y)
 				#elif event.type == pygame.MOUSEBUTTONUP:
 				#	self.mouse[event.button] = 0
 				#	self.mouse[0] = event.pos
@@ -110,7 +110,7 @@ class Game:
 					elif event.key == 27: #escape key or red button
 						self.running = 0
 
-					print "TODO TESTING: key press "+str(event.key)
+					#print "TODO TESTING: key press "+str(event.key)
 
 				#elif event.type == pygame.KEYUP:
 				#	self.keys[event.key % 322] = 0
@@ -214,6 +214,7 @@ class Game:
 		self.follower.update()
 		offset = self.follower.getX() - self.centerx, \
 			self.follower.getY() - self.centery
+		self.follower.drawAt((self.centerx, self.centery)) #TODO temporarily draw for testing purposes.
 		self.player.update(offset)
 		self.player.draw(offset)
 		self.player.drawHealthBarAt(self.player.getX() - offset[0], self.player.getY() - offset[1])

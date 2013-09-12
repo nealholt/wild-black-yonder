@@ -19,4 +19,4 @@ class Follower(physicalObject.PhysicalObject):
 			self.approachSpeed()
 
 		self.move()
-		self.draw() #TODO temporarily draw for testing purposes.
+		#self.draw() #TODO temporarily draw for testing purposes.
