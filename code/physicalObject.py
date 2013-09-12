@@ -30,8 +30,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Rotation. All rotations are in degrees
 		self.theta = 0.0
 		self.dtheta = 3.0
-		self.ddtheta = 1.0
-		self.maxdtheta = 9.0
 
 		self.acceptableError = 0.5 #you can be within this many degrees of the target
 
@@ -97,25 +95,14 @@ class PhysicalObject(pygame.sprite.Sprite):
 		return self.rect.centery
 
 	def noClipWith(self,other):
-		'''Everything defaults to clipping.'''
+		'''Everything defaults to clipping.
+		The idea was to have one's own bullets not clip with one's 
+		self since the bullet starts out under the object that fired it
+		which would otherwise cause everything to shoot itself.'''
 		return False
 
 	def setColor(self, color):
 	        self.image.fill(color)
-
-	def turnShallower(self):
-		#Ease out of the turn
-		if self.dtheta > 0:
-			self.dtheta -= self.ddtheta
-		else:
-			self.dtheta += self.ddtheta
-
-	def turnSharper(self, clockwise=True):
-		#Increase the amount of turn in the desired direction
-		if clockwise:
-			self.dtheta = max(self.dtheta - self.ddtheta, -self.maxdtheta)
-		else:
-			self.dtheta = min(self.dtheta + self.ddtheta, self.maxdtheta)
 
 	def turnCounterClockwise(self, delta=None):
 		'''Turn in the desired direction.

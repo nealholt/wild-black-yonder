@@ -3,6 +3,7 @@ import physicalObject
 import bullet
 import profiles
 import game
+import colors
 
 #START: copied from stardog utils.py
 #THIS WILL GO HERE FOR TEMPORARY TESTING PURPOSES ONLY
@@ -14,13 +15,13 @@ if pygame.image.get_extended():
 else:
 	ext = ".bmp"
 
-def loadImage(filename, colorkey=(0,0,0)):
+def loadImage(filename, colorkey=colors.black):
 	try:
 		image = pygame.image.load(filename).convert()
 		image.set_colorkey(colorkey)
 	except pygame.error:
 		image = pygame.image.load("images/default" + ext).convert()
-		image.set_colorkey((255,255,255))
+		image.set_colorkey(colors.white)
 	return image
 #END: copied from stardog utils.py
 
@@ -70,15 +71,15 @@ class Player(physicalObject.PhysicalObject):
 
 	def drawHealthBarAt(self, x, y):
 		#Draw health bars
-		healthx = x-self.rect.width
+		healthx = x-(self.rect.width+self.healthBarWidth)/2
 		healthy = y-self.rect.height-self.healthBarHeight
 
 		tempRect = pygame.Rect(healthx, healthy, self.healthBarWidth, self.healthBarHeight)
-		pygame.draw.rect(game.screen, (255,36,0), tempRect, 0) #Color red
+		pygame.draw.rect(game.screen, colors.red, tempRect, 0)
 
 		width = (self.health/self.maxHealth)*self.healthBarWidth
 		tempRect = pygame.Rect(healthx, healthy, width, self.healthBarHeight)
-		pygame.draw.rect(game.screen, (0,64,0), tempRect, 0) #Color green
+		pygame.draw.rect(game.screen, colors.green, tempRect, 0)
 
 
 	def update(self, offset=(0,0)):

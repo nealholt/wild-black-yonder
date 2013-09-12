@@ -3,9 +3,7 @@ import profiles
 
 class Follower(physicalObject.PhysicalObject):
 	def __init__(self, top, left):
-
-		physicalObject.PhysicalObject.__init__(self, top,left,10,10) #TODO temporarily make visible for testing.
-
+		physicalObject.PhysicalObject.__init__(self, top,left,10,10)
 		profiles.followerProfile(self)
 
 	def update(self, offset=(0,0)):
@@ -19,4 +17,3 @@ class Follower(physicalObject.PhysicalObject):
 			self.approachSpeed()
 
 		self.move()
-		#self.draw() #TODO temporarily draw for testing purposes.

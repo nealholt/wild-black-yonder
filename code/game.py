@@ -6,18 +6,17 @@ import sys
 sys.path.append('code')
 
 import player
-import enemy
 import explosion
 import follower
+import colors
+import ship
 
-FPS = 30
+FPS = 30 #frames per second
 
 #"Camera" options
 FIXED_VIEW = 0
 FIX_ON_PLAYER = 1
 FOLLOW_PLAYER = 2
-
-BLACK = (0,0,0)
 
 WIDTH = 900
 HEIGHT = 700
@@ -25,7 +24,7 @@ HEIGHT = 700
 #set up the display:
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-screen.fill(BLACK)
+screen.fill(colors.black)
 
 enemySprites = pygame.sprite.Group()
 enemy_ships = []
@@ -157,7 +156,7 @@ class Game:
 
 			#draw black over the screen
 			#TODO as a game effect, it is super neato to temporarily NOT do this.
-			screen.fill(BLACK)
+			screen.fill(colors.black)
 
 			#Check all collisions
 			self.collisionChecks()
@@ -220,9 +219,7 @@ class Game:
 		ship.kill()
 
 	def makeNewEnemy(self):
-		top = rd.randint(10, self.height-20)
-		left = rd.randint(10, self.width-20)
-		enemy_ship = enemy.Enemy(top, left)
+		enemy_ship = ship.Ship()
 		allSprites.add(enemy_ship)
 		enemy_ships.append(enemy_ship)
 
