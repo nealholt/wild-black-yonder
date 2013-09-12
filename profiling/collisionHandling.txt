@@ -1,0 +1,20 @@
+Wed Apr 17 17:24:51 2013    profiling/collisionHandling.profile
+
+         290003 function calls in 0.177 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.004    0.004    0.177    0.177 <string>:1(<module>)
+    10000    0.095    0.000    0.173    0.000 code/game.py:422(collisionHandling)
+    10000    0.028    0.000    0.039    0.000 {sorted}
+    40000    0.019    0.000    0.025    0.000 code/geometry.py:4(distance)
+    80000    0.011    0.000    0.011    0.000 code/game.py:434(<lambda>)
+    10000    0.006    0.000    0.008    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:271(sprites)
+    40000    0.006    0.000    0.006    0.000 {math.sqrt}
+    90000    0.005    0.000    0.005    0.000 {len}
+    10000    0.002    0.000    0.002    0.000 {method 'keys' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {range}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+
+

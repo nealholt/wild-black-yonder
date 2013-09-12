@@ -1,0 +1,18 @@
+Wed Apr 17 17:24:58 2013    profiling/getObstacles.profile
+
+         250003 function calls in 0.210 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.003    0.003    0.210    0.210 <string>:1(<module>)
+    10000    0.029    0.000    0.206    0.000 code/scenarios.py:376(getObstacles)
+    70000    0.022    0.000    0.098    0.000 /usr/lib/python2.7/random.py:237(randint)
+    10000    0.007    0.000    0.077    0.000 /usr/lib/python2.7/random.py:100(seed)
+    70000    0.063    0.000    0.076    0.000 /usr/lib/python2.7/random.py:173(randrange)
+    10000    0.070    0.000    0.070    0.000 {function seed at 0x17fb500}
+    70000    0.013    0.000    0.013    0.000 {method 'random' of '_random.Random' objects}
+    10001    0.002    0.000    0.002    0.000 {range}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+
+

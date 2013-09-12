@@ -48,6 +48,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#because rectangles will be rounded to an integer which can cause 
 		#an inability to move diagonally at slow speeds because the integer 
 		#always rounds down.
+		#The downside of this is that there are now two valid location variables self.loc and self.rect.center, both of which need to be maintained and kept equal to each other.
 		self.loc = (centerx, centery)
 
 		if self.image_name is None:
@@ -294,6 +295,13 @@ class PhysicalObject(pygame.sprite.Sprite):
 		can prevent diagonal motion. That's why we use self.loc instead.'''
 		self.loc = geometry.translate(self.loc, \
 			self.theta, self.speed)
+		self.rect.centerx = self.loc[0]
+		self.rect.centery = self.loc[1]
+
+
+	def translate(self, angle, magnitude):
+		self.loc = geometry.translate(self.loc, \
+			angle, magnitude)
 		self.rect.centerx = self.loc[0]
 		self.rect.centery = self.loc[1]
 

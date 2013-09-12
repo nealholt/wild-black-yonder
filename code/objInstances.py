@@ -162,11 +162,11 @@ class FixedCircle(physicalObject.PhysicalObject):
 
 #When a rock is blown up, what comes out?
 subrocks = dict()
-subrocks['images/asteroidBigRoundTidied'] = ('asteroidWild2', 4)
-subrocks['images/asteroidWild2'] = ('asteroidTempel', 4)
-subrocks['images/asteroidTempel'] = ('debris', 10)
-subrocks['images/Sikhote_small'] = ('gem',1)
-subrocks['images/bournonite_30percent'] = ('gem', 3)
+subrocks['bigrock'] = ('bigrock', 4)
+subrocks['medrock'] = ('medrock', 4)
+subrocks['smallrock'] = ('debris', 10)
+subrocks['gold'] = ('gem',1)
+subrocks['silver'] = ('gem', 3)
 def splitRock(image_name, centerx=0, centery=0):
 	new_image, count = subrocks[image_name]
 	if new_image == 'gem':
@@ -181,7 +181,7 @@ def splitRock(image_name, centerx=0, centery=0):
 	else:
 		for _ in range(count):
 			temp = Asteroid(x=centerx, y=centery,
-				image_name='images/'+new_image)
+				image_name=new_image)
 			globalvars.tangibles.add(temp)
 			globalvars.whiskerables.add(temp)
 
@@ -239,7 +239,7 @@ class Gem(physicalObject.PhysicalObject):
 	'''A valuable gem.'''
 	def __init__(self, x=0, y=0, speed_min=1.0, speed_max=5.0):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,
-						image_name='images/TyDfN_tiny')
+						image_name='gem')
 		self.is_a = globalvars.GEM
 		#Choose a random rotation
 		self.dtheta = rd.randint(-5, 5)
@@ -300,7 +300,7 @@ class HealthKit(physicalObject.PhysicalObject):
 	'''A motionless body created for testing purposes.'''
 	def __init__(self, x=0, y=0):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,
-						image_name='images/health')
+						image_name='health')
 		self.is_a = globalvars.HEALTH
 		self.health_amt = 10
 		self.picked_up = False

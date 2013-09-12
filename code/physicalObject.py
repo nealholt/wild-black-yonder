@@ -1,6 +1,6 @@
 import pygame
 import math
-from displayUtilities import loadImage, ext
+from displayUtilities import loadImage
 import geometry
 from colors import white
 import globalvars
@@ -56,11 +56,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.image.fill(self.color)
 			self.base_image = self.image
 		else:
-			self.image = loadImage(self.image_name + ext)
+			self.image = loadImage(self.image_name)
 			#Base image is needed because we need a reference to the
 			#original image that is never modified.
 			#self.base_image is used in updateImageAngle.
-			self.base_image = loadImage(self.image_name + ext)
+			self.base_image = loadImage(self.image_name)
 			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()

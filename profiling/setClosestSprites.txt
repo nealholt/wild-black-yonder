@@ -1,0 +1,16 @@
+Wed Apr 17 17:24:51 2013    profiling/setClosestSprites.profile
+
+         40003 function calls in 0.021 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.003    0.003    0.021    0.021 <string>:1(<module>)
+    10000    0.013    0.000    0.019    0.000 code/game.py:359(setClosestSprites)
+    10000    0.004    0.000    0.005    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:271(sprites)
+    10000    0.001    0.000    0.001    0.000 {method 'keys' of 'dict' objects}
+    10000    0.001    0.000    0.001    0.000 {len}
+        1    0.000    0.000    0.000    0.000 {range}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+
+

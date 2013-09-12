@@ -111,4 +111,41 @@ def getTestingPanel():
 	return menu
 
 
+def getRestartPanel():
+	border_padding = 100
+	top = border_padding
+	left = border_padding
+	height = globalvars.HEIGHT-2*border_padding
+	width = globalvars.WIDTH-2*border_padding
+
+	menu = Panel()
+
+	#First draw a white frame around the menu.
+	temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
+		color=colors.white, thickness=3)
+	menu.addDrawable(temp)
+
+	#Then draw the background for the menu
+	temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
+		color=colors.reddishgray)
+	menu.addDrawable(temp)
+
+	#Then draw the contents of the menu
+	#Display text explaining that player died.
+	temp = drawable.Text(x1=globalvars.WIDTH/2-100, y1=200, string='You have died',\
+		font_size=24, color=colors.white)
+	menu.addDrawable(temp)
+	#Display button allowing player to restart.
+	subpanel = Panel()
+	subpanel.method = scenarios.restart
+	temp = drawable.Rectangle(x1=globalvars.WIDTH/2-75, y1=300, width=200, height=50, \
+		color=colors.blue)
+	subpanel.addDrawable(temp)
+	temp = drawable.Text(x1=globalvars.WIDTH/2, y1=340, string='Restart',\
+		font_size=32, color=colors.white)
+	subpanel.addDrawable(temp)
+	menu.addPanel(subpanel)
+
+	return menu
+
 

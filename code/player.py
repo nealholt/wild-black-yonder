@@ -18,8 +18,8 @@ class Player(ship.Ship):
 		self.weapons = [w]
 
 
-		self.health=500
-		self.maxhealth=500
+		self.health=300
+		self.maxhealth=300
 
 		self.rect.centerx = -100.
 		self.rect.centery = -100.
@@ -28,7 +28,7 @@ class Player(ship.Ship):
 
 		self.destination = None
 
-		print self.speed
+		print 'TESTING player speed in player.py: '+str(self.speed)
 
 
 	def parkingBrake(self):

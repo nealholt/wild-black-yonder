@@ -1,4 +1,11 @@
 import pygame
+
+#It's necessary to do the next part before anyone imports displayUtilities now that we are pre-loading images.
+pygame.init()
+import globalvars
+#set up the display:
+globalvars.screen = pygame.display.set_mode((globalvars.WIDTH, globalvars.HEIGHT))
+
 import random as rd
 import sys
 sys.path.append('code')
@@ -7,7 +14,6 @@ import colors
 import testFunctions as test
 import menus
 from geometry import distance, angleFromPosition, translate, rotateAngle
-import globalvars
 from misc import writeTextToScreen
 import datetime #Use for testing efficiency
 
@@ -17,11 +23,8 @@ globalvars.intangibles = []
 #This last group will contain any sprites that will tickle whiskers
 globalvars.whiskerables = pygame.sprite.Group()
 
-#set up the display:
-pygame.init()
-globalvars.screen = pygame.display.set_mode((globalvars.WIDTH, globalvars.HEIGHT))
 #Player must be created before scenario is called.
-globalvars.player = playerObj.Player('images/ship')
+globalvars.player = playerObj.Player('ship')
 
 
 def updateDust(offset):
@@ -153,7 +156,11 @@ def run():
 				elif event.key == 27: #escape key or red button
 					running = False
 				elif event.key == 109: #m key
-					globalvars.panel = menus.getTestingPanel()
+					#If player is dead, access the restart panel, not the testing panel.
+					if globalvars.player.isDead():
+						globalvars.panel = menus.getRestartPanel()
+					else:
+						globalvars.panel = menus.getTestingPanel()
 					continue
 				elif event.key == 112: #p key
 					globalvars.player.parkingBrake()
@@ -174,11 +181,7 @@ def run():
 					' vs '+str(globalvars.player.rect.height)
 					test.hitBoxTest(globalvars.player.rect.center)
 				elif event.key == 121: #y key
-					#Test efficiency of drawing stuff to the canvas
-					import cProfile
-					cProfile.runctx('for _ in range(10000): drawThoseOnScreen(globalvars.tangibles.sprites(), offset); pygame.display.flip()', globals(),locals(), 'profiling/drawTangibles.profile')
-					cProfile.runctx('for _ in range(10000): drawThoseOnScreen2(globalvars.tangibles.sprites(), offset); pygame.display.flip()', globals(),locals(), 'profiling/drawTangibles2.profile')
-
+					profileEverything(offset)
 				elif event.key == 47: 
 					#forward slash (question mark
 					#without shift) key.
@@ -298,7 +301,16 @@ def run():
 		drawThoseOnScreen(globalvars.tangibles.sprites(), offset)
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
-		globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
+		if not globalvars.player.isDead():
+			globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
+		else:
+			#Make player death kick the player back to a menu where player 
+			#can choose to restart. Display a death screen then. Reset the 
+			#scenario and everything else.
+			#Countdown before kicking player back to menu
+			globalvars.deathcountdown -= 1
+			if globalvars.deathcountdown < 0:
+				globalvars.panel = menus.getRestartPanel()
 
 		globalvars.hud_helper.update(offset)
 
@@ -462,4 +474,24 @@ def collisionHandling():
 					#colliding with anything else.
 					if A_died: break
 
+
+
+def profileEverything(offset):
+	'''I used to put pygame.display.flip() in the loops of a bunch of these profiling calls 
+	in case it impacted the speed of the other functions, but it does not impact them. I 
+	tested and confirmed this.
+	HOWEVER, it should be noted that flip is hella slow.'''
+	import cProfile
+
+	cProfile.runctx('for _ in range(10000): drawThoseOnScreen(globalvars.tangibles.sprites(), offset)', globals(),locals(), 'profiling/drawTangibles.profile')
+	cProfile.runctx('for _ in range(10000): drawThoseOnScreen2(globalvars.tangibles.sprites(), offset)', globals(),locals(), 'profiling/drawTangibles2.profile')
+	cProfile.runctx('for _ in range(10000): updateDust(offset)', globals(),locals(), 'profiling/updateDust.profile')
+	cProfile.runctx('for _ in range(10000): collisionHandling()', globals(),locals(), 'profiling/collisionHandling.profile')
+	cProfile.runctx('for _ in range(10000): setClosestSprites()', globals(),locals(), 'profiling/setClosestSprites.profile')
+	cProfile.runctx('for _ in range(10000): drawThoseOnScreen(globalvars.intangibles, offset)', globals(),locals(), 'profiling/drawIntangibles.profile')
+	cProfile.runctx('for _ in range(10000): globalvars.tangibles.update()', globals(),locals(), 'profiling/updateTangibles.profile')
+	cProfile.runctx('for _ in range(10000): globalvars.hud_helper.update(offset)', globals(),locals(), 'profiling/updateHudHelper.profile')
+
+	#Profile some of the scenario functions.
+	menus.scenarios.profile()
 

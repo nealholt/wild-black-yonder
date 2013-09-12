@@ -8,9 +8,10 @@ import ship
 import displayUtilities
 import globalvars
 import math
+import player
 
 def makeNewEnemy(x=0, y=0):
-	enemy_ship = ship.Ship(centerx=x, centery=y, image_name='images/destroyer')
+	enemy_ship = ship.Ship(centerx=x, centery=y, image_name='destroyer')
 	globalvars.tangibles.add(enemy_ship)
 	globalvars.whiskerables.add(enemy_ship)
 
@@ -69,7 +70,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 
 	for _ in xrange(objects[enemy]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(ship.Ship(centerx=x, centery=y, image_name='images/destroyer'))
+		physical_objs.append(ship.Ship(centerx=x, centery=y, image_name='destroyer'))
 
 	for _ in xrange(objects[crystal]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
@@ -78,23 +79,23 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 
 	for _ in xrange(objects[large_asteroid]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/asteroidBigRoundTidied'))
+		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='bigrock'))
 
 	for _ in xrange(objects[medium_asteroid]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/asteroidWild2'))
+		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='medrock'))
 
 	for _ in xrange(objects[small_asteroid]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/asteroidTempel'))
+		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='smallrock'))
 
 	for _ in xrange(objects[gold_metal]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/Sikhote_small'))
+		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='gold'))
 
 	for _ in xrange(objects[silver_metal]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='images/bournonite_30percent'))
+		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='silver'))
 
 	for _ in xrange(objects[health]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
@@ -184,26 +185,25 @@ def testScenario00(seed=0):
 
 	globalvars.BGCOLOR = colors.black
 
-	globalvars.BGIMAGE = displayUtilities.loadImage('images/ioOverJupiter' + displayUtilities.ext,\
-			transparency=False)
+	globalvars.BGIMAGE = displayUtilities.loadImage('bgjupiter' + displayUtilities.ext)
 
 	#Create motionless objects for reference purposes while testing.
-	temp = objInstances.FixedBody(0, -100, image_name='images/TyDfN_tiny') #little crystal
+	temp = objInstances.FixedBody(0, -100, image_name='gem') #little crystal
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of TyDfN_tiny is '+str(temp.radius)
-	temp = objInstances.FixedBody(200, 200, image_name='images/asteroidBigRoundTidied') #largest asteroid
+	temp = objInstances.FixedBody(200, 200, image_name='bigrock') #largest asteroid
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of asteroidBigRoundTidied is '+str(temp.radius)
-	temp = objInstances.FixedBody(500, 500, image_name='images/asteroidWild2') #medium asteroid
+	temp = objInstances.FixedBody(500, 500, image_name='medrock') #medium asteroid
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of asteroidWild2 is '+str(temp.radius)
-	temp = objInstances.FixedBody(500, 0, image_name='images/asteroidTempel') #small asteroid
+	temp = objInstances.FixedBody(500, 0, image_name='smallrock') #small asteroid
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of asteroidTempel is '+str(temp.radius)
-	temp = objInstances.FixedBody(-500, -500, image_name='images/Sikhote_small') #goldish metal rock
+	temp = objInstances.FixedBody(-500, -500, image_name='gold') #goldish metal rock
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of Sikhote_small is '+str(temp.radius)
-	temp = objInstances.FixedBody(-500, 300, image_name='images/bournonite_30percent') #silvery metal rock
+	temp = objInstances.FixedBody(-500, 300, image_name='silver') #silvery metal rock
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of bournonite_30percent is '+str(temp.radius)
 
@@ -212,22 +212,12 @@ def testScenario00(seed=0):
 
 
 def asteroids(seed=0):
-	'''	'asteroidBigRoundTidied', \#largest asteroid
-		'asteroidWild2', \#medium asteroid
-		'asteroidTempel', \#small asteroid
-		'Sikhote_small', \#goldish metal rock
-		'bournonite_30percent' \#silvery metal rock
-	'''
+	''' '''
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()
 	globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
-	rocks = ['asteroidBigRoundTidied',\
-		'asteroidWild2',\
-		'asteroidTempel',\
-		'Sikhote_small',\
-		'bournonite_30percent'\
-		]
+	rocks = ['bigrock','medrock','smallrock','gold','silver']
 	#Reset the player's location to 0,0 and his speed to zero
 	globalvars.player.loc = (0.0, 0.0)
 	globalvars.player.speed = 0.0
@@ -252,8 +242,7 @@ def asteroids(seed=0):
 		maxdist = 800
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
 		#Make the rock
-		temp = objInstances.Asteroid(x=x, y=y,\
-			image_name='images/'+rock)
+		temp = objInstances.Asteroid(x=x, y=y, image_name=rock)
 		globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 
 
@@ -328,8 +317,7 @@ def furball(seed=0):
 	wipeOldScenario(); resetDust()
 	globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
 
-	globalvars.BGIMAGE = displayUtilities.loadImage('images/galaxyLenses' + displayUtilities.ext,\
-			transparency=False)
+	globalvars.BGIMAGE = displayUtilities.loadImage('bggalaxies' + displayUtilities.ext)
 
 	#Make a few enemies near the player
 	for _ in range(3):
@@ -394,13 +382,17 @@ def populateSpaceHelper(seed=0, length=0, x=0, y=0):
 
 class InfiniteSpaceGenerator():
 	'''An object which will deterministically but randomly generate
-	objects in space based on the player's location.'''
+	objects in space based on the player's location.
+	The player can fly around freely and objects will be automatically 
+	and randomly but deterministically generated ahead of the player. These 
+	objects will also be removed when they get too far from the player.
+	This allows the player to explore in effectively infinite space.'''
         def __init__(self, seed=0):
 		#Distance above which to depopulate the grid cells.
-		self.depopulatedistance = 2
+		self.depopulatedistance = 4
 		self.seed = seed
 		self.dict = dict()
-		self.space_length = 2000
+		self.space_length = 1000
 		#Keep local track of the player's location.
 		#This can make the update more efficient.
 		self.playerx = None
@@ -420,6 +412,9 @@ class InfiniteSpaceGenerator():
 		#print 'testing keys in the dictionary: '+str(self.dict.keys())
 		#print 'end of InfiniteSpaceGenerator'
 
+		#Keep an index into the dictionary's list of keys. At each update, check the next key and if it is too distant from the player, then delete it.
+		self.key_index = 0
+
 	def update(self, offset):
 		#Display player's location
 		displayUtilities.displayShipLoc(globalvars.player)
@@ -429,29 +424,37 @@ class InfiniteSpaceGenerator():
 		#square the player is currently in.
 		px = px / self.space_length
 		py = py / self.space_length
+
 		#Check to see if the player has moved into a
 		#different grid cell
 		if px == self.playerx and py == self.playery:
-			#Nothing has changed, so do nothing
-			return False
-		#print 'testing: player has moved into a new grid cell. previous cell was '+str((self.playerx, self.playery))
-		#Update records of player's location
-		self.playerx = px
-		self.playery = py
-		#If any grid cells more than distance 2 from the player are populated, then depopulate them. (you can loop through dictionary keys and calculate the distance for each to determine this). Distance of 1 includes all 4 cardinal directions and all 4 diagonals for a total of 8 neighbors of any location.
-		for key in self.dict.keys():
+			#Remove objects in grid cells too far from the player.
+			#Check one cell each update
+			keys = self.dict.keys()
+			self.key_index = (self.key_index+1)%len(keys)
+			key = keys[self.key_index]
 			x = int(key[0:3])
 			y = int(key[3:6])
 			#Get the "grid distance" between the player's location and the x,y location. Grid distance is the distance on a grid allowing diagonal moves. It's pretty easy to verify that this is the larger of the differences between x1 and x2, and y1 and y2.
 			dist = max(abs(px-x), abs(py-y))
 			if dist > self.depopulatedistance:
-				#print 'testing '+str((x,y))+' is more than distance 2 from '+str((px,py))+' so we\'re gonna kill all the stuff in '+str((px,py))
+				#print 'testing '+str((x,y))+' is more than distance '+str(self.depopulatedistance)+' from '+str((px,py))+' so we\'re gonna kill all the stuff in '+str((px,py))
 				#print 'testing prior length of dictionary ('+str(len(self.dict.keys()))+') and tangibles ('+str(len(globalvars.tangibles.sprites()))+')'
 				#Kill all of these too distant objects.
 				for spr in self.dict[key]: spr.kill()
 				#remove them from the dictionary.
 				del self.dict[key]
 				#print 'testing post length of dictionary ('+str(len(self.dict.keys()))+') and tangibles ('+str(len(globalvars.tangibles.sprites()))+')'
+			return False
+
+		#When the player changes cells, the frame rate does get buggered a bit.
+		#I'm calling it good-enough for now.
+
+		#print 'testing: player has moved into a new grid cell. previous cell was '+str((self.playerx, self.playery))
+		#Update records of player's location
+		self.playerx = px
+		self.playery = py
+
 		#Make sure all 8 grid cells around the player are populated.
 		#If not, populate them.
 		#check if these are in the dictionary and if not, populate them.
@@ -475,4 +478,23 @@ class InfiniteSpaceGenerator():
 				self.dict[loc] = populateSpaceHelper(\
 					seed=loc, length=self.space_length, \
 					x=x, y=y)
+
+
+def restart():
+	'''Give the player a new ship and boot him to the testing scenario. '''
+	globalvars.player = player.Player('ship')
+	globalvars.panel = None
+
+	#Order matters. This has to go after making the new player.
+	testScenario00(seed=0)
+
+	#reset the death display countdown
+	globalvars.deathcountdown = 15
+
+
+def profile():
+	'''Profile some of the functions in this file.'''
+	import cProfile
+	cProfile.runctx('for _ in range(10000): getObstacles(seed=0)', globals(),locals(), 'profiling/getObstacles.profile')
+	cProfile.runctx('for _ in range(1000): 	obstacles = getObstacles(seed=0); populateSpace(objects=obstacles, width=1000, height=1000, center=(0,0), seed=0)', globals(),locals(), 'profiling/populateSpace.profile')
 
