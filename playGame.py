@@ -19,7 +19,7 @@ if __name__=="__main__":
 	print 'FPS can be set with -fps #. For example:\n'+\
 	'   python playGame.py -fps 30 #default value\n'
 	if '-fps' in sys.argv:
-		game.FPS = int(sys.argv[ sys.argv.index('-fps') + 1 ])
+		game.FPS = int(sys.argv[ sys.argv.index('-fps')+1])
 
 
 	print 'INSTRUCTIONS: Press space bar to shoot.\n'+\

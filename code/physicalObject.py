@@ -58,17 +58,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#N -90
 		#W 180
 		#S 90
-		#print self.theta
-		temp = self.theta
-		if temp > 180:
-			temp = temp - 360
-		#print temp
-		prew = self.image.get_width()
-		preh = self.image.get_height()
+		#prew = self.image.get_width()
+		#preh = self.image.get_height()
 		#print 'before:'
 		#print self.image.get_width()
 		#print self.image.get_height()
-		self.image = pygame.transform.rotate(self.base_image, -temp).convert_alpha()
+		self.image = pygame.transform.rotate(self.base_image, -self.theta).convert_alpha()
 
 		#print 'after:'
 		#print self.image.get_width()
@@ -132,30 +127,30 @@ class PhysicalObject(pygame.sprite.Sprite):
 		else:
 			self.dtheta = min(self.dtheta + self.ddtheta, self.maxdtheta)
 
-	def turnCounterClockwise(self):
-		'''Turn in the desired direction'''
-		self.theta = (self.theta + self.dtheta) % 360
+	def turnCounterClockwise(self, delta=None):
+		'''Turn in the desired direction.
+		I'm using an angle system like stardog uses such that 
+		east=0, north=-90, west=180, south=90'''
+		if delta is None: delta = self.dtheta
+		self.theta -= delta
+		if self.theta < -180: self.theta += 360
 		self.updateImageAngle()
 
-	def turnClockwise(self):
-		'''Turn in the desired direction'''
-		self.theta = self.theta - self.dtheta
-		if self.theta < 0:
-			self.theta += 360
+	def turnClockwise(self, delta=None):
+		'''Turn in the desired direction
+		I'm using an angle system like stardog uses such that 
+		east=0, north=-90, west=180, south=90'''
+		if delta is None: delta = self.dtheta
+		self.theta += delta
+		if self.theta > 180: self.theta -= 360
 		self.updateImageAngle()
 
-	def turnCounterClockwiseAmt(self, amount):
-		'''Turn in the desired direction by a specified amount.
-		This is useful when using left and right arrows to turn.'''
-		self.theta = (self.theta + amount) % 360
-		self.updateImageAngle()
-
-	def turnClockwiseAmt(self, amount):
-		'''Turn in the desired direction by a specified amount.
-		This is useful when using left and right arrows to turn.'''
-		self.theta = self.theta - amount
-		if self.theta < 0:
-			self.theta += 360
+	def turn(self, delta):
+		'''I'm using an angle system like stardog uses such that 
+		east=0, north=-90, west=180, south=90'''
+		self.theta += delta
+		if self.theta > 180: self.theta -= 360
+		elif self.theta < -180: self.theta += 360
 		self.updateImageAngle()
 
 	def park(self):
@@ -195,6 +190,35 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def killDestination(self):
 		self.destination = None
 
+	def getShorterTurnDirection(self, target_angle):
+		'''Given a target angle, calculate the shorter direction to turn 
+		and how many degrees to turn in that direction.
+		Figuring out how to calculate this was a little tricky for me.
+		Drawing helped. The idea is that there are two different
+		distances between points when those points are on a ring.
+		True = clockwise
+		False = counterclockwise
+		'''
+		a = self.theta
+		b = target_angle
+		self_is_a = True
+		if b < a: #Ensure that a is the smaller of the two values.
+			a = target_angle
+			b = self.theta
+			self_is_a = False
+		dist1 = b-a
+		dist2 = (a+180)+(180-b) #a+180 is actually a - -180
+		if dist1 < dist2:
+			if self_is_a:
+				return True
+			else:
+				return False
+		else:
+			if self_is_a:
+				return False
+			else:
+				return True
+
 	def getAngleToTarget(self):
 		'''This is a major departure from the old implementation. 
 		THIS will pretend that up is positive Y values and down is 
@@ -209,18 +233,21 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Range of arctan is negative pi to pi and the world is upside down
 		#because down is positive in the y direction.
 		#See testAngleToTarget.py in backups for some examples.
-		return math.degrees(math.atan2(rise, run)) - self.theta
+		angle_to_target = math.degrees(math.atan2(rise, run)) - self.theta
+		if angle_to_target < -180: angle_to_target += 360
+		if angle_to_target > 180: angle_to_target -= 360
+		return angle_to_target
 
 	def turnTowards(self, angleOffset = 0):
 		"""This was copied out of scripts.py in stardog and modified slightly. """
-		angleToTarget = (self.getAngleToTarget() + 180) % 360
-
-		if not (-self.acceptableError < (angleToTarget-self.theta) < self.acceptableError):
-			#old way start
-			if angleToTarget > 180:
-		#If outside an acceptable accuracy, turn more towards the target.
-		#if abs(angleToTarget) > self.acceptableError:
-		#	if angleToTarget > 0:
+		angleToTarget = self.getAngleToTarget()
+		#turnClockwise = self.getShorterTurnDirection(self, target_angle)
+		#print angleToTarget
+		if abs(angleToTarget) > self.acceptableError:
+			#Get the amount to turn. It may be less than the total amount we can turn.
+			if abs(angleToTarget) < self.dtheta:
+				self.turn(angleToTarget)
+			elif angleToTarget < 0:
 				self.turnCounterClockwise()
 			else:
 				self.turnClockwise()

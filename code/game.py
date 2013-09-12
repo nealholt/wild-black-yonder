@@ -121,9 +121,9 @@ class Game:
 						#decrease speed by one quarter of max down to zero.
 						self.player.targetSpeed = max(0, self.player.targetSpeed - self.player.maxSpeed/4)
 					elif event.key == 276: #Pressed left arrow
-						self.player.turnCounterClockwiseAmt(30)
+						self.player.turnCounterClockwise(delta=30)
 					elif event.key == 275: #Pressed right arrow
-						self.player.turnClockwiseAmt(30)
+						self.player.turnClockwise(delta=30)
 					elif event.key == 32: #Pressed space bar
 						self.player.shoot()
 					elif event.key == 27: #escape key or red button
