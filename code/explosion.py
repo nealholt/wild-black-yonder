@@ -1,14 +1,15 @@
 import physicalObject
 import random as rd
 import pygame
+import game
 
 #Just flash some red and orange circles on the screen and throw out some debris.
 
 class Explosion(physicalObject.PhysicalObject):
-	def __init__(self, game, top, left):
+	def __init__(self, top, left):
 
 		width = height = 0
-		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
+		physicalObject.PhysicalObject.__init__(self, top, left, width, height)
 
 		#How long this object will live
 		self.timeToLive = 7
@@ -22,13 +23,13 @@ class Explosion(physicalObject.PhysicalObject):
 		top = self.rect.centery-offset[1]
 		left = self.rect.centerx-offset[0]
 
-		self.game.allSprites.add(Flash(self.game, top, left))
-		self.game.allSprites.add(Debris(self.game, top, left))
+		game.allSprites.add(Flash(top, left))
+		game.allSprites.add(Debris(top, left))
 
 
 
 class Flash(physicalObject.PhysicalObject):
-	def __init__(self, game, top, left):
+	def __init__(self, top, left):
 		flashCenterRadius = 20
 		flashRadiusMin = 20
 		flashRadiusMax = 50
@@ -40,13 +41,13 @@ class Flash(physicalObject.PhysicalObject):
 
 		width = height = 0
 
-		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
+		physicalObject.PhysicalObject.__init__(self, top, left, width, height)
 
 		self.timeToLive = rd.randint(flashMinTimeToLive, flashMaxTimeToLive)
 		color = self.randHotColor()
 		radius = rd.randint(flashRadiusMin, flashRadiusMax)
 
-		self.rect = pygame.draw.circle(self.game.screen, color, (left, top), radius, 0)
+		self.rect = pygame.draw.circle(game.screen, color, (left, top), radius, 0)
 
 	def randHotColor(self):
 		return (rd.randint(100, 155), rd.randint(000, 100), rd.randint(0, 20))
@@ -60,12 +61,12 @@ class Flash(physicalObject.PhysicalObject):
 
 
 class Debris(physicalObject.PhysicalObject):
-	def __init__(self, game, top, left):
+	def __init__(self, top, left):
 		width = 4
 		height = 4
 		self.timeToLive = rd.randint(10, 24)
 
-		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
+		physicalObject.PhysicalObject.__init__(self, top, left, width, height)
 		self.theta = rd.randint(0, 359)
 		self.speed = rd.randint(7.0, 30.0)
 
@@ -81,10 +82,10 @@ class Debris(physicalObject.PhysicalObject):
 
 class FixedBody(physicalObject.PhysicalObject):
 	'''A motionless body created for testing purposes.'''
-	def __init__(self, game, top, left):
+	def __init__(self, top, left):
 		width = 40
 		height = 40
-		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
+		physicalObject.PhysicalObject.__init__(self, top, left, width, height)
 
 	def update(self, offset):
 		self.draw(offset)

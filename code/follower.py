@@ -1,11 +1,10 @@
-import pygame
 import physicalObject
 import profiles
 
 class Follower(physicalObject.PhysicalObject):
-	def __init__(self, game, top, left):
+	def __init__(self, top, left):
 
-		physicalObject.PhysicalObject.__init__(self, game, top,left,10,10) #TODO temporarily make visible for testing.
+		physicalObject.PhysicalObject.__init__(self, top,left,10,10) #TODO temporarily make visible for testing.
 
 		profiles.followerProfile(self)
 

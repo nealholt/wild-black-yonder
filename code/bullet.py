@@ -1,13 +1,12 @@
-import pygame
 import physicalObject
 import profiles
 
 class Bullet(physicalObject.PhysicalObject):
-	def __init__(self, game, direction, top, left, dontClipMe):
+	def __init__(self, direction, top, left, dontClipMe):
 
 		width = 5
 		height = 5
-		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
+		physicalObject.PhysicalObject.__init__(self, top, left, width, height)
 
 		profiles.bulletProfile(self, direction)
 

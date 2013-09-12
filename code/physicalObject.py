@@ -1,8 +1,9 @@
 import pygame
 import math
+import game
 
 class PhysicalObject(pygame.sprite.Sprite):
-	def __init__(self, game, top, left, width, height):
+	def __init__(self, top, left, width, height):
 
 		#Sprite tutorial being used is here:
 		# http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
@@ -29,8 +30,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Destination
 		self.destx = 0.0
 		self.desty = 0.0
-
-		self.game = game
 
 		self.image = pygame.Surface([width, height])
 	        self.image.fill((100,255,100)) #Random default color
@@ -147,9 +146,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 	def draw(self, offset=(0,0)):
 		pos = self.rect.centerx - offset[0], self.rect.centery - offset[1]
-		self.game.screen.blit(self.image, pos)
+		game.screen.blit(self.image, pos)
 
 
 	def drawAt(self, position=(0,0)):
-		self.game.screen.blit(self.image, position)
+		game.screen.blit(self.image, position)
 

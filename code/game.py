@@ -19,11 +19,32 @@ FOLLOW_PLAYER = 2
 
 BLACK = (0,0,0)
 
+WIDTH = 900
+HEIGHT = 700
+
+#set up the display:
+pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen.fill(BLACK)
+
+enemySprites = pygame.sprite.Group()
+enemy_ship = enemy.Enemy(300,300) #TODO. enemy created for testing.
+
+allSprites = pygame.sprite.Group()
+#Note that the player is not amongst allSprites mostly for when the screen
+#fixes on or follows the player
+allSprites.add(enemy_ship)
+
+#TODO Create a motionless object for reference purposes while testing.
+allSprites.add(explosion.FixedBody(0, 0))
+
+playerSprites = pygame.sprite.Group()
+
+
 class Game:
 	""" """
-	def __init__(self, screen, camera=FOLLOW_PLAYER):
+	def __init__(self, camera=FOLLOW_PLAYER):
 		self.fps = FPS
-		self.screen = screen
 		self.top_left = 0, 0
 		self.width = screen.get_width()
 		self.height = screen.get_height()
@@ -39,24 +60,12 @@ class Game:
 		self.textUpdateInterval = 1 #in seconds
 		self.nextUpdate = 0
 
-		self.playerSprites = pygame.sprite.Group()
-		self.player = player.Player(self)
-
-		self.enemySprites = pygame.sprite.Group()
-		self.enemy = enemy.Enemy(self,300,300)
+		self.player = player.Player()
 
 		if self.camera == FOLLOW_PLAYER:
-			self.follower = follower.Follower(self,0,0)
+			self.follower = follower.Follower(0,0)
 
 		self.getOffset = [self.fixedScreen, self.centerOnPlayer, self.followPlayer]
-
-		self.allSprites = pygame.sprite.Group()
-		#Note that the player is not amongst allSprites mostly for when the screen
-		#fixes on or follows the player
-		self.allSprites.add(self.enemy)
-
-		#Create a motionless object for reference purposes while testing.
-		self.allSprites.add(explosion.FixedBody(self, 0, 0))
 
 		#key polling:
 		self.keys = []
@@ -116,21 +125,21 @@ class Game:
 				#	self.keys[event.key % 322] = 0
 
 			#remind enemy of player's location
-			self.enemy.setDestination(self.player.getX(),self.player.getY())
+			enemy_ship.setDestination(self.player.getX(),self.player.getY())
 			#remind follower of player's location
 			if self.camera == FOLLOW_PLAYER:
 				self.follower.setDestination(self.player.getX(),self.player.getY())
 
 			#draw black over the screen
 			#TODO as a game effect, it is super neato to temporarily NOT do this.
-			self.screen.fill(BLACK)
+			screen.fill(BLACK)
 
 			#Check all collisions
 			self.collisionChecks()
 
 			#update all sprites
 			self.offsetx,self.offsety = self.getOffset[self.camera]()
-			self.allSprites.update((self.offsetx,self.offsety))
+			allSprites.update((self.offsetx,self.offsety))
 
 			#Display player location for debugging.
 			self.displayPlayerLoc()
@@ -146,13 +155,13 @@ class Game:
 
 	def collisionChecks(self):
 		if self.player.isDead():
-			self.allSprites.add(explosion.Explosion(self, self.player.getY(),self.player.getX()))
+			allSprites.add(explosion.Explosion(self.player.getY(),self.player.getX()))
 			self.player.kill()
 
 		else:
 			#Check if enemy collided with player fire
 			replacedEnemy = False
-			collisions = pygame.sprite.spritecollide(self.enemy, self.playerSprites, False)
+			collisions = pygame.sprite.spritecollide(enemy_ship, playerSprites, False)
 			for c in collisions:
 				c.kill()
 				if not replacedEnemy:
@@ -160,30 +169,31 @@ class Game:
 					self.replaceEnemy()
 
 			#Check if player collided with enemy fire
-			collisions = pygame.sprite.spritecollide(self.player, self.enemySprites, False)
+			collisions = pygame.sprite.spritecollide(self.player, enemySprites, False)
 			for c in collisions:
 				c.kill()
 				self.player.takeDamage()
 
 			#check if player collided with the enemy
-			if pygame.sprite.collide_rect(self.player, self.enemy):
+			if pygame.sprite.collide_rect(self.player, enemy_ship):
 				self.replaceEnemy()
 				self.player.takeDamage()
 
 			#Check for all collisions between the two sprite groups.
 			#Cancel each other out. Meaning that bullets kill bullets
-			collisions = pygame.sprite.groupcollide(self.enemySprites, self.playerSprites, True, True)
+			collisions = pygame.sprite.groupcollide(enemySprites, playerSprites, True, True)
 
 
 	def replaceEnemy(self):
-		self.allSprites.add(explosion.Explosion(self, self.enemy.getY(),self.enemy.getX()))
+		global enemy_ship
+		allSprites.add(explosion.Explosion(enemy_ship.getY(),enemy_ship.getX()))
 		#kill old enemy
-		self.enemy.kill()
+		enemy_ship.kill()
 		#add in a new enemy
 		top = rd.randint(10, self.height-20)
 		left = rd.randint(10, self.width-20)
-		self.enemy = enemy.Enemy(self, top, left)
-		self.allSprites.add(self.enemy)
+		enemy_ship = enemy.Enemy(top, left)
+		allSprites.add(enemy_ship)
 
 	def displayPlayerLoc(self):
 #		if self.timer > self.nextUpdate:
@@ -192,7 +202,7 @@ class Game:
 		string = "Player X,Y: "+str(self.player.getX())+','+str(self.player.getY())
 		text = font.render(string, 1, (255, 255, 255)) #white
 		textpos = text.get_rect(center=(400,10)) #center text at 400, 10
-		self.screen.blit(text, textpos)
+		screen.blit(text, textpos)
 
 
 	#Choices for the display follow in 3 functions:

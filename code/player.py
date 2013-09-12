@@ -2,15 +2,16 @@ import pygame
 import physicalObject
 import bullet
 import profiles
+import game
 
 class Player(physicalObject.PhysicalObject):
-	def __init__(self, game):
+	def __init__(self):
 
 		left = 100
 		top = 100
 		width = 10
 		height = 10
-		physicalObject.PhysicalObject.__init__(self, game, top, left, width, height)
+		physicalObject.PhysicalObject.__init__(self, top, left, width, height)
 
 		profiles.playerProfile(self)
 
@@ -20,9 +21,9 @@ class Player(physicalObject.PhysicalObject):
 		self.healthBarHeight = 10
 
 	def shoot(self):
-		tempbullet = bullet.Bullet(self.game, self.theta, self.rect.centery, self.rect.centerx, self)
-		self.game.allSprites.add(tempbullet)
-		self.game.playerSprites.add(tempbullet)
+		tempbullet = bullet.Bullet(self.theta, self.rect.centery, self.rect.centerx, self)
+		game.allSprites.add(tempbullet)
+		game.playerSprites.add(tempbullet)
 
 	def takeDamage(self):
 		self.health -= 10
@@ -36,11 +37,11 @@ class Player(physicalObject.PhysicalObject):
 		healthy = y-self.rect.height-self.healthBarHeight
 
 		tempRect = pygame.Rect(healthx, healthy, self.healthBarWidth, self.healthBarHeight)
-		pygame.draw.rect(self.game.screen, (255,36,0), tempRect, 0) #Color red
+		pygame.draw.rect(game.screen, (255,36,0), tempRect, 0) #Color red
 
 		width = (self.health/self.maxHealth)*self.healthBarWidth
 		tempRect = pygame.Rect(healthx, healthy, width, self.healthBarHeight)
-		pygame.draw.rect(self.game.screen, (0,64,0), tempRect, 0) #Color green
+		pygame.draw.rect(game.screen, (0,64,0), tempRect, 0) #Color green
 
 
 	def update(self, offset=(0,0)):

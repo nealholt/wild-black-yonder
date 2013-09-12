@@ -1,15 +1,6 @@
-
-
-import pygame
-#from pygame.locals import *
 import sys
 sys.path.append('code')
 import game
-
-WIDTH = 900
-HEIGHT = 700
-
-black = (0,0,0)
 
 if __name__=="__main__":
 	print 'Camera options include:\n'+\
@@ -27,9 +18,5 @@ if __name__=="__main__":
 
 	print 'INSTRUCTIONS: Press space bar to shoot.\nPress escape to quit.\nStarship will move towards the mouse.\n'
 
-	#set up the display:
-	pygame.init()
-	screen = pygame.display.set_mode((WIDTH, HEIGHT))
-	screen.fill(black)
-	game = game.Game(screen, camera=camera_type)
+	game = game.Game(camera=camera_type)
 	game.run()
