@@ -18,12 +18,17 @@ class Weapon():
 		#its target moves into range, in case the two ships are closing
 		self.weapon_range = self.bullet_speed*self.bullet_lifespan*1.2
 		self.shooter = shooter
+		#Use the following for ships like the capital ship that have guns offset from their center
+		self.offset = (0,0)
 
 	def cool(self):
 		if self.cooldown > 0:
 			self.cooldown -= 1
 
-	def shoot(self):
+	def shoot(self, forceAngle=None):
+		'''forceAngle allows a custom firing angle.'''
+		if forceAngle is None:
+			forceAngle = self.shooter.theta
 		#If we are firing spread shot, do things differently
 		if self.spread > 0 and self.bullet_num > 1:
 			#I calculate half beforehand because for some reason in python
@@ -41,17 +46,17 @@ class Weapon():
 				range_of_spread = range(-half, half+1)
 			#Adjust the angle for each bullet in the spread
 			for adj in range_of_spread:
-				angle = self.shooter.theta + self.spread*adj
+				angle = forceAngle + self.spread*adj
 				self.makeBullet(angle)
 		else:
-			self.makeBullet(self.shooter.theta)
+			self.makeBullet(forceAngle)
 		#reset cooldown
 		self.cooldown = self.refire_rate
 
 
 	def makeBullet(self, angle):
-		tempbullet = Bullet(angle, self.shooter.rect.centerx,\
-			self.shooter.rect.centery, self.shooter)
+		tempbullet = Bullet(angle, self.shooter.rect.centerx+self.offset[0],\
+			self.shooter.rect.centery+self.offset[1], self.shooter)
 		#Set bullet attributes
 		tempbullet.speed = self.bullet_speed
 		tempbullet.setColor(self.bullet_color)

@@ -7,6 +7,7 @@ import globalvars
 from misc import writeTextToScreen
 
 class Bullet(physicalObject.PhysicalObject):
+
 	def __init__(self, direction, x, y, dontClipMe, width=5, height=5):
 
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
@@ -50,6 +51,7 @@ class Bullet(physicalObject.PhysicalObject):
 		#otherwise immediately collide with it.
 		#For now, shoot through health packs with no effect.
 		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.HEALTH:
+			print 'ran into other sprite'
 			died = True
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
@@ -214,8 +216,8 @@ class Explosion(physicalObject.PhysicalObject):
 			return True
 		self.timeToLive -= 1
 
-		x = rd.randint(xMinAdj, xMaxAdj) + self.rect.centerx
-		y = rd.randint(yMinAdj, yMaxAdj) + self.rect.centery
+		x = rd.randint(self.xMinAdj, self.xMaxAdj) + self.rect.centerx
+		y = rd.randint(self.yMinAdj, self.yMaxAdj) + self.rect.centery
 
 		globalvars.intangibles.append(Flash(x=x, y=y))
 		globalvars.intangibles.append(Debris(x=x, y=y))

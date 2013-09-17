@@ -61,6 +61,9 @@ class Ship(physicalObject.PhysicalObject):
 	def gainHealth(self, amount):
 		self.health = min(self.maxhealth, self.health+amount)
 
+	def isDead(self):
+		return self.health <= 0
+
 	def shoot(self, force_shot=False):
 		#Force shot tells this to shoot even if a target 
 		#is not obviously in view. NPC's will not take such wild shots.
@@ -192,7 +195,7 @@ class Ship(physicalObject.PhysicalObject):
 			#or a race condition over who gets updated first, the player sprite 
 			#or the health sprite.
 		#	return died
-		if self.health <= 0: #Check if the ship is dead.
+		if self.isDead():
 			globalvars.intangibles.append(objInstances.Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			#kill removes the calling sprite from all sprite groups

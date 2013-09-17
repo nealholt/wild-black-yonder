@@ -7,6 +7,7 @@ import globalvars
 from misc import writeTextToScreen
 
 class Bullet(physicalObject.PhysicalObject):
+
 	def __init__(self, direction, x, y, dontClipMe, width=5, height=5):
 
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
