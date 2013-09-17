@@ -50,6 +50,5 @@ class CapitalShip(physicalObject.PhysicalObject):
 				x=self.rect.centerx,y=self.rect.centery))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
-			globalvars.intangibles.remove(self.myHealthBar)
 			died = True
 		return died

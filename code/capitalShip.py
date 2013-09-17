@@ -45,6 +45,9 @@ class CapitalShip(physicalObject.PhysicalObject):
 				return died
 			else:
 				self.health -= 5
+				#Spawn explosion at point of impact
+				globalvars.intangibles.append(objInstances.Explosion(\
+					x=other_sprite.rect.centerx,y=other_sprite.rect.centery))
 		if self.health <= 0: #if capital ship is dead.
 			globalvars.intangibles.append(objInstances.Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
