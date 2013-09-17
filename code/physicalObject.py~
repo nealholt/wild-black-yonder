@@ -6,7 +6,9 @@ from colors import white
 import globalvars
 
 class PhysicalObject(pygame.sprite.Sprite):
-	def __init__(self, centerx=0.0, centery=0.0, width=0, height=0, image_name=None, color=white):
+	'''The four collision options are available to specify different collision zones than would 
+	normally be specified by the size of this physical object's image.'''
+	def __init__(self, centerx=0.0, centery=0.0, width=0, height=0, image_name=None, color=white, collisiontopleft=None, collisionwidth=None,  collisionheight=None, collisionradius=None):
 
 		#Sprite tutorial being used is here:
 		# http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
@@ -71,8 +73,23 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Divide by 4 because we average the width and height and also divide them in half
 		#to calculate radius rather than diameter.
 		#Old way: This made the asteroids slightly too large.
-		#self.radius = max(int((self.rect.width+self.rect.height)/4), 1)
-		self.radius = max(int(min(self.rect.width,self.rect.height)/2), 1)
+		#self.collisionradius = max(int((self.rect.width+self.rect.height)/4), 1)
+		self.collisionradius = collisionradius
+		if self.collisionradius is None:
+			self.collisionradius = max(int(min(self.rect.width,self.rect.height)/2), 1)
+
+		#The following is the inset for the top left point for the collision box.
+		self.collisiontopleft=collisiontopleft
+		if self.collisiontopleft is None:
+			self.collisiontopleft=(0,0)
+
+		self.collisionwidth=collisionwidth
+		if self.collisionwidth is None:
+			self.collisionwidth=self.rect.width
+
+		self.collisionheight=collisionheight
+		if self.collisionheight is None:
+			self.collisionheight=self.rect.height
 
 		#If True, this physical object will perform rectangular collision detection.
 		#If False, this physical object will perform circular collision detection.
@@ -251,10 +268,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 				#center to self.closest_sprite's center. We need to factor 
 				#in the radius for these sprites.
 				actual_distance = self.dist_to_closest - \
-					self.radius-self.closest_sprite.radius
+					self.collisionradius-self.closest_sprite.collisionradius
 				#TODO. These constants might need adjusted.
-				#Previously the following was just this commented out portion. I thought making it trickier might reduce the jiggle. It did not.
-				#if actual_distance + abs_angle < 30:
 				if actual_distance < 20:
 
 					#Too close. It's vital that we turn away from the object.
@@ -348,15 +363,22 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#If not that self's right most point is left of other's left most point
 			#or other's right most point is left of self's left most point
 			#then the two objects collided.
-			return not(self.rect.topleft[0]+self.rect.width < other.rect.topleft[0]\
-			or other.rect.topleft[0]+other.rect.width < self.rect.topleft[0])\
-			and not(self.rect.topleft[1]+self.rect.height < other.rect.topleft[1]\
-			or other.rect.topleft[1]+other.rect.height < self.rect.topleft[1])
+			selfRight = self.rect.topleft[0]+self.collisionwidth+self.collisiontopleft[0]
+			otherLeft = other.rect.topleft[0]+other.collisiontopleft[0]
+			otherRight = other.rect.topleft[0]+other.collisionwidth+other.collisiontopleft[0]
+			selfLeft = self.rect.topleft[0]+self.collisiontopleft[0]
+			selfBottom = self.rect.topleft[1]+self.collisionheight+self.collisiontopleft[1]
+			otherTop = other.rect.topleft[1]+other.collisiontopleft[1]
+			otherBottom = other.rect.topleft[1]+other.collisionheight+other.collisiontopleft[1]
+			selfTop = self.rect.topleft[1]+self.collisiontopleft[1]
+
+			return not(selfRight < otherLeft or otherRight < selfLeft)\
+			and not(selfBottom < otherTop or otherBottom < selfTop)
 		#collision detect based on circles:
 		#If the distance between our centers is less than our 
 		#summed radii, then we have collided.
 		else:
-			return geometry.distance(self.rect.center, other.rect.center) < self.radius+other.radius
+			return geometry.distance(self.rect.center, other.rect.center) < self.collisionradius+other.collisionradius
 
 
 
@@ -376,17 +398,18 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#If either object uses rectangular, we need to bounce off differently
 		if self.useRectangular or other.useRectangular:
 			#Determine if the collision is in the x direction or the y direction.
-			if self.rect.topleft[0]+self.rect.width > other.rect.topleft[0]+other.rect.width\
-			or other.rect.topleft[0] > self.rect.topleft[0]:
+			selfRight = self.rect.topleft[0]+self.collisionwidth+self.collisiontopleft[0]
+			otherRight = other.rect.topleft[0]+other.collisionwidth+other.collisiontopleft[0]
+			selfLeft = self.rect.topleft[0]+self.collisiontopleft[0]
+			otherLeft = other.rect.topleft[0]+other.collisiontopleft[0]
+			if selfRight > otherRight\
+			or other.rect.topleft[0] > self.rect.topleft[0]: #other left and self left
 				#horizontal collision
-				print 'Pre: '+str(self.theta)
 				if self.theta > 0:
 					self.setAngle(180.0 - self.theta)
 				else:
 					self.setAngle(-180.0 - self.theta)
-				print 'Post: '+str(self.theta)+'\n'
 			else:
-				print 'always this?'
 				#vertical collision
 				self.setAngle(-self.theta)
 		else:

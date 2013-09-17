@@ -260,7 +260,7 @@ def run():
 			#angle to point somewhere within the arena too.
 			for w in globalvars.whiskerables:
 				if distance(w.rect.center, (0.,0.)) > \
-				globalvars.arena + w.radius:
+				globalvars.arena + w.collisionradius:
 					#Whiskerables reflect randomly
 					#off arena boundaries towards a
 					#point somewhere within 3/4 the
@@ -386,37 +386,10 @@ def setClosestSprites():
 		for j in xrange(len(sprite_list)):
 			if j != i:
 				B = sprite_list[j]
-				dist = distance(A.rect.center, B.rect.center) - B.radius - A.radius
+				dist = distance(A.rect.center, B.rect.center) - B.collisionradius - A.collisionradius
 				if dist < least_dist:
 					least_dist = dist
 					closest_sprite = B
-		'''#TODO this is the old way it was done when the sprite list was sorted, but I was accidentally missing checks on certain sprites so I simplified it for the time being.
-		#search forward for too close sprites
-		for j in xrange(i+1, len(sprite_list)):
-			B = sprite_list[j]
-			dist = distance(A.rect.center, B.rect.center) - B.radius - A.radius
-			if dist < least_dist:
-				least_dist = dist
-				closest_sprite = B
-				#break #TODO TESTING
-			#TODO TESTING
-			#elif abs(A.rect.centerx - B.rect.centerx) > least_dist:
-			#	break
-		#search backward for too close sprites
-		count_back = []
-		if i > 0:
-			count_back = range(0, i-1)
-			count_back.reverse()
-		for j in count_back:
-			B = sprite_list[j]
-			dist = distance(A.rect.center, B.rect.center) - B.radius - A.radius
-			if dist < least_dist:
-				least_dist = dist
-				closest_sprite = B
-				#break #TODO TESTING
-			#TODO TESTING
-			#elif abs(A.rect.centerx - B.rect.centerx) > least_dist:
-			#	break'''
 		#Set sprite A's closest sprite and the distance to that sprite.
 		#if not closest_sprite is None: print closest_sprite.image_name+' at '+str(least_dist) #TODO TESTING
 		A.setClosest(closest_sprite, least_dist)
@@ -436,6 +409,7 @@ def collisionHandling():
 	sprite_list = sorted(sprite_list, \
 		key=lambda c: c.rect.bottom,\
 		reverse=True)
+	#TODO I'm a bit concerned that I just sorted by bottom when now some things can have custom hit boxes (mainly the capital ship).
 	#iterate over the sprite list
 	for i in xrange(len(sprite_list)):
 		A = sprite_list[i]

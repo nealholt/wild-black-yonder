@@ -1,3 +1,7 @@
+
+https://github.com/nealholt/asteroids-buff
+
+
 Get my rsa public key
 > emacs ~/.ssh/id_rsa.pub
 
@@ -24,4 +28,9 @@ I then repeated the 3 previous commands while copying each version of the game f
 
 > git add . && git commit -m "I'm committing another version of the game from my backups folder."
 > git push
+
+
+
+To delete a file locally and from the git repo, use:
+> git rm file1.txt
 

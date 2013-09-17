@@ -5,8 +5,13 @@ import globalvars
 class CapitalShip(physicalObject.PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
 
+		#Capital ship uses custom collision dimensions
+		#Original dimensions: 990 x 280
+		#collisiontopleft is the inset.
+		#collisionwidth and collisionheight are the width and height from the inset.
 		physicalObject.PhysicalObject.__init__(self, centerx=centerx,\
-			centery=centery, image_name=image_name)
+			centery=centery, image_name=image_name,\
+			collisiontopleft=(100,120), collisionwidth=890,  collisionheight=140)
 
 		self.weapons=[]
 		self.engine=None
