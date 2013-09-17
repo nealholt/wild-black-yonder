@@ -194,12 +194,17 @@ class Mine(physicalObject.PhysicalObject):
 
 
 class Explosion(physicalObject.PhysicalObject):
-	'''Just flash some red and orange circles on the screen and throw out some debris.'''
-	def __init__(self, x=0, y=0):
+	'''Just flash some red and orange circles on the screen and throw out some debris.
+	xMinAdj, xMaxAdj, yMinAdj, and yMaxAdj are used to spread explosions around the screen.'''
+	def __init__(self, x=0, y=0, xMinAdj=0, xMaxAdj=0, yMinAdj=0, yMaxAdj=0, ttl=7):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
 
+		self.xMinAdj=xMinAdj
+		self.xMaxAdj=xMaxAdj
+		self.yMinAdj=yMinAdj
+		self.yMaxAdj=yMaxAdj
 		#How long this object will live
-		self.timeToLive = 7
+		self.timeToLive = ttl
 
 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
@@ -209,8 +214,11 @@ class Explosion(physicalObject.PhysicalObject):
 			return True
 		self.timeToLive -= 1
 
-		globalvars.intangibles.append(Flash(x=self.rect.centerx, y=self.rect.centery))
-		globalvars.intangibles.append(Debris(x=self.rect.centerx, y=self.rect.centery))
+		x = rd.randint(xMinAdj, xMaxAdj) + self.rect.centerx
+		y = rd.randint(yMinAdj, yMaxAdj) + self.rect.centery
+
+		globalvars.intangibles.append(Flash(x=x, y=y))
+		globalvars.intangibles.append(Debris(x=x, y=y))
 		return False
 
 	def draw(self, offset):
@@ -218,13 +226,9 @@ class Explosion(physicalObject.PhysicalObject):
 		pass
 
 
-flashCenterRadius = 20
-flashRadiusMin = 20
-flashRadiusMax = 50
-flashMinTimeToLive = 8
-flashMaxTimeToLive = 17
 class Flash(physicalObject.PhysicalObject):
-	def __init__(self, x=0, y=0):
+	'''There are lots of default values for a basic flash, but it can be fun to play with these.'''
+	def __init__(self, x=0, y=0, flashCenterRadius = 20, flashRadiusMin = 20, flashRadiusMax = 50, flashMinTimeToLive = 8, flashMaxTimeToLive = 17):
 		y += rd.randint(-flashCenterRadius,flashCenterRadius)
 		x += rd.randint(-flashCenterRadius,flashCenterRadius)
 
@@ -250,12 +254,12 @@ class Flash(physicalObject.PhysicalObject):
 
 
 class Debris(physicalObject.PhysicalObject):
-	def __init__(self, x=0, y=0):
+	def __init__(self, x=0, y=0, minTTL=10, maxTTL=24, minSpeed=7.0, maxSpeed=30.0, minTheta=-179, maxTheta=180):
 		physicalObject.PhysicalObject.__init__(self, \
 			centerx=x, centery=y, width=4, height=4)
-		self.timeToLive = rd.randint(10, 24)
-		self.theta = rd.randint(-179, 180)
-		self.speed = rd.randint(7.0, 30.0)
+		self.timeToLive = rd.randint(minTTL, maxTTL)
+		self.theta = rd.randint(minTheta, maxTheta)
+		self.speed = rd.randint(minSpeed, maxSpeed)
 
  	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
@@ -299,8 +303,8 @@ class FixedCircle(physicalObject.PhysicalObject):
 
 #When a rock is blown up, what comes out?
 subrocks = dict()
-subrocks['bigrock'] = ('bigrock', 4)
-subrocks['medrock'] = ('medrock', 4)
+subrocks['bigrock'] = ('medrock', 4)
+subrocks['medrock'] = ('smallrock', 4)
 subrocks['smallrock'] = ('debris', 10)
 subrocks['gold'] = ('gem',1)
 subrocks['silver'] = ('gem', 3)

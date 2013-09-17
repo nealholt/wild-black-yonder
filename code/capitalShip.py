@@ -50,7 +50,10 @@ class CapitalShip(physicalObject.PhysicalObject):
 					x=other_sprite.rect.centerx,y=other_sprite.rect.centery))
 		if self.health <= 0: #if capital ship is dead.
 			globalvars.intangibles.append(objInstances.Explosion(\
-				x=self.rect.centerx,y=self.rect.centery))
+				x=self.rect.centerx,y=self.rect.centery,\
+				xMinAdj=self.collisionwidth/-2, xMaxAdj=self.collisionwidth/2,\
+				yMinAdj=self.collisionheight/-2, yMaxAdj=self.collisionheight/2,\
+				ttl=45))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
 			died = True
