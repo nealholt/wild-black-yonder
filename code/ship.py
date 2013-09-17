@@ -64,7 +64,6 @@ class Ship(physicalObject.PhysicalObject):
 	def isDead(self):
 		return self.health <= 0
 
-
 	def shoot(self, force_shot=False):
 		#Force shot tells this to shoot even if a target 
 		#is not obviously in view. NPC's will not take such wild shots.

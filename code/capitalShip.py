@@ -1,6 +1,7 @@
 #So far, this is just a stripped down ship object that doesn't move or do anything else.
 import physicalObject
 import globalvars
+import objInstances
 
 class CapitalShip(physicalObject.PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
@@ -34,4 +35,20 @@ class CapitalShip(physicalObject.PhysicalObject):
 		pos = x - offset[0], y - offset[1]
 		self.drawAt(pos)
 
-
+	def handleCollisionWith(self, other_sprite):
+		''' '''
+		died = False
+		#Check for collisions with one's own bullets.
+		#Don't respond to such collisions.
+		if other_sprite.is_a == globalvars.BULLET:
+			if other_sprite.dontClipMe == self:
+				return died
+			else:
+				self.health -= 5
+		if self.health <= 0: #if capital ship is dead.
+			globalvars.intangibles.append(objInstances.Explosion(\
+				x=self.rect.centerx,y=self.rect.centery))
+			#kill removes the calling sprite from all sprite groups
+			self.kill()
+			died = True
+		return died
