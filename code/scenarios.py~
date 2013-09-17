@@ -343,7 +343,7 @@ def capitalShipScenario(seed=0):
 	globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
 
 	#Make the capital ship
-	enemy_ship = capitalShip.CapitalShip(centerx=0, centery=100, image_name='bigShip')
+	enemy_ship = capitalShip.CapitalShip(centerx=0, centery=400, image_name='bigShip')
 	globalvars.tangibles.add(enemy_ship)
 	globalvars.whiskerables.add(enemy_ship)
 

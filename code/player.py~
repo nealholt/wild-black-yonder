@@ -1,13 +1,12 @@
 import ship
 import profiles
-import weapon
 
 class Player(ship.Ship):
 	def __init__(self, image_name):
 
 		ship.Ship.__init__(self,image_name=image_name)
 
-		profiles.shipProfile(self, profile='mk3')
+		profiles.shipProfile(self, profile='mk4')
 		self.setProfile()
 
 		#Initialize the player with just one weapon. Make it a spread shot.

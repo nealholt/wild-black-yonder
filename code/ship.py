@@ -47,7 +47,7 @@ class Ship(physicalObject.PhysicalObject):
 		#TODO shouldn't there be a better way to do this?
 		self.maxSpeed = self.engine.maxSpeed
 		self.dv = self.engine.dv
-		self.dthea = self.engine.dtheta
+		self.dtheta = self.engine.dtheta
 		self.speedIncrements = self.engine.speedIncrements
 		#Fraction of maxSpeed at which turn rate is maximal
 		self.maxTurnSpeed = self.engine.maxTurnSpeed
@@ -111,7 +111,7 @@ class Ship(physicalObject.PhysicalObject):
 				#sight is blocked.
 				m,b = self.getStraightAhead()
 				x,y = w.rect.center
-				r = w.radius
+				r = w.collisionradius
 				#I boost the radius by a 1.5 fudge factor to 
 				#help the NPCs avoid friendly fire.
 				if lineIntersectsCircle(m, b, x, y, r*1.5):

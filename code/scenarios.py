@@ -117,38 +117,14 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 			if A.rect.top > B.rect.bottom:
 				break
 			else:
-				if distance(A.rect.center, B.rect.center) > A.radius+B.radius:
+				if distance(A.rect.center, B.rect.center) > A.collisionradius+B.collisionradius:
 					pass
 				else:
 					#They collide. Move them apart.
 					if TESTING: collisions += 1
-					magnitude = max(A.radius, B.radius)*2
+					magnitude = max(A.collisionradius, B.collisionradius)*2
 					angle = A.getAngleToTarget(target=B)
 					B.translate(angle, magnitude)
-
-	#Next objects that still collide are merely abandoned as lost causes. Maybe someday later I will change this.
-	#The following is redundant with the pygame.sprite.spritecollideany check later on. Maybe I should bring this back if it turns out to be way more efficient.
-	#physical_objs = sorted(physical_objs, \
-	#		key=lambda c: c.rect.bottom,\
-	#		reverse=True)
-	#i = 0
-	#while i < len(physical_objs):
-	#	A = physical_objs[i]
-	#	for j in xrange(i+1, len(physical_objs)):
-	#		B = physical_objs[j]
-	#		if A.rect.top > B.rect.bottom:
-	#			break
-	#		else:
-	#			if distance(A.rect.center, B.rect.center) > A.radius+B.radius:
-	#				pass
-	#			else:
-	#				#They collide. Remove the ith object
-	#				physical_objs.pop(i)
-	#				if TESTING: num_removed += 1
-	#				i -= 1
-	#				break
-	#	i += 1
-
 
 	#Put everything in tangibles and whiskerables unless they collide with any tangibles.
 	toreturn = pygame.sprite.Group()
@@ -156,7 +132,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 		temp = pygame.sprite.spritecollideany(p, globalvars.tangibles)
 		#print temp
 		if temp is None:
-			if TESTING: area_covered += math.pi*p.radius**2
+			if TESTING: area_covered += math.pi*p.collisionradius**2
 			globalvars.tangibles.add(p)
 			globalvars.whiskerables.add(p)
 			toreturn.add(p)
@@ -192,22 +168,22 @@ def testScenario00(seed=0):
 	#Create motionless objects for reference purposes while testing.
 	temp = objInstances.FixedBody(0, -100, image_name='gem') #little crystal
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of TyDfN_tiny is '+str(temp.radius)
+	#print 'Radius of TyDfN_tiny is '+str(temp.collisionradius)
 	temp = objInstances.FixedBody(200, 200, image_name='bigrock') #largest asteroid
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of asteroidBigRoundTidied is '+str(temp.radius)
+	#print 'Radius of asteroidBigRoundTidied is '+str(temp.collisionradius)
 	temp = objInstances.FixedBody(500, 500, image_name='medrock') #medium asteroid
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of asteroidWild2 is '+str(temp.radius)
+	#print 'Radius of asteroidWild2 is '+str(temp.collisionradius)
 	temp = objInstances.FixedBody(500, 0, image_name='smallrock') #small asteroid
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of asteroidTempel is '+str(temp.radius)
+	#print 'Radius of asteroidTempel is '+str(temp.collisionradius)
 	temp = objInstances.FixedBody(-500, -500, image_name='gold') #goldish metal rock
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of Sikhote_small is '+str(temp.radius)
+	#print 'Radius of Sikhote_small is '+str(temp.collisionradius)
 	temp = objInstances.FixedBody(-500, 300, image_name='silver') #silvery metal rock
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of bournonite_30percent is '+str(temp.radius)
+	#print 'Radius of bournonite_30percent is '+str(temp.collisionradius)
 
 	temp = objInstances.HealthKit(-100, 0) #health pack
 	globalvars.tangibles.add(temp)
