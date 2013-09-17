@@ -315,11 +315,11 @@ def run():
 		globalvars.hud_helper.update(offset)
 
 		#Calculate how long we took in the above loop to estimate the number of frames per second
-		#Alert user if fraps drops below 25.
+		#Alert user if fraps drops below half the desired threshold.
 		time_lapse = datetime.datetime.now() - start_time
-		if float(time_lapse.microseconds)/1000000. > 0.04:
+		if float(time_lapse.microseconds)/1000000. > (2.0/globalvars.FPS):
 			print 'Warning: frames dropping.'
-			print 'Goal frames per second is 30. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
+			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
 	#end round loop (until gameover)
 #end game loop
 
@@ -447,6 +447,11 @@ def profileEverything(offset):
 	tested and confirmed this.
 	HOWEVER, it should be noted that flip is hella slow.'''
 	import cProfile
+
+	print 'Profiling game.run(). Press escape to quit.'
+	cProfile.runctx('run()', globals(),locals(), 'profiling/game.run.profile')
+	print 'Done profiling run.'
+	exit() #TODO the following are no longer executed. They may not even be needed.
 
 	cProfile.runctx('for _ in range(10000): drawThoseOnScreen(globalvars.tangibles.sprites(), offset)', globals(),locals(), 'profiling/drawTangibles.profile')
 	cProfile.runctx('for _ in range(10000): drawThoseOnScreen2(globalvars.tangibles.sprites(), offset)', globals(),locals(), 'profiling/drawTangibles2.profile')

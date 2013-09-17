@@ -1,17 +1,17 @@
-Sat Apr 27 17:28:58 2013    profiling/updateDust.profile
+Tue Sep 17 17:04:39 2013    profiling/updateDust.profile
 
-         5020003 function calls in 3.698 seconds
+         5020003 function calls in 3.950 seconds
 
    Ordered by: cumulative time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.004    0.004    3.698    3.698 <string>:1(<module>)
-    10000    1.677    0.000    3.693    0.000 code/game.py:30(updateDust)
-  1000000    0.849    0.000    1.210    0.000 code/physicalObject.py:309(draw)
-  1000000    0.565    0.000    0.703    0.000 code/geometry.py:4(distance)
-  1000000    0.360    0.000    0.360    0.000 {method 'blit' of 'pygame.Surface' objects}
-  1000000    0.137    0.000    0.137    0.000 {math.sqrt}
-  1000000    0.103    0.000    0.103    0.000 code/physicalObject.py:90(update)
+        1    0.005    0.005    3.950    3.950 <string>:1(<module>)
+    10000    1.771    0.000    3.945    0.000 code/game.py:30(updateDust)
+  1000000    0.910    0.000    1.287    0.000 code/physicalObject.py:337(draw)
+  1000000    0.626    0.000    0.769    0.000 code/geometry.py:4(distance)
+  1000000    0.377    0.000    0.377    0.000 {method 'blit' of 'pygame.Surface' objects}
+  1000000    0.144    0.000    0.144    0.000 {math.sqrt}
+  1000000    0.117    0.000    0.117    0.000 code/physicalObject.py:112(update)
     10000    0.001    0.000    0.001    0.000 {len}
         1    0.000    0.000    0.000    0.000 {range}
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}

@@ -18,6 +18,8 @@ class Weapon():
 		#its target moves into range, in case the two ships are closing
 		self.weapon_range = self.bullet_speed*self.bullet_lifespan*1.2
 		self.shooter = shooter
+		#Use the following for ships like the capital ship that have guns offset from their center
+		self.offset = (0,0)
 
 	def cool(self):
 		if self.cooldown > 0:
@@ -53,8 +55,8 @@ class Weapon():
 
 
 	def makeBullet(self, angle):
-		tempbullet = Bullet(angle, self.shooter.rect.centerx,\
-			self.shooter.rect.centery, self.shooter)
+		tempbullet = Bullet(angle, self.shooter.rect.centerx+self.offset[0],\
+			self.shooter.rect.centery+self.offset[1], self.shooter)
 		#Set bullet attributes
 		tempbullet.speed = self.bullet_speed
 		tempbullet.setColor(self.bullet_color)
@@ -144,20 +146,19 @@ def getWeapon(profile, weaponOwner):
 	weapon = Weapon(weaponOwner)
 	if profile == 'mk0':
 		weapon.name='Laser Mk0'
-		weapon.refire_rate=1000 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
-		weapon.bullet_speed=0
-		weapon.bullet_lifespan=0 #How long the bullet lasts before expiring
+		weapon.refire_rate=100*globalvars.FPS #Fires once every seconds
+		weapon.bullet_speed=0 #speed in pixels per second
+		weapon.bullet_lifespan=0 #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=0 #number of bullets fired at a time
 		weapon.spread=0 #spread of bullets fired
 		weapon.attack_angle = 0
 		weapon.bullet_color=colors.pink
 	elif profile == 'mk1':
 		weapon.name='Laser Mk1'
-		weapon.refire_rate=10 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
-		weapon.bullet_speed=15
-		weapon.bullet_lifespan=50 #How long the bullet lasts before expiring
+		#TODO LEFT OFF HERE
+		weapon.refire_rate=10*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.bullet_speed=450./float(globalvars.FPS) #speed in pixels per second
+		weapon.bullet_lifespan=2*globalvars.FPS #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=1 #number of bullets fired at a time
 		weapon.spread=0 #spread of bullets fired
 		weapon.attack_angle = 3

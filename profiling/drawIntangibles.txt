@@ -1,15 +1,15 @@
-Sat Apr 27 17:28:59 2013    profiling/drawIntangibles.profile
+Tue Sep 17 17:04:44 2013    profiling/drawIntangibles.profile
 
-         60003 function calls in 0.114 seconds
+         60003 function calls in 0.127 seconds
 
    Ordered by: cumulative time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.004    0.004    0.114    0.114 <string>:1(<module>)
-    10000    0.012    0.000    0.110    0.000 code/game.py:328(drawThoseOnScreen)
-    10000    0.033    0.000    0.098    0.000 code/objInstances.py:366(draw)
-    20000    0.053    0.000    0.053    0.000 {pygame.draw.rect}
-    10000    0.009    0.000    0.013    0.000 code/physicalObject.py:319(drawAt)
+        1    0.005    0.005    0.127    0.127 <string>:1(<module>)
+    10000    0.014    0.000    0.122    0.000 code/game.py:328(drawThoseOnScreen)
+    10000    0.036    0.000    0.108    0.000 code/objInstances.py:508(draw)
+    20000    0.057    0.000    0.057    0.000 {pygame.draw.rect}
+    10000    0.011    0.000    0.015    0.000 code/physicalObject.py:347(drawAt)
     10000    0.004    0.000    0.004    0.000 {method 'blit' of 'pygame.Surface' objects}
         1    0.000    0.000    0.000    0.000 {range}
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}

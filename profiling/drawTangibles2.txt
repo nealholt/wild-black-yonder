@@ -1,19 +1,20 @@
-Sat Apr 27 17:28:55 2013    profiling/drawTangibles2.profile
+Tue Sep 17 17:04:35 2013    profiling/drawTangibles2.profile
 
-         210003 function calls in 5.492 seconds
+         1520003 function calls in 3.355 seconds
 
    Ordered by: cumulative time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.016    0.016    5.492    5.492 <string>:1(<module>)
-    10000    0.037    0.000    5.463    0.001 code/game.py:353(drawThoseOnScreen2)
-    70000    0.067    0.000    5.363    0.000 code/physicalObject.py:309(draw)
-    80000    5.328    0.000    5.328    0.000 {method 'blit' of 'pygame.Surface' objects}
-    10000    0.011    0.000    0.083    0.000 code/objInstances.py:321(draw)
-    10000    0.010    0.000    0.053    0.000 code/ship.py:153(draw)
-    10000    0.011    0.000    0.043    0.000 code/physicalObject.py:319(drawAt)
-    10000    0.010    0.000    0.013    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:271(sprites)
-    10000    0.003    0.000    0.003    0.000 {method 'keys' of 'dict' objects}
+        1    0.015    0.015    3.355    3.355 <string>:1(<module>)
+    10000    0.235    0.000    3.319    0.000 code/game.py:353(drawThoseOnScreen2)
+   710000    0.578    0.000    2.997    0.000 code/physicalObject.py:337(draw)
+   720000    2.450    0.000    2.450    0.000 {method 'blit' of 'pygame.Surface' objects}
+    30000    0.025    0.000    0.063    0.000 code/objInstances.py:415(draw)
+    10000    0.010    0.000    0.052    0.000 code/ship.py:162(draw)
+    10000    0.011    0.000    0.042    0.000 code/physicalObject.py:347(drawAt)
+    10000    0.010    0.000    0.022    0.000 code/objInstances.py:463(draw)
+    10000    0.012    0.000    0.021    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:271(sprites)
+    10000    0.008    0.000    0.008    0.000 {method 'keys' of 'dict' objects}
         1    0.000    0.000    0.000    0.000 {range}
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
 

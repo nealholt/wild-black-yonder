@@ -146,20 +146,19 @@ def getWeapon(profile, weaponOwner):
 	weapon = Weapon(weaponOwner)
 	if profile == 'mk0':
 		weapon.name='Laser Mk0'
-		weapon.refire_rate=1000 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
-		weapon.bullet_speed=0
-		weapon.bullet_lifespan=0 #How long the bullet lasts before expiring
+		weapon.refire_rate=100*globalvars.FPS #Fires once every seconds
+		weapon.bullet_speed=0 #speed in pixels per second
+		weapon.bullet_lifespan=0 #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=0 #number of bullets fired at a time
 		weapon.spread=0 #spread of bullets fired
 		weapon.attack_angle = 0
 		weapon.bullet_color=colors.pink
 	elif profile == 'mk1':
 		weapon.name='Laser Mk1'
-		weapon.refire_rate=10 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
-		weapon.bullet_speed=15
-		weapon.bullet_lifespan=50 #How long the bullet lasts before expiring
+		#TODO LEFT OFF HERE
+		weapon.refire_rate=10*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.bullet_speed=450./float(globalvars.FPS) #speed in pixels per second
+		weapon.bullet_lifespan=2*globalvars.FPS #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=1 #number of bullets fired at a time
 		weapon.spread=0 #spread of bullets fired
 		weapon.attack_angle = 3
@@ -167,7 +166,6 @@ def getWeapon(profile, weaponOwner):
 	elif profile == 'mk2':
 		weapon.name='Laser Mk2'
 		weapon.refire_rate=5 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
 		weapon.bullet_speed=25
 		weapon.bullet_lifespan=50 #How long the bullet lasts before expiring
 		weapon.bullet_num=1 #number of bullets fired at a time
@@ -177,7 +175,6 @@ def getWeapon(profile, weaponOwner):
 	elif profile == 'spread_mk2':
 		weapon.name='Spread Shot Laser Mk2'
 		weapon.refire_rate=10 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
 		weapon.bullet_speed=25
 		weapon.bullet_lifespan=50 #How long the bullet lasts before expiring
 		weapon.bullet_num=2 #number of bullets fired at a time
@@ -187,7 +184,6 @@ def getWeapon(profile, weaponOwner):
 	elif profile == 'spread_mk3':
 		weapon.name='Spread Shot Laser Mk3'
 		weapon.refire_rate=10 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
 		weapon.bullet_speed=25
 		weapon.bullet_lifespan=50 #How long the bullet lasts before expiring
 		weapon.bullet_num=3 #number of bullets fired at a time
