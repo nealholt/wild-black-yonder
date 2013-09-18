@@ -155,9 +155,8 @@ def getWeapon(profile, weaponOwner):
 		weapon.bullet_color=colors.pink
 	elif profile == 'mk1':
 		weapon.name='Laser Mk1'
-		#TODO LEFT OFF HERE
-		weapon.refire_rate=10*globalvars.FPS #Fires once every refire_rate seconds
-		weapon.bullet_speed=450./float(globalvars.FPS) #speed in pixels per second
+		weapon.refire_rate=1*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.bullet_speed=400./float(globalvars.FPS) #speed in pixels per second
 		weapon.bullet_lifespan=2*globalvars.FPS #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=1 #number of bullets fired at a time
 		weapon.spread=0 #spread of bullets fired
@@ -165,39 +164,41 @@ def getWeapon(profile, weaponOwner):
 		weapon.bullet_color=colors.pink
 	elif profile == 'mk2':
 		weapon.name='Laser Mk2'
-		weapon.refire_rate=5 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
-		weapon.bullet_speed=25
-		weapon.bullet_lifespan=50 #How long the bullet lasts before expiring
+		weapon.refire_rate=0.5*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.bullet_speed=500./float(globalvars.FPS) #speed in pixels per second
+		weapon.bullet_lifespan=2.5*globalvars.FPS #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=1 #number of bullets fired at a time
 		weapon.spread=0 #spread of bullets fired
 		weapon.attack_angle = 3
 		weapon.bullet_color=colors.pink
 	elif profile == 'spread_mk2':
 		weapon.name='Spread Shot Laser Mk2'
-		weapon.refire_rate=10 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
-		weapon.bullet_speed=25
-		weapon.bullet_lifespan=50 #How long the bullet lasts before expiring
+		weapon.refire_rate=0.5*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.bullet_speed=500./float(globalvars.FPS) #speed in pixels per second
+		weapon.bullet_lifespan=2.5*globalvars.FPS #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=2 #number of bullets fired at a time
 		weapon.spread=10 #spread of bullets fired
 		weapon.attack_angle = 3
 		weapon.bullet_color=colors.pink
 	elif profile == 'spread_mk3':
 		weapon.name='Spread Shot Laser Mk3'
-		weapon.refire_rate=10 #Fires once every refire_rate frames
-		weapon.cooldown=0 #How long until next shot
-		weapon.bullet_speed=25
-		weapon.bullet_lifespan=50 #How long the bullet lasts before expiring
+		weapon.refire_rate=0.2*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.bullet_speed=650./float(globalvars.FPS) #speed in pixels per second
+		weapon.bullet_lifespan=2.5*globalvars.FPS #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=3 #number of bullets fired at a time
 		weapon.spread=10 #spread of bullets fired
 		weapon.attack_angle = 3
 		weapon.bullet_color=colors.pink
 	elif profile == 'missile_mk1':
 		weapon = MissileLauncher(weaponOwner)
+		weapon.refire_rate=3*globalvars.FPS #Fires once every refire_rate seconds
 	elif profile == 'mine':
 		weapon = MineLayer(weaponOwner)
+		weapon.refire_rate=1*globalvars.FPS #Fires once every refire_rate seconds
 	elif profile == 'hit_box_test':
 		weapon = HitBoxTesterGun(weaponOwner)
+		weapon.refire_rate=0.2*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.bullet_speed=650./float(globalvars.FPS) #speed in pixels per second
+		weapon.bullet_lifespan=2.5*globalvars.FPS #How long the bullet lasts in seconds before expiring
 	return weapon
 

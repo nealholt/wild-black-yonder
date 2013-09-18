@@ -51,7 +51,6 @@ class Bullet(physicalObject.PhysicalObject):
 		#otherwise immediately collide with it.
 		#For now, shoot through health packs with no effect.
 		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.HEALTH:
-			print 'ran into other sprite'
 			died = True
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
@@ -69,12 +68,13 @@ class Missile(physicalObject.PhysicalObject):
 			centery=shooter.rect.centery,\
 			width=10, height=10)
 
+		self.theta = 135./float(FPS)
+		self.targetSpeed = 300.0/float(globalvars.FPS)
 		#The missile assumes the shooter's direction and gets the shooter's 
 		#speed plus its own speed before settling down to its target velocity.
-		self.theta = shooter.theta
-		self.speed = 6. + shooter.speed
-		self.targetSpeed = 6.
-		self.dv = 0.1 #change in speed
+		#Missile actually starts out faster and slows down.
+		self.speed = self.targetSpeed + shooter.speed
+		self.dv = self.targetSpeed/float(FPS*3.0) #missile gets to target speed in 3 seconds
 
 		#dontClipMe is almost certainly the shooter of this missile.
 		#This is important because bullets usually start out at a 

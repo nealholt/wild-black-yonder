@@ -68,12 +68,13 @@ class Missile(physicalObject.PhysicalObject):
 			centery=shooter.rect.centery,\
 			width=10, height=10)
 
+		self.theta = 135./float(FPS)
+		self.targetSpeed = 300.0/float(globalvars.FPS)
 		#The missile assumes the shooter's direction and gets the shooter's 
 		#speed plus its own speed before settling down to its target velocity.
-		self.theta = shooter.theta
-		self.speed = 6. + shooter.speed
-		self.targetSpeed = 6.
-		self.dv = 0.1 #change in speed
+		#Missile actually starts out faster and slows down.
+		self.speed = self.targetSpeed + shooter.speed
+		self.dv = self.targetSpeed/float(FPS*3.0) #missile gets to target speed in 3 seconds
 
 		#dontClipMe is almost certainly the shooter of this missile.
 		#This is important because bullets usually start out at a 
@@ -170,8 +171,8 @@ class Mine(physicalObject.PhysicalObject):
 
 		self.is_a = globalvars.BULLET
 
-		#A timer. This mine will explode on contact after this many frames.
-		self.explodeAfter = 60
+		#A timer. This mine will explode on contact after this many seconds.
+		self.explodeAfter = 4*globalvars.FPS
 
 	def update(self):
 		''' '''
@@ -196,8 +197,9 @@ class Mine(physicalObject.PhysicalObject):
 
 class Explosion(physicalObject.PhysicalObject):
 	'''Just flash some red and orange circles on the screen and throw out some debris.
-	xMinAdj, xMaxAdj, yMinAdj, and yMaxAdj are used to spread explosions around the screen.'''
-	def __init__(self, x=0, y=0, xMinAdj=0, xMaxAdj=0, yMinAdj=0, yMaxAdj=0, ttl=7):
+	xMinAdj, xMaxAdj, yMinAdj, and yMaxAdj are used to spread explosions around the screen.
+	Time to live is in seconds.'''
+	def __init__(self, x=0, y=0, xMinAdj=0, xMaxAdj=0, yMinAdj=0, yMaxAdj=0, ttl=1.5):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
 
 		self.xMinAdj=xMinAdj
@@ -205,7 +207,7 @@ class Explosion(physicalObject.PhysicalObject):
 		self.yMinAdj=yMinAdj
 		self.yMaxAdj=yMaxAdj
 		#How long this object will live
-		self.timeToLive = ttl
+		self.timeToLive = int(ttl*globalvars.FPS)
 
 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
