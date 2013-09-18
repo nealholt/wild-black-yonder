@@ -68,13 +68,13 @@ class Missile(physicalObject.PhysicalObject):
 			centery=shooter.rect.centery,\
 			width=10, height=10)
 
-		self.theta = 135./float(FPS)
-		self.targetSpeed = 300.0/float(globalvars.FPS)
+		self.theta = 135./float(globalvars.FPS)
+		self.targetSpeed = 250.0/float(globalvars.FPS)
 		#The missile assumes the shooter's direction and gets the shooter's 
 		#speed plus its own speed before settling down to its target velocity.
 		#Missile actually starts out faster and slows down.
 		self.speed = self.targetSpeed + shooter.speed
-		self.dv = self.targetSpeed/float(FPS*3.0) #missile gets to target speed in 3 seconds
+		self.dv = self.targetSpeed/float(globalvars.FPS*3.0) #missile gets to target speed in 3 seconds
 
 		#dontClipMe is almost certainly the shooter of this missile.
 		#This is important because bullets usually start out at a 
@@ -171,8 +171,8 @@ class Mine(physicalObject.PhysicalObject):
 
 		self.is_a = globalvars.BULLET
 
-		#A timer. This mine will explode on contact after this many frames.
-		self.explodeAfter = 60
+		#A timer. This mine will explode on contact after this many seconds.
+		self.explodeAfter = 4*globalvars.FPS
 
 	def update(self):
 		''' '''
@@ -197,8 +197,9 @@ class Mine(physicalObject.PhysicalObject):
 
 class Explosion(physicalObject.PhysicalObject):
 	'''Just flash some red and orange circles on the screen and throw out some debris.
-	xMinAdj, xMaxAdj, yMinAdj, and yMaxAdj are used to spread explosions around the screen.'''
-	def __init__(self, x=0, y=0, xMinAdj=0, xMaxAdj=0, yMinAdj=0, yMaxAdj=0, ttl=7):
+	xMinAdj, xMaxAdj, yMinAdj, and yMaxAdj are used to spread explosions around the screen.
+	Time to live is in seconds.'''
+	def __init__(self, x=0, y=0, xMinAdj=0, xMaxAdj=0, yMinAdj=0, yMaxAdj=0, ttl=0.5):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
 
 		self.xMinAdj=xMinAdj
@@ -206,7 +207,7 @@ class Explosion(physicalObject.PhysicalObject):
 		self.yMinAdj=yMinAdj
 		self.yMaxAdj=yMaxAdj
 		#How long this object will live
-		self.timeToLive = ttl
+		self.timeToLive = int(ttl*globalvars.FPS)
 
 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
@@ -229,14 +230,15 @@ class Explosion(physicalObject.PhysicalObject):
 
 
 class Flash(physicalObject.PhysicalObject):
-	'''There are lots of default values for a basic flash, but it can be fun to play with these.'''
-	def __init__(self, x=0, y=0, flashCenterRadius = 20, flashRadiusMin = 20, flashRadiusMax = 50, flashMinTimeToLive = 8, flashMaxTimeToLive = 17):
+	'''There are lots of default values for a basic flash, but it can be fun to play with these.
+	Time to live is in seconds.'''
+	def __init__(self, x=0, y=0, flashCenterRadius = 20, flashRadiusMin = 20, flashRadiusMax = 50, flashMinTimeToLive = 0.3, flashMaxTimeToLive = 1.1):
 		y += rd.randint(-flashCenterRadius,flashCenterRadius)
 		x += rd.randint(-flashCenterRadius,flashCenterRadius)
 
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
 
-		self.timeToLive = rd.randint(flashMinTimeToLive, flashMaxTimeToLive)
+		self.timeToLive = int(flashMinTimeToLive + rd.random()*(flashMaxTimeToLive-flashMinTimeToLive))*globalvars.FPS
 		self.color = colors.getRandHotColor()
 		self.radius = rd.randint(flashRadiusMin, flashRadiusMax)
 
@@ -256,12 +258,14 @@ class Flash(physicalObject.PhysicalObject):
 
 
 class Debris(physicalObject.PhysicalObject):
-	def __init__(self, x=0, y=0, minTTL=10, maxTTL=24, minSpeed=7.0, maxSpeed=30.0, minTheta=-179, maxTheta=180):
+	'''TTL is in seconds.
+	Speeds are in pixels per second.'''
+	def __init__(self, x=0, y=0, minTTL=0.5, maxTTL=1.5, minSpeed=300, maxSpeed=500, minTheta=-179, maxTheta=180):
 		physicalObject.PhysicalObject.__init__(self, \
 			centerx=x, centery=y, width=4, height=4)
-		self.timeToLive = rd.randint(minTTL, maxTTL)
+		self.timeToLive = int(minTTL + rd.random()*(maxTTL-minTTL))*globalvars.FPS
 		self.theta = rd.randint(minTheta, maxTheta)
-		self.speed = rd.randint(minSpeed, maxSpeed)
+		self.speed = float(rd.randint(minSpeed, maxSpeed))/float(globalvars.FPS)
 
  	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
@@ -332,8 +336,9 @@ def splitRock(image_name, centerx=0, centery=0):
 class Asteroid(physicalObject.PhysicalObject):
 	'''An object that moves in only one direction, independent of rotation.
 	It takes damage from bullets, collides with ships, but does not 
-	collide with anything else.'''
-	def __init__(self, x=0, y=0, image_name='', speed_min=1.0, speed_max=5.0):
+	collide with anything else.
+	Speed is in pixels per second.'''
+	def __init__(self, x=0, y=0, image_name='', speed_min=50, speed_max=220):
 		physicalObject.PhysicalObject.__init__(self, \
 			centerx=x, centery=y, image_name=image_name)
 		self.is_a = globalvars.ASTEROID
@@ -344,7 +349,7 @@ class Asteroid(physicalObject.PhysicalObject):
 		#which will only determine image rotation.
 		self.direction = rd.randint(-179, 180)
 		#Choose a random speed
-		self.speed = rd.randint(speed_min, speed_max)
+		self.speed = float(rd.randint(speed_min, speed_max))/float(globalvars.FPS)
 
 	def update(self):
 		'''Return true to be removed. Return False othewise.'''
@@ -380,17 +385,17 @@ class Asteroid(physicalObject.PhysicalObject):
 
 class Gem(physicalObject.PhysicalObject):
 	'''A valuable gem.'''
-	def __init__(self, x=0, y=0, speed_min=1.0, speed_max=5.0):
+	def __init__(self, x=0, y=0, speed_min=50, speed_max=250):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,
 						image_name='gem')
 		self.is_a = globalvars.GEM
 		#Choose a random rotation
-		self.dtheta = rd.randint(-5, 5)
+		self.dtheta = float(rd.randint(-30, 30))/float(globalvars.FPS)
 		#Choose a random direction. This is different from theta 
 		#which will only determine image rotation.
 		self.direction = rd.randint(-179, 180)
 		#Choose a random speed
-		self.speed = rd.randint(speed_min, speed_max)
+		self.speed = float(rd.randint(speed_min, speed_max))/float(globalvars.FPS)
 		#Gems can be picked up
 		self.picked_up = False
 		self.timeToLive = 30 #Time to live after being picked up.
@@ -533,10 +538,10 @@ class Follower(physicalObject.PhysicalObject):
 			width=10,height=10)
 
 		self.setColor((155,155,0))
-		self.maxSpeed = 10.0
-		self.dv = 0.5 #acceleration
+		self.maxSpeed = 300.0/float(globalvars.FPS)
+		self.dv = engine.maxSpeed/float(globalvars.FPS*4.0) #acceleration
 		#Turn rate:
-		self.dtheta = 10.0
+		self.dtheta = 180./float(globalvars.FPS)
 
 	def update(self):
 		#Turn towards target
