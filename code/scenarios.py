@@ -335,24 +335,6 @@ def infiniteSpace(seed=0):
 	finish_line = (6000, 0)
 	globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
 
-	print 'infinite space. TODO Not yet implemented. Will require some interesting new functions.'
-
-	#determine what sorts of obstacles to put in space for now I'm just trying to demonstrate the wonky overlap of objects so I can debug it.
-	numbers = [0 for _ in range(health+1)]
-	numbers[large_asteroid] = 1
-	numbers[medium_asteroid] = 2
-	#numbers[small_asteroid] = 3
-
-	#8 cells of populated space around user with different random seeds until you find one that gives you a collision.
-	#populateSpace(objects=numbers, width=500, height=500, center=(500,0), seed=0)
-	#populateSpace(objects=numbers, width=500, height=500, center=(500,500), seed=1)
-	#populateSpace(objects=numbers, width=500, height=500, center=(0,500), seed=2)
-	#populateSpace(objects=numbers, width=500, height=500, center=(-500,0), seed=3)
-	#populateSpace(objects=numbers, width=500, height=500, center=(-500,-500), seed=4)
-	#populateSpace(objects=numbers, width=500, height=500, center=(0,-500), seed=5)
-	#populateSpace(objects=numbers, width=500, height=500, center=(-500,500), seed=6)
-	#populateSpace(objects=numbers, width=500, height=500, center=(500,-500), seed=7)
-
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
 	globalvars.hud_helper = InfiniteSpaceGenerator()
 

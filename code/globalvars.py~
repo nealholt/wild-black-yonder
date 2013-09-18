@@ -1,6 +1,6 @@
 DEBUG = True
 
-FPS = 30 #frames per second
+FPS = 45 #frames per second
 
 WIDTH = 900
 HEIGHT = 700
