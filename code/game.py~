@@ -134,7 +134,7 @@ def run():
 			#	mouse[0] = event.pos
 			elif event.type == pygame.KEYDOWN:
 				keys[event.key % 322] = 1
-				#print "TODO TESTING: key press "+str(event.key)
+				print "TODO TESTING: key press "+str(event.key)
 
 				#Respond to key taps.
 				#Keys that we want to respond to holding them down
@@ -317,7 +317,7 @@ def run():
 		#Calculate how long we took in the above loop to estimate the number of frames per second
 		#Alert user if fraps drops below half the desired threshold.
 		time_lapse = datetime.datetime.now() - start_time
-		if float(time_lapse.microseconds)/1000000. > (0.5/globalvars.FPS):
+		if float(time_lapse.microseconds)/1000000. > (2.0/globalvars.FPS):
 			print 'Warning: frames dropping.'
 			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
 	#end round loop (until gameover)
