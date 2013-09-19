@@ -529,6 +529,19 @@ class HealthBar(physicalObject.PhysicalObject):
 
 
 
+class WarpPortal(physicalObject.PhysicalObject):
+	def __init__(self, x=0.0, y=0.0, destinationNode=0):
+		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, image_name='warp')
+		self.destinationNode = destinationNode
+		self.is_a = globalvars.OTHER
+
+	def handleCollisionWith(self, other_sprite):
+		'''React to a collision with other_sprite.'''
+		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer:
+			print 'TESTING objInstances. Player warping to id '+str(self.destinationNode)
+		return False
+
+
 class Follower(physicalObject.PhysicalObject):
 	def __init__(self, x=0, y=0):
 		'''This is the object that invisibly follows the player and the 

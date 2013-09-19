@@ -3,7 +3,7 @@ from misc import wipeOldScenario
 import objInstances
 import colors
 import random as rd
-from geometry import getCoordsNearLoc, translate, distance
+from geometry import getCoordsNearLoc, translate, distance, angleFromPosition
 import ship
 import capitalShip
 import displayUtilities
@@ -327,11 +327,13 @@ def capitalShipScenario(seed=0):
 def goToInfiniteSpace(array):
 	'''This is a helper method that enables the menu system to function more easily.
 	array[0] = node id of the infinite space and the seed to use to generate the space.
-	array[1] = location to start the player inside the infinite space.'''
-	infiniteSpace(seed=array[0], playerloc=array[1])
+	array[1] = location to start the player inside the infinite space.
+	array[2] = Destination id and location pairs. It is the connections list of the node with the id in array[0]
+	'''
+	infiniteSpace(seed=array[0], playerloc=array[1], warps=array[2])
 
 
-def infiniteSpace(seed=0, playerloc=(0.0,0.0)):
+def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()	
@@ -341,7 +343,16 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0)):
 	globalvars.player.targetSpeed = 0.0
 	globalvars.player.nodeid = seed #Player's new node id is set to be the seed argument.
 	globalvars.player.destinationNode = seed
-	globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
+
+	#Place warp portals
+	if not warps is None:
+		for w in warps:
+			#Get the slope of the line from playerLoc to this warp
+			angle = angleFromPosition(playerloc, w[1])
+			#Translate out the warp location by 1000 pixels
+			x,y = translate(w[1], angle, 1000)
+			temp = objInstances.WarpPortal(x=x, y=y, destinationNode=w[0])
+			globalvars.tangibles.add(temp)
 
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
 	globalvars.hud_helper = InfiniteSpaceGenerator()

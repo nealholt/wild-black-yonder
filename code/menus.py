@@ -159,7 +159,7 @@ def getGalaxyPanel(localSystem):
 		#can get away using the testing menu by pressing the m key.
 		elif n.id == globalvars.player.nodeid:
 			subpanel.setMethod(scenarios.goToInfiniteSpace)
-			subpanel.argument = [n.id, n.loc]
+			subpanel.argument = [n.id, n.loc, n.connections]
 		menu.addPanel(subpanel)
 
 	for c in localSystem.connections:

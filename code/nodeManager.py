@@ -15,11 +15,11 @@ class Node():
 		self.x = x
 		self.y = y
 		self.loc = (x,y)
-		#list of ids this node is connected to
+		#list of id,location pairs this node is connected to
 		self.connections = []
 
-	def addConnection(self, connectid):
-		self.connections.append(connectid)
+	def addConnection(self, connectid, location):
+		self.connections.append((connectid,location))
 
 
 class NodeManager():
@@ -79,8 +79,8 @@ class NodeManager():
 					if len(finalNodeList[i].connections) == 0 or \
 					len(finalNodeList[j].connections) == 0 or \
 					rd.random() > 0.5:
-						finalNodeList[i].addConnection(finalNodeList[j].id)
-						finalNodeList[j].addConnection(finalNodeList[i].id)
+						finalNodeList[i].addConnection(finalNodeList[j].id, finalNodeList[j].loc)
+						finalNodeList[j].addConnection(finalNodeList[i].id, finalNodeList[i].loc)
 				else:
 					break
 		#Copy all the final nodes to the self.nodes
@@ -90,7 +90,7 @@ class NodeManager():
 		for n in self.nodes:
 			for c in n.connections:
 				#Only add connections in one direction to prevent duplicates.
-				if c > n.id:
-					otherend = self.getNode(c)
+				if c[0] > n.id:
+					otherend = self.getNode(c[0])
 					self.connections.append([n.x, n.y, otherend.x, otherend.y])
 
