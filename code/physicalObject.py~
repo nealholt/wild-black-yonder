@@ -402,8 +402,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 			otherRight = other.rect.topleft[0]+other.collisionwidth+other.collisiontopleft[0]
 			selfLeft = self.rect.topleft[0]+self.collisiontopleft[0]
 			otherLeft = other.rect.topleft[0]+other.collisiontopleft[0]
-			if selfRight > otherRight\
-			or other.rect.topleft[0] > self.rect.topleft[0]: #other left and self left
+			if selfRight > otherRight or otherLeft > selfLeft:
 				#horizontal collision
 				if self.theta > 0:
 					self.setAngle(180.0 - self.theta)

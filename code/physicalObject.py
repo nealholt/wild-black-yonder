@@ -447,7 +447,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 				else:
 					self.turnClockwise(amountToTurn)
 				#Use max because speed*1.5 might be zero.
-				self.speed = max(self.speed*1.5, 10)
+				self.speed = max(self.speed*1.3, 10.0/float(globalvars.FPS))
 		#Prevent multiple consecutive collisions with the same object
 		while self.speed > 0 and self.inCollision(other):
 			self.move()
