@@ -324,15 +324,23 @@ def capitalShipScenario(seed=0):
 	globalvars.whiskerables.add(enemy_ship)
 
 
-def infiniteSpace(seed=0):
+def goToInfiniteSpace(array):
+	'''This is a helper method that enables the menu system to function more easily.
+	array[0] = node id of the infinite space and the seed to use to generate the space.
+	array[1] = location to start the player inside the infinite space.'''
+	infiniteSpace(seed=array[0], playerloc=array[1])
+
+
+def infiniteSpace(seed=0, playerloc=(0.0,0.0)):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()	
 	#Reset the player's location to 0,0 and his speed to zero
-	globalvars.player.loc = (0.0, 0.0)
+	globalvars.player.loc = playerloc
 	globalvars.player.speed = 0.0
 	globalvars.player.targetSpeed = 0.0
-	finish_line = (6000, 0)
+	globalvars.player.nodeid = seed #Player's new node id is set to be the seed argument.
+	globalvars.player.destinationNode = seed
 	globalvars.hud_helper = displayUtilities.PlayerInfoDisplayer()
 
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.

@@ -25,7 +25,14 @@ class Player(ship.Ship):
 
 		self.isPlayer = True
 
-		#print 'TESTING player speed in player.py: '+str(self.speed)
+		#Node location of the player.
+		self.nodeid = 0
+		self.destinationNode = 0
+
+
+	def setDestinationNode(self, destinationid):
+		print 'player destination set to '+str(destinationid)
+		self.destinationNode = destinationid
 
 
 	def parkingBrake(self):

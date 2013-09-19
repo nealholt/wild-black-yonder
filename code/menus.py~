@@ -140,14 +140,32 @@ def getTestingPanel():
 def getGalaxyPanel(localSystem):
 	'''Pre: localSystem is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
+	radius = 10
+
 	for n in localSystem.nodes:
 		subpanel = Panel()
-		temp = drawable.Circle(x1=n.x, y1=n.y, radius=radius, color=colors.yellow)
+		color = colors.yellow
+		#Color the player's location red.
+		if n.id == globalvars.player.nodeid:
+			color = colors.red
+		temp = drawable.Circle(x1=n.x, y1=n.y, radius=radius, color=color)
 		subpanel.addDrawable(temp)
+		#If this node is connected to the player's current node, make it clickable
+		if globalvars.player.nodeid in n.connections:
+			subpanel.setMethod(globalvars.player.setDestinationNode)
+			subpanel.argument = n.id
+		#If this node is the player's current location then make this reset
+		#the player's scenario. This is really only for testing since the player
+		#can get away using the testing menu by pressing the m key.
+		elif n.id == globalvars.player.nodeid:
+			subpanel.setMethod(scenarios.infiniteSpace)
+			subpanel.argument = n.id #TODO LEFT OFF HERE
 		menu.addPanel(subpanel)
+
 	for c in localSystem.connections:
 		temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
 		menu.addDrawable(temp)
+
 	return menu
 
 

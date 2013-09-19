@@ -49,6 +49,7 @@ image_list['gem'] = preLoadImage('images/TyDfN_tiny'+ext) #gem
 image_list['bgjupiter'] = preLoadImage('images/ioOverJupiter'+ext, transparency=False) #background jupiter
 image_list['bggalaxies'] = preLoadImage('images/galaxyLenses'+ext, transparency=False) #background galaxies
 image_list['bigShip'] = preLoadImage('images/bigShip'+ext) #capital ship
+image_list['warp'] = preLoadImage('images/warpPortal'+ext) #warp portal
 
 
 

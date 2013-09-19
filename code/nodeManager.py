@@ -60,6 +60,9 @@ class NodeManager():
 					break
 			if keep:
 				finalNodeList.append(sortednodes[i])
+		#Re-id the nodes to ensure that a node with id 0 exists. This must be done before connecting the nodes.
+		for i in xrange(len(finalNodeList)):
+			finalNodeList[i].id = i
 		#Calculate the largest distance between nearest nodes for each node
 		largestNeighborDist = 0.0
 		for i in xrange(1, len(finalNodeList)-1):
@@ -80,8 +83,8 @@ class NodeManager():
 						finalNodeList[j].addConnection(finalNodeList[i].id)
 				else:
 					break
-		#Copy all the final nodes to the self.nodes list in order sorted by id.
-		self.nodes = sorted(finalNodeList, key=lambda n: n.id)
+		#Copy all the final nodes to the self.nodes
+		self.nodes = finalNodeList
 		#Create list of connections without duplicates.
 		self.connections = []
 		for n in self.nodes:
