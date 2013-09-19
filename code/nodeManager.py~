@@ -1,6 +1,12 @@
 import random as rd
 import globalvars
 from geometry import distance
+import menus
+
+def printNodeLocations(nodelist):
+	for n in nodelist:
+		print n.loc
+
 
 class Node():
 	def __init__(self, myid, x, y):
@@ -22,6 +28,12 @@ class NodeManager():
 		#a list of x,y pairs representing connections without duplicates.
 		self.connections = []
 
+	def getNode(self, nodeid):
+		for n in self.nodes:
+			if n.id == nodeid:
+				return n
+		return None
+
 	def generateGalaxy(self, seed=0):
 		'''Post randomly populates self.nodes'''
 		padding = 20
@@ -33,16 +45,20 @@ class NodeManager():
 		nodecount = rd.randint(5,10)
 		#Randomly create locations for each node.
 		for i in range(nodecount):
-			x = rd.randint(padding, globalvars.WIDTH-padding)
-			y = rd.randint(padding, globalvars.HEIGHT-padding)
+			x = rd.randint(0, globalvars.WIDTH-padding-menus.border_padding)
+			y = rd.randint(0, globalvars.HEIGHT-padding-menus.border_padding)
 			self.nodes.append(Node(i, x, y))
-		#Sort the nodes by x as a secondary key and y as a primary key.
+		#Sort the nodes by x
 		sortednodes = sorted(self.nodes, key=lambda n: n.x, reverse=True)
-		sortednodes = sorted(sortednodes, key=lambda n: n.y, reverse=True)
 		#Remove nodes that are too close
 		finalNodeList = []
 		for i in xrange(nodecount-1):
-			if distance(sortednodes[i].loc, sortednodes[i+1].loc) > minimumNodeDist:
+			keep = True
+			for j in xrange(i+1, nodecount):
+				if distance(sortednodes[i].loc, sortednodes[j].loc) < minimumNodeDist:
+					keep = False
+					break
+			if keep:
 				finalNodeList.append(sortednodes[i])
 		#Calculate the largest distance between nearest nodes for each node
 		largestNeighborDist = 0.0
@@ -55,12 +71,23 @@ class NodeManager():
 			for j in xrange(i+1, len(finalNodeList)):
 				dist = distance(finalNodeList[i].loc, finalNodeList[j].loc)
 				if dist < largestNeighborDist:
-					finalNodeList[i].addConnection(finalNodeList[j].id)
-					finalNodeList[j].addConnection(finalNodeList[i].id)
+					#25% chance to not add connection if at least one connection 
+					#already exists at both endpoints
+					if len(finalNodeList[i].connections) == 0 or \
+					len(finalNodeList[j].connections) == 0 or \
+					rd.random() > 0.25:
+						finalNodeList[i].addConnection(finalNodeList[j].id)
+						finalNodeList[j].addConnection(finalNodeList[i].id)
 				else:
 					break
+		#Copy all the final nodes to the self.nodes list in order sorted by id.
+		self.nodes = sorted(finalNodeList, key=lambda n: n.id)
 		#Create list of connections without duplicates.
 		self.connections = []
-		#TODO LEFT OFF HERE
-
+		for n in self.nodes:
+			for c in n.connections:
+				#Only add connections in one direction to prevent duplicates.
+				if c > n.id:
+					otherend = self.getNode(c)
+					self.connections.append([n.x, n.y, otherend.x, otherend.y])
 
