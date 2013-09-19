@@ -162,6 +162,9 @@ def run():
 					else:
 						globalvars.panel = menus.getTestingPanel()
 					continue
+				elif event.key == 110: #n key
+					globalvars.panel = menus.getGalaxyPanel()
+					continue
 				elif event.key == 112: #p key
 					globalvars.player.parkingBrake()
 				elif event.key == 113: #q key

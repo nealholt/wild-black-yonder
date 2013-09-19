@@ -24,7 +24,8 @@ if __name__=="__main__":
 	'Press "q" to remove destination and simply fly in current direction.\n'+\
 	'Press "t" for hit box test.\n'+\
 	'Press "s" to pause and unpause.\n'+\
-	'Press "y" profile the game.\n'+\
+	'Press "y" profile a variety of methods.\n'+\
+	'Press "u" profile game.run().\n'+\
 	''
 
 	#Initial test scenario
