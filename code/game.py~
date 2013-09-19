@@ -16,6 +16,7 @@ import menus
 from geometry import distance, angleFromPosition, translate, rotateAngle
 from misc import writeTextToScreen
 import datetime #Use for testing efficiency
+import nodeManager
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
@@ -25,6 +26,9 @@ globalvars.whiskerables = pygame.sprite.Group()
 
 #Player must be created before scenario is called.
 globalvars.player = playerObj.Player('ship')
+
+localSystem = nodeManager.NodeManager()
+localSystem.generateGalaxy()
 
 
 def updateDust(offset):
@@ -100,12 +104,12 @@ def run():
 		#Display the panel
 		if not globalvars.panel is None:
 			globalvars.panel.draw()
-			#Check for another m key press to remove the panel.
+			#Check for another key press to remove the panel.
 			for event in pygame.event.get():
-				#Check for event m key being pressed to
-				#remove the menu.
+				#Check for event m key, n key, or escape key being 
+				#pressed to remove the menu.
 				if event.type == pygame.KEYDOWN and \
-				event.key == 109: #m key
+				(event.key == 109 or event.key == 110 or event.key == 27):
 					globalvars.panel = None
 					break
 				#Panel event handeling can make the panel itself None so we have 
@@ -161,6 +165,9 @@ def run():
 						globalvars.panel = menus.getRestartPanel()
 					else:
 						globalvars.panel = menus.getTestingPanel()
+					continue
+				elif event.key == 110: #n key
+					globalvars.panel = menus.getGalaxyPanel()
 					continue
 				elif event.key == 112: #p key
 					globalvars.player.parkingBrake()

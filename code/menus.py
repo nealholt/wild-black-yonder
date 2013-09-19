@@ -137,55 +137,18 @@ def getTestingPanel():
 	return menu
 
 
-def getGalaxyPanel():
+def getGalaxyPanel(localSystem):
+	'''Pre: localSystem is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
-
-	#Then draw the contents of the menu
-	horiz_space = 200
-	vert_space = 70
-	x1, y1 = horiz_space, globalvars.HEIGHT/2
 	radius = 10
-	#panel made of a circle centered at start
-	subpanel = Panel()
-	subpanel.setMethod(scenarios.testScenario00)
-	temp = drawable.Circle(x1=x1, y1=y1, radius=radius, color=colors.yellow)
-	subpanel.addDrawable(temp)
-	menu.addPanel(subpanel)
-
-	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Infinite space', 'Capital ship']
-	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.infiniteSpace, scenarios.capitalShipScenario]
-
-	x2 = horiz_space*2
-	methodLength = len(methods)
-	for i in range(methodLength):
-		j = i-methodLength/2
-		y2 = globalvars.HEIGHT/2+vert_space*j
-
+	for n in localSystem.nodes:
 		subpanel = Panel()
-		#http://www.secnetix.de/olli/Python/lambda_functions.hawk
-		subpanel.setMethod(methods[i])
-		temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\
-			font_size=24, color=colors.white)
+		temp = drawable.Circle(x1=n.x, y1=n.y, radius=radius, color=colors.yellow)
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
-
-		temp = drawable.Line(x1=x1, y1=y1, x2=x2, y2=y2)
+	for c in localSystem.connections:
+		temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
 		menu.addDrawable(temp)
-
-	#Add a "tab" up at the top that switches to weapon selection
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=(left+30), y1=(top+5), width=100, height=20, \
-		color=colors.yellow, thickness=2)
-	subpanel.addDrawable(temp)
-	#Add text
-	temp = drawable.Text(x1=(left+30+5), y1=(top+5+5), string='Weapons', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	#This will be the panel that allows the user to change weapons.
-	subpanel.setMethod(setWeaponsPanel)
-	menu.addPanel(subpanel)
-
 	return menu
 
 
