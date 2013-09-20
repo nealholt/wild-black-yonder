@@ -345,6 +345,7 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	globalvars.player.destinationNode = seed
 
 	#Place warp portals
+	allWarps = []
 	if not warps is None:
 		for w in warps:
 			#Get the slope of the line from playerLoc to this warp
@@ -353,9 +354,10 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 			x,y = translate(w[1], angle, 1000)
 			temp = objInstances.WarpPortal(x=x, y=y, destinationNode=w[0])
 			globalvars.tangibles.add(temp)
+			allWarps.append(temp)
 
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
-	globalvars.hud_helper = InfiniteSpaceGenerator()
+	globalvars.hud_helper = InfiniteSpaceGenerator(seed=seed, warps=allWarps)
 
 
 def getObstacles(seed=0):
@@ -378,6 +380,12 @@ def populateSpaceHelper(seed=0, length=0, x=0, y=0):
 	return populateSpace(objects=obstacles, width=length, height=length, center=(x*length, y*length), seed=seed)
 
 
+def setDestinationNode(nodeid):
+	globalvars.player.destinationNode = nodeid
+	#Tell the hud helper to update its pointer arrow
+	globalvars.hud_helper.setArrowTarget(nodeid)
+
+
 class InfiniteSpaceGenerator():
 	'''An object which will deterministically but randomly generate
 	objects in space based on the player's location.
@@ -385,7 +393,9 @@ class InfiniteSpaceGenerator():
 	and randomly but deterministically generated ahead of the player. These 
 	objects will also be removed when they get too far from the player.
 	This allows the player to explore in effectively infinite space.'''
-        def __init__(self, seed=0):
+        def __init__(self, seed=0, warps=None):
+		self.warps = warps
+		self.arrowTarget = None
 		#Distance above which to depopulate the grid cells.
 		self.depopulatedistance = 4
 		self.seed = seed
@@ -413,9 +423,26 @@ class InfiniteSpaceGenerator():
 		#Keep an index into the dictionary's list of keys. At each update, check the next key and if it is too distant from the player, then delete it.
 		self.key_index = 0
 
+	def setArrowTarget(self, targetid):
+		'''Pre: targetid is a node id.'''
+		for w in self.warps:
+			if w.destinationNode == targetid:
+				self.arrowTarget = (w.rect.centerx, w.rect.centery)
+				return 
+		self.arrowTarget = None
+		return
+
 	def update(self, offset):
 		#Display player's location
 		displayUtilities.displayShipLoc(globalvars.player)
+
+		#Display arrow to target. Target is a warp portal.
+		if not self.arrowTarget is None:
+			dtt = distance(globalvars.player.rect.center, self.arrowTarget)
+			#Only display the guiding arrow if player is too far away to see the target
+			if dtt > displayUtilities.arrowradius:
+				displayUtilities.drawArrowAtTarget(self.arrowTarget)
+
 		#Get the player's location.
 		px,py = globalvars.player.rect.center
 		#Player's location divided by the length of each cell is the 
@@ -476,6 +503,7 @@ class InfiniteSpaceGenerator():
 				self.dict[loc] = populateSpaceHelper(\
 					seed=loc, length=self.space_length, \
 					x=x, y=y)
+
 
 
 def restart():

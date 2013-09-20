@@ -151,15 +151,18 @@ def getGalaxyPanel(localSystem):
 		temp = drawable.Circle(x1=n.x, y1=n.y, radius=radius, color=color)
 		subpanel.addDrawable(temp)
 		#If this node is connected to the player's current node, make it clickable
-		if globalvars.player.nodeid in n.connections:
-			subpanel.setMethod(globalvars.player.setDestinationNode)
-			subpanel.argument = n.id
+		isconnected = False
+		for c in n.connections:
+			if globalvars.player.nodeid == c[0]:
+				subpanel.setMethod(scenarios.setDestinationNode)
+				subpanel.argument = n.id
+				break
 		#If this node is the player's current location then make this reset
 		#the player's scenario. This is really only for testing since the player
 		#can get away using the testing menu by pressing the m key.
 		elif n.id == globalvars.player.nodeid:
 			subpanel.setMethod(scenarios.goToInfiniteSpace)
-			subpanel.argument = [n.id, n.loc]
+			subpanel.argument = [n.id, n.loc, n.connections]
 		menu.addPanel(subpanel)
 
 	for c in localSystem.connections:

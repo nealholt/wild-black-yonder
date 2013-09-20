@@ -1,5 +1,6 @@
 import ship
 import profiles
+from globalvars import hud_helper
 
 class Player(ship.Ship):
 	def __init__(self, image_name):
@@ -28,11 +29,6 @@ class Player(ship.Ship):
 		#Node location of the player.
 		self.nodeid = 0
 		self.destinationNode = 0
-
-
-	def setDestinationNode(self, destinationid):
-		print 'player destination set to '+str(destinationid)
-		self.destinationNode = destinationid
 
 
 	def parkingBrake(self):
