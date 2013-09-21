@@ -427,7 +427,7 @@ class Gem(physicalObject.PhysicalObject):
 			pos = self.rect.left - offset[0], \
 				self.rect.top - offset[1]
 			writeTextToScreen(string='+'+str(self.points), \
-				font_size=36, color=colors.blue, pos=pos)
+				fontSize=36, color=colors.blue, pos=pos)
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
@@ -475,7 +475,7 @@ class HealthKit(physicalObject.PhysicalObject):
 			pos = self.rect.left - offset[0], \
 				self.rect.top - offset[1]
 			writeTextToScreen(string='+'+str(self.health_amt), \
-				font_size=36, color=colors.green, pos=pos)
+				fontSize=36, color=colors.green, pos=pos)
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''

@@ -190,7 +190,7 @@ class TimeTrialAssistant():
 		#Write the elapsed time to the top of the screen.
 		string = 'Time: '+displayUtilities.formatTime(elapsed)+\
 				'. Distance: '+displayUtilities.trunc(dtt,0)
-		writeTextToScreen(string=string, font_size=36,\
+		writeTextToScreen(string=string, fontSize=36,\
 				color=colors.white, pos=(400,10))
 
 		#Only display the guiding arrow if player is too far away to see the target
@@ -201,7 +201,7 @@ class TimeTrialAssistant():
 			#If so, end the race.
 			self.finish_reached = True
 			writeTextToScreen(string='TIME TRIAL COMPLETED',\
-				font_size=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
+				fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
 			pygame.display.flip()
 			time.sleep(2) #Sleep for 2 seconds.
 		pass
@@ -230,7 +230,7 @@ class TimeLimit():
 		#Write the elapsed time to the top of the screen.
 		string = 'Time: '+displayUtilities.formatTime(elapsed)+\
 			' Points:'+str(self.points)
-		writeTextToScreen(string=string, font_size=36,\
+		writeTextToScreen(string=string, fontSize=36,\
 				       color=colors.white, pos=(400,10))
 
 		#Check to see if time has run out.
@@ -238,7 +238,7 @@ class TimeLimit():
 			#If so, end the scenario.
 			self.finish_reached = True
 			writeTextToScreen(string='GEM WILD COMPLETED',\
-				font_size=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
+				fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
 			pygame.display.flip()
 			time.sleep(2) #Sleep for 2 seconds.
 			#Wipe out all the gems:

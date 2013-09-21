@@ -538,7 +538,7 @@ class WarpPortal(physicalObject.PhysicalObject):
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
 		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer:
-			print 'TESTING objInstances. Player warping to id '+str(destinationNode)
+			print 'TESTING objInstances. Player warping to id '+str(self.destinationNode)
 		return False
 
 

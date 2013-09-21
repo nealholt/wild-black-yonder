@@ -64,7 +64,7 @@ def displayShipLoc(ship):
 	#if ship is None: return True
 	string = "Player X,Y: "+trunc(ship.rect.centerx, 0)+','+trunc(ship.rect.centery,0)+\
 		'. Speed: '+trunc(ship.speed,0)+'. MaxSpeed: '+str(trunc(ship.maxSpeed,0))
-	writeTextToScreen(string=string, font_size=36, color=colors.white, pos=(400,10))
+	writeTextToScreen(string=string, fontSize=36, color=colors.white, pos=(400,10))
 
 
 def formatTime(seconds):

@@ -1,5 +1,4 @@
 import pygame.sprite
-from misc import wipeOldScenario
 import objInstances
 import colors
 import random as rd
@@ -11,6 +10,31 @@ import globalvars
 import math
 import player
 import hudHelpers
+import misc
+
+
+def wipeOldScenario():
+	for sprt in globalvars.tangibles: sprt.kill()
+	for sprt in globalvars.intangibles: sprt.kill()
+	globalvars.intangibles = []
+	for sprt in globalvars.whiskerables: sprt.kill()
+
+	globalvars.BGCOLOR = colors.black
+	globalvars.BGIMAGE = None
+
+	#Add the player back in.
+	globalvars.tangibles.add(globalvars.player)
+	globalvars.player.setHealthBar()
+
+	#Immediately clear the panel
+	globalvars.panel = None
+
+	#Reset the hud_helper
+	globalvars.hud_helper = None
+
+	#Reset the arena
+	globalvars.arena = 0
+
 
 def makeNewEnemy(x=0, y=0, weaponType='mk1'):
 	enemy_ship = ship.Ship(centerx=x, centery=y, image_name='destroyer')
@@ -155,15 +179,15 @@ def race(seed=0):
 	globalvars.hud_helper = hudHelpers.TimeTrialAssistant(finish_line)
 
 	#determine what sorts of obstacles to put on the race course.
-	numbers = [0 for _ in range(health+1)]
-	numbers[enemy] = 3
-	numbers[crystal] = 5
-	numbers[large_asteroid] = 20
-	numbers[medium_asteroid] = 30
-	numbers[small_asteroid] = 40
-	numbers[gold_metal] = 5
-	numbers[silver_metal] = 6
-	numbers[health] = 7
+	numbers = [0 for _ in range(hudHelpers.health+1)]
+	numbers[hudHelpers.enemy] = 3
+	numbers[hudHelpers.crystal] = 5
+	numbers[hudHelpers.large_asteroid] = 20
+	numbers[hudHelpers.medium_asteroid] = 30
+	numbers[hudHelpers.small_asteroid] = 40
+	numbers[hudHelpers.gold_metal] = 5
+	numbers[hudHelpers.silver_metal] = 6
+	numbers[hudHelpers.health] = 7
 
 	#Populate space in a semi narrow corridor between the player and the finish line
 	course_length = 6000 #pixels
@@ -172,6 +196,13 @@ def race(seed=0):
 	midway = (course_length/2, 0)
 
 	hudHelpers.populateSpace(objects=numbers, width=course_length, height=course_height, center=midway, seed=rd.random())
+
+	#Announce the race start.
+	#Insert at the beginning of intangibles.
+	globalvars.intangibles.insert(0,
+		misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text='Welcome to the race!', flashInterval=0.5, ttl=3)
+	)
 
 
 def furball(seed=0):

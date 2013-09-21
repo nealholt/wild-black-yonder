@@ -15,6 +15,7 @@ class TemporaryText():
 	time for the text to live in seconds.
 	Font size and color can also be specified'''
         def __init__(self, x=0, y=0, text='', flashInterval=0, ttl=0, fontSize=12, color=white):
+		print 'TEMP TEXT INIT'
 		self.pos = (x,y)
 		self.text = text
 		self.flashInterval = flashInterval * globalvars.FPS
@@ -27,6 +28,7 @@ class TemporaryText():
 
 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
+		print 'TEMP TEXT'
 		if self.countdown <= 0:
 			#Reset countdown and invert showing
 			self.countdown = self.flashInterval

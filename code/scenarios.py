@@ -1,5 +1,4 @@
 import pygame.sprite
-from misc import wipeOldScenario
 import objInstances
 import colors
 import random as rd
@@ -11,6 +10,31 @@ import globalvars
 import math
 import player
 import hudHelpers
+import misc
+
+
+def wipeOldScenario():
+	for sprt in globalvars.tangibles: sprt.kill()
+	for sprt in globalvars.intangibles: sprt.kill()
+	globalvars.intangibles = []
+	for sprt in globalvars.whiskerables: sprt.kill()
+
+	globalvars.BGCOLOR = colors.black
+	globalvars.BGIMAGE = None
+
+	#Add the player back in.
+	globalvars.tangibles.add(globalvars.player)
+	globalvars.player.setHealthBar()
+
+	#Immediately clear the panel
+	globalvars.panel = None
+
+	#Reset the hud_helper
+	globalvars.hud_helper = None
+
+	#Reset the arena
+	globalvars.arena = 0
+
 
 def makeNewEnemy(x=0, y=0, weaponType='mk1'):
 	enemy_ship = ship.Ship(centerx=x, centery=y, image_name='destroyer')
