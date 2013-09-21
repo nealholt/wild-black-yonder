@@ -63,20 +63,8 @@ def trunc(f, n):
 def displayShipLoc(ship):
 	#if ship is None: return True
 	string = "Player X,Y: "+trunc(ship.rect.centerx, 0)+','+trunc(ship.rect.centery,0)+\
-		'. Speed: '+trunc(ship.speed,0)+'. MaxSpeed: '+str(ship.maxSpeed)
-	writeTextToScreen(string=string, font_size=36, \
-			       color=colors.white, pos=(400,10))
-
-
-class PlayerInfoDisplayer():
-	'''I have a hunch that this is not the best way to do this,
-	but it will work for now.
-	Displays player information at the top of the screen.'''
-        def __init__(self):
-		pass
-
-	def update(self, _):
-		displayShipLoc(globalvars.player)
+		'. Speed: '+trunc(ship.speed,0)+'. MaxSpeed: '+str(trunc(ship.maxSpeed,0))
+	writeTextToScreen(string=string, font_size=36, color=colors.white, pos=(400,10))
 
 
 def formatTime(seconds):
@@ -118,84 +106,4 @@ def drawArrowAtTarget(target):
 	pygame.draw.line(globalvars.screen, colors.yellow, linestart, base, 10)
 
 
-
-class TimeTrialAssistant():
-	'''Displays an arrow pointing towards the destination
-	and counts down time remaining in race.'''
-        def __init__(self, target):
-		self.target = target #A location
-		#Track time in seconds
-		self.start_time = time.time()
-		self.finish_reached = False
-
-	def update(self, offset):
-		#Draw a bulls eye (multiple overlapping red and white 
-		#circles centered at the destination point.
-		target = (self.target[0] - offset[0], self.target[1] - offset[1])
-		pygame.draw.circle(globalvars.screen, colors.red, target, 50, 0)
-		pygame.draw.circle(globalvars.screen, colors.white, target, 40, 0)
-		pygame.draw.circle(globalvars.screen, colors.red, target, 30, 0)
-		pygame.draw.circle(globalvars.screen, colors.white, target, 20, 0)
-		pygame.draw.circle(globalvars.screen, colors.red, target, 10, 0)
-
-		if self.finish_reached: return True
-
-		#Distance to target
-		dtt = distance(globalvars.player.rect.center, self.target)
-
-		#elapsed time
-		elapsed = time.time() - self.start_time
-		#Write the elapsed time to the top of the screen.
-		string = 'Time: '+formatTime(elapsed)+'. Distance: '+trunc(dtt,0)
-		writeTextToScreen(string=string, font_size=36,\
-				       color=colors.white, pos=(400,10))
-
-		#Only display the guiding arrow if player is too far away to see the target
-		if dtt > globalvars.SCREENRADIUS:
-			drawArrowAtTarget(self.target)
-		#Check if the player has reached the destination.
-		if dtt < 40:
-			#If so, end the race.
-			self.finish_reached = True
-			writeTextToScreen(string='TIME TRIAL COMPLETED',\
-				font_size=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
-			pygame.display.flip()
-			time.sleep(2) #Sleep for 2 seconds.
-		pass
-
-
-class TimeLimit():
-	'''Initially to be used for the gem wild scenario in 
-	which the player has a limited amount of time to 
-	grab as many gems as possible.'''
-        def __init__(self, time_limit=0):
-		self.points = 0
-		self.time_limit = time_limit #in seconds
-		#Track time in seconds
-		self.start_time = time.time()
-		self.finish_reached = False
-
-	def update(self, offset):
-		if self.finish_reached: return True
-
-		#Update elapsed time
-		elapsed = time.time() - self.start_time
-		#Write the elapsed time to the top of the screen.
-		string = 'Time: '+formatTime(elapsed)+\
-			' Points:'+str(self.points)
-		writeTextToScreen(string=string, font_size=36,\
-				       color=colors.white, pos=(400,10))
-
-		#Check to see if time has run out.
-		if elapsed >= self.time_limit:
-			#If so, end the scenario.
-			self.finish_reached = True
-			writeTextToScreen(string='GEM WILD COMPLETED',\
-				font_size=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
-			pygame.display.flip()
-			time.sleep(2) #Sleep for 2 seconds.
-			#Wipe out all the gems:
-			for t in globalvars.tangibles:
-				if t.is_a == globalvars.GEM: t.kill()
-		pass
 
