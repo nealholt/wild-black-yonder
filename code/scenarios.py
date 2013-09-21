@@ -333,6 +333,8 @@ def goToInfiniteSpace(array):
 	infiniteSpace(seed=array[0], playerloc=array[1], warps=array[2])
 
 
+#The distances between nodes in the galaxy view is proportional to the distance between warp portals in the regular ship view. The scaling factor is warpPortalScaling.
+warpPortalScaling = 25
 def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
@@ -350,8 +352,9 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 		for w in warps:
 			#Get the slope of the line from playerLoc to this warp
 			angle = angleFromPosition(playerloc, w[1])
-			#Translate out the warp location by 1000 pixels
-			x,y = translate(w[1], angle, 1000)
+			scaledDistance = distance(playerloc, w[1]) * warpPortalScaling
+			print scaledDistance
+			x,y = translate(playerloc, angle, scaledDistance)
 			temp = objInstances.WarpPortal(x=x, y=y, destinationNode=w[0])
 			globalvars.tangibles.add(temp)
 			allWarps.append(temp)
