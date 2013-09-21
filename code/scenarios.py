@@ -155,15 +155,15 @@ def race(seed=0):
 	globalvars.hud_helper = hudHelpers.TimeTrialAssistant(finish_line)
 
 	#determine what sorts of obstacles to put on the race course.
-	numbers = [0 for _ in range(health+1)]
-	numbers[enemy] = 3
-	numbers[crystal] = 5
-	numbers[large_asteroid] = 20
-	numbers[medium_asteroid] = 30
-	numbers[small_asteroid] = 40
-	numbers[gold_metal] = 5
-	numbers[silver_metal] = 6
-	numbers[health] = 7
+	numbers = [0 for _ in range(hudHelpers.health+1)]
+	numbers[hudHelpers.enemy] = 3
+	numbers[hudHelpers.crystal] = 5
+	numbers[hudHelpers.large_asteroid] = 20
+	numbers[hudHelpers.medium_asteroid] = 30
+	numbers[hudHelpers.small_asteroid] = 40
+	numbers[hudHelpers.gold_metal] = 5
+	numbers[hudHelpers.silver_metal] = 6
+	numbers[hudHelpers.health] = 7
 
 	#Populate space in a semi narrow corridor between the player and the finish line
 	course_length = 6000 #pixels

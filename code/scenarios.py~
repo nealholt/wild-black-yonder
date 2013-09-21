@@ -248,21 +248,6 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	globalvars.hud_helper = hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps)
 
 
-def getObstacles(seed=0):
-	'''TODO later I want to get profiles instead of pure random number generation. '''
-	rd.seed(seed) #Fix the seed for the random number generator.
-	numbers = [0 for _ in range(health+1)]
-	numbers[enemy] = 0 #rd.randint(0,2)
-	numbers[crystal] = rd.randint(0,1)
-	numbers[large_asteroid] = rd.randint(0,2)
-	numbers[medium_asteroid] = rd.randint(1,4)
-	numbers[small_asteroid] = rd.randint(2,4)
-	numbers[gold_metal] = rd.randint(0,2)
-	numbers[silver_metal] = rd.randint(0,2)
-	numbers[health] = rd.randint(0,1)
-	return numbers
-
-
 def setDestinationNode(nodeid):
 	globalvars.player.destinationNode = nodeid
 	#Tell the hud helper to update its pointer arrow
@@ -284,6 +269,6 @@ def restart():
 def profile():
 	'''Profile some of the functions in this file.'''
 	import cProfile
-	cProfile.runctx('for _ in range(10000): getObstacles(seed=0)', globals(),locals(), 'profiling/getObstacles.profile')
-	cProfile.runctx('for _ in range(1000): 	obstacles = getObstacles(seed=0); hudHelpers.populateSpace(objects=obstacles, width=1000, height=1000, center=(0,0), seed=0)', globals(),locals(), 'profiling/populateSpace.profile')
+	cProfile.runctx('for _ in range(10000): hudHelpers.getObstacles(seed=0)', globals(),locals(), 'profiling/getObstacles.profile')
+	cProfile.runctx('for _ in range(1000): 	obstacles = hudHelpers.getObstacles(seed=0); hudHelpers.populateSpace(objects=obstacles, width=1000, height=1000, center=(0,0), seed=0)', globals(),locals(), 'profiling/populateSpace.profile')
 

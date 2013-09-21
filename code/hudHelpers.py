@@ -8,6 +8,7 @@ import displayUtilities
 import random as rd
 from geometry import getCoordsNearLoc, distance
 import objInstances
+import ship
 
 
 def getObstacles(seed=0):
@@ -148,6 +149,10 @@ class PlayerInfoDisplayer():
         def __init__(self):
 		pass
 
+	def setArrowTarget(self, targetid):
+		'''Pre: targetid is a node id.'''
+		print 'cannot set arrow target for this HUD'
+
 	def update(self, _):
 		displayUtilities.displayShipLoc(globalvars.player)
 
@@ -160,6 +165,10 @@ class TimeTrialAssistant():
 		#Track time in seconds
 		self.start_time = time.time()
 		self.finish_reached = False
+
+	def setArrowTarget(self, targetid):
+		'''Pre: targetid is a node id.'''
+		print 'cannot set arrow target for this HUD'
 
 	def update(self, offset):
 		#Draw a bulls eye (multiple overlapping red and white 
@@ -208,6 +217,10 @@ class TimeLimit():
 		#Track time in seconds
 		self.start_time = time.time()
 		self.finish_reached = False
+
+	def setArrowTarget(self, targetid):
+		'''Pre: targetid is a node id.'''
+		print 'cannot set arrow target for this HUD'
 
 	def update(self, offset):
 		if self.finish_reached: return True
