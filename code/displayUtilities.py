@@ -86,7 +86,6 @@ def formatTime(seconds):
 	return minutes+':'+sec
 
 
-arrowradius = min(globalvars.WIDTH, globalvars.HEIGHT)/2
 def drawArrowAtTarget(target):
 	'''Pre: target is a location (x,y).
 	Post: Draws an arrow towards the target.'''
@@ -95,11 +94,11 @@ def drawArrowAtTarget(target):
 	#Get a point radius distance from the player in the 
 	#direction of the target, centered on the screen.
 	#This will form the tip of the arrow
-	tip = translate((globalvars.CENTERX, globalvars.CENTERY), att, arrowradius)
+	tip = translate((globalvars.CENTERX, globalvars.CENTERY), att, globalvars.SCREENRADIUS)
 	#Get a point radius-20 distance from the player in the 
 	#direction of the target
 	#This will be used to build the base of the triangle.
-	base = translate((globalvars.CENTERX, globalvars.CENTERY), att, arrowradius-20)
+	base = translate((globalvars.CENTERX, globalvars.CENTERY), att, globalvars.SCREENRADIUS-20)
 	#get angles + and - 90 degrees from the angle to the target
 	leftwing = rotateAngle(att, -90)
 	rightwing = rotateAngle(att, 90) 
@@ -114,7 +113,7 @@ def drawArrowAtTarget(target):
 	#Get a point radius-50 distance from the player in the 
 	#direction of the target.
 	#This will be used to draw the line part of the arrow.
-	linestart = translate((globalvars.CENTERX, globalvars.CENTERY), att, arrowradius-50)
+	linestart = translate((globalvars.CENTERX, globalvars.CENTERY), att, globalvars.SCREENRADIUS-50)
 	#Draw a 20 pixel thick line for the body of the arrow.
 	pygame.draw.line(globalvars.screen, colors.yellow, linestart, base, 10)
 
@@ -152,7 +151,7 @@ class TimeTrialAssistant():
 				       color=colors.white, pos=(400,10))
 
 		#Only display the guiding arrow if player is too far away to see the target
-		if dtt > arrowradius:
+		if dtt > globalvars.SCREENRADIUS:
 			drawArrowAtTarget(self.target)
 		#Check if the player has reached the destination.
 		if dtt < 40:

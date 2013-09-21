@@ -440,7 +440,7 @@ class InfiniteSpaceGenerator():
 		if not self.arrowTarget is None:
 			dtt = distance(globalvars.player.rect.center, self.arrowTarget)
 			#Only display the guiding arrow if player is too far away to see the target
-			if dtt > displayUtilities.arrowradius:
+			if dtt > globalvars.SCREENRADIUS:
 				displayUtilities.drawArrowAtTarget(self.arrowTarget)
 
 		#Get the player's location.

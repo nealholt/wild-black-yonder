@@ -426,10 +426,8 @@ class InfiniteSpaceGenerator():
 	def setArrowTarget(self, targetid):
 		'''Pre: targetid is a node id.'''
 		for w in self.warps:
-			print 'target warp searching'
 			if w.destinationNode == targetid:
 				self.arrowTarget = (w.rect.centerx, w.rect.centery)
-				print 'target warp found'
 				return 
 		self.arrowTarget = None
 		return
@@ -437,6 +435,14 @@ class InfiniteSpaceGenerator():
 	def update(self, offset):
 		#Display player's location
 		displayUtilities.displayShipLoc(globalvars.player)
+
+		#Display arrow to target. Target is a warp portal.
+		if not self.arrowTarget is None:
+			dtt = distance(globalvars.player.rect.center, self.arrowTarget)
+			#Only display the guiding arrow if player is too far away to see the target
+			if dtt > displayUtilities.arrowradius:
+				displayUtilities.drawArrowAtTarget(self.arrowTarget)
+
 		#Get the player's location.
 		px,py = globalvars.player.rect.center
 		#Player's location divided by the length of each cell is the 
@@ -497,13 +503,6 @@ class InfiniteSpaceGenerator():
 				self.dict[loc] = populateSpaceHelper(\
 					seed=loc, length=self.space_length, \
 					x=x, y=y)
-
-		#Display arrow to target. Target is a warp portal.
-		if not self.arrowTarget is None:
-			dtt = distance(globalvars.player.rect.center, self.arrowTarget)
-			#Only display the guiding arrow if player is too far away to see the target
-			if dtt > displayUtilities.arrowradius:
-				displayUtilities.drawArrowAtTarget(self.arrowTarget)
 
 
 

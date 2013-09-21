@@ -26,7 +26,7 @@ BGIMAGE = None
 #instantiate sprite groups
 tangibles = None
 intangibles = None
-#This last group will contain any sprites that will tickle whiskers
+#This last group will contain any sprites that will tickle whiskers. NPCs have whiskers for collision avoidance.
 whiskerables = None
 #An array of fixed-location, white specks designed to reveal player motion by their relative movement.
 dust = []

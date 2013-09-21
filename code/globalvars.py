@@ -7,6 +7,8 @@ HEIGHT = 700
 
 CENTERX = WIDTH / 2
 CENTERY = HEIGHT / 2
+#Radius of a circle that just barely fits inside the screen:
+SCREENRADIUS = min(WIDTH, HEIGHT)/2
 
 #Used by physicalObject to define what each physicalObject is.
 BULLET = 0
