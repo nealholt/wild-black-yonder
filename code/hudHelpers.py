@@ -142,35 +142,51 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	return toreturn
 
 
-class PlayerInfoDisplayer():
-	'''I have a hunch that this is not the best way to do this,
-	but it will work for now.
-	Displays player information at the top of the screen.'''
+class Hud():
+	'''This is the parent hud class.'''
         def __init__(self):
-		pass
+		#List of objects to update. This is where you should put
+		#objects that won't collide with anything but still need updated.
+		self.toUpdate = []
 
 	def setArrowTarget(self, targetid):
 		'''Pre: targetid is a node id.'''
 		print 'cannot set arrow target for this HUD'
 
+	def addObjectToUpdate(self, toUp):
+		self.toUpdate.append(toUp)
+
 	def update(self, _):
+		for tu in self.toUpdate:
+			if tu.update():
+				self.toUpdate.remove(tu)
+
+
+
+class PlayerInfoDisplayer(Hud):
+	'''I have a hunch that this is not the best way to do this,
+	but it will work for now.
+	Displays player information at the top of the screen.'''
+        def __init__(self):
+		Hud.__init__(self)
+
+	def update(self, _):
+		Hud.update(self, _)
 		displayUtilities.displayShipLoc(globalvars.player)
 
 
-class TimeTrialAssistant():
+class TimeTrialAssistant(Hud):
 	'''Displays an arrow pointing towards the destination
 	and counts down time remaining in race.'''
         def __init__(self, target):
+		Hud.__init__(self)
 		self.target = target #A location
 		#Track time in seconds
 		self.start_time = time.time()
 		self.finish_reached = False
 
-	def setArrowTarget(self, targetid):
-		'''Pre: targetid is a node id.'''
-		print 'cannot set arrow target for this HUD'
-
 	def update(self, offset):
+		Hud.update(self, offset)
 		#Draw a bulls eye (multiple overlapping red and white 
 		#circles centered at the destination point.
 		target = (self.target[0] - offset[0], self.target[1] - offset[1])
@@ -207,22 +223,20 @@ class TimeTrialAssistant():
 		pass
 
 
-class TimeLimit():
+class TimeLimit(Hud):
 	'''Initially to be used for the gem wild scenario in 
 	which the player has a limited amount of time to 
 	grab as many gems as possible.'''
         def __init__(self, time_limit=0):
+		Hud.__init__(self)
 		self.points = 0
 		self.time_limit = time_limit #in seconds
 		#Track time in seconds
 		self.start_time = time.time()
 		self.finish_reached = False
 
-	def setArrowTarget(self, targetid):
-		'''Pre: targetid is a node id.'''
-		print 'cannot set arrow target for this HUD'
-
 	def update(self, offset):
+		Hud.update(self, offset)
 		if self.finish_reached: return True
 
 		#Update elapsed time
@@ -253,7 +267,7 @@ def populateSpaceHelper(seed=0, length=0, x=0, y=0):
 	return populateSpace(objects=obstacles, width=length, height=length, center=(x*length, y*length), seed=seed)
 
 
-class InfiniteSpaceGenerator():
+class InfiniteSpaceGenerator(Hud):
 	'''An object which will deterministically but randomly generate
 	objects in space based on the player's location.
 	The player can fly around freely and objects will be automatically 
@@ -261,6 +275,7 @@ class InfiniteSpaceGenerator():
 	objects will also be removed when they get too far from the player.
 	This allows the player to explore in effectively infinite space.'''
         def __init__(self, seed=0, warps=None):
+		Hud.__init__(self)
 		self.warps = warps
 		self.arrowTarget = None
 		#Distance above which to depopulate the grid cells.
@@ -300,6 +315,7 @@ class InfiniteSpaceGenerator():
 		return
 
 	def update(self, offset):
+		Hud.update(self, offset)
 		#Display player's location
 		displayUtilities.displayShipLoc(globalvars.player)
 

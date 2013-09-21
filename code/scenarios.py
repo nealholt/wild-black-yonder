@@ -197,6 +197,13 @@ def race(seed=0):
 
 	hudHelpers.populateSpace(objects=numbers, width=course_length, height=course_height, center=midway, seed=rd.random())
 
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text=['Welcome to the race!', 
+		'Follow the yellow arrow', 
+		'to the finish as fast as possible.'],
+		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+
 
 def furball(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.

@@ -197,12 +197,15 @@ def race(seed=0):
 
 	hudHelpers.populateSpace(objects=numbers, width=course_length, height=course_height, center=midway, seed=rd.random())
 
-	#Announce the race start.
-	#Insert at the beginning of intangibles.
-	globalvars.intangibles.insert(0,
-		misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-		text='Welcome to the race!', flashInterval=0.5, ttl=3)
-	)
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text='Welcome to the race!', timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52, 
+		text='Follow the yellow arrow', timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+104, 
+		text='to the finish as fast as possible.', timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
 
 
 def furball(seed=0):
