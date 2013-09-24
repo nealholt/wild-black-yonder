@@ -137,12 +137,12 @@ def getTestingPanel():
 	return menu
 
 
-def getGalaxyPanel(localSystem):
+def getGalaxyPanel():
 	'''Pre: localSystem is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
 	radius = 10
 
-	for n in localSystem.nodes:
+	for n in globalvars.localSystem.nodes:
 		subpanel = Panel()
 		color = colors.yellow
 		#Color the player's location red.
@@ -165,7 +165,7 @@ def getGalaxyPanel(localSystem):
 			subpanel.argument = [n.id, n.loc, n.connections]
 		menu.addPanel(subpanel)
 
-	for c in localSystem.connections:
+	for c in globalvars.localSystem.connections:
 		temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
 		menu.addDrawable(temp)
 
@@ -221,9 +221,9 @@ def getHelpPanel():
 	]
 
 	#Then draw the contents of the menu
-	font_size = 20
+	font_size = 24
 	for i in range(len(help)):
-		temp = drawable.Text(x1=globalvars.WIDTH/2-100,\
+		temp = drawable.Text(x1=left+50,\
 			y1=font_size*i+20+top, string=help[i],\
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)

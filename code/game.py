@@ -27,8 +27,8 @@ globalvars.whiskerables = pygame.sprite.Group()
 #Player must be created before scenario is called.
 globalvars.player = playerObj.Player('ship')
 
-localSystem = nodeManager.NodeManager()
-localSystem.generateGalaxy()
+globalvars.localSystem = nodeManager.NodeManager()
+globalvars.localSystem.generateGalaxy()
 
 
 def updateDust(offset):
@@ -167,7 +167,7 @@ def run():
 						globalvars.panel = menus.getTestingPanel()
 					continue
 				elif event.key == 110: #n key
-					globalvars.panel = menus.getGalaxyPanel(localSystem)
+					globalvars.panel = menus.getGalaxyPanel()
 					continue
 				elif event.key == 112: #p key
 					globalvars.player.parkingBrake()

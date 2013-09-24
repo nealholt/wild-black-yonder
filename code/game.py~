@@ -205,8 +205,8 @@ def run():
 					str(globalvars.player.destx)+','+\
 					str(globalvars.player.desty)
 				elif event.key == 104 or event.key == 304: #"h key" lower or upper case.
+					#Display help menu.
 					globalvars.panel = menus.getHelpPanel()
-					#TODO LEFT OFF HERE
 
 				#Separate if so other keys don't interfere
 				#with this.

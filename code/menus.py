@@ -137,12 +137,12 @@ def getTestingPanel():
 	return menu
 
 
-def getGalaxyPanel(localSystem):
+def getGalaxyPanel():
 	'''Pre: localSystem is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
 	radius = 10
 
-	for n in localSystem.nodes:
+	for n in globalvars.localSystem.nodes:
 		subpanel = Panel()
 		color = colors.yellow
 		#Color the player's location red.
@@ -162,10 +162,10 @@ def getGalaxyPanel(localSystem):
 		#can get away using the testing menu by pressing the m key.
 		if n.id == globalvars.player.nodeid:
 			subpanel.setMethod(scenarios.goToInfiniteSpace)
-			subpanel.argument = [n.id, n.loc, n.connections]
+			subpanel.argument = n.id
 		menu.addPanel(subpanel)
 
-	for c in localSystem.connections:
+	for c in globalvars.localSystem.connections:
 		temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
 		menu.addDrawable(temp)
 

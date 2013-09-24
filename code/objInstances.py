@@ -530,15 +530,27 @@ class HealthBar(physicalObject.PhysicalObject):
 
 
 class WarpPortal(physicalObject.PhysicalObject):
-	def __init__(self, x=0.0, y=0.0, destinationNode=0):
+	def __init__(self, x=0.0, y=0.0, destinationNode=0, method=None):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, image_name='warp')
 		self.destinationNode = destinationNode
 		self.is_a = globalvars.OTHER
+		#self.method will almost invariably be set to a call to scenarios.goToInfiniteSpace
+		#This is done because if obj_instances imported scenarios then there would be
+		#an import loop because scenarios imports from obj_instances.
+		#I'm not sure if there is a better way to do this, but it works just fine.
+		self.method = method
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
-		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer:
-			print 'TESTING objInstances. Player warping to id '+str(self.destinationNode)
+		#If other sprite is playership and this portal is the destination...
+		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer\
+		and globalvars.player.destinationNode == self.destinationNode:
+			#Make sure the method is not none.
+			if not self.method is None:
+				#Call scenarios.goToInfiniteSpace
+				self.method(self.destinationNode)
+			else:
+				print 'WARNING: WarpPortal method set to None. This may have been done in error.'
 		return False
 
 

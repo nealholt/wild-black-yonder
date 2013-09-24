@@ -49,3 +49,7 @@ panel = None
 
 #How many frames to continue displaying while the player is dead before kicking him back to the restart menu.
 deathcountdown = 15
+
+#Local system of nodes
+localSystem = None
+

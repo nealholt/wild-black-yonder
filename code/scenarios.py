@@ -271,13 +271,12 @@ def capitalShipScenario(seed=0):
 
 
 
-def goToInfiniteSpace(array):
+def goToInfiniteSpace(nodeid):
 	'''This is a helper method that enables the menu system to function more easily.
-	array[0] = node id of the infinite space and the seed to use to generate the space.
-	array[1] = location to start the player inside the infinite space.
-	array[2] = Destination id and location pairs. It is the connections list of the node with the id in array[0]
-	'''
-	infiniteSpace(seed=array[0], playerloc=array[1], warps=array[2])
+	nodeid of the infinite space and the seed to use to generate the space.'''
+	#Get the node that has the id that this portal will lead to
+	n = globalvars.localSystem.getNode(nodeid)
+	infiniteSpace(seed=nodeid, playerloc=n.loc, warps=n.connections)
 
 
 #The distances between nodes in the galaxy view is proportional to the distance between warp portals in the regular ship view. The scaling factor is warpPortalScaling.
@@ -300,14 +299,21 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 			#Get the slope of the line from playerLoc to this warp
 			angle = angleFromPosition(playerloc, w[1])
 			scaledDistance = distance(playerloc, w[1]) * warpPortalScaling
-			print scaledDistance
+			#print scaledDistance #TESTING
 			x,y = translate(playerloc, angle, scaledDistance)
-			temp = objInstances.WarpPortal(x=x, y=y, destinationNode=w[0])
+			temp = objInstances.WarpPortal(x=x, y=y, destinationNode=w[0],
+						method=goToInfiniteSpace)
 			globalvars.tangibles.add(temp)
 			allWarps.append(temp)
 
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
 	globalvars.hud_helper = hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps)
+
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text=['You\'ve arrived in system '+str(seed)],
+		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+
 
 
 def setDestinationNode(nodeid):

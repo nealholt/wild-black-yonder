@@ -427,7 +427,7 @@ class Gem(physicalObject.PhysicalObject):
 			pos = self.rect.left - offset[0], \
 				self.rect.top - offset[1]
 			writeTextToScreen(string='+'+str(self.points), \
-				font_size=36, color=colors.blue, pos=pos)
+				fontSize=36, color=colors.blue, pos=pos)
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
@@ -475,7 +475,7 @@ class HealthKit(physicalObject.PhysicalObject):
 			pos = self.rect.left - offset[0], \
 				self.rect.top - offset[1]
 			writeTextToScreen(string='+'+str(self.health_amt), \
-				font_size=36, color=colors.green, pos=pos)
+				fontSize=36, color=colors.green, pos=pos)
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
@@ -530,15 +530,26 @@ class HealthBar(physicalObject.PhysicalObject):
 
 
 class WarpPortal(physicalObject.PhysicalObject):
-	def __init__(self, x=0.0, y=0.0, destinationNode=0):
+	def __init__(self, x=0.0, y=0.0, destinationNode=0, method=None, argument=None):
 		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, image_name='warp')
 		self.destinationNode = destinationNode
 		self.is_a = globalvars.OTHER
+		self.method = method
+		self.argument = argument
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
-		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer:
+		#If other sprite is playership and this portal is the destination...
+		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer\
+		and globalvars.player.destinationNode == self.destinationNode:
 			print 'TESTING objInstances. Player warping to id '+str(self.destinationNode)
+			if not self.method is None:
+				if self.argument is None:
+					self.method([0, (0.,0.), None]) #TODO LEFT OFF HERE
+				else:
+					self.method(self.argument)
+		#subpanel.setMethod(scenarios.goToInfiniteSpace)
+		#subpanel.argument = [n.id, n.loc, n.connections]
 		return False
 
 
