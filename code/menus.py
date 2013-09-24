@@ -194,6 +194,42 @@ def getRestartPanel():
 	return menu
 
 
+def getHelpPanel():
+	menu = getStandardMenu()
+
+	help = [
+	'INSTRUCTIONS:', 
+	'Press space bar to shoot.',
+	'Press "/" or "?" to query game state. Currently this just prints the player\'s destination.',
+	'Press escape to quit.',
+	'Press "e" to create an enemy ship that will attack the player.',
+	'Press up arrow to increase player speed by one quarter of max up to max.',
+	'Press down arrow to decrease player speed by one quarter of max down to zero.',
+	'Press left arrow to turn counter-clockwise 30 degrees.',
+	'Press right arrow to turn clockwise 30 degrees.',
+	'Click on the screen to tell the starship to move towards the clicked point.',
+	'Press "m" open or close a menu. m is for menu in this case. TESTING.',
+	'Press "n" to display the galaxy nodes menu. Also closes this menu.',
+	'Press "p" to slow down and park at destination.',
+	'Press "s" to pause/unpause the game.',
+	'Press "q" to remove destination and simply fly in current direction.',
+	'Press "t" for hit box test.',
+	'Press "s" to pause and unpause.',
+	'Press "y" profile a variety of methods.',
+	'Press "u" profile game.run().',
+	'Press "h" Display help info.'
+	]
+
+	#Then draw the contents of the menu
+	font_size = 24
+	for i in range(len(help)):
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+20+top, string=help[i],\
+			font_size=font_size, color=colors.white)
+		menu.addDrawable(temp)
+
+	return menu
+
 
 weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'spread_mk3', 'missile_mk1', 'mine', 'hit_box_test']
 def setWeaponsPanel():

@@ -4,7 +4,7 @@ import game
 from scenarios import testScenario00
 if __name__=="__main__":
 	print 'FPS can be set with -fps #. For example:\n'+\
-	'   python playGame.py -fps 30 #default value\n'
+	'   python playGame.py -fps 60 #default value\n'
 	if '-fps' in sys.argv:
 		game.FPS = int(sys.argv[ sys.argv.index('-fps')+1])
 
@@ -18,7 +18,8 @@ if __name__=="__main__":
 	'Press left arrow to turn counter-clockwise 30 degrees.\n'+\
 	'Press right arrow to turn clockwise 30 degrees.\n'+\
 	'Click on the screen to tell the starship to move towards the clicked point.\n'+\
-	'Press "m" to display a panel. m is for menu in this case. TESTING.\n'+\
+	'Press "m" open or close a menu. m is for menu in this case. TESTING.\n'+\
+	'Press "n" to display the galaxy nodes menu. Also closes this menu.\n'+\
 	'Press "p" to slow down and park at destination.\n'+\
 	'Press "s" to pause/unpause the game.\n'+\
 	'Press "q" to remove destination and simply fly in current direction.\n'+\
@@ -26,6 +27,7 @@ if __name__=="__main__":
 	'Press "s" to pause and unpause.\n'+\
 	'Press "y" profile a variety of methods.\n'+\
 	'Press "u" profile game.run().\n'+\
+	'Press "h" Display help info.\n'+\
 	''
 
 	#Initial test scenario

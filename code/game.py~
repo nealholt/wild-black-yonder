@@ -167,7 +167,7 @@ def run():
 						globalvars.panel = menus.getTestingPanel()
 					continue
 				elif event.key == 110: #n key
-					globalvars.panel = menus.getGalaxyPanel()
+					globalvars.panel = menus.getGalaxyPanel(localSystem)
 					continue
 				elif event.key == 112: #p key
 					globalvars.player.parkingBrake()
@@ -204,6 +204,9 @@ def run():
 					print 'Print player destination: '+\
 					str(globalvars.player.destx)+','+\
 					str(globalvars.player.desty)
+				elif event.key == 104 or event.key == 304: #"h key" lower or upper case.
+					globalvars.panel = menus.getHelpPanel()
+					#TODO LEFT OFF HERE
 
 				#Separate if so other keys don't interfere
 				#with this.
