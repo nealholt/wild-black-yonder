@@ -97,6 +97,12 @@ def testScenario00(seed=0):
 	temp = objInstances.HealthKit(-100, 0) #health pack
 	globalvars.tangibles.add(temp)
 
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text=['Press H to access the help menu',
+		' and learn the controls.'],
+		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+
 
 def asteroids(seed=0):
 	''' '''
@@ -132,6 +138,13 @@ def asteroids(seed=0):
 		temp = objInstances.Asteroid(x=x, y=y, image_name=rock)
 		globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text=['Watch out for asteroids while you',
+			'blow them up to collect gems.'],
+		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+
+
 
 def gemWild(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
@@ -160,8 +173,14 @@ def gemWild(seed=0):
 		temp = objInstances.Gem(x=x, y=y)
 		globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 
-	#30 second time limit.
-	globalvars.hud_helper = hudHelpers.TimeLimit(time_limit=30)
+	time_limit = 30 #time limit in seconds
+	globalvars.hud_helper = hudHelpers.TimeLimit(time_limit=time_limit)
+
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text=['Collect as many gems as you can in '+str(time_limit)+' seconds.'],
+		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+
 
 
 def race(seed=0):
@@ -225,6 +244,12 @@ def furball(seed=0):
 	x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
 	makeNewEnemy(x=x, y=y, weaponType='missile_mk1') #The third enemy gets a missile.
 
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text=['Fight off 3 enemy ships!'],
+		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+
+
 
 def capitalShipScenario(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
@@ -238,6 +263,12 @@ def capitalShipScenario(seed=0):
 	enemy_ship = capitalShip.CapitalShip(centerx=0, centery=400, image_name='bigShip')
 	globalvars.tangibles.add(enemy_ship)
 	globalvars.whiskerables.add(enemy_ship)
+
+	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
+		text=['Blow up the capital ship!'],
+		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
+	globalvars.hud_helper.addObjectToUpdate(announcement)
+
 
 
 def goToInfiniteSpace(array):
