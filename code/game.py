@@ -345,10 +345,10 @@ def run():
 
 		#draw BGCOLOR over the screen
 		#TODO as a game effect, it is super neato to temporarily NOT do this.
-		if globalvars.BGIMAGE is None:
-			globalvars.screen.fill(globalvars.BGCOLOR)
-		else:
-			globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+		#if globalvars.BGIMAGE is None:
+		#	globalvars.screen.fill(globalvars.BGCOLOR)
+		#else:
+		#	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 
 		#TODO Put on screen rects in dirty rects
 		for x in globalvars.intangibles: addToDirtyRects(x, offset)

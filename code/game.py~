@@ -56,10 +56,8 @@ def addToDirtyRects(physObject, offset, cover=True):
 		# - Blit a piece of the background over the sprite's current location, erasing it.
 		if cover:
 			if globalvars.BGIMAGE is None:
-				#globalvars.screen.fill(globalvars.BGCOLOR, rect=physObject.rect)
 				globalvars.screen.fill(globalvars.BGCOLOR, rect=my_rect)
 			else:
-				#globalvars.screen.blit(globalvars.BGIMAGE, physObject.rect.topleft, area=physObject.rect)
 				globalvars.screen.blit(globalvars.BGIMAGE, pos, area=my_rect)
 		# - Append the sprite's current location rectangle to a list called dirty_rects.
 		dirty_rects.append(my_rect)
