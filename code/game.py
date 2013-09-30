@@ -36,16 +36,15 @@ def updateDust(offset):
 	If the dust is too far from the player then move it to a location
 	offscreen, but in the direction that the player is moving.
 	Otherwise, just draw the dust with the update function.'''
-	limit = globalvars.WIDTH
 	for i in xrange(len(globalvars.dust)):
 		dist = distance(globalvars.dust[i].rect.center, globalvars.player.rect.center)
-		if dist > limit:
+		if dist > globalvars.WIDTH:
 			magnitude = rd.randint(globalvars.WIDTH/2, globalvars.WIDTH)
 			rotation = rd.randint(-70, 70)
 			globalvars.dust[i].rect.center = translate(globalvars.player.rect.center,\
 				rotateAngle(globalvars.player.theta, rotation),\
 				magnitude)
-		elif dist < globalvars.WIDTH:
+		else:
 			globalvars.dust[i].update()
 			globalvars.dust[i].draw(offset)
 

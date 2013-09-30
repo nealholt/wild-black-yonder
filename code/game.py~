@@ -296,7 +296,7 @@ def run():
 						w.theta = angleFromPosition(w.rect.center, (x,y))
 
 		#Update player's lead target indicator so enemies shoot at a spot just ahead of the player.
-		globalvars.player_target_lead = globalvars.player.getLeadIndicator() #TODO LEFT OFF HERE
+		globalvars.player_target_lead = globalvars.player.getLeadIndicator()
 
 		#update all sprites:
 
