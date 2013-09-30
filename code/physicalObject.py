@@ -63,7 +63,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#original image that is never modified.
 			#self.base_image is used in updateImageAngle.
 			self.base_image = image_list[self.image_name].convert()
-			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()
 		self.rect.centerx = self.loc[0]
@@ -122,9 +121,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#WITH the following code, the ship rotates smoothly relative to its health bar, but since the screen centers on the player, these constant small adjustments cause all the images drawn relative to the player to jiggle.
 		#WITHOUT the following code, there is no jiggle, but the ships rotate a little more weirdly and the hit boxes might be slightly off.
 		#For now, I choose to run without the following code.
-		#temp = self.rect.topleft
-		#self.rect = self.image.get_rect()
-		#self.rect.topleft = temp
+		temp = self.rect.topleft
+		self.rect = self.image.get_rect()
+		self.rect.topleft = temp
 
 
 	def noClipWith(self,other):

@@ -63,7 +63,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#original image that is never modified.
 			#self.base_image is used in updateImageAngle.
 			self.base_image = image_list[self.image_name].convert()
-			self.rect = self.base_image.get_rect()
 
 		self.rect = self.image.get_rect()
 		self.rect.centerx = self.loc[0]
@@ -359,7 +358,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		return not( self.rect.right < left or \
 		self.rect.bottom < top or \
 		self.rect.top > top + globalvars.HEIGHT or \
-		self.rect.left > left + globalvars.WIDTH ):
+		self.rect.left > left + globalvars.WIDTH )
 
 
 	def getArea(self):
