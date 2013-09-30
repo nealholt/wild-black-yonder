@@ -30,12 +30,16 @@ globalvars.player = playerObj.Player('ship')
 globalvars.localSystem = nodeManager.NodeManager()
 globalvars.localSystem.generateGalaxy()
 
+#More efficient animations:
+dirty_rects = []
+
 
 def updateDust(offset):
 	'''For each dust particle,
 	If the dust is too far from the player then move it to a location
 	offscreen, but in the direction that the player is moving.
 	Otherwise, just draw the dust with the update function.'''
+	#left, top = offset
 	for i in xrange(len(globalvars.dust)):
 		dist = distance(globalvars.dust[i].rect.center, globalvars.player.rect.center)
 		if dist > globalvars.WIDTH:
@@ -44,9 +48,18 @@ def updateDust(offset):
 			globalvars.dust[i].rect.center = translate(globalvars.player.rect.center,\
 				rotateAngle(globalvars.player.theta, rotation),\
 				magnitude)
-		else:
-			globalvars.dust[i].update()
+		elif globalvars.dust[i].isOnScreen(offset):
+			#TODO
+			# - Blit a piece of the background over the sprite's current location, erasing it.
+			#screen.blit(globalvars.BGIMAGE, globalvars.dust[i].rect.topleft,
+			#	area=globalvars.dust[i].rect)
+			# - Append the sprite's current location rectangle to a list called dirty_rects.
+			#dirty_rects.append(globalvars.dust[i].rect)
+			# - Move the sprite.
+			# - Draw the sprite at it's new location.
 			globalvars.dust[i].draw(offset)
+			# - Append the sprite's new location to my dirty_rects list.
+			#dirty_rects.append(globalvars.dust[i].rect)
 
 
 def run():
@@ -78,6 +91,10 @@ def run():
 
 	#The in-round loop (while player is alive):
 	while running:
+		#TODO TESTING
+		#pygame.display.update(dirty_rects)
+		#dirty_rects = []
+
 		#Used for calculating actual frames per second in
 		#order to determine when we are dropping frames
 		#so that efficiency improvements can be made.
@@ -357,18 +374,11 @@ def drawThoseOnScreen(sprite_list, offset):
 	#draw_count = 0 #TESTING
 	left, top = offset
 	for sp in sprite_list:
-		'''If the sprite is on the screen, then draw it.
-		rect.right < left #Then not on screen
-		rect.bottom < top #Then not on screen
-		rect.top > top + globalvars.HEIGHT #Then not on screen
-		rect.left > left + globalvars.WIDTH #Then not on screen'''
-		if not( sp.rect.right < left or \
-		sp.rect.bottom < top or \
-		sp.rect.top > top + globalvars.HEIGHT or \
-		sp.rect.left > left + globalvars.WIDTH ):
-			sp.draw(offset)
+		#If the sprite is on the screen, then draw it.
+		if sp.isOnScreen(offset): sp.draw(offset)
 			#draw_count += 1 #TESTING
 	#print str(draw_count)+' objects on screen.' #TESTING
+
 
 def drawThoseOnScreen2(sprite_list, offset):
 	'''Presumably slower version of the above method used for testing.'''

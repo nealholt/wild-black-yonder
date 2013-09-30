@@ -349,6 +349,19 @@ class PhysicalObject(pygame.sprite.Sprite):
 		globalvars.screen.blit(self.image, pos)
 
 
+	def isOnScreen(self, offset):
+		'''Returns true if this sprite is on screen.
+		rect.right < left #Then not on screen
+		rect.bottom < top #Then not on screen
+		rect.top > top + globalvars.HEIGHT #Then not on screen
+		rect.left > left + globalvars.WIDTH #Then not on screen'''
+		left, top = offset
+		return not( self.rect.right < left or \
+		self.rect.bottom < top or \
+		self.rect.top > top + globalvars.HEIGHT or \
+		self.rect.left > left + globalvars.WIDTH )
+
+
 	def getArea(self):
 		return self.rect.width*self.rect.height
 
