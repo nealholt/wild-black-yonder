@@ -52,15 +52,15 @@ def addToDirtyRects(physObject, offset, cover=True):
 	if isOn:
 		x,y = physObject.rect.topleft
 		pos = x - offset[0], y - offset[1]
-		my_rect = (x, y, physObject.rect.width, physObject.rect.height)
+		my_rect = (pos[0], pos[1], physObject.rect.width, physObject.rect.height)
 		# - Blit a piece of the background over the sprite's current location, erasing it.
 		if cover:
 			if globalvars.BGIMAGE is None:
-				globalvars.screen.fill(globalvars.BGCOLOR, rect=physObject.rect)
-				#globalvars.screen.fill(globalvars.BGCOLOR, rect=my_rect)
+				#globalvars.screen.fill(globalvars.BGCOLOR, rect=physObject.rect)
+				globalvars.screen.fill(globalvars.BGCOLOR, rect=my_rect)
 			else:
-				globalvars.screen.blit(globalvars.BGIMAGE, physObject.rect.topleft, area=physObject.rect)
-				#globalvars.screen.blit(globalvars.BGIMAGE, pos, area=my_rect)
+				#globalvars.screen.blit(globalvars.BGIMAGE, physObject.rect.topleft, area=physObject.rect)
+				globalvars.screen.blit(globalvars.BGIMAGE, pos, area=my_rect)
 		# - Append the sprite's current location rectangle to a list called dirty_rects.
 		dirty_rects.append(physObject.rect)
 	return isOn
@@ -347,10 +347,10 @@ def run():
 
 		#draw BGCOLOR over the screen
 		#TODO as a game effect, it is super neato to temporarily NOT do this.
-		#if globalvars.BGIMAGE is None:
-		#	globalvars.screen.fill(globalvars.BGCOLOR)
-		#else:
-		#	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+		if globalvars.BGIMAGE is None:
+			globalvars.screen.fill(globalvars.BGCOLOR)
+		else:
+			globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 
 		#TODO Put on screen rects in dirty rects
 		for x in globalvars.intangibles: addToDirtyRects(x, offset)
