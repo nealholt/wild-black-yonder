@@ -34,6 +34,38 @@ globalvars.localSystem.generateGalaxy()
 dirty_rects = []
 
 
+#TODO
+if globalvars.BGIMAGE is None:
+	globalvars.screen.fill(globalvars.BGCOLOR)
+else:
+	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+pygame.display.flip()
+
+
+
+#TODO
+def addToDirtyRects(physObject, offset, cover=True):
+	'''Draws over the physical object if it is on the screen.
+	Adds physObject to dirty rects only if physObject is on screen.
+	Returns whether or not physObject is on screen.'''
+	isOn = physObject.isOnScreen(offset)
+	if isOn:
+		x,y = physObject.rect.topleft
+		pos = x - offset[0], y - offset[1]
+		my_rect = (x, y, physObject.rect.width, physObject.rect.height)
+		# - Blit a piece of the background over the sprite's current location, erasing it.
+		if cover:
+			if globalvars.BGIMAGE is None:
+				globalvars.screen.fill(globalvars.BGCOLOR, rect=physObject.rect)
+				#globalvars.screen.fill(globalvars.BGCOLOR, rect=my_rect)
+			else:
+				globalvars.screen.blit(globalvars.BGIMAGE, physObject.rect.topleft, area=physObject.rect)
+				#globalvars.screen.blit(globalvars.BGIMAGE, pos, area=my_rect)
+		# - Append the sprite's current location rectangle to a list called dirty_rects.
+		dirty_rects.append(physObject.rect)
+	return isOn
+
+
 def updateDust(offset):
 	'''For each dust particle,
 	If the dust is too far from the player then move it to a location
@@ -48,28 +80,17 @@ def updateDust(offset):
 			globalvars.dust[i].rect.center = translate(globalvars.player.rect.center,\
 				rotateAngle(globalvars.player.theta, rotation),\
 				magnitude)
-		elif globalvars.dust[i].isOnScreen(offset):
-			#TODO Potential dust efficiency gains.
-			#if not( globalvars.dust[i].rect.right < left or \
-			#globalvars.dust[i].rect.bottom < top or \
-			#globalvars.dust[i].rect.top > top + globalvars.HEIGHT or \
-			#globalvars.dust[i].rect.left > left + globalvars.WIDTH ):
-
+		#elif globalvars.dust[i].isOnScreen(offset):
+		elif addToDirtyRects(globalvars.dust[i], offset):
 			#TODO
-			# - Blit a piece of the background over the sprite's current location, erasing it.
-			#screen.blit(globalvars.BGIMAGE, globalvars.dust[i].rect.topleft,
-			#	area=globalvars.dust[i].rect)
-			# - Append the sprite's current location rectangle to a list called dirty_rects.
-			#dirty_rects.append(globalvars.dust[i].rect)
-			# - Move the sprite.
-			# - Draw the sprite at it's new location.
 			globalvars.dust[i].draw(offset)
 			# - Append the sprite's new location to my dirty_rects list.
-			#dirty_rects.append(globalvars.dust[i].rect)
+			addToDirtyRects(globalvars.dust[i], offset, cover=False)
 
 
 def run():
 	"""Runs the game."""
+	global dirty_rects #TODO
 	fps = globalvars.FPS
 	offsetx = 0
 	offsety = 0
@@ -98,15 +119,16 @@ def run():
 	#The in-round loop (while player is alive):
 	while running:
 		#TODO TESTING
-		#pygame.display.update(dirty_rects)
-		#dirty_rects = []
+		pygame.display.flip()
+		pygame.display.update(dirty_rects)
+		dirty_rects = []
 
 		#Used for calculating actual frames per second in
 		#order to determine when we are dropping frames
 		#so that efficiency improvements can be made.
 		start_time = datetime.datetime.now()
 		#frame maintainance:
-		pygame.display.flip()
+		#TODO pygame.display.flip()
 		#aim for globalvars.FPS frames per second.
 		clock.tick(globalvars.FPS) 
 		fps = max(1, int(clock.get_fps()))
@@ -269,13 +291,6 @@ def run():
 			globalvars.player.shoot(force_shot=True)
 
 
-		#draw BGCOLOR over the screen
-		#TODO as a game effect, it is super neato to temporarily NOT do this.
-		if globalvars.BGIMAGE is None:
-			globalvars.screen.fill(globalvars.BGCOLOR)
-		else:
-			globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
-
 		#Check all collisions
 		collisionHandling()
 
@@ -329,23 +344,46 @@ def run():
 		offsetx = globalvars.player.rect.centerx - globalvars.CENTERX
 		offsety = globalvars.player.rect.centery - globalvars.CENTERY
 		offset = offsetx, offsety
+
+		#draw BGCOLOR over the screen
+		#TODO as a game effect, it is super neato to temporarily NOT do this.
+		if globalvars.BGIMAGE is None:
+			globalvars.screen.fill(globalvars.BGCOLOR)
+		else:
+			globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+
+		#TODO Put on screen rects in dirty rects
+		for x in globalvars.intangibles: addToDirtyRects(x, offset)
+		for x in globalvars.tangibles: addToDirtyRects(x, offset)
+
 		#Finally update all the sprites
 		for x in globalvars.intangibles:
 			#Returning true from update indicates that the intangible died.
 			if x.update(): globalvars.intangibles.remove(x)
 		globalvars.tangibles.update()
 
-		#Draw all the things that are on the screen
-		#Draw intangibles
-		drawThoseOnScreen(globalvars.intangibles, offset)
 		#Update and draw the dust
 		updateDust(offset)
+
+		#TODO Put on screen rects in dirty rects
+		for x in globalvars.intangibles:
+			if addToDirtyRects(x, offset, cover=False):
+				x.draw(offset)
+		for x in globalvars.tangibles:
+			if addToDirtyRects(x, offset, cover=False):
+				x.draw(offset)
+
+		#Draw all the things that are on the screen
+		#Draw intangibles
+		#TODO drawThoseOnScreen(globalvars.intangibles, offset)
 		#Draw tangibles
-		drawThoseOnScreen(globalvars.tangibles.sprites(), offset)
+		#TODO drawThoseOnScreen(globalvars.tangibles.sprites(), offset)
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		if not globalvars.player.isDead():
 			globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
+			#TODO
+			dirty_rects.append(globalvars.player.rect)
 		else:
 			#Make player death kick the player back to a menu where player 
 			#can choose to restart. Display a death screen then. Reset the 
