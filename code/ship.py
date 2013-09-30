@@ -132,7 +132,7 @@ class Ship(physicalObject.PhysicalObject):
 	def update(self):
 		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
 		#for now we assume that every ship is hostile to the player
-		self.setDestination(globalvars.player.rect.center)
+		self.setDestination(globalvars.player_target_lead)
 
 		#Turn towards target
 		self.turnTowards()

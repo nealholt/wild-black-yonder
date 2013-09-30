@@ -295,6 +295,9 @@ def run():
 					else:
 						w.theta = angleFromPosition(w.rect.center, (x,y))
 
+		#Update player's lead target indicator so enemies shoot at a spot just ahead of the player.
+		globalvars.player_target_lead = globalvars.player.getLeadIndicator()
+
 		#update all sprites:
 
 		#First tell the ships what is closest to them

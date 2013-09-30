@@ -1,6 +1,7 @@
 import ship
 import profiles
 from globalvars import hud_helper
+from geometry import translate
 
 class Player(ship.Ship):
 	def __init__(self, image_name):
@@ -31,11 +32,6 @@ class Player(ship.Ship):
 		self.destinationNode = 0
 
 
-	def setDestinationNode(self, destinationid):
-		print 'player destination set to '+str(destinationid)
-		self.destinationNode = destinationid
-
-
 	def parkingBrake(self):
 		'''Change the truth value of park.'''
 		self.parkAtDestination = not self.parkAtDestination
@@ -48,6 +44,14 @@ class Player(ship.Ship):
 		centers on the player.'''
 		self.cooldown() #cooldown all the weapons
 		pass
+
+
+	def getLeadIndicator(self):
+		'''Return the point in space that enemies should shoot 
+		at to hit the player when the player is moving.'''
+		#return self.rect.center
+		return translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
+#Why when self.rect.center is used does this still not work for the capital ship?
 
 
 	def playerUpdate(self):

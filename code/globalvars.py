@@ -38,6 +38,9 @@ screen = None
 #Player must be created before scenario is called.
 player = None
 
+#The point in space just ahead of the player that all the enemies will aim for.
+player_target_lead = (0.0,0.0)
+
 #An object that displays scenario-specific hud stuff.
 hud_helper = None
 

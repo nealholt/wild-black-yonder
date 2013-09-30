@@ -110,7 +110,7 @@ class CapitalShip(physicalObject.PhysicalObject):
 				x=self.rect.centerx,y=self.rect.centery,\
 				xMinAdj=self.collisionwidth/-2, xMaxAdj=self.collisionwidth/2,\
 				yMinAdj=self.collisionheight/-2, yMaxAdj=self.collisionheight/2,\
-				ttl=45))
+				ttl=3))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
 			died = True
