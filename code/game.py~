@@ -362,13 +362,12 @@ def run():
 			if x.update(): globalvars.intangibles.remove(x)
 		globalvars.tangibles.update()
 
-		#Update and draw the dust
-		updateDust(offset)
-
 		#TODO Put on screen rects in dirty rects
 		for x in globalvars.intangibles:
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
+		#Update and draw the dust. This should come after intangibles and before tangibles.
+		updateDust(offset)
 		for x in globalvars.tangibles:
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
