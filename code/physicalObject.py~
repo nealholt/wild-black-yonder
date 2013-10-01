@@ -336,11 +336,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		x,y = self.rect.topleft
 		pos = x - offset[0], y - offset[1]
 		globalvars.screen.blit(self.image, pos)
-		#TODO TESTING. Useful for looking at hit boxes.
-		#Get a copy of the rect to draw at the proper offset position
-		#temprect = pygame.Rect(self.rect.left, self.rect.top, self.rect.width, self.rect.height)
-		#temprect.topleft = pos
-		#pygame.draw.rect(globalvars.screen, white, temprect)
 
 	def drawAt(self, position=(0,0)):
 		pos = position[0] - self.rect.width/2, position[1] - self.rect.height/2

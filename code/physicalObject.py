@@ -15,6 +15,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Sprite class:
 		# http://pygame.org/docs/ref/sprite.html
 		pygame.sprite.Sprite.__init__(self)
+
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		self.useOffset = True
+
 		#There is nothing particularly special about any of the following default values.
 
 		self.color = color

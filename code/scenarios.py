@@ -97,8 +97,8 @@ def testScenario00(seed=0):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Press H to access the help menu',
 		' and learn the controls.'],
-		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+		timeOff=0, timeOn=1, ttl=3.0, fontSize=52)
+	globalvars.intangibles.append(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.BGCOLOR = colors.black
@@ -145,7 +145,7 @@ def asteroids(seed=0):
 		text=['Watch out for asteroids while you',
 			'blow them up to collect gems.'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.append(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -186,7 +186,7 @@ def gemWild(seed=0):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Collect as many gems as you can in '+str(time_limit)+' seconds.'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.append(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -232,7 +232,7 @@ def race(seed=0):
 		'Follow the yellow arrow', 
 		'to the finish as fast as possible.'],
 		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.append(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -262,7 +262,7 @@ def furball(seed=0):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Fight off 3 enemy ships!'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.append(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
@@ -285,7 +285,7 @@ def capitalShipScenario(seed=0):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Blow up the capital ship!'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.append(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
@@ -333,7 +333,7 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['You\'ve arrived in system '+str(seed)],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.append(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)

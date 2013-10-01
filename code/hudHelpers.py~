@@ -186,7 +186,7 @@ class TimeTrialAssistant(Hud):
 		self.finish_reached = False
 
 	def update(self, offset):
-		Hud.update(self, _)
+		Hud.update(self, offset)
 		#Draw a bulls eye (multiple overlapping red and white 
 		#circles centered at the destination point.
 		target = (self.target[0] - offset[0], self.target[1] - offset[1])
@@ -236,7 +236,7 @@ class TimeLimit(Hud):
 		self.finish_reached = False
 
 	def update(self, offset):
-		Hud.update(self, _)
+		Hud.update(self, offset)
 		if self.finish_reached: return True
 
 		#Update elapsed time
@@ -315,7 +315,7 @@ class InfiniteSpaceGenerator(Hud):
 		return
 
 	def update(self, offset):
-		Hud.update(self, _)
+		Hud.update(self, offset)
 		#Display player's location
 		displayUtilities.displayShipLoc(globalvars.player)
 

@@ -147,19 +147,21 @@ class Hud():
         def __init__(self):
 		#List of objects to update. This is where you should put
 		#objects that won't collide with anything but still need updated.
-		self.toUpdate = []
+		#self.toUpdate = []
+		pass
 
 	def setArrowTarget(self, targetid):
 		'''Pre: targetid is a node id.'''
 		print 'cannot set arrow target for this HUD'
 
-	def addObjectToUpdate(self, toUp):
-		self.toUpdate.append(toUp)
+	#def addObjectToUpdate(self, toUp):
+	#	self.toUpdate.append(toUp)
 
 	def update(self, _):
-		for tu in self.toUpdate:
-			if tu.update():
-				self.toUpdate.remove(tu)
+		pass
+		#for tu in self.toUpdate:
+		#	if tu.update():
+		#		self.toUpdate.remove(tu)
 
 
 

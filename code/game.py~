@@ -47,9 +47,19 @@ def addToDirtyRects(physObject, offset, cover=True):
 	Adds physObject to dirty rects only if physObject is on screen.
 	Returns whether or not physObject is on screen.'''
 	isOn = physObject.isOnScreen(offset)
+
+	#if hasattr(physObject, 'isTempText'):
+	#	x,y = physObject.rect.topleft
+	#	pos = x - offset[0], y - offset[1]
+	#	my_rect = (pos[0], pos[1], physObject.rect.width, physObject.rect.height)
+	#	print "TODO TESTING temptext isON="+str(isOn)+" cover="+str(cover)+'. rect '+str(my_rect)
+
 	if isOn:
-		x,y = physObject.rect.topleft
-		pos = x - offset[0], y - offset[1]
+		pos = physObject.rect.topleft
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		if physObject.useOffset:
+			pos = pos[0]-offset[0], pos[1]-offset[1]
 		my_rect = (pos[0], pos[1], physObject.rect.width, physObject.rect.height)
 		# - Blit a piece of the background over the sprite's current location, erasing it.
 		if cover:
@@ -358,9 +368,9 @@ def run():
 		globalvars.tangibles.update()
 
 		#Put on screen rects in dirty rects
-		#for x in globalvars.intangibles:
-		#	if addToDirtyRects(x, offset, cover=False):
-		#		x.draw(offset)
+		for x in globalvars.intangibles:
+			if addToDirtyRects(x, offset, cover=False):
+				x.draw(offset)
 		#Update and draw the dust. This should come after intangibles and before tangibles.
 		#updateDust(offset) #TODO
 		for x in globalvars.tangibles:

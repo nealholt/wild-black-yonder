@@ -88,17 +88,18 @@ def testScenario00(seed=0):
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of bournonite_30percent is '+str(temp.collisionradius)
 
-	temp = objInstances.Explosion(x=100,y=-100)
+	temp = objInstances.Explosion(x=200,y=-150)
 	globalvars.tangibles.add(temp);
 
 	temp = objInstances.HealthKit(-100, 0) #health pack
 	globalvars.tangibles.add(temp)
 	
+	#TODO TESTING
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Press H to access the help menu',
 		' and learn the controls.'],
-		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+		timeOff=0, timeOn=1, ttl=1.0, fontSize=52)
+	globalvars.intangibles.append(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.BGCOLOR = colors.black

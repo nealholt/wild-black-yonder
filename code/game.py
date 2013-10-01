@@ -48,8 +48,11 @@ def addToDirtyRects(physObject, offset, cover=True):
 	Returns whether or not physObject is on screen.'''
 	isOn = physObject.isOnScreen(offset)
 	if isOn:
-		x,y = physObject.rect.topleft
-		pos = x - offset[0], y - offset[1]
+		pos = physObject.rect.topleft
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		if physObject.useOffset:
+			pos = pos[0]-offset[0], pos[1]-offset[1]
 		my_rect = (pos[0], pos[1], physObject.rect.width, physObject.rect.height)
 		# - Blit a piece of the background over the sprite's current location, erasing it.
 		if cover:
