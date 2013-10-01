@@ -64,16 +64,9 @@ def resetDust():
 
 def testScenario00(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
-
 	initializeDust()
-
 	wipeOldScenario(); resetDust()
-
 	globalvars.hud_helper = hudHelpers.PlayerInfoDisplayer()
-
-	globalvars.BGCOLOR = colors.black
-
-	globalvars.BGIMAGE = displayUtilities.image_list['bgjupiter'].convert()
 
 	#Create motionless objects for reference purposes while testing.
 	temp = objInstances.FixedBody(0, -100, image_name='gem') #little crystal
@@ -105,6 +98,8 @@ def testScenario00(seed=0):
 	globalvars.hud_helper.addObjectToUpdate(announcement)
 
 	#Draw the new background and flip the whole screen.
+	globalvars.BGCOLOR = colors.black
+	globalvars.BGIMAGE = displayUtilities.image_list['bgjupiter'].convert()
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 	pygame.display.flip()
 
@@ -149,6 +144,10 @@ def asteroids(seed=0):
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.hud_helper.addObjectToUpdate(announcement)
 
+	#Draw the new background and flip the whole screen.
+	globalvars.screen.fill(globalvars.BGCOLOR)
+	pygame.display.flip()
+
 
 
 def gemWild(seed=0):
@@ -185,6 +184,10 @@ def gemWild(seed=0):
 		text=['Collect as many gems as you can in '+str(time_limit)+' seconds.'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.hud_helper.addObjectToUpdate(announcement)
+
+	#Draw the new background and flip the whole screen.
+	globalvars.screen.fill(globalvars.BGCOLOR)
+	pygame.display.flip()
 
 
 
@@ -228,6 +231,10 @@ def race(seed=0):
 		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
 	globalvars.hud_helper.addObjectToUpdate(announcement)
 
+	#Draw the new background and flip the whole screen.
+	globalvars.screen.fill(globalvars.BGCOLOR)
+	pygame.display.flip()
+
 
 def furball(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
@@ -254,6 +261,9 @@ def furball(seed=0):
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.hud_helper.addObjectToUpdate(announcement)
 
+	#Draw the new background and flip the whole screen.
+	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+	pygame.display.flip()
 
 
 def capitalShipScenario(seed=0):
@@ -274,6 +284,9 @@ def capitalShipScenario(seed=0):
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.hud_helper.addObjectToUpdate(announcement)
 
+	#Draw the new background and flip the whole screen.
+	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+	pygame.display.flip()
 
 
 def goToInfiniteSpace(nodeid):
@@ -319,6 +332,9 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.hud_helper.addObjectToUpdate(announcement)
 
+	#Draw the new background and flip the whole screen.
+	globalvars.screen.fill(globalvars.BGCOLOR)
+	pygame.display.flip()
 
 
 def setDestinationNode(nodeid):
