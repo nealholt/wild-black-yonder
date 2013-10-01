@@ -212,8 +212,6 @@ class Explosion(physicalObject.PhysicalObject):
 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
-			#kill removes the calling sprite from all sprite groups
-			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
 
@@ -230,29 +228,32 @@ class Explosion(physicalObject.PhysicalObject):
 
 
 class Flash(physicalObject.PhysicalObject):
-	'''There are lots of default values for a basic flash, but it can be fun to play with these.
+	'''There are lots of default values for a basic flash. It can be fun to modify these.
 	Time to live is in seconds.'''
-	def __init__(self, x=0, y=0, flashCenterRadius = 20, flashRadiusMin = 20, flashRadiusMax = 50, flashMinTimeToLive = 0.3, flashMaxTimeToLive = 1.1):
+	def __init__(self, x=0, y=0, flashCenterRadius = 20, flashRadiusMin = 20, flashRadiusMax = 50, flashMinTimeToLive = 0.3, flashMaxTimeToLive =0.8):
+
 		y += rd.randint(-flashCenterRadius,flashCenterRadius)
 		x += rd.randint(-flashCenterRadius,flashCenterRadius)
-
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
-
-		self.timeToLive = int(flashMinTimeToLive + rd.random()*(flashMaxTimeToLive-flashMinTimeToLive))*globalvars.FPS
-		self.color = colors.getRandHotColor()
 		self.radius = rd.randint(flashRadiusMin, flashRadiusMax)
+
+		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, 
+			width=self.radius*2, height=self.radius*2)
+
+		self.timeToLive = int((flashMinTimeToLive + 
+			rd.random()*(flashMaxTimeToLive-flashMinTimeToLive)
+			)*globalvars.FPS)
+		self.color = colors.getRandHotColor()
+		self.rect.topleft = (x-self.radius, y-self.radius)
 
 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
-			#kill removes the calling sprite from all sprite groups
-			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
 		return False
 
 	def draw(self, offset):
-		x,y = self.rect.topleft
+		x,y = self.rect.center
 		pos = x - offset[0], y - offset[1]
 		pygame.draw.circle(globalvars.screen, self.color, pos, self.radius, 0)
 
@@ -263,15 +264,13 @@ class Debris(physicalObject.PhysicalObject):
 	def __init__(self, x=0, y=0, minTTL=0.5, maxTTL=1.5, minSpeed=300, maxSpeed=500, minTheta=-179, maxTheta=180):
 		physicalObject.PhysicalObject.__init__(self, \
 			centerx=x, centery=y, width=4, height=4)
-		self.timeToLive = int(minTTL + rd.random()*(maxTTL-minTTL))*globalvars.FPS
+		self.timeToLive = int((minTTL + rd.random()*(maxTTL-minTTL))*globalvars.FPS)
 		self.theta = rd.randint(minTheta, maxTheta)
 		self.speed = float(rd.randint(minSpeed, maxSpeed))/float(globalvars.FPS)
 
  	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
-			#kill removes the calling sprite from all sprite groups
-			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 			return True
 		self.timeToLive -= 1
 		self.move()

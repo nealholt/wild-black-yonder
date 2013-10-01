@@ -42,7 +42,6 @@ def redrawWholeBackground():
 	pygame.display.flip()
 
 
-#TODO
 def addToDirtyRects(physObject, offset, cover=True):
 	'''Draws over the physical object if it is on the screen.
 	Adds physObject to dirty rects only if physObject is on screen.
@@ -115,9 +114,8 @@ def run():
 
 	#The in-round loop (while player is alive):
 	while running:
-		#TODO TESTING
-		#pygame.display.update(dirty_rects)
-		#dirty_rects = []
+		pygame.display.update(dirty_rects)
+		dirty_rects = []
 
 		#Used for calculating actual frames per second in
 		#order to determine when we are dropping frames
@@ -129,14 +127,14 @@ def run():
 		clock.tick(globalvars.FPS) 
 		fps = max(1, int(clock.get_fps()))
 
-		#TODO Put on screen rects in dirty rects
-		#for x in globalvars.intangibles: addToDirtyRects(x, offset)
-		#for x in globalvars.tangibles: addToDirtyRects(x, offset)
+		#Put on screen rects in dirty rects.
+		for x in globalvars.intangibles: addToDirtyRects(x, offset)
+		for x in globalvars.tangibles: addToDirtyRects(x, offset)
 
 		#Skip the rest of this loop until the game is unpaused.
 		if pause:
 			#Write paused in the middle of the screen
-			writeTextToScreen(string='PAUSED', font_size=128,\
+			writeTextToScreen(string='PAUSED', fontSize=128,\
 				pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
 			#Check for another s key press to unpause the game.
 			for event in pygame.event.get():
@@ -348,36 +346,31 @@ def run():
 		offsety = globalvars.player.rect.centery - globalvars.CENTERY
 		offset = offsetx, offsety
 
-		#draw BGCOLOR over the screen
-		#TODO as a game effect, it is super neato to temporarily NOT do this.
-		if globalvars.BGIMAGE is None:
-			globalvars.screen.fill(globalvars.BGCOLOR)
-		else:
-			globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
-
-		#Finally update all the sprites
+		#Update all the sprites
 		for x in globalvars.intangibles:
 			#Returning true from update indicates that the intangible died.
-			if x.update(): globalvars.intangibles.remove(x)
+			if x.update():
+				#Draw over the sprite, kill it, and remove it from intangibles.
+				addToDirtyRects(x, offset, cover=True)
+				#kill removes the calling sprite from all sprite groups
+				x.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
+				globalvars.intangibles.remove(x)
 		globalvars.tangibles.update()
 
-		#TODO Put on screen rects in dirty rects
-		'''for x in globalvars.intangibles:
+		#Put on screen rects in dirty rects
+		#for x in globalvars.intangibles:
+		#	if addToDirtyRects(x, offset, cover=False):
+		#		x.draw(offset)
+		#Update and draw the dust. This should come after intangibles and before tangibles.
+		#updateDust(offset) #TODO
+		for x in globalvars.tangibles:
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
-		#Update and draw the dust. This should come after intangibles and before tangibles.
-		#updateDust(offset)
-		for x in globalvars.tangibles:
-			#addToDirtyRects(x, offset, cover=False)
-			if addToDirtyRects(x, offset, cover=False):
-				x.draw(offset)'''
 
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		if not globalvars.player.isDead():
-			#TODO
-			#addToDirtyRects(globalvars.player, offset, cover=False)
-			globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
+			addToDirtyRects(globalvars.player, offset, cover=False)
 		else:
 			#Make player death kick the player back to a menu where player 
 			#can choose to restart. Display a death screen then. Reset the 

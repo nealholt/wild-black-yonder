@@ -134,7 +134,7 @@ def run():
 		#Skip the rest of this loop until the game is unpaused.
 		if pause:
 			#Write paused in the middle of the screen
-			writeTextToScreen(string='PAUSED', font_size=128,\
+			writeTextToScreen(string='PAUSED', fontSize=128,\
 				pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
 			#Check for another s key press to unpause the game.
 			for event in pygame.event.get():
@@ -349,7 +349,12 @@ def run():
 		#Update all the sprites
 		for x in globalvars.intangibles:
 			#Returning true from update indicates that the intangible died.
-			if x.update(): globalvars.intangibles.remove(x)
+			if x.update():
+				#Draw over the sprite, kill it, and remove it from intangibles.
+				addToDirtyRects(x, offset, cover=True)
+				#kill removes the calling sprite from all sprite groups
+				x.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
+				globalvars.intangibles.remove(x)
 		globalvars.tangibles.update()
 
 		#Put on screen rects in dirty rects
@@ -359,7 +364,6 @@ def run():
 		#Update and draw the dust. This should come after intangibles and before tangibles.
 		#updateDust(offset) #TODO
 		for x in globalvars.tangibles:
-			#addToDirtyRects(x, offset, cover=False)
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
 

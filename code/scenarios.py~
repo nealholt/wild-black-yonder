@@ -88,6 +88,9 @@ def testScenario00(seed=0):
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of bournonite_30percent is '+str(temp.collisionradius)
 
+	temp = objInstances.Explosion(x=100,y=-100)
+	globalvars.tangibles.add(temp);
+
 	temp = objInstances.HealthKit(-100, 0) #health pack
 	globalvars.tangibles.add(temp)
 	
@@ -285,7 +288,7 @@ def capitalShipScenario(seed=0):
 	globalvars.hud_helper.addObjectToUpdate(announcement)
 
 	#Draw the new background and flip the whole screen.
-	globalvars.screen.fill(globalvars.BGCOLOR)
+	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 	pygame.display.flip()
 
 

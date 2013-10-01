@@ -50,8 +50,8 @@ arena = 0
 #Display menus and the like on the panel.
 panel = None
 
-#How many frames to continue displaying while the player is dead before kicking him back to the restart menu.
-deathcountdown = 15
+#How many seconds to continue displaying while the player is dead before kicking him back to the restart menu.
+deathcountdown = 3 * FPS
 
 #Local system of nodes
 localSystem = None

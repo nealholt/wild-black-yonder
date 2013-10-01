@@ -88,6 +88,9 @@ def testScenario00(seed=0):
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 	#print 'Radius of bournonite_30percent is '+str(temp.collisionradius)
 
+	temp = objInstances.Explosion(x=200,y=-150)
+	globalvars.tangibles.add(temp);
+
 	temp = objInstances.HealthKit(-100, 0) #health pack
 	globalvars.tangibles.add(temp)
 	
