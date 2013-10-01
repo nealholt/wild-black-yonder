@@ -34,13 +34,12 @@ globalvars.localSystem.generateGalaxy()
 dirty_rects = []
 
 
-#TODO
-if globalvars.BGIMAGE is None:
-	globalvars.screen.fill(globalvars.BGCOLOR)
-else:
-	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
-pygame.display.flip()
-
+def redrawWholeBackground():
+	if globalvars.BGIMAGE is None:
+		globalvars.screen.fill(globalvars.BGCOLOR)
+	else:
+		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+	pygame.display.flip()
 
 
 #TODO
@@ -88,7 +87,7 @@ def updateDust(offset):
 
 def run():
 	"""Runs the game."""
-	global dirty_rects #TODO
+	global dirty_rects
 	fps = globalvars.FPS
 	offsetx = 0
 	offsety = 0
@@ -117,19 +116,22 @@ def run():
 	#The in-round loop (while player is alive):
 	while running:
 		#TODO TESTING
-		pygame.display.flip()
-		pygame.display.update(dirty_rects)
-		dirty_rects = []
+		#pygame.display.update(dirty_rects)
+		#dirty_rects = []
 
 		#Used for calculating actual frames per second in
 		#order to determine when we are dropping frames
 		#so that efficiency improvements can be made.
 		start_time = datetime.datetime.now()
 		#frame maintainance:
-		#TODO pygame.display.flip()
+		pygame.display.flip()
 		#aim for globalvars.FPS frames per second.
 		clock.tick(globalvars.FPS) 
 		fps = max(1, int(clock.get_fps()))
+
+		#TODO Put on screen rects in dirty rects
+		#for x in globalvars.intangibles: addToDirtyRects(x, offset)
+		#for x in globalvars.tangibles: addToDirtyRects(x, offset)
 
 		#Skip the rest of this loop until the game is unpaused.
 		if pause:
@@ -146,6 +148,7 @@ def run():
 		#Display the panel
 		if not globalvars.panel is None:
 			globalvars.panel.draw()
+			pygame.display.flip()
 			#Check for another key press to remove the panel.
 			for event in pygame.event.get():
 				#Check for event m key, n key, or escape key being 
@@ -153,11 +156,13 @@ def run():
 				if event.type == pygame.KEYDOWN and \
 				(event.key == 109 or event.key == 110 or event.key == 27):
 					globalvars.panel = None
+					redrawWholeBackground()
 					break
 				#Panel event handeling can make the panel itself None so we have 
 				#to check if the panel has become None for every event. If the
 				#panel has become None we break and ignore further input events.
 				elif globalvars.panel is None:
+					redrawWholeBackground()
 					break
 				#Pass all other events to the panel
 				else:
@@ -345,14 +350,10 @@ def run():
 
 		#draw BGCOLOR over the screen
 		#TODO as a game effect, it is super neato to temporarily NOT do this.
-		if globalvars.BGIMAGE is None:
-			globalvars.screen.fill(globalvars.BGCOLOR)
-		else:
-			globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
-
-		#TODO Put on screen rects in dirty rects
-		for x in globalvars.intangibles: addToDirtyRects(x, offset)
-		for x in globalvars.tangibles: addToDirtyRects(x, offset)
+		#if globalvars.BGIMAGE is None:
+		#	globalvars.screen.fill(globalvars.BGCOLOR)
+		#else:
+		#	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 
 		#Finally update all the sprites
 		for x in globalvars.intangibles:
@@ -365,8 +366,9 @@ def run():
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
 		#Update and draw the dust. This should come after intangibles and before tangibles.
-		updateDust(offset)
+		#updateDust(offset)
 		for x in globalvars.tangibles:
+			#addToDirtyRects(x, offset, cover=False)
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
 
@@ -378,9 +380,9 @@ def run():
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		if not globalvars.player.isDead():
-			globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 			#TODO
-			dirty_rects.append(globalvars.player.rect)
+			addToDirtyRects(globalvars.player, offset, cover=False)
+			#globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 		else:
 			#Make player death kick the player back to a menu where player 
 			#can choose to restart. Display a death screen then. Reset the 

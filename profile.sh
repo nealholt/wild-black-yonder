@@ -9,5 +9,5 @@ python profiling/viewProfiling.py profiling/setClosestSprites.profile > profilin
 python profiling/viewProfiling.py profiling/updateDust.profile > profiling/updateDust.txt
 python profiling/viewProfiling.py profiling/updateHudHelper.profile > profiling/updateHudHelper.txt
 python profiling/viewProfiling.py profiling/updateTangibles.profile > profiling/updateTangibles.txt
-python profiling/viewProfiling.py profiling/profiling/game.run.profile > profiling/game_run.txt #This is the most important one.
+python profiling/viewProfiling.py profiling/game.run.profile > profiling/game_run.txt #This is the most important one.
 
