@@ -3,10 +3,12 @@ import globalvars
 from colors import *
 
 def writeTextToScreen(string='', fontSize=12, color=white, pos=(0,0)):
+	'''Returns the rectangle of the given text.'''
 	font = pygame.font.Font(None, fontSize)
 	text = font.render(string, 1, color)
 	textpos = text.get_rect(center=pos)
 	globalvars.screen.blit(text, textpos)
+	return textpos
 
 
 class TemporaryText():
@@ -22,6 +24,7 @@ class TemporaryText():
 		self.ttl = ttl * globalvars.FPS
 		self.fontSize = fontSize
 		self.color = color
+		self.rect = None
 		#Attributes for flashing:
 		self.showing = True
 		self.countdown = self.timeOn
@@ -39,7 +42,7 @@ class TemporaryText():
 			for i in range(len(self.text)):
 				x,y = self.pos
 				y += i*self.fontSize
-				writeTextToScreen(string=self.text[i],\
+				self.rect = writeTextToScreen(string=self.text[i],\
 					fontSize=self.fontSize,\
 					color=self.color, pos=(x,y))
 			if self.timeOff > 0:

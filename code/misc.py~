@@ -7,6 +7,7 @@ def writeTextToScreen(string='', fontSize=12, color=white, pos=(0,0)):
 	text = font.render(string, 1, color)
 	textpos = text.get_rect(center=pos)
 	globalvars.screen.blit(text, textpos)
+	return textpos
 
 
 class TemporaryText():
@@ -14,9 +15,9 @@ class TemporaryText():
 	text should flash and how fast it should do so in seconds, and the 
 	time for the text to live in seconds.
 	Font size and color can also be specified'''
-        def __init__(self, x=0, y=0, text='', timeOn=0, timeOff=0, ttl=0, fontSize=12, color=white):
+        def __init__(self, x=0, y=0, text=None, timeOn=0, timeOff=0, ttl=0, fontSize=12, color=white):
 		self.pos = (x,y)
-		self.text = text
+		self.text = text #An array of text to print one on top of the next.
 		self.timeOn = timeOn * globalvars.FPS
 		self.timeOff = timeOff * globalvars.FPS
 		self.ttl = ttl * globalvars.FPS
@@ -36,8 +37,12 @@ class TemporaryText():
 				self.countdown = self.timeOn
 			self.showing = not self.showing
 		if self.showing:
-			writeTextToScreen(string=self.text, fontSize=self.fontSize,\
-				color=self.color, pos=self.pos)
+			for i in range(len(self.text)):
+				x,y = self.pos
+				y += i*self.fontSize
+				writeTextToScreen(string=self.text[i],\
+					fontSize=self.fontSize,\
+					color=self.color, pos=(x,y))
 			if self.timeOff > 0:
 				self.countdown -= 1
 		else:
