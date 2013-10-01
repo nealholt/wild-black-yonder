@@ -65,9 +65,9 @@ def resetDust():
 def testScenario00(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
-	#TODO initializeDust()
+	initializeDust()
 
-	wipeOldScenario(); #TODO resetDust()
+	wipeOldScenario(); resetDust()
 
 	globalvars.hud_helper = hudHelpers.PlayerInfoDisplayer()
 
@@ -78,8 +78,6 @@ def testScenario00(seed=0):
 	#Create motionless objects for reference purposes while testing.
 	temp = objInstances.FixedBody(0, -100, image_name='gem') #little crystal
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#TODO
-	'''
 	#print 'Radius of TyDfN_tiny is '+str(temp.collisionradius)
 	temp = objInstances.FixedBody(200, 200, image_name='bigrock') #largest asteroid
 	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
@@ -105,7 +103,7 @@ def testScenario00(seed=0):
 		' and learn the controls.'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.hud_helper.addObjectToUpdate(announcement)
-	'''
+
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 	pygame.display.flip()

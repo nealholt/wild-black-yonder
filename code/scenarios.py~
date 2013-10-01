@@ -106,6 +106,7 @@ def testScenario00(seed=0):
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.hud_helper.addObjectToUpdate(announcement)
 	'''
+	#Draw the new background and flip the whole screen.
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 	pygame.display.flip()
 

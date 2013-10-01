@@ -153,8 +153,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		1/4	1
 		1/2	3/4
 		3/4	1/2
-		1	1/4
-		'''
+		1	1/4'''
 		return max((-self.turnRateDecay*\
 				abs((self.speed / self.maxSpeed) - \
 				self.maxTurnSpeed) + 1)\

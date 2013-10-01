@@ -350,10 +350,10 @@ def run():
 
 		#draw BGCOLOR over the screen
 		#TODO as a game effect, it is super neato to temporarily NOT do this.
-		#if globalvars.BGIMAGE is None:
-		#	globalvars.screen.fill(globalvars.BGCOLOR)
-		#else:
-		#	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+		if globalvars.BGIMAGE is None:
+			globalvars.screen.fill(globalvars.BGCOLOR)
+		else:
+			globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 
 		#Finally update all the sprites
 		for x in globalvars.intangibles:
@@ -362,7 +362,7 @@ def run():
 		globalvars.tangibles.update()
 
 		#TODO Put on screen rects in dirty rects
-		for x in globalvars.intangibles:
+		'''for x in globalvars.intangibles:
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
 		#Update and draw the dust. This should come after intangibles and before tangibles.
@@ -370,19 +370,14 @@ def run():
 		for x in globalvars.tangibles:
 			#addToDirtyRects(x, offset, cover=False)
 			if addToDirtyRects(x, offset, cover=False):
-				x.draw(offset)
+				x.draw(offset)'''
 
-		#Draw all the things that are on the screen
-		#Draw intangibles
-		#TODO drawThoseOnScreen(globalvars.intangibles, offset)
-		#Draw tangibles
-		#TODO drawThoseOnScreen(globalvars.tangibles.sprites(), offset)
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		if not globalvars.player.isDead():
 			#TODO
-			addToDirtyRects(globalvars.player, offset, cover=False)
-			#globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
+			#addToDirtyRects(globalvars.player, offset, cover=False)
+			globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 		else:
 			#Make player death kick the player back to a menu where player 
 			#can choose to restart. Display a death screen then. Reset the 
@@ -402,31 +397,6 @@ def run():
 			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
 	#end round loop (until gameover)
 #end game loop
-
-
-
-def drawThoseOnScreen(sprite_list, offset):
-	'''Takes a list of pygame sprites and the top left coordinates of the screen 
-	and draws only those sprites that are visible on screen.
-	I tested (see "y key" above) with and without checking whether or not each
-	sprite is on the screen before drawing it and I found checking to be more
-	efficient in multiple scenarios. The gain is less than I expected and
-	a major inefficiency in python seems to be function calls, making me wonder 
-	how important it is to wrap this into the run method, but I'm going to avoid 
-	that for now.'''
-	#draw_count = 0 #TESTING
-	left, top = offset
-	for sp in sprite_list:
-		#If the sprite is on the screen, then draw it.
-		if sp.isOnScreen(offset): sp.draw(offset)
-			#draw_count += 1 #TESTING
-	#print str(draw_count)+' objects on screen.' #TESTING
-
-
-def drawThoseOnScreen2(sprite_list, offset):
-	'''Presumably slower version of the above method used for testing.'''
-	left, top = offset
-	for sp in sprite_list: sp.draw(offset)
 
 
 
@@ -516,12 +486,9 @@ def collisionHandling():
 
 def profileEverything(offset):
 	import cProfile
-	cProfile.runctx('for _ in range(10000): drawThoseOnScreen(globalvars.tangibles.sprites(), offset)', globals(),locals(), 'profiling/drawTangibles.profile')
-	cProfile.runctx('for _ in range(10000): drawThoseOnScreen2(globalvars.tangibles.sprites(), offset)', globals(),locals(), 'profiling/drawTangibles2.profile')
 	cProfile.runctx('for _ in range(10000): updateDust(offset)', globals(),locals(), 'profiling/updateDust.profile')
 	cProfile.runctx('for _ in range(10000): collisionHandling()', globals(),locals(), 'profiling/collisionHandling.profile')
 	cProfile.runctx('for _ in range(10000): setClosestSprites()', globals(),locals(), 'profiling/setClosestSprites.profile')
-	cProfile.runctx('for _ in range(10000): drawThoseOnScreen(globalvars.intangibles, offset)', globals(),locals(), 'profiling/drawIntangibles.profile')
 	cProfile.runctx('for _ in range(10000): globalvars.tangibles.update()', globals(),locals(), 'profiling/updateTangibles.profile')
 	cProfile.runctx('for _ in range(10000): globalvars.hud_helper.update(offset)', globals(),locals(), 'profiling/updateHudHelper.profile')
 

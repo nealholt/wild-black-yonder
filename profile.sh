@@ -1,8 +1,5 @@
 
 python profiling/viewProfiling.py profiling/collisionHandling.profile > profiling/collisionHandling.txt
-python profiling/viewProfiling.py profiling/drawIntangibles.profile > profiling/drawIntangibles.txt
-python profiling/viewProfiling.py profiling/drawTangibles2.profile > profiling/drawTangibles2.txt
-python profiling/viewProfiling.py profiling/drawTangibles.profile > profiling/drawTangibles.txt
 python profiling/viewProfiling.py profiling/getObstacles.profile > profiling/getObstacles.txt
 python profiling/viewProfiling.py profiling/populateSpace.profile > profiling/populateSpace.txt
 python profiling/viewProfiling.py profiling/setClosestSprites.profile > profiling/setClosestSprites.txt
