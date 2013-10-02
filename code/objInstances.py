@@ -4,7 +4,7 @@ import pygame
 import colors
 from geometry import translate, distance, rotateAngle
 import globalvars
-from misc import writeTextToScreen
+from displayUtilities import writeTextToScreen
 
 class Bullet(physicalObject.PhysicalObject):
 

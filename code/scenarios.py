@@ -11,7 +11,6 @@ import globalvars
 import math
 import player
 import hudHelpers
-#import misc #TODO
 
 
 def wipeOldScenario():
@@ -62,7 +61,9 @@ def testScenario00(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()
-	globalvars.hud_helper = hudHelpers.PlayerInfoDisplayer()
+	#TODO: temporary HUD that does nothing. You want to move the code away from this.
+	globalvars.hud_helper = hudHelpers.Hud()
+	#Display player location and speed info with the following:
 	globalvars.intangibles.add(displayUtilities.ShipStatsText())
 
 	#Create motionless objects for reference purposes while testing.
@@ -109,7 +110,11 @@ def asteroids(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()
-	globalvars.hud_helper = hudHelpers.PlayerInfoDisplayer()
+	#TODO: temporary HUD that does nothing. You want to move the code away from this.
+	globalvars.hud_helper = hudHelpers.Hud()
+	#Display player location and speed info with the following:
+	globalvars.intangibles.add(displayUtilities.ShipStatsText())
+
 	rocks = ['bigrock','medrock','smallrock','gold','silver']
 	#Reset the player's location to 0,0 and his speed to zero
 	globalvars.player.loc = (0.0, 0.0)
@@ -125,7 +130,9 @@ def asteroids(seed=0):
 	#of the arena
 	temp = objInstances.FixedCircle(x=0, y=0, radius=globalvars.arena, color=colors.black)
 	#Insert at the beginning of intangibles so it doesn't draw over top of the health bars.
-	globalvars.intangibles.insert(0,temp)
+	#globalvars.intangibles.insert(0,temp)
+	#TODO now that intangibles is a sprite group, you may need some other way of prioritizing what gets drawn in what order. SHIT now I remember why intangibles was a list and not a sprite group.
+	globalvars.intangibles.add(temp)
 	#Make 10 rocks centered around, but not on the player
 	for _ in range(10):
 		#Select a rock type
@@ -168,7 +175,10 @@ def gemWild(seed=0):
 	#of the arena
 	temp = objInstances.FixedCircle(x=0, y=0, radius=globalvars.arena, color=colors.black)
 	#Insert at the beginning of intangibles so it doesn't draw over top of the health bars.
-	globalvars.intangibles.insert(0,temp)
+	#globalvars.intangibles.insert(0,temp)
+	#TODO now that intangibles is a sprite group, you may need some other way of prioritizing what gets drawn in what order. SHIT now I remember why intangibles was a list and not a sprite group.
+	globalvars.intangibles.add(temp)
+
 	#Make 50 crystals centered around, but not on the player
 	for _ in range(50):
 		mindist = 200
@@ -203,7 +213,12 @@ def race(seed=0):
 	globalvars.player.speed = 0.0
 	globalvars.player.targetSpeed = 0.0
 	finish_line = (6000, 0)
-	globalvars.hud_helper = hudHelpers.TimeTrialAssistant(finish_line)
+
+	#TODO I'm just testing initially here. Ultimately I want to get rid of HUDs altogether and replace them with intangibles. Also, however, the following will not display the arrow or finish line which are important.
+	#globalvars.hud_helper = hudHelpers.TimeTrialAssistant(finish_line)
+	globalvars.hud_helper = hudHelpers.Hud()
+	#Display timer with the following:
+	globalvars.intangibles.add(displayUtilities.TimerDisplay(finish_line))
 
 	#determine what sorts of obstacles to put on the race course.
 	numbers = [0 for _ in range(hudHelpers.health+1)]
@@ -240,7 +255,10 @@ def furball(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()
-	globalvars.hud_helper = hudHelpers.PlayerInfoDisplayer()
+	#TODO: temporary HUD that does nothing. You want to move the code away from this.
+	globalvars.hud_helper = hudHelpers.Hud()
+	#Display player location and speed info with the following:
+	globalvars.intangibles.add(displayUtilities.ShipStatsText())
 
 	globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
 
@@ -270,7 +288,10 @@ def capitalShipScenario(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()
-	globalvars.hud_helper = hudHelpers.PlayerInfoDisplayer()
+	#TODO: temporary HUD that does nothing. You want to move the code away from this.
+	globalvars.hud_helper = hudHelpers.Hud()
+	#Display player location and speed info with the following:
+	globalvars.intangibles.add(displayUtilities.ShipStatsText())
 
 	globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
 

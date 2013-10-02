@@ -292,7 +292,7 @@ class Dust(physicalObject.PhysicalObject):
 		Otherwise, just draw the dust with the update function.'''
 		#left, top = offset
 		dist = distance(self.rect.center, globalvars.player.rect.center)
-		if dist > globalvars.CENTERX:
+		if dist > globalvars.WIDTH:
 			magnitude = rd.randint(globalvars.CENTERX, globalvars.WIDTH)
 			rotation = rd.randint(-70, 70)
 			self.rect.center = translate(globalvars.player.rect.center,\

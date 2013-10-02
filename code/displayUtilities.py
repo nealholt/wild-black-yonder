@@ -203,3 +203,42 @@ class ShipStatsText(pygame.sprite.Sprite):
 
 	def isOnScreen(self, _): return True
 
+
+
+class TimerDisplay(pygame.sprite.Sprite):
+	'''Counts down time remaining in race.'''
+        def __init__(self, target, fontSize=36):
+		pygame.sprite.Sprite.__init__(self)
+		self.is_a = globalvars.OTHER
+		self.font = pygame.font.Font(None, fontSize)
+		self.target = target #A location
+		#Track time in seconds
+		self.start_time = time.time()
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		self.useOffset = False
+		#Create the rect and draw once to properly initialize it.
+		self.rect = None
+		self.draw((0,0))
+
+	def update(self):
+		'''Return true to be removed from intangibles. Return False otherwise.'''
+		return False
+
+	def draw(self, _):
+		#elapsed time
+		elapsed = time.time() - self.start_time
+		#Distance to target
+		dtt = distance(globalvars.player.rect.center, self.target)
+		#Write the elapsed time to the top of the screen.
+		string = 'Time: '+formatTime(elapsed)+\
+				'. Distance: '+trunc(dtt,0)
+		text = self.font.render(string, 1, colors.white)
+		self.rect = text.get_rect()
+		self.rect.topleft = (250,10)
+		globalvars.screen.blit(text, self.rect.topleft)
+
+	def isOnScreen(self, _): return True
+
+
+

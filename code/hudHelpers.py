@@ -164,18 +164,6 @@ class Hud():
 
 
 
-class PlayerInfoDisplayer(Hud):
-	'''I have a hunch that this is not the best way to do this,
-	but it will work for now.
-	Displays player information at the top of the screen.'''
-        def __init__(self):
-		Hud.__init__(self)
-
-	def update(self, _):
-		Hud.update(self, _)
-		#displayUtilities.displayShipLoc(globalvars.player)
-
-
 class TimeTrialAssistant(Hud):
 	'''Displays an arrow pointing towards the destination
 	and counts down time remaining in race.'''
