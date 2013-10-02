@@ -14,7 +14,7 @@ import colors
 import testFunctions as test
 import menus
 from geometry import distance, angleFromPosition, translate, rotateAngle
-from misc import writeTextToScreen
+from displayUtilities import writeTextToScreen
 import datetime #Use for testing efficiency
 import nodeManager
 
@@ -367,6 +367,11 @@ def run():
 		if float(time_lapse.microseconds)/1000000. > (2.0/globalvars.FPS):
 			print 'Warning: frames dropping.'
 			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
+			print 'Sizes of Sprite Groups follows:'
+			print 'Tangibles: '+str(len(globalvars.tangibles))
+			print 'Intangibles: '+str(len(globalvars.intangibles))
+			print 'Whiskerables: '+str(len(globalvars.whiskerables))
+			print
 	#end round loop (until gameover)
 #end game loop
 

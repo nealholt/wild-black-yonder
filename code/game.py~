@@ -335,7 +335,6 @@ def run():
 				addToDirtyRects(x, offset, cover=True)
 				#kill removes the calling sprite from all sprite groups
 				x.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
-				globalvars.intangibles.remove(x)
 		globalvars.tangibles.update()
 
 		#Put on screen rects in dirty rects
@@ -368,6 +367,11 @@ def run():
 		if float(time_lapse.microseconds)/1000000. > (2.0/globalvars.FPS):
 			print 'Warning: frames dropping.'
 			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
+			print 'Sizes of Sprite Groups follows:'
+			print 'Tangibles: '+str(len(globalvars.tangibles))
+			print 'Intangibles: '+str(len(globalvars.intangibles))
+			print 'Whiskerables: '+str(len(globalvars.whiskerables))
+			print
 	#end round loop (until gameover)
 #end game loop
 

@@ -3,7 +3,6 @@ import pygame
 import colors
 import time
 import globalvars
-from misc import writeTextToScreen
 import displayUtilities
 import random as rd
 from geometry import getCoordsNearLoc, distance
@@ -174,7 +173,7 @@ class PlayerInfoDisplayer(Hud):
 
 	def update(self, _):
 		Hud.update(self, _)
-		displayUtilities.displayShipLoc(globalvars.player)
+		#displayUtilities.displayShipLoc(globalvars.player)
 
 
 class TimeTrialAssistant(Hud):
@@ -208,7 +207,7 @@ class TimeTrialAssistant(Hud):
 		#Write the elapsed time to the top of the screen.
 		string = 'Time: '+displayUtilities.formatTime(elapsed)+\
 				'. Distance: '+displayUtilities.trunc(dtt,0)
-		writeTextToScreen(string=string, fontSize=36,\
+		displayUtilities.writeTextToScreen(string=string, fontSize=36,\
 				color=colors.white, pos=(400,10))
 
 		#Only display the guiding arrow if player is too far away to see the target
@@ -218,7 +217,7 @@ class TimeTrialAssistant(Hud):
 		if dtt < 40:
 			#If so, end the race.
 			self.finish_reached = True
-			writeTextToScreen(string='TIME TRIAL COMPLETED',\
+			displayUtilities.writeTextToScreen(string='TIME TRIAL COMPLETED',\
 				fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
 			pygame.display.flip()
 			time.sleep(2) #Sleep for 2 seconds.
@@ -246,14 +245,14 @@ class TimeLimit(Hud):
 		#Write the elapsed time to the top of the screen.
 		string = 'Time: '+displayUtilities.formatTime(elapsed)+\
 			' Points:'+str(self.points)
-		writeTextToScreen(string=string, fontSize=36,\
+		displayUtilities.writeTextToScreen(string=string, fontSize=36,\
 				       color=colors.white, pos=(400,10))
 
 		#Check to see if time has run out.
 		if elapsed >= self.time_limit:
 			#If so, end the scenario.
 			self.finish_reached = True
-			writeTextToScreen(string='GEM WILD COMPLETED',\
+			displayUtilities.writeTextToScreen(string='GEM WILD COMPLETED',\
 				fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
 			pygame.display.flip()
 			time.sleep(2) #Sleep for 2 seconds.
