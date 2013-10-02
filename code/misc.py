@@ -11,12 +11,14 @@ def writeTextToScreen(string='', fontSize=12, color=white, pos=(0,0)):
 	return textpos
 
 
-class TemporaryText():
+class TemporaryText(pygame.sprite.Sprite):
 	'''Specify the position of the text, contents, whether or not the
 	text should flash and how fast it should do so in seconds, and the 
 	time for the text to live in seconds.
 	Font size and color can also be specified'''
         def __init__(self, x=0, y=0, text=None, timeOn=0, timeOff=0, ttl=0, fontSize=12, color=white):
+		pygame.sprite.Sprite.__init__(self)
+		self.is_a = globalvars.OTHER
 		font = pygame.font.Font(None, fontSize)
 		self.texts = []
 		self.positions = []

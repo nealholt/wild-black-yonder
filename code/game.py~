@@ -20,7 +20,7 @@ import nodeManager
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
-globalvars.intangibles = []
+globalvars.intangibles = pygame.sprite.Group()
 #This last group will contain any sprites that will tickle whiskers
 globalvars.whiskerables = pygame.sprite.Group()
 
@@ -47,13 +47,6 @@ def addToDirtyRects(physObject, offset, cover=True):
 	Adds physObject to dirty rects only if physObject is on screen.
 	Returns whether or not physObject is on screen.'''
 	isOn = physObject.isOnScreen(offset)
-
-	#if hasattr(physObject, 'isTempText'):
-	#	x,y = physObject.rect.topleft
-	#	pos = x - offset[0], y - offset[1]
-	#	my_rect = (pos[0], pos[1], physObject.rect.width, physObject.rect.height)
-	#	print "TODO TESTING temptext isON="+str(isOn)+" cover="+str(cover)+'. rect '+str(my_rect)
-
 	if isOn:
 		pos = physObject.rect.topleft
 		#Whether to offset this object's location based on the camera.
@@ -70,28 +63,6 @@ def addToDirtyRects(physObject, offset, cover=True):
 		# - Append the sprite's current location rectangle to a list called dirty_rects.
 		dirty_rects.append(my_rect)
 	return isOn
-
-
-def updateDust(offset):
-	'''For each dust particle,
-	If the dust is too far from the player then move it to a location
-	offscreen, but in the direction that the player is moving.
-	Otherwise, just draw the dust with the update function.'''
-	#left, top = offset
-	for i in xrange(len(globalvars.dust)):
-		dist = distance(globalvars.dust[i].rect.center, globalvars.player.rect.center)
-		if dist > globalvars.WIDTH:
-			magnitude = rd.randint(globalvars.WIDTH/2, globalvars.WIDTH)
-			rotation = rd.randint(-70, 70)
-			globalvars.dust[i].rect.center = translate(globalvars.player.rect.center,\
-				rotateAngle(globalvars.player.theta, rotation),\
-				magnitude)
-		#elif globalvars.dust[i].isOnScreen(offset):
-		elif addToDirtyRects(globalvars.dust[i], offset):
-			#TODO
-			globalvars.dust[i].draw(offset)
-			# - Append the sprite's new location to my dirty_rects list.
-			addToDirtyRects(globalvars.dust[i], offset, cover=False)
 
 
 def run():
@@ -371,8 +342,7 @@ def run():
 		for x in globalvars.intangibles:
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
-		#Update and draw the dust. This should come after intangibles and before tangibles.
-		#updateDust(offset) #TODO
+		#Update the tangibles.
 		for x in globalvars.tangibles:
 			if addToDirtyRects(x, offset, cover=False):
 				x.draw(offset)
@@ -489,7 +459,6 @@ def collisionHandling():
 
 def profileEverything(offset):
 	import cProfile
-	cProfile.runctx('for _ in range(10000): updateDust(offset)', globals(),locals(), 'profiling/updateDust.profile')
 	cProfile.runctx('for _ in range(10000): collisionHandling()', globals(),locals(), 'profiling/collisionHandling.profile')
 	cProfile.runctx('for _ in range(10000): setClosestSprites()', globals(),locals(), 'profiling/setClosestSprites.profile')
 	cProfile.runctx('for _ in range(10000): globalvars.tangibles.update()', globals(),locals(), 'profiling/updateTangibles.profile')

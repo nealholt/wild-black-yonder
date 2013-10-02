@@ -2,7 +2,7 @@ import physicalObject
 import random as rd
 import pygame
 import colors
-from geometry import translate, distance
+from geometry import translate, distance, rotateAngle
 import globalvars
 from misc import writeTextToScreen
 
@@ -140,7 +140,7 @@ class Missile(physicalObject.PhysicalObject):
 		#For now, shoot through health packs with no effect.
 		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.HEALTH:
 			#explode
-			globalvars.intangibles.append(Explosion(\
+			globalvars.intangibles.add(Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			died = True
 			#kill removes the calling sprite from all sprite groups
@@ -187,7 +187,7 @@ class Mine(physicalObject.PhysicalObject):
 		died = False
 		if self.explodeAfter == 0 or other_sprite.is_a == globalvars.BULLET:
 			#explode
-			globalvars.intangibles.append(Explosion(\
+			globalvars.intangibles.add(Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			died = True
 			#kill removes the calling sprite from all sprite groups
@@ -218,8 +218,8 @@ class Explosion(physicalObject.PhysicalObject):
 		x = rd.randint(self.xMinAdj, self.xMaxAdj) + self.rect.centerx
 		y = rd.randint(self.yMinAdj, self.yMaxAdj) + self.rect.centery
 
-		globalvars.intangibles.append(Flash(x=x, y=y))
-		globalvars.intangibles.append(Debris(x=x, y=y))
+		globalvars.intangibles.add(Flash(x=x, y=y))
+		globalvars.intangibles.add(Debris(x=x, y=y))
 		return False
 
 	def draw(self, offset):
@@ -277,6 +277,29 @@ class Debris(physicalObject.PhysicalObject):
 		return False
 
 
+class Dust(physicalObject.PhysicalObject):
+	'''Useful for giving player a sense of motion.'''
+	def __init__(self, x=0, y=0, width=2, height=2, image_name=None, color=colors.white):
+		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
+						width=width, height=height, \
+						image_name=image_name, color=color)
+		self.is_a = globalvars.DUST
+
+	def update(self):
+		'''For each dust particle,
+		If the dust is too far from the player then move it to a location
+		offscreen, but in the direction that the player is moving.
+		Otherwise, just draw the dust with the update function.'''
+		#left, top = offset
+		dist = distance(self.rect.center, globalvars.player.rect.center)
+		if dist > globalvars.WIDTH:
+			magnitude = rd.randint(globalvars.CENTERX, globalvars.WIDTH)
+			rotation = rd.randint(-70, 70)
+			self.rect.center = translate(globalvars.player.rect.center,\
+				rotateAngle(globalvars.player.theta, rotation),\
+				magnitude)
+
+
 class FixedBody(physicalObject.PhysicalObject):
 	'''A motionless body created for testing purposes.'''
 	def __init__(self, x=0, y=0, width=40, height=40, image_name=None, color=colors.white):
@@ -323,7 +346,7 @@ def splitRock(image_name, centerx=0, centery=0):
 	elif new_image == 'debris':
 		for _ in range(count):
 			temp = Debris(x=centerx, y=centery)
-			globalvars.intangibles.append(temp)
+			globalvars.intangibles.add(temp)
 	else:
 		for _ in range(count):
 			temp = Asteroid(x=centerx, y=centery,

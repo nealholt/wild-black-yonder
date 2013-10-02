@@ -17,7 +17,6 @@ import misc
 def wipeOldScenario():
 	for sprt in globalvars.tangibles: sprt.kill()
 	for sprt in globalvars.intangibles: sprt.kill()
-	globalvars.intangibles = []
 	for sprt in globalvars.whiskerables: sprt.kill()
 
 	globalvars.BGCOLOR = colors.black
@@ -44,27 +43,24 @@ def makeNewEnemy(x=0, y=0, weaponType='mk1'):
 	globalvars.whiskerables.add(enemy_ship)
 
 
-def initializeDust():
-	#Kill all the old dust.
-	for d in globalvars.dust: d.kill()
-	#Make 100 dust particles scattered around the player.
-	globalvars.dust = []
-	for _ in range(100):
-		length = rd.randint(1,4)
-		temp = objInstances.FixedBody(x=0, y=0, width=length, height=length,\
-				 color=colors.white)
-		globalvars.dust.append(temp)
-
-
 def resetDust():
-	for d in globalvars.dust:
-		x,y = getCoordsNearLoc(globalvars.player.rect.center, 50, globalvars.WIDTH, globalvars.WIDTH)
-		d.rect.center = (x,y)
+	#Kill all the old dust.
+	for d in globalvars.intangibles:
+		if d.is_a == globalvars.DUST:
+			d.kill()
+	#Make 100 dust particles scattered around the player.
+	for _ in range(50):
+		size = rd.randint(1,4)
+		x,y = getCoordsNearLoc(globalvars.player.rect.center, 50, 
+				globalvars.WIDTH, globalvars.WIDTH)
+		temp = objInstances.Dust(x=x, y=y, width=size, height=size,\
+				 color=colors.white)
+		globalvars.intangibles.add(temp)
 
 
 def testScenario00(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
-	initializeDust()
+
 	wipeOldScenario(); resetDust()
 	globalvars.hud_helper = hudHelpers.PlayerInfoDisplayer()
 
@@ -94,12 +90,11 @@ def testScenario00(seed=0):
 	temp = objInstances.HealthKit(-100, 0) #health pack
 	globalvars.tangibles.add(temp)
 	
-	#TODO TESTING
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Press H to access the help menu',
 		' and learn the controls.'],
-		timeOff=0, timeOn=1, ttl=1.0, fontSize=52)
-	globalvars.intangibles.append(announcement)
+		timeOff=0, timeOn=1, ttl=3.0, fontSize=52)
+	globalvars.intangibles.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.BGCOLOR = colors.black
@@ -146,7 +141,7 @@ def asteroids(seed=0):
 		text=['Watch out for asteroids while you',
 			'blow them up to collect gems.'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -187,7 +182,7 @@ def gemWild(seed=0):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Collect as many gems as you can in '+str(time_limit)+' seconds.'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -233,7 +228,7 @@ def race(seed=0):
 		'Follow the yellow arrow', 
 		'to the finish as fast as possible.'],
 		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -263,7 +258,7 @@ def furball(seed=0):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Fight off 3 enemy ships!'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
@@ -286,7 +281,7 @@ def capitalShipScenario(seed=0):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Blow up the capital ship!'],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
@@ -334,7 +329,7 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	announcement = misc.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['You\'ve arrived in system '+str(seed)],
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.hud_helper.addObjectToUpdate(announcement)
+	globalvars.intangibles.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
