@@ -5,6 +5,7 @@ import colors
 from geometry import translate, distance, rotateAngle
 import globalvars
 from displayUtilities import writeTextToScreen
+from time import sleep
 
 class Bullet(physicalObject.PhysicalObject):
 
@@ -601,4 +602,48 @@ class Follower(physicalObject.PhysicalObject):
 			self.approachSpeed()
 
 		self.move()
+
+
+class FinishBullsEye(physicalObject.PhysicalObject):
+	'''Paints a bullseye at the finish line.'''
+        def __init__(self, target):
+		physicalObject.PhysicalObject.__init__(self, \
+			centerx=target[0], \
+			centery=target[1],\
+			width=100, height=100)
+		self.is_a = globalvars.OTHER
+		self.target = target #A location
+		self.dtt = 0.0 #Distance to target
+		self.update() #Set dtt
+		self.finish_reached = False
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		self.useOffset = True
+
+	def update(self):
+		'''Return true to be removed from intangibles. Return False otherwise.'''
+		#Distance to target
+		self.dtt = distance(globalvars.player.rect.center, self.target)
+		return False
+
+	def draw(self, offset):
+		#Draw a bulls eye (multiple overlapping red and white 
+		#circles centered at the destination point.
+		target = (self.target[0] - offset[0], self.target[1] - offset[1])
+		pygame.draw.circle(globalvars.screen, colors.red, target, 50, 0)
+		pygame.draw.circle(globalvars.screen, colors.white, target, 40, 0)
+		pygame.draw.circle(globalvars.screen, colors.red, target, 30, 0)
+		pygame.draw.circle(globalvars.screen, colors.white, target, 20, 0)
+		pygame.draw.circle(globalvars.screen, colors.red, target, 10, 0)
+
+		if self.finish_reached: return True
+
+		#Check if the player has reached the destination.
+		if self.dtt < 40:
+			#If so, end the race.
+			self.finish_reached = True
+			writeTextToScreen(string='TIME TRIAL COMPLETED',\
+				fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
+			pygame.display.flip()
+			sleep(2) #Sleep for 2 seconds.
 

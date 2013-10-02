@@ -188,7 +188,10 @@ def gemWild(seed=0):
 		globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 
 	time_limit = 30 #time limit in seconds
-	globalvars.hud_helper = hudHelpers.TimeLimit(time_limit=time_limit)
+	#TODO I'm just testing initially here. Ultimately I want to get rid of HUDs altogether and replace them with intangibles. Also, however, the following will not display the arrow or finish line which are important.
+	globalvars.hud_helper = hudHelpers.Hud()
+	#Display timer and score count with the following:
+	globalvars.intangibles.add(displayUtilities.TimeLimitDisplay(time_limit=time_limit))
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['Collect as many gems as you can in '+str(time_limit)+' seconds.'],
@@ -215,12 +218,13 @@ def race(seed=0):
 	finish_line = (6000, 0)
 
 	#TODO I'm just testing initially here. Ultimately I want to get rid of HUDs altogether and replace them with intangibles. Also, however, the following will not display the arrow or finish line which are important.
-	#globalvars.hud_helper = hudHelpers.TimeTrialAssistant(finish_line)
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display timer with the following:
 	globalvars.intangibles.add(displayUtilities.TimerDisplay(finish_line))
 	#Display arrow to finish line
 	globalvars.intangibles.add(displayUtilities.ArrowToDestination(finish_line))
+	#Display finish bullseye
+	globalvars.intangibles.add(objInstances.FinishBullsEye(finish_line))
 
 	#determine what sorts of obstacles to put on the race course.
 	numbers = [0 for _ in range(hudHelpers.health+1)]
