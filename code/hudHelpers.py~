@@ -164,40 +164,6 @@ class Hud():
 
 
 
-class TimerDisplay(pygame.sprite.Sprite, fontSize=36):
-	'''Counts down time remaining in race.'''
-        def __init__(self, target):
-		pygame.sprite.Sprite.__init__(self)
-		self.is_a = globalvars.OTHER
-		self.target = target #A location
-		self.font = pygame.font.Font(None, fontSize)
-		#Track time in seconds
-		self.start_time = time.time()
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		self.useOffset = False
-		#Create the rect and draw once to properly initialize it.
-		self.rect = None
-		self.draw((0,0))
-
-	def update(self):
-		'''Return true to be removed from intangibles. Return False otherwise.'''
-		return False
-
-	def draw(self, _):
-		#elapsed time
-		elapsed = time.time() - self.start_time
-		#Write the elapsed time to the top of the screen.
-		string = 'Time: '+displayUtilities.formatTime(elapsed)+\
-				'. Distance: '+displayUtilities.trunc(dtt,0)
-		text = self.font.render(string, 1, colors.white)
-		self.rect = text.get_rect()
-		self.rect.topleft = (250,10)
-		globalvars.screen.blit(text, self.rect.topleft)
-
-	def isOnScreen(self, _): return True
-
-
 class TimeTrialAssistant(Hud):
 	'''Displays an arrow pointing towards the destination
 	and counts down time remaining in race.'''

@@ -200,7 +200,6 @@ class Ship(physicalObject.PhysicalObject):
 				x=self.rect.centerx,y=self.rect.centery))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
-			globalvars.intangibles.remove(self.myHealthBar)
 			self.myHealthBar.kill()
 			died = True
 		return died

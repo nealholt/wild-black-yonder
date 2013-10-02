@@ -75,7 +75,8 @@ def formatTime(seconds):
 
 def drawArrowAtTarget(target):
 	'''Pre: target is a location (x,y).
-	Post: Draws an arrow towards the target.'''
+	Post: Draws an arrow towards the target.
+	Returns a rect that encompasses the arrow drawn.'''
 	#Get player's angle to target regardless of current player orientation.
 	att = angleFromPosition(globalvars.player.rect.center, target)
 	#Get a point radius distance from the player in the 
@@ -95,14 +96,19 @@ def drawArrowAtTarget(target):
 	leftwingtip = translate(base, leftwing, 10)
 	rightwingtip = translate(base, rightwing, 10)
 	#Draw a filled in polygon for the arrow head.
-	pygame.draw.polygon(globalvars.screen, colors.yellow, \
+	polyrect = pygame.draw.polygon(globalvars.screen, colors.yellow, \
 		[leftwingtip, tip, rightwingtip])
 	#Get a point radius-50 distance from the player in the 
 	#direction of the target.
 	#This will be used to draw the line part of the arrow.
 	linestart = translate((globalvars.CENTERX, globalvars.CENTERY), att, globalvars.SCREENRADIUS-50)
 	#Draw a 20 pixel thick line for the body of the arrow.
-	pygame.draw.line(globalvars.screen, colors.yellow, linestart, base, 10)
+	linerect = pygame.draw.line(globalvars.screen, colors.yellow, linestart, base, 10)
+	#Calculate and return the encompassing rect
+	return pygame.Rect(min(polyrect.left, linerect.left),
+		min(polyrect.top, linerect.top),
+		max(polyrect.right, linerect.right),
+		max(polyrect.bottom, linerect.bottom))
 
 
 def writeTextToScreen(string='', fontSize=12, color=colors.white, pos=(0,0)):
@@ -241,4 +247,31 @@ class TimerDisplay(pygame.sprite.Sprite):
 	def isOnScreen(self, _): return True
 
 
+
+class ArrowToDestination(pygame.sprite.Sprite):
+	'''Paints a yellow arrow pointing to the given target.'''
+        def __init__(self, target):
+		pygame.sprite.Sprite.__init__(self)
+		self.is_a = globalvars.OTHER
+		self.target = target #A location
+		self.dtt = 0.0 #Distance to target
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		self.useOffset = False
+		#Create the rect and draw once to properly initialize it.
+		self.rect = None
+		self.draw((0,0))
+
+	def update(self):
+		'''Return true to be removed from intangibles. Return False otherwise.'''
+		#Distance to target
+		self.dtt = distance(globalvars.player.rect.center, self.target)
+		return False
+
+	def draw(self, _):
+		self.rect = drawArrowAtTarget(self.target)
+
+	def isOnScreen(self, _):
+		#Only display the guiding arrow if player is too far away to see the target
+		return self.dtt > globalvars.SCREENRADIUS
 

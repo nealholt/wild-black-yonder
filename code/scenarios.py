@@ -219,6 +219,8 @@ def race(seed=0):
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display timer with the following:
 	globalvars.intangibles.add(displayUtilities.TimerDisplay(finish_line))
+	#Display arrow to finish line
+	globalvars.intangibles.add(displayUtilities.ArrowToDestination(finish_line))
 
 	#determine what sorts of obstacles to put on the race course.
 	numbers = [0 for _ in range(hudHelpers.health+1)]

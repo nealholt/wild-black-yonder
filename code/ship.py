@@ -196,7 +196,7 @@ class Ship(physicalObject.PhysicalObject):
 			#or the health sprite.
 		#	return died
 		if self.isDead():
-			globalvars.intangibles.append(objInstances.Explosion(\
+			globalvars.intangibles.add(objInstances.Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
