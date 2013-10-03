@@ -212,15 +212,6 @@ class InfiniteSpaceGenerator(Hud):
 
 	def update(self, offset):
 		Hud.update(self, offset)
-		#Display player's location
-		displayUtilities.displayShipLoc(globalvars.player)
-
-		#Display arrow to target. Target is a warp portal.
-		if not self.arrowTarget is None:
-			dtt = distance(globalvars.player.rect.center, self.arrowTarget)
-			#Only display the guiding arrow if player is too far away to see the target
-			if dtt > globalvars.SCREENRADIUS:
-				displayUtilities.drawArrowAtTarget(self.arrowTarget)
 
 		#Get the player's location.
 		px,py = globalvars.player.rect.center
@@ -283,5 +274,11 @@ class InfiniteSpaceGenerator(Hud):
 				self.dict[loc] = populateSpace(objects=obstacles, 
 					width=self.space_length, height=self.space_length, 
 					center=(x*self.space_length, y*self.space_length), seed=loc)
+		return False
 
+	def draw(self, _):
+		pass
+
+	def isOnScreen(self, _):
+		return True
 
