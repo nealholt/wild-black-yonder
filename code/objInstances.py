@@ -4,7 +4,7 @@ import pygame
 import colors
 from geometry import translate, distance, rotateAngle
 import globalvars
-from displayUtilities import writeTextToScreen
+from displayUtilities import writeTextToScreen, TemporaryTextOffset
 from time import sleep
 
 class Bullet(physicalObject.PhysicalObject):
@@ -446,15 +446,16 @@ class Gem(physicalObject.PhysicalObject):
 			#Call parent's draw class
 			physicalObject.PhysicalObject.draw(self, offset)
 		else:
-			#Display the amount of health that was here.
-			pos = self.rect.left - offset[0], \
-				self.rect.top - offset[1]
-			writeTextToScreen(string='+'+str(self.points), \
-				fontSize=36, color=colors.blue, pos=pos)
+			#TODO
+			announcement = TemporaryTextOffset(
+				x=self.rect.left, y=self.rect.top, 
+				text='+'+str(self.points), color=colors.blue,
+				ttl=3.0, fontSize=36)
+			globalvars.intangibles.add(announcement)
+			self.timeToLive = 0
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
-		died = False
 		if not self.picked_up and other_sprite.is_a == globalvars.SHIP:
 			self.picked_up = True
 			#give money to the ship
@@ -464,7 +465,7 @@ class Gem(physicalObject.PhysicalObject):
 				globalvars.hud_helper.points += self.points
 			except AttributeError:
 				pass
-		return died
+		return False
 
 
 class HealthKit(physicalObject.PhysicalObject):
