@@ -163,11 +163,6 @@ class Hud():
 		#		self.toUpdate.remove(tu)
 
 
-def populateSpaceHelper(seed=0, length=0, x=0, y=0):
-	obstacles = getObstacles(seed=seed)
-	return populateSpace(objects=obstacles, width=length, height=length, center=(x*length, y*length), seed=seed)
-
-
 class InfiniteSpaceGenerator(Hud):
 	'''An object which will deterministically but randomly generate
 	objects in space based on the player's location.
@@ -196,10 +191,10 @@ class InfiniteSpaceGenerator(Hud):
 		py = py / self.space_length
 		#Generate obstacles in player's location and put them in the dictionary. You might want to modify populateSpace to return its newly created physical objects so they can be tracked here for easy removal later.
 		loc = str(px).zfill(3)+str(py).zfill(3)
-		self.dict[loc] = populateSpaceHelper(\
-				seed=loc, \
-				length=self.space_length, \
-				x=px, y=py)
+		obstacles = getObstacles(seed=loc)
+		self.dict[loc] = populateSpace(objects=obstacles, 
+			width=self.space_length, height=self.space_length, 
+			center=(px*self.space_length, py*self.space_length), seed=loc)
 		#print 'testing keys in the dictionary: '+str(self.dict.keys())
 		#print 'end of InfiniteSpaceGenerator'
 
@@ -284,8 +279,9 @@ class InfiniteSpaceGenerator(Hud):
 			loc = str(x).zfill(3)+str(y).zfill(3)
 			if not loc in self.dict.keys():
 				#print 'testing the location '+str(loc)+' is empty so we are populating it'
-				self.dict[loc] = populateSpaceHelper(\
-					seed=loc, length=self.space_length, \
-					x=x, y=y)
+				obstacles = getObstacles(seed=loc)
+				self.dict[loc] = populateSpace(objects=obstacles, 
+					width=self.space_length, height=self.space_length, 
+					center=(x*self.space_length, y*self.space_length), seed=loc)
 
 

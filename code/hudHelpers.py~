@@ -163,45 +163,6 @@ class Hud():
 		#		self.toUpdate.remove(tu)
 
 
-class TimeLimit(Hud):
-	'''Initially to be used for the gem wild scenario in 
-	which the player has a limited amount of time to 
-	grab as many gems as possible.'''
-        def __init__(self, time_limit=0):
-		Hud.__init__(self)
-		self.points = 0
-		self.time_limit = time_limit #in seconds
-		#Track time in seconds
-		self.start_time = time.time()
-		self.finish_reached = False
-
-	def update(self, offset):
-		Hud.update(self, offset)
-		if self.finish_reached: return True
-
-		#Update elapsed time
-		elapsed = time.time() - self.start_time
-		#Write the elapsed time to the top of the screen.
-		string = 'Time: '+displayUtilities.formatTime(elapsed)+\
-			' Points:'+str(self.points)
-		displayUtilities.writeTextToScreen(string=string, fontSize=36,\
-				       color=colors.white, pos=(400,10))
-
-		#Check to see if time has run out.
-		if elapsed >= self.time_limit:
-			#If so, end the scenario.
-			self.finish_reached = True
-			displayUtilities.writeTextToScreen(string='GEM WILD COMPLETED',\
-				fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
-			pygame.display.flip()
-			time.sleep(2) #Sleep for 2 seconds.
-			#Wipe out all the gems:
-			for t in globalvars.tangibles:
-				if t.is_a == globalvars.GEM: t.kill()
-		pass
-
-
-
 def populateSpaceHelper(seed=0, length=0, x=0, y=0):
 	obstacles = getObstacles(seed=seed)
 	return populateSpace(objects=obstacles, width=length, height=length, center=(x*length, y*length), seed=seed)
