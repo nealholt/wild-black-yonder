@@ -189,7 +189,6 @@ def gemWild(seed=0):
 
 	time_limit = 30 #time limit in seconds
 	#TODO I'm just testing initially here. Ultimately I want to get rid of HUDs altogether and replace them with intangibles. Also, however, the following will not display the arrow or finish line which are important.
-	#globalvars.hud_helper = hudHelpers.TimeLimit(time_limit=time_limit)
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display timer and score count with the following:
 	globalvars.intangibles.add(displayUtilities.TimeLimitDisplay(time_limit=time_limit))
@@ -354,6 +353,8 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
 	globalvars.hud_helper = hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps)
+	#Display player location and speed info with the following:
+	globalvars.intangibles.add(displayUtilities.ShipStatsText())
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text=['You\'ve arrived in system '+str(seed)],
