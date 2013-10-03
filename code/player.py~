@@ -43,6 +43,8 @@ class Player(ship.Ship):
 		which is needed for when the screen follows or 
 		centers on the player.'''
 		self.cooldown() #cooldown all the weapons
+		#Update my health bar's center
+		self.myHealthBar.rect.center = self.rect.center
 		pass
 
 
@@ -51,7 +53,7 @@ class Player(ship.Ship):
 		at to hit the player when the player is moving.'''
 		#return self.rect.center
 		return translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
-#Why when self.rect.center is used does this still not work for the capital ship?
+		#Why when self.rect.center is used does this still not work for the capital ship? Specifically there is a problem when I perch over the upper left corner of the capital ship. It creates a kind-of cool blind spot though. Maybe this is not a problem.
 
 
 	def playerUpdate(self):

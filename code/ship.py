@@ -38,7 +38,8 @@ class Ship(physicalObject.PhysicalObject):
 
 
 	def setHealthBar(self):
-		self.myHealthBar = objInstances.HealthBar(width=20, height=10, ship=self, vertical=False, 
+		self.myHealthBar = objInstances.HealthBar(width=20, height=10, 
+			heightAdjust=self.rect.height, vertical=False, 
 			current=self.health, total=self.maxhealth)
 		globalvars.intangibles.add(self.myHealthBar)
 
@@ -158,6 +159,9 @@ class Ship(physicalObject.PhysicalObject):
 
 		#move
 		self.move()
+
+		#Update my health bar's center
+		self.myHealthBar.rect.center = self.rect.center
 
 
 	def draw(self, offset):

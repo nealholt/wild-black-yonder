@@ -476,50 +476,29 @@ class HealthKit(physicalObject.PhysicalObject):
 
 
 class HealthBar(physicalObject.PhysicalObject):
-	def __init__(self, width=0, height=0, ship=None, vertical=False, current=100, total=100):
-		self.ship = ship
-
+	def __init__(self, width=0, height=0, heightAdjust=0, vertical=False, current=100, total=100):
 		physicalObject.PhysicalObject.__init__(self)
-
-		#Boolean for whether to draw the healthbar horizontally or vertically.
-		self.vertical = vertical
 
 		#Current and total health or progress or whatever the bar is measuring
 		self.health = current
 		self.maxHealth = total
 
-		self.healthBarWidth = width
-		self.healthBarHeight = height
-		#TODO
 		self.rect.width = width
 		self.rect.height = height
 
-		self.useOffset = True
-
-		self.heightAdjust = 0
-		if not self.ship is None:
-			self.heightAdjust = self.ship.rect.height
-
-	def update(self):
-		if not self.ship is None:
-			self.rect.center = self.ship.rect.center
-			self.health = self.ship.health
+		self.heightAdjust = heightAdjust
 
 	def draw(self, offset):
-		pos = self.rect.centerx - offset[0], self.rect.centery - offset[1]
-
-		healthx = self.rect.centerx - offset[0] - self.healthBarWidth/2
-		healthy = self.rect.centery - offset[1] - self.healthBarHeight - self.heightAdjust/2
+		healthx = self.rect.centerx - offset[0] - self.rect.width/2
+		healthy = self.rect.centery - offset[1] - self.rect.height - self.heightAdjust/2
 
 		#Draw red bar
-		tempRect = pygame.Rect(healthx, healthy, \
-			self.healthBarWidth, self.healthBarHeight)
-		pygame.draw.rect(globalvars.screen, colors.red, tempRect, 0)
-		self.rect = tempRect
+		self.rect.topleft = (healthx, healthy)
+		pygame.draw.rect(globalvars.screen, colors.red, self.rect, 0)
 
 		#Draw green bar
-		width = (self.health/float(self.maxHealth))*self.healthBarWidth
-		tempRect = pygame.Rect(healthx, healthy, width, self.healthBarHeight)
+		width = (self.health/float(self.maxHealth))*self.rect.width
+		tempRect = pygame.Rect(healthx, healthy, width, self.rect.height)
 		pygame.draw.rect(globalvars.screen, colors.green, tempRect, 0)
 
 
