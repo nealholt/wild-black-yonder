@@ -352,7 +352,10 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 			allWarps.append(temp)
 
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
-	globalvars.hud_helper = hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps)
+	#globalvars.hud_helper = hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps)
+	globalvars.intangibles.add(hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps))
+	#TODO: temporary HUD that does nothing. You want to move the code away from this.
+	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
 	globalvars.intangibles.add(displayUtilities.ShipStatsText())
 

@@ -125,31 +125,19 @@ class TemporaryText(pygame.sprite.Sprite):
 	text should flash and how fast it should do so in seconds, and the 
 	time for the text to live in seconds.
 	Font size and color can also be specified'''
-        def __init__(self, x=0, y=0, text=None, timeOn=0, timeOff=0, ttl=0, fontSize=12, color=colors.white):
+        def __init__(self, x=0, y=0, text='', timeOn=1, timeOff=0, ttl=0, fontSize=12, color=colors.white, useOffset=False):
 		pygame.sprite.Sprite.__init__(self)
 		self.is_a = globalvars.OTHER
 		font = pygame.font.Font(None, fontSize)
-		self.texts = []
-		self.positions = []
-		maxWidth=0
-		maxHeight=0
-		leftmost = globalvars.WIDTH
-		topmost = globalvars.HEIGHT
-		for t in text:
-			self.texts.append(font.render(t, 1, color))
-			textpos = self.texts[-1].get_rect(center=(x, y+maxHeight))
-			self.positions.append(textpos)
-			maxWidth = max(textpos.width, maxWidth)
-			maxHeight += fontSize
-			leftmost = min(textpos.left, leftmost)
-			topmost = min(textpos.top, topmost)
-		self.rect = pygame.Rect(leftmost, topmost, maxWidth, maxHeight)
+		self.text = font.render(text, 1, color)
+		self.rect = self.text.get_rect(center=(x, y))
 		self.timeOn = timeOn * globalvars.FPS
 		self.timeOff = timeOff * globalvars.FPS
 		self.ttl = ttl * globalvars.FPS
 		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		self.useOffset = False
+		#Text does not typically useOffset because we want to position it relative to 0,0
+		#Exceptions include +10 from gems and health pickups.
+		self.useOffset = useOffset
 		#Attributes for flashing:
 		self.showing = True
 		self.countdown = self.timeOn
@@ -170,55 +158,27 @@ class TemporaryText(pygame.sprite.Sprite):
 		self.ttl -= 1
 		return self.ttl <= 0
 
-	def draw(self, _):
-		for i in range(len(self.texts)):
-			globalvars.screen.blit(self.texts[i], self.positions[i])
-		
-	def isOnScreen(self, _):
-		return self.showing
-
-
-
-class TemporaryTextOffset(pygame.sprite.Sprite):
-	'''This is going to be super redundant with TemporaryText but I want to do it in order to simplify the other one and help myself understand what is going on and how to fix it.
-
-	Specify the position of the text, contents, whether or not the
-	text should flash and how fast it should do so in seconds, and the 
-	time for the text to live in seconds.
-	Font size and color can also be specified'''
-        def __init__(self, x=0, y=0, text='', ttl=0, fontSize=12, color=colors.white):
-		pygame.sprite.Sprite.__init__(self)
-		self.is_a = globalvars.OTHER
-		font = pygame.font.Font(None, fontSize)
-		self.text = font.render(text, 1, color)
-		self.rect = self.text.get_rect(center=(x, y))
-		self.ttl = ttl * globalvars.FPS
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		self.useOffset = True
-
-	def update(self):
-		'''Return true to be removed from intangibles. Return False otherwise.'''
-		self.ttl -= 1
-		return self.ttl <= 0
-
 	def draw(self, offset):
-		x,y = self.rect.topleft
-		pos = x - offset[0], y - offset[1]
+		pos = self.rect.topleft
+		if self.useOffset:
+			pos = pos[0]-offset[0], pos[1]-offset[1]
 		globalvars.screen.blit(self.text, pos)
 		
 	def isOnScreen(self, offset):
-		'''TODO this method is a duplicate of the method in physical object.
-		Returns true if this sprite is on screen.
-		rect.right < left #Then not on screen
-		rect.bottom < top #Then not on screen
-		rect.top > top + globalvars.HEIGHT #Then not on screen
-		rect.left > left + globalvars.WIDTH #Then not on screen'''
-		left, top = offset
-		return not( self.rect.right < left or \
-		self.rect.bottom < top or \
-		self.rect.top > top + globalvars.HEIGHT or \
-		self.rect.left > left + globalvars.WIDTH )
+		if self.useOffset:
+			return self.showing
+		else:
+			'''TODO this is a duplicate of the method in physical object.
+			Returns true if this sprite is on screen.
+			rect.right < left #Then not on screen
+			rect.bottom < top #Then not on screen
+			rect.top > top + globalvars.HEIGHT #Then not on screen
+			rect.left > left + globalvars.WIDTH #Then not on screen'''
+			left, top = offset
+			return not( self.rect.right < left or \
+			self.rect.bottom < top or \
+			self.rect.top > top + globalvars.HEIGHT or \
+			self.rect.left > left + globalvars.WIDTH )
 
 
 class ShipStatsText(pygame.sprite.Sprite):

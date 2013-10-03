@@ -92,9 +92,12 @@ def testScenario00(seed=0):
 	temp = objInstances.HealthKit(-100, 0) #health pack
 	globalvars.tangibles.add(temp)
 	
-	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-		text=['Press H to access the help menu',
-		' and learn the controls.'],
+	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
+		text='Press H to access the help menu',
+		timeOff=0, timeOn=1, ttl=3.0, fontSize=52)
+	globalvars.intangibles.add(announcement)
+	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
+		text=' and learn the controls.',
 		timeOff=0, timeOn=1, ttl=3.0, fontSize=52)
 	globalvars.intangibles.add(announcement)
 
@@ -145,9 +148,12 @@ def asteroids(seed=0):
 		temp = objInstances.Asteroid(x=x, y=y, image_name=rock)
 		globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 
-	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-		text=['Watch out for asteroids while you',
-			'blow them up to collect gems.'],
+	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
+		text='Watch out for asteroids while you',
+		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
+	globalvars.intangibles.add(announcement)
+	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
+		text='blow them up to collect gems.',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.intangibles.add(announcement)
 
@@ -194,7 +200,7 @@ def gemWild(seed=0):
 	globalvars.intangibles.add(displayUtilities.TimeLimitDisplay(time_limit=time_limit))
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-		text=['Collect as many gems as you can in '+str(time_limit)+' seconds.'],
+		text='Collect as many gems as you can in '+str(time_limit)+' seconds.',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.intangibles.add(announcement)
 
@@ -246,9 +252,15 @@ def race(seed=0):
 	hudHelpers.populateSpace(objects=numbers, width=course_length, height=course_height, center=midway, seed=rd.random())
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-		text=['Welcome to the race!', 
-		'Follow the yellow arrow', 
-		'to the finish as fast as possible.'],
+		text='Welcome to the race!',
+		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
+	globalvars.intangibles.add(announcement)
+	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52, 
+		text='Follow the yellow arrow',
+		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
+	globalvars.intangibles.add(announcement)
+	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52*2,
+		text='to the finish as fast as possible.',
 		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
 	globalvars.intangibles.add(announcement)
 
@@ -281,7 +293,7 @@ def furball(seed=0):
 	makeNewEnemy(x=x, y=y, weaponType='missile_mk1') #The third enemy gets a missile.
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-		text=['Fight off 3 enemy ships!'],
+		text='Fight off 3 enemy ships!',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.intangibles.add(announcement)
 
@@ -307,7 +319,7 @@ def capitalShipScenario(seed=0):
 	globalvars.whiskerables.add(enemy_ship)
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-		text=['Blow up the capital ship!'],
+		text='Blow up the capital ship!',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.intangibles.add(announcement)
 
@@ -360,7 +372,7 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	globalvars.intangibles.add(displayUtilities.ShipStatsText())
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-		text=['You\'ve arrived in system '+str(seed)],
+		text='You\'ve arrived in system '+str(seed),
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 	globalvars.intangibles.add(announcement)
 

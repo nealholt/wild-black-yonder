@@ -4,7 +4,7 @@ import pygame
 import colors
 from geometry import translate, distance, rotateAngle
 import globalvars
-from displayUtilities import writeTextToScreen, TemporaryTextOffset
+from displayUtilities import writeTextToScreen, TemporaryText
 from time import sleep
 
 class Bullet(physicalObject.PhysicalObject):
@@ -419,45 +419,21 @@ class Gem(physicalObject.PhysicalObject):
 		self.direction = rd.randint(-179, 180)
 		#Choose a random speed
 		self.speed = float(rd.randint(speed_min, speed_max))/float(globalvars.FPS)
-		#Gems can be picked up
-		self.picked_up = False
-		self.timeToLive = 30 #Time to live after being picked up.
 		self.points = 10
 
 	def update(self):
 		'''Return true to be removed. Return False othewise.'''
-		if not self.picked_up:
-			#Rotate
-			self.turn(self.dtheta)
-			#Move in a direction independent of rotation
-			self.loc = translate(self.loc, \
-				self.direction, self.speed)
-			self.rect.center = self.loc[0], self.loc[1]
-		elif self.timeToLive <=0:
-			#kill removes the calling sprite from all sprite groups
-			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
-			return True
-		else:
-			self.timeToLive -= 1
+		#Rotate
+		self.turn(self.dtheta)
+		#Move in a direction independent of rotation
+		self.loc = translate(self.loc, \
+			self.direction, self.speed)
+		self.rect.center = self.loc[0], self.loc[1]
 		return False
-
-	def draw(self, offset):
-		if not self.picked_up:
-			#Call parent's draw class
-			physicalObject.PhysicalObject.draw(self, offset)
-		else:
-			#TODO
-			announcement = TemporaryTextOffset(
-				x=self.rect.left, y=self.rect.top, 
-				text='+'+str(self.points), color=colors.blue,
-				ttl=3.0, fontSize=36)
-			globalvars.intangibles.add(announcement)
-			self.timeToLive = 0
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
-		if not self.picked_up and other_sprite.is_a == globalvars.SHIP:
-			self.picked_up = True
+		if other_sprite.is_a == globalvars.SHIP:
 			#give money to the ship
 			#Not all game huds are equipped to handle points yet so we use this try catch.
 			#http://stackoverflow.com/questions/610883/how-to-know-if-an-object-has-an-attribute-in-python/610923#610923
@@ -465,6 +441,12 @@ class Gem(physicalObject.PhysicalObject):
 				globalvars.hud_helper.points += self.points
 			except AttributeError:
 				pass
+			announcement = TemporaryText(
+				x=self.rect.left, y=self.rect.top, 
+				text='+'+str(self.points), color=colors.blue,
+				ttl=3.0, fontSize=36, useOffset=True)
+			globalvars.intangibles.add(announcement)
+			self.kill()
 		return False
 
 
@@ -475,39 +457,22 @@ class HealthKit(physicalObject.PhysicalObject):
 						image_name='health')
 		self.is_a = globalvars.HEALTH
 		self.health_amt = 10
-		self.picked_up = False
-		self.timeToLive = 30 #Time to live after being picked up.
 
 	def update(self):
 		'''Return true to be removed. Return False othewise.'''
-		if not self.picked_up:
-			pass
-		elif self.timeToLive <=0:
-			#kill removes the calling sprite from all sprite groups
-			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
-			return True
-		else:
-			self.timeToLive -= 1
 		return False
-
-	def draw(self, offset):
-		if not self.picked_up:
-			#Call parent's draw class
-			physicalObject.PhysicalObject.draw(self, offset)
-		else:
-			#Display the amount of health that was here.
-			pos = self.rect.left - offset[0], \
-				self.rect.top - offset[1]
-			writeTextToScreen(string='+'+str(self.health_amt), \
-				fontSize=36, color=colors.green, pos=pos)
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
-		died = False
-		if not self.picked_up and other_sprite.is_a == globalvars.SHIP:
-			self.picked_up = True
+		if other_sprite.is_a == globalvars.SHIP:
 			other_sprite.gainHealth(self.health_amt)
-		return died
+			announcement = TemporaryText(
+				x=self.rect.left, y=self.rect.top, 
+				text='+'+str(self.health_amt), color=colors.green,
+				ttl=3.0, fontSize=36, useOffset=True)
+			globalvars.intangibles.add(announcement)
+			self.kill()
+		return False
 
 
 class HealthBar(physicalObject.PhysicalObject):
