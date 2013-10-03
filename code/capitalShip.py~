@@ -81,7 +81,7 @@ class CapitalShip(physicalObject.PhysicalObject):
 
 	def update(self):
 		#for now we assume that every ship is hostile to the player
-		self.setDestination(globalvars.player.rect.center)
+		self.setDestination(globalvars.player_target_lead)
 		#cooldown all the weapons
 		self.cooldown()
 		#Check for firing solutions

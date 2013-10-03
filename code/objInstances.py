@@ -477,25 +477,19 @@ class HealthKit(physicalObject.PhysicalObject):
 
 class HealthBar(physicalObject.PhysicalObject):
 	def __init__(self, width=0, height=0, heightAdjust=0, vertical=False, current=100, total=100):
-		physicalObject.PhysicalObject.__init__(self)
-
+		physicalObject.PhysicalObject.__init__(self, width=width, height=height)
 		#Current and total health or progress or whatever the bar is measuring
 		self.health = current
 		self.maxHealth = total
-
-		self.rect.width = width
-		self.rect.height = height
-
+		#Offset the height so you don't draw the healthbar over top of the ship
 		self.heightAdjust = heightAdjust
 
 	def draw(self, offset):
 		healthx = self.rect.centerx - offset[0] - self.rect.width/2
 		healthy = self.rect.centery - offset[1] - self.rect.height - self.heightAdjust/2
-
 		#Draw red bar
 		self.rect.topleft = (healthx, healthy)
 		pygame.draw.rect(globalvars.screen, colors.red, self.rect, 0)
-
 		#Draw green bar
 		width = (self.health/float(self.maxHealth))*self.rect.width
 		tempRect = pygame.Rect(healthx, healthy, width, self.rect.height)
