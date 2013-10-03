@@ -57,6 +57,7 @@ class Ship(physicalObject.PhysicalObject):
 
 	def takeDamage(self):
 		self.health -= 10
+		self.myHealthBar.health = self.health
 
 	def gainHealth(self, amount):
 		self.health = min(self.maxhealth, self.health+amount)

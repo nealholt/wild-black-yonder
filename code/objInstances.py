@@ -490,6 +490,11 @@ class HealthBar(physicalObject.PhysicalObject):
 
 		self.healthBarWidth = width
 		self.healthBarHeight = height
+		#TODO
+		self.rect.width = width
+		self.rect.height = height
+
+		self.useOffset = True
 
 		self.heightAdjust = 0
 		if not self.ship is None:
@@ -498,23 +503,21 @@ class HealthBar(physicalObject.PhysicalObject):
 	def update(self):
 		if not self.ship is None:
 			self.rect.center = self.ship.rect.center
-			self.health = self.ship.health
 
 	def draw(self, offset):
-		pos = self.rect.centerx - offset[0], self.rect.centery - offset[1]
+		healthx = self.rect.centerx - offset[0] - self.healthBarWidth/2
+		healthy = self.rect.centery - offset[1] - self.healthBarHeight - self.heightAdjust/2
 
-		healthx = pos[0] - self.healthBarWidth/2
-		healthy = pos[1] - self.healthBarHeight - self.heightAdjust/2
-
+		#Draw red bar
 		tempRect = pygame.Rect(healthx, healthy, \
 			self.healthBarWidth, self.healthBarHeight)
 		pygame.draw.rect(globalvars.screen, colors.red, tempRect, 0)
+		self.rect = tempRect
 
+		#Draw green bar
 		width = (self.health/float(self.maxHealth))*self.healthBarWidth
 		tempRect = pygame.Rect(healthx, healthy, width, self.healthBarHeight)
 		pygame.draw.rect(globalvars.screen, colors.green, tempRect, 0)
-
-		self.drawAt(pos)
 
 
 
