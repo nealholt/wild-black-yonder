@@ -1,6 +1,6 @@
 import ship
 import profiles
-from globalvars import hud_helper
+import globalvars #TODO TESTING
 from geometry import translate
 
 class Player(ship.Ship):

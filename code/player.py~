@@ -1,6 +1,6 @@
 import ship
 import profiles
-from globalvars import hud_helper
+import globalvars #TODO TESTING
 from geometry import translate
 
 class Player(ship.Ship):
@@ -45,7 +45,11 @@ class Player(ship.Ship):
 		self.cooldown() #cooldown all the weapons
 		#Update my health bar's center
 		self.myHealthBar.rect.center = self.rect.center
-		pass
+		self.playerUpdate() #TODO TESTING
+
+
+	#def draw(self, _): #TODO TESTING
+	#	self.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 
 
 	def getLeadIndicator(self):

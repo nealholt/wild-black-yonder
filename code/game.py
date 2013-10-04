@@ -41,7 +41,6 @@ def redrawWholeBackground():
 		globalvars.screen.fill(globalvars.BGCOLOR)
 	else:
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
-	pygame.display.flip()
 
 
 def addToDirtyRects(physObject, offset, cover=True):
@@ -144,12 +143,14 @@ def run():
 				(event.key == 109 or event.key == 110 or event.key == 27):
 					globalvars.panel = None
 					redrawWholeBackground()
+					pygame.display.flip()
 					break
 				#Panel event handeling can make the panel itself None so we have 
 				#to check if the panel has become None for every event. If the
 				#panel has become None we break and ignore further input events.
 				elif globalvars.panel is None:
 					redrawWholeBackground()
+					pygame.display.flip()
 					break
 				#Pass all other events to the panel
 				else:
@@ -330,15 +331,16 @@ def run():
 		#First tell the ships what is closest to them
 		#so that they can avoid collisions
 		setClosestSprites()
-		#Get the offset based on the player location.
-		offsetx = globalvars.player.rect.centerx - globalvars.CENTERX
-		offsety = globalvars.player.rect.centery - globalvars.CENTERY
-		offset = offsetx, offsety
 
 		#Update all the sprites
 		globalvars.intangibles_bottom.update()
 		globalvars.tangibles.update()
 		globalvars.intangibles_top.update()
+
+		#Get the offset based on the player location.
+		offsetx = globalvars.player.rect.centerx - globalvars.CENTERX
+		offsety = globalvars.player.rect.centery - globalvars.CENTERY
+		offset = offsetx, offsety
 
 		if useDirty:
 			#Put on screen rects in dirty rects
@@ -353,10 +355,7 @@ def run():
 					x.draw(offset)
 		else:
 			#Draw the background over the screen.
-	                if globalvars.BGIMAGE is None:
-	                        globalvars.screen.fill(globalvars.BGCOLOR)
-	                else:
-	                        globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+	                redrawWholeBackground()
 	                #Draw all the things that are on the screen
 	                drawThoseOnScreen(globalvars.intangibles_bottom, offset)
 	                drawThoseOnScreen(globalvars.tangibles, offset)
@@ -410,7 +409,8 @@ def drawThoseOnScreen(sprite_list, offset):
         left, top = offset
         for sp in sprite_list:
                 #If the sprite is on the screen, then draw it.
-                if sp.isOnScreen(offset): sp.draw(offset)
+                if sp.isOnScreen(offset):
+			sp.draw(offset)
                         #draw_count += 1 #TESTING
         #print str(draw_count)+' objects on screen.' #TESTING
 

@@ -20,7 +20,8 @@ import nodeManager
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
-globalvars.intangibles = pygame.sprite.Group()
+globalvars.intangibles_bottom = pygame.sprite.Group()
+globalvars.intangibles_top = pygame.sprite.Group()
 #This last group will contain any sprites that will tickle whiskers
 globalvars.whiskerables = pygame.sprite.Group()
 
@@ -40,7 +41,6 @@ def redrawWholeBackground():
 		globalvars.screen.fill(globalvars.BGCOLOR)
 	else:
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
-	pygame.display.flip()
 
 
 def addToDirtyRects(physObject, offset, cover=True):
@@ -115,8 +115,9 @@ def run():
 
 		if useDirty:
 			#Put on screen rects in dirty rects.
-			for x in globalvars.intangibles: addToDirtyRects(x, offset)
+			for x in globalvars.intangibles_bottom: addToDirtyRects(x, offset)
 			for x in globalvars.tangibles: addToDirtyRects(x, offset)
+			for x in globalvars.intangibles_top: addToDirtyRects(x, offset)
 
 		#Skip the rest of this loop until the game is unpaused.
 		if pause:
@@ -142,12 +143,14 @@ def run():
 				(event.key == 109 or event.key == 110 or event.key == 27):
 					globalvars.panel = None
 					redrawWholeBackground()
+					pygame.display.flip()
 					break
 				#Panel event handeling can make the panel itself None so we have 
 				#to check if the panel has become None for every event. If the
 				#panel has become None we break and ignore further input events.
 				elif globalvars.panel is None:
 					redrawWholeBackground()
+					pygame.display.flip()
 					break
 				#Pass all other events to the panel
 				else:
@@ -328,41 +331,44 @@ def run():
 		#First tell the ships what is closest to them
 		#so that they can avoid collisions
 		setClosestSprites()
+
+		#Update all the sprites
+		globalvars.intangibles_bottom.update()
+		globalvars.tangibles.update()
+		globalvars.intangibles_top.update()
+
 		#Get the offset based on the player location.
 		offsetx = globalvars.player.rect.centerx - globalvars.CENTERX
 		offsety = globalvars.player.rect.centery - globalvars.CENTERY
 		offset = offsetx, offsety
 
-		#Update all the sprites
-		globalvars.intangibles.update()
-		globalvars.tangibles.update()
-
 		if useDirty:
 			#Put on screen rects in dirty rects
-			for x in globalvars.intangibles:
+			for x in globalvars.intangibles_bottom:
 				if addToDirtyRects(x, offset, cover=False):
 					x.draw(offset)
-			#Update the tangibles.
 			for x in globalvars.tangibles:
+				if addToDirtyRects(x, offset, cover=False):
+					x.draw(offset)
+			for x in globalvars.intangibles_top:
 				if addToDirtyRects(x, offset, cover=False):
 					x.draw(offset)
 		else:
 			#Draw the background over the screen.
-	                if globalvars.BGIMAGE is None:
-	                        globalvars.screen.fill(globalvars.BGCOLOR)
-	                else:
-	                        globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+	                redrawWholeBackground()
 	                #Draw all the things that are on the screen
-	                drawThoseOnScreen(globalvars.intangibles, offset)
+	                drawThoseOnScreen(globalvars.intangibles_bottom, offset)
 	                drawThoseOnScreen(globalvars.tangibles, offset)
+	                drawThoseOnScreen(globalvars.intangibles_top, offset)
 
 		#Draw player last so the background isn't drawn overtop of the player.
-		globalvars.player.playerUpdate()
+		#globalvars.player.playerUpdate() #TODO TESTING
 		if not globalvars.player.isDead():
-			if useDirty:
-				addToDirtyRects(globalvars.player, offset, cover=False)
-			else:
-				globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
+			pass #TODO TESTING
+			#if useDirty:
+			#	addToDirtyRects(globalvars.player, offset, cover=False)
+			#else:
+			#	globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 		else:
 			#Make player death kick the player back to a menu where player 
 			#can choose to restart. Display a death screen then. Reset the 
@@ -382,7 +388,8 @@ def run():
 			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
 			print 'Sizes of Sprite Groups follows:'
 			print 'Tangibles: '+str(len(globalvars.tangibles))
-			print 'Intangibles: '+str(len(globalvars.intangibles))
+			print 'Intangibles_bottom: '+str(len(globalvars.intangibles_bottom))
+			print 'Intangibles_top: '+str(len(globalvars.intangibles_top))
 			print 'Whiskerables: '+str(len(globalvars.whiskerables))
 			print
 	#end round loop (until gameover)
@@ -403,7 +410,8 @@ def drawThoseOnScreen(sprite_list, offset):
         left, top = offset
         for sp in sprite_list:
                 #If the sprite is on the screen, then draw it.
-                if sp.isOnScreen(offset): sp.draw(offset)
+                if sp.isOnScreen(offset):
+			sp.draw(offset)
                         #draw_count += 1 #TESTING
         #print str(draw_count)+' objects on screen.' #TESTING
 
