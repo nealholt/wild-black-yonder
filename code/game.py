@@ -20,7 +20,8 @@ import nodeManager
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
-globalvars.intangibles = pygame.sprite.Group()
+globalvars.intangibles_bottom = pygame.sprite.Group()
+globalvars.intangibles_top = pygame.sprite.Group()
 #This last group will contain any sprites that will tickle whiskers
 globalvars.whiskerables = pygame.sprite.Group()
 
@@ -115,8 +116,9 @@ def run():
 
 		if useDirty:
 			#Put on screen rects in dirty rects.
-			for x in globalvars.intangibles: addToDirtyRects(x, offset)
+			for x in globalvars.intangibles_bottom: addToDirtyRects(x, offset)
 			for x in globalvars.tangibles: addToDirtyRects(x, offset)
+			for x in globalvars.intangibles_top: addToDirtyRects(x, offset)
 
 		#Skip the rest of this loop until the game is unpaused.
 		if pause:
@@ -334,16 +336,19 @@ def run():
 		offset = offsetx, offsety
 
 		#Update all the sprites
-		globalvars.intangibles.update()
+		globalvars.intangibles_bottom.update()
 		globalvars.tangibles.update()
+		globalvars.intangibles_top.update()
 
 		if useDirty:
 			#Put on screen rects in dirty rects
-			for x in globalvars.intangibles:
+			for x in globalvars.intangibles_bottom:
 				if addToDirtyRects(x, offset, cover=False):
 					x.draw(offset)
-			#Update the tangibles.
 			for x in globalvars.tangibles:
+				if addToDirtyRects(x, offset, cover=False):
+					x.draw(offset)
+			for x in globalvars.intangibles_top:
 				if addToDirtyRects(x, offset, cover=False):
 					x.draw(offset)
 		else:
@@ -353,8 +358,9 @@ def run():
 	                else:
 	                        globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 	                #Draw all the things that are on the screen
-	                drawThoseOnScreen(globalvars.intangibles, offset)
+	                drawThoseOnScreen(globalvars.intangibles_bottom, offset)
 	                drawThoseOnScreen(globalvars.tangibles, offset)
+	                drawThoseOnScreen(globalvars.intangibles_top, offset)
 
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
@@ -382,7 +388,8 @@ def run():
 			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
 			print 'Sizes of Sprite Groups follows:'
 			print 'Tangibles: '+str(len(globalvars.tangibles))
-			print 'Intangibles: '+str(len(globalvars.intangibles))
+			print 'Intangibles_bottom: '+str(len(globalvars.intangibles_bottom))
+			print 'Intangibles_top: '+str(len(globalvars.intangibles_top))
 			print 'Whiskerables: '+str(len(globalvars.whiskerables))
 			print
 	#end round loop (until gameover)

@@ -15,7 +15,8 @@ import hudHelpers
 
 def wipeOldScenario():
 	globalvars.tangibles.empty()
-	globalvars.intangibles.empty()
+	globalvars.intangibles_bottom.empty()
+	globalvars.intangibles_top.empty()
 	globalvars.whiskerables.empty()
 
 	globalvars.BGCOLOR = colors.black
@@ -44,7 +45,10 @@ def makeNewEnemy(x=0, y=0, weaponType='mk1'):
 
 def resetDust():
 	#Kill all the old dust.
-	for d in globalvars.intangibles:
+	for d in globalvars.intangibles_bottom:
+		if d.is_a == globalvars.DUST:
+			d.kill()
+	for d in globalvars.intangibles_top:
 		if d.is_a == globalvars.DUST:
 			d.kill()
 	#Make 50 dust particles scattered around the player.
@@ -54,7 +58,25 @@ def resetDust():
 				globalvars.WIDTH, globalvars.WIDTH)
 		temp = objInstances.Dust(x=x, y=y, width=size, height=size,\
 				 color=colors.white)
-		globalvars.intangibles.add(temp)
+		globalvars.intangibles_bottom.add(temp)
+
+
+def resetDustOnTop():
+	#Kill all the old dust.
+	for d in globalvars.intangibles_bottom:
+		if d.is_a == globalvars.DUST:
+			d.kill()
+	for d in globalvars.intangibles_top:
+		if d.is_a == globalvars.DUST:
+			d.kill()
+	#Make 50 dust particles scattered around the player.
+	for _ in range(50):
+		size = rd.randint(1,4)
+		x,y = getCoordsNearLoc(globalvars.player.rect.center, 50, 
+				globalvars.WIDTH, globalvars.WIDTH)
+		temp = objInstances.Dust(x=x, y=y, width=size, height=size,\
+				 color=colors.white)
+		globalvars.intangibles_top.add(temp)
 
 
 def testScenario00(seed=0):
@@ -64,7 +86,7 @@ def testScenario00(seed=0):
 	#TODO: temporary HUD that does nothing. You want to move the code away from this.
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
-	globalvars.intangibles.add(displayUtilities.ShipStatsText())
+	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
 	#Create motionless objects for reference purposes while testing.
 	temp = objInstances.FixedBody(0, -100, image_name='gem') #little crystal
@@ -95,11 +117,11 @@ def testScenario00(seed=0):
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
 		text='Press H to access the help menu',
 		timeOff=0, timeOn=1, ttl=3.0, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
 		text=' and learn the controls.',
 		timeOff=0, timeOn=1, ttl=3.0, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.BGCOLOR = colors.black
@@ -112,11 +134,11 @@ def asteroids(seed=0):
 	''' '''
 	rd.seed(seed) #Fix the seed for the random number generator.
 
-	wipeOldScenario(); resetDust()
+	wipeOldScenario(); resetDustOnTop()
 	#TODO: temporary HUD that does nothing. You want to move the code away from this.
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
-	globalvars.intangibles.add(displayUtilities.ShipStatsText())
+	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
 	rocks = ['bigrock','medrock','smallrock','gold','silver']
 	#Reset the player's location to 0,0 and his speed to zero
@@ -132,10 +154,7 @@ def asteroids(seed=0):
 	#Draw a black circle and put it in intangibles to show the limits 
 	#of the arena
 	temp = objInstances.FixedCircle(x=0, y=0, radius=globalvars.arena, color=colors.black)
-	#Insert at the beginning of intangibles so it doesn't draw over top of the health bars.
-	#globalvars.intangibles.insert(0,temp)
-	#TODO now that intangibles is a sprite group, you may need some other way of prioritizing what gets drawn in what order. SHIT now I remember why intangibles was a list and not a sprite group.
-	globalvars.intangibles.add(temp)
+	globalvars.intangibles_bottom.add(temp)
 	#Make 10 rocks centered around, but not on the player
 	for _ in range(10):
 		#Select a rock type
@@ -151,11 +170,11 @@ def asteroids(seed=0):
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
 		text='Watch out for asteroids while you',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
 		text='blow them up to collect gems.',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -166,7 +185,7 @@ def asteroids(seed=0):
 def gemWild(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
-	wipeOldScenario(); resetDust()
+	wipeOldScenario(); resetDustOnTop();
 	#Reset the player's location to 0,0 and his speed to zero
 	globalvars.player.loc = (0.0, 0.0)
 	globalvars.player.speed = 0.0
@@ -180,10 +199,7 @@ def gemWild(seed=0):
 	#Draw a black circle and put it in intangibles to show the limits 
 	#of the arena
 	temp = objInstances.FixedCircle(x=0, y=0, radius=globalvars.arena, color=colors.black)
-	#Insert at the beginning of intangibles so it doesn't draw over top of the health bars.
-	#globalvars.intangibles.insert(0,temp)
-	#TODO now that intangibles is a sprite group, you may need some other way of prioritizing what gets drawn in what order. SHIT now I remember why intangibles was a list and not a sprite group.
-	globalvars.intangibles.add(temp)
+	globalvars.intangibles_bottom.add(temp)
 
 	#Make 50 crystals centered around, but not on the player
 	for _ in range(50):
@@ -197,12 +213,12 @@ def gemWild(seed=0):
 	#TODO I'm just testing initially here. Ultimately I want to get rid of HUDs altogether and replace them with intangibles. Also, however, the following will not display the arrow or finish line which are important.
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display timer and score count with the following:
-	globalvars.intangibles.add(displayUtilities.TimeLimitDisplay(time_limit=time_limit))
+	globalvars.intangibles_top.add(displayUtilities.TimeLimitDisplay(time_limit=time_limit))
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text='Collect as many gems as you can in '+str(time_limit)+' seconds.',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -226,11 +242,11 @@ def race(seed=0):
 	#TODO I'm just testing initially here. Ultimately I want to get rid of HUDs altogether and replace them with intangibles. Also, however, the following will not display the arrow or finish line which are important.
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display timer with the following:
-	globalvars.intangibles.add(displayUtilities.TimerDisplay(finish_line))
+	globalvars.intangibles_top.add(displayUtilities.TimerDisplay(finish_line))
 	#Display arrow to finish line
-	globalvars.intangibles.add(displayUtilities.ArrowToDestination(finish_line))
+	globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(finish_line))
 	#Display finish bullseye
-	globalvars.intangibles.add(objInstances.FinishBullsEye(finish_line))
+	globalvars.intangibles_top.add(objInstances.FinishBullsEye(finish_line))
 
 	#determine what sorts of obstacles to put on the race course.
 	numbers = [0 for _ in range(hudHelpers.health+1)]
@@ -254,15 +270,15 @@ def race(seed=0):
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text='Welcome to the race!',
 		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52, 
 		text='Follow the yellow arrow',
 		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52*2,
 		text='to the finish as fast as possible.',
 		timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)
@@ -276,7 +292,7 @@ def furball(seed=0):
 	#TODO: temporary HUD that does nothing. You want to move the code away from this.
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
-	globalvars.intangibles.add(displayUtilities.ShipStatsText())
+	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
 	globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
 
@@ -295,7 +311,7 @@ def furball(seed=0):
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text='Fight off 3 enemy ships!',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
@@ -309,7 +325,7 @@ def capitalShipScenario(seed=0):
 	#TODO: temporary HUD that does nothing. You want to move the code away from this.
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
-	globalvars.intangibles.add(displayUtilities.ShipStatsText())
+	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
 	globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
 
@@ -321,7 +337,7 @@ def capitalShipScenario(seed=0):
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text='Blow up the capital ship!',
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
@@ -365,16 +381,16 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
 	#globalvars.hud_helper = hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps)
-	globalvars.intangibles.add(hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps))
+	globalvars.intangibles_bottom.add(hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps))
 	#TODO: temporary HUD that does nothing. You want to move the code away from this.
 	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
-	globalvars.intangibles.add(displayUtilities.ShipStatsText())
+	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text='You\'ve arrived in system '+str(seed),
 		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-	globalvars.intangibles.add(announcement)
+	globalvars.intangibles_top.add(announcement)
 
 	#Draw the new background and flip the whole screen.
 	globalvars.screen.fill(globalvars.BGCOLOR)

@@ -36,7 +36,6 @@ class Bullet(physicalObject.PhysicalObject):
 		if self.timeToLive <= 0:
 			#kill removes the calling sprite from all sprite groups
 			self.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
-			return True
 		if self.briefinvulnerability > 0:
 			self.briefinvulnerability -= 1
 		self.timeToLive -= 1
@@ -118,7 +117,6 @@ class Missile(physicalObject.PhysicalObject):
 		if self.target is None:
 			print 'Missile has no target. Aborting firing sequence.'
 			self.kill()
-			return False
 
 		self.setDestination(self.target.rect.center)
 
@@ -213,7 +211,7 @@ class Explosion(physicalObject.PhysicalObject):
 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
-			return True
+			self.kill()
 		self.timeToLive -= 1
 
 		x = rd.randint(self.xMinAdj, self.xMaxAdj) + self.rect.centerx
@@ -221,11 +219,12 @@ class Explosion(physicalObject.PhysicalObject):
 
 		globalvars.intangibles.add(Flash(x=x, y=y))
 		globalvars.intangibles.add(Debris(x=x, y=y))
-		return False
 
 	def draw(self, offset):
 		'''Explosion objects aren't drawn. They create other objects to draw.'''
 		pass
+
+	def isOnScreen(self, _): return False
 
 
 class Flash(physicalObject.PhysicalObject):
@@ -249,9 +248,8 @@ class Flash(physicalObject.PhysicalObject):
 	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
-			return True
+			self.kill()
 		self.timeToLive -= 1
-		return False
 
 	def draw(self, offset):
 		x,y = self.rect.center
@@ -272,10 +270,9 @@ class Debris(physicalObject.PhysicalObject):
  	def update(self):
 		'''Return true to be removed from intangibles. Return False othewise.'''
 		if self.timeToLive <= 0:
-			return True
+			self.kill()
 		self.timeToLive -= 1
 		self.move()
-		return False
 
 
 class Dust(physicalObject.PhysicalObject):
@@ -382,7 +379,6 @@ class Asteroid(physicalObject.PhysicalObject):
 		self.loc = translate(self.loc, self.direction, self.speed)
 		self.rect.centerx = self.loc[0]
 		self.rect.centery = self.loc[1]
-		return False
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
@@ -429,7 +425,6 @@ class Gem(physicalObject.PhysicalObject):
 		self.loc = translate(self.loc, \
 			self.direction, self.speed)
 		self.rect.center = self.loc[0], self.loc[1]
-		return False
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
@@ -457,10 +452,6 @@ class HealthKit(physicalObject.PhysicalObject):
 						image_name='health')
 		self.is_a = globalvars.HEALTH
 		self.health_amt = 10
-
-	def update(self):
-		'''Return true to be removed. Return False othewise.'''
-		return False
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
@@ -566,10 +557,9 @@ class FinishBullsEye(physicalObject.PhysicalObject):
 		self.useOffset = True
 
 	def update(self):
-		'''Return true to be removed from intangibles. Return False otherwise.'''
+		''' '''
 		#Distance to target
 		self.dtt = distance(globalvars.player.rect.center, self.target)
-		return False
 
 	def draw(self, offset):
 		#Draw a bulls eye (multiple overlapping red and white 

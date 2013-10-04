@@ -28,7 +28,8 @@ BGIMAGE = None
 
 #instantiate sprite groups
 tangibles = None
-intangibles = None
+intangibles_bottom = None #Display beneath all other things
+intangibles_top = None #Display above all other things
 #This last group will contain any sprites that will tickle whiskers. NPCs have whiskers for collision avoidance.
 whiskerables = None
 

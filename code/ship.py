@@ -41,7 +41,7 @@ class Ship(physicalObject.PhysicalObject):
 		self.myHealthBar = objInstances.HealthBar(width=20, height=10, 
 			heightAdjust=self.rect.height, vertical=False, 
 			current=self.health, total=self.maxhealth)
-		globalvars.intangibles.add(self.myHealthBar)
+		globalvars.intangibles_top.add(self.myHealthBar)
 
 
 	def setProfile(self):
@@ -201,7 +201,7 @@ class Ship(physicalObject.PhysicalObject):
 			#or the health sprite.
 		#	return died
 		if self.isDead():
-			globalvars.intangibles.add(objInstances.Explosion(\
+			globalvars.intangibles_top.add(objInstances.Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			#kill removes the calling sprite from all sprite groups
 			self.kill()

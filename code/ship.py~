@@ -160,6 +160,9 @@ class Ship(physicalObject.PhysicalObject):
 		#move
 		self.move()
 
+		#Update my health bar's center
+		self.myHealthBar.rect.center = self.rect.center
+
 
 	def draw(self, offset):
 		x,y = self.rect.center
