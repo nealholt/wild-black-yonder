@@ -116,9 +116,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def update(self):
 		'''This is called by game.py. Mostly objects implementing 
 		physicalObjects should have their own version of this 
-		function.
-		Return False means "I didn't die so don't remove me." '''
-		return False
+		function.'''
+		pass
 
 
 	def updateImageAngle(self):

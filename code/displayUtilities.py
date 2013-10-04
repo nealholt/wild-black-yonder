@@ -143,7 +143,7 @@ class TemporaryText(pygame.sprite.Sprite):
 		self.countdown = self.timeOn
 
 	def update(self):
-		'''Return true to be removed from intangibles. Return False otherwise.'''
+		''' '''
 		if self.countdown <= 0:
 			#Reset countdown and invert showing
 			if self.showing:
@@ -156,7 +156,7 @@ class TemporaryText(pygame.sprite.Sprite):
 		else:
 			self.countdown -= 1
 		self.ttl -= 1
-		return self.ttl <= 0
+		if self.ttl <= 0: self.kill()
 
 	def draw(self, offset):
 		pos = self.rect.topleft
@@ -195,10 +195,6 @@ class ShipStatsText(pygame.sprite.Sprite):
 		self.rect = None
 		self.draw((0,0))
 
-	def update(self):
-		'''Return true to be removed from intangibles. Return False otherwise.'''
-		return False
-
 	def draw(self, _):
 		string = 'Player X,Y: '+trunc(globalvars.player.rect.centerx, 0)+\
 			','+trunc(globalvars.player.rect.centery,0)+\
@@ -228,10 +224,6 @@ class TimerDisplay(pygame.sprite.Sprite):
 		#Create the rect and draw once to properly initialize it.
 		self.rect = None
 		self.draw((0,0))
-
-	def update(self):
-		'''Return true to be removed from intangibles. Return False otherwise.'''
-		return False
 
 	def draw(self, _):
 		#elapsed time
@@ -269,10 +261,6 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 		#Create the rect and draw once to properly initialize it.
 		self.rect = None
 		self.draw((0,0))
-
-	def update(self):
-		'''Return true to be removed from intangibles. Return False otherwise.'''
-		return False
 
 	def draw(self, _):
 		if self.finish_reached: return True
@@ -318,10 +306,9 @@ class ArrowToDestination(pygame.sprite.Sprite):
 		self.draw((0,0))
 
 	def update(self):
-		'''Return true to be removed from intangibles. Return False otherwise.'''
+		''' '''
 		#Distance to target
 		self.dtt = distance(globalvars.player.rect.center, self.target)
-		return False
 
 	def draw(self, _):
 		self.rect = drawArrowAtTarget(self.target)

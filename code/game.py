@@ -334,14 +334,7 @@ def run():
 		offset = offsetx, offsety
 
 		#Update all the sprites
-		for x in globalvars.intangibles:
-			#Returning true from update indicates that the intangible died.
-			if x.update():
-				if useDirty:
-					#Draw over the sprite, kill it, and remove it from intangibles.
-					addToDirtyRects(x, offset, cover=True)
-				#kill removes the calling sprite from all sprite groups
-				x.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
+		globalvars.intangibles.update()
 		globalvars.tangibles.update()
 
 		if useDirty:
