@@ -14,7 +14,7 @@ import colors
 import testFunctions as test
 import menus
 from geometry import distance, angleFromPosition, translate, rotateAngle
-from misc import writeTextToScreen
+from displayUtilities import writeTextToScreen
 import datetime #Use for testing efficiency
 import nodeManager
 
@@ -32,6 +32,7 @@ globalvars.localSystem.generateGalaxy()
 
 #More efficient animations:
 dirty_rects = []
+useDirty = True #Whether to flip or use dirty rectangles
 
 
 def redrawWholeBackground():
@@ -95,22 +96,29 @@ def run():
 
 	#The in-round loop (while player is alive):
 	while running:
-		pygame.display.update(dirty_rects)
-		dirty_rects = []
+		#Draw everything on the screen. Do so either using dirty rects or just by
+		#redrawing the whole screen. Dirty rects are usually more efficient.
+		if useDirty:
+			print 'dirty'
+			pygame.display.update(dirty_rects)
+			dirty_rects = []
+		else:
+			print 'flipping'
+			pygame.display.flip()
 
 		#Used for calculating actual frames per second in
 		#order to determine when we are dropping frames
 		#so that efficiency improvements can be made.
 		start_time = datetime.datetime.now()
 		#frame maintainance:
-		pygame.display.flip()
 		#aim for globalvars.FPS frames per second.
 		clock.tick(globalvars.FPS) 
 		fps = max(1, int(clock.get_fps()))
 
-		#Put on screen rects in dirty rects.
-		for x in globalvars.intangibles: addToDirtyRects(x, offset)
-		for x in globalvars.tangibles: addToDirtyRects(x, offset)
+		if useDirty:
+			#Put on screen rects in dirty rects.
+			for x in globalvars.intangibles: addToDirtyRects(x, offset)
+			for x in globalvars.tangibles: addToDirtyRects(x, offset)
 
 		#Skip the rest of this loop until the game is unpaused.
 		if pause:
@@ -331,25 +339,39 @@ def run():
 		for x in globalvars.intangibles:
 			#Returning true from update indicates that the intangible died.
 			if x.update():
-				#Draw over the sprite, kill it, and remove it from intangibles.
-				addToDirtyRects(x, offset, cover=True)
+				if useDirty:
+					#Draw over the sprite, kill it, and remove it from intangibles.
+					addToDirtyRects(x, offset, cover=True)
 				#kill removes the calling sprite from all sprite groups
 				x.kill() #http://pygame.org/docs/ref/sprite.html#Sprite.kill
 		globalvars.tangibles.update()
 
-		#Put on screen rects in dirty rects
-		for x in globalvars.intangibles:
-			if addToDirtyRects(x, offset, cover=False):
-				x.draw(offset)
-		#Update the tangibles.
-		for x in globalvars.tangibles:
-			if addToDirtyRects(x, offset, cover=False):
-				x.draw(offset)
+		if useDirty:
+			#Put on screen rects in dirty rects
+			for x in globalvars.intangibles:
+				if addToDirtyRects(x, offset, cover=False):
+					x.draw(offset)
+			#Update the tangibles.
+			for x in globalvars.tangibles:
+				if addToDirtyRects(x, offset, cover=False):
+					x.draw(offset)
+		else:
+			#Draw the background over the screen.
+	                if globalvars.BGIMAGE is None:
+	                        globalvars.screen.fill(globalvars.BGCOLOR)
+	                else:
+	                        globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+	                #Draw all the things that are on the screen
+	                drawThoseOnScreen(globalvars.intangibles, offset)
+	                drawThoseOnScreen(globalvars.tangibles, offset)
 
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		if not globalvars.player.isDead():
-			addToDirtyRects(globalvars.player, offset, cover=False)
+			if useDirty:
+				addToDirtyRects(globalvars.player, offset, cover=False)
+			else:
+				globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 		else:
 			#Make player death kick the player back to a menu where player 
 			#can choose to restart. Display a death screen then. Reset the 
@@ -377,7 +399,23 @@ def run():
 
 
 
-#The following were yanked out of behaviors.py and behaviors.py was removed because behaviors.py and game.py were mutually importing which can lead to errors. In any case, behaviors was only imported by game.py.
+def drawThoseOnScreen(sprite_list, offset):
+        '''Takes a list of pygame sprites and the top left coordinates of the screen 
+        and draws only those sprites that are visible on screen.
+        I tested (see "y key" above) with and without checking whether or not each
+        sprite is on the screen before drawing it and I found checking to be more
+        efficient in multiple scenarios. The gain is less than I expected and
+        a major inefficiency in python seems to be function calls, making me wonder 
+        how important it is to wrap this into the run method, but I'm going to avoid 
+        that for now.'''
+        #draw_count = 0 #TESTING
+        left, top = offset
+        for sp in sprite_list:
+                #If the sprite is on the screen, then draw it.
+                if sp.isOnScreen(offset): sp.draw(offset)
+                        #draw_count += 1 #TESTING
+        #print str(draw_count)+' objects on screen.' #TESTING
+
 
 def setClosestSprites():
 	'''Pre:
