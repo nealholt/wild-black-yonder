@@ -45,11 +45,7 @@ class Player(ship.Ship):
 		self.cooldown() #cooldown all the weapons
 		#Update my health bar's center
 		self.myHealthBar.rect.center = self.rect.center
-		self.playerUpdate() #TODO TESTING
-
-
-	#def draw(self, _): #TODO TESTING
-	#	self.drawAt((globalvars.CENTERX, globalvars.CENTERY))
+		self.myHealthBar.rect.top -= self.healthBarOffset
 
 
 	def getLeadIndicator(self):

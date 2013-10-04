@@ -7,6 +7,8 @@ from geometry import distance, lineIntersectsCircle, angleToSlope, inSights
 import globalvars
 import weapon
 
+healthBarDefaultWidth = 20
+
 class Ship(physicalObject.PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
 
@@ -23,6 +25,7 @@ class Ship(physicalObject.PhysicalObject):
 		self.setProfile()
 
 		self.myHealthBar = None
+		self.healthBarOffset = self.rect.height
 		self.setHealthBar()
 
 		self.is_a = globalvars.SHIP
@@ -38,14 +41,11 @@ class Ship(physicalObject.PhysicalObject):
 
 
 	def setHealthBar(self):
-		self.myHealthBar = objInstances.HealthBar(width=20, height=10, 
-			heightAdjust=self.rect.height, vertical=False, 
-			current=self.health, total=self.maxhealth)
+		self.myHealthBar = objInstances.HealthBar(width=healthBarDefaultWidth, height=10)
 		globalvars.intangibles_top.add(self.myHealthBar)
 
 
 	def setProfile(self):
-		#TODO shouldn't there be a better way to do this?
 		self.maxSpeed = self.engine.maxSpeed
 		self.dv = self.engine.dv
 		self.dtheta = self.engine.dtheta
@@ -58,7 +58,8 @@ class Ship(physicalObject.PhysicalObject):
 
 	def takeDamage(self):
 		self.health -= 10
-		self.myHealthBar.health = self.health
+		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
+
 
 	def gainHealth(self, amount):
 		self.health = min(self.maxhealth, self.health+amount)
@@ -160,8 +161,13 @@ class Ship(physicalObject.PhysicalObject):
 		#move
 		self.move()
 
-		#Update my health bar's center
+		#Update my health bar
+		self.updateHealthBar()
+
+
+	def updateHealthBar(self):
 		self.myHealthBar.rect.center = self.rect.center
+		self.myHealthBar.rect.top -= self.healthBarOffset
 
 
 	def draw(self, offset):

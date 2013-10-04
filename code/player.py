@@ -43,8 +43,8 @@ class Player(ship.Ship):
 		which is needed for when the screen follows or 
 		centers on the player.'''
 		self.cooldown() #cooldown all the weapons
-		#Update my health bar's center
-		self.myHealthBar.rect.center = self.rect.center
+		#Update my health bar
+		self.updateHealthBar()
 
 
 	def getLeadIndicator(self):

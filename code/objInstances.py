@@ -467,24 +467,23 @@ class HealthKit(physicalObject.PhysicalObject):
 
 
 class HealthBar(physicalObject.PhysicalObject):
-	def __init__(self, width=0, height=0, heightAdjust=0, vertical=False, current=100, total=100):
+	def __init__(self, width=40, height=40):
 		physicalObject.PhysicalObject.__init__(self, width=width, height=height)
-		#Current and total health or progress or whatever the bar is measuring
-		self.health = current
-		self.maxHealth = total
-		#Offset the height so you don't draw the healthbar over top of the ship
-		self.heightAdjust = heightAdjust
+		self.is_a = globalvars.OTHER
+		#To prevent smearing, we need to keep a separate width variable.
+		self.new_width = self.rect.width
 
 	def draw(self, offset):
-		healthx = self.rect.centerx - offset[0] - self.rect.width/2
-		healthy = self.rect.centery - offset[1] - self.rect.height - self.heightAdjust/2
-		#Draw red bar
-		self.rect.topleft = (healthx, healthy)
-		pygame.draw.rect(globalvars.screen, colors.red, self.rect, 0)
-		#Draw green bar
-		width = (self.health/float(self.maxHealth))*self.rect.width
-		tempRect = pygame.Rect(healthx, healthy, width, self.rect.height)
-		pygame.draw.rect(globalvars.screen, colors.green, tempRect, 0)
+		x,y = self.rect.topleft
+		pos = x - offset[0], y - offset[1]
+
+		image = pygame.Surface([self.rect.width, self.rect.height])
+		image.fill(colors.red)
+		globalvars.screen.blit(image, pos)
+
+		image = pygame.Surface([self.new_width, self.rect.height])
+		image.fill(colors.green)
+		globalvars.screen.blit(image, pos)
 
 
 

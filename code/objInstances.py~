@@ -139,7 +139,7 @@ class Missile(physicalObject.PhysicalObject):
 		#For now, shoot through health packs with no effect.
 		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.HEALTH:
 			#explode
-			globalvars.intangibles.add(Explosion(\
+			globalvars.intangibles_bottom.add(Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			died = True
 			#kill removes the calling sprite from all sprite groups
@@ -186,7 +186,7 @@ class Mine(physicalObject.PhysicalObject):
 		died = False
 		if self.explodeAfter == 0 or other_sprite.is_a == globalvars.BULLET:
 			#explode
-			globalvars.intangibles.add(Explosion(\
+			globalvars.intangibles_bottom.add(Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			died = True
 			#kill removes the calling sprite from all sprite groups
@@ -217,8 +217,8 @@ class Explosion(physicalObject.PhysicalObject):
 		x = rd.randint(self.xMinAdj, self.xMaxAdj) + self.rect.centerx
 		y = rd.randint(self.yMinAdj, self.yMaxAdj) + self.rect.centery
 
-		globalvars.intangibles.add(Flash(x=x, y=y))
-		globalvars.intangibles.add(Debris(x=x, y=y))
+		globalvars.intangibles_top.add(Flash(x=x, y=y))
+		globalvars.intangibles_bottom.add(Debris(x=x, y=y))
 
 	def draw(self, offset):
 		'''Explosion objects aren't drawn. They create other objects to draw.'''
@@ -344,7 +344,7 @@ def splitRock(image_name, centerx=0, centery=0):
 	elif new_image == 'debris':
 		for _ in range(count):
 			temp = Debris(x=centerx, y=centery)
-			globalvars.intangibles.add(temp)
+			globalvars.intangibles_bottom.add(temp)
 	else:
 		for _ in range(count):
 			temp = Asteroid(x=centerx, y=centery,
@@ -440,7 +440,7 @@ class Gem(physicalObject.PhysicalObject):
 				x=self.rect.left, y=self.rect.top, 
 				text='+'+str(self.points), color=colors.blue,
 				ttl=3.0, fontSize=36, useOffset=True)
-			globalvars.intangibles.add(announcement)
+			globalvars.intangibles_top.add(announcement)
 			self.kill()
 		return False
 
@@ -461,30 +461,31 @@ class HealthKit(physicalObject.PhysicalObject):
 				x=self.rect.left, y=self.rect.top, 
 				text='+'+str(self.health_amt), color=colors.green,
 				ttl=3.0, fontSize=36, useOffset=True)
-			globalvars.intangibles.add(announcement)
+			globalvars.intangibles_top.add(announcement)
 			self.kill()
 		return False
 
 
 class HealthBar(physicalObject.PhysicalObject):
-	def __init__(self, width=0, height=0, heightAdjust=0, vertical=False, current=100, total=100):
-		physicalObject.PhysicalObject.__init__(self, width=width, height=height)
-		#Current and total health or progress or whatever the bar is measuring
-		self.health = current
-		self.maxHealth = total
-		#Offset the height so you don't draw the healthbar over top of the ship
-		self.heightAdjust = heightAdjust
+	def __init__(self, x=0, y=0, width=40, height=40, color=colors.white):
+		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
+						width=width, height=height, \
+						color=color)
+		self.is_a = globalvars.FIXEDBODY
+		#To prevent smearing, we need to keep a separate width variable.
+		self.new_width = self.rect.width
 
 	def draw(self, offset):
-		healthx = self.rect.centerx - offset[0] - self.rect.width/2
-		healthy = self.rect.centery - offset[1] - self.rect.height - self.heightAdjust/2
-		#Draw red bar
-		self.rect.topleft = (healthx, healthy)
-		pygame.draw.rect(globalvars.screen, colors.red, self.rect, 0)
-		#Draw green bar
-		width = (self.health/float(self.maxHealth))*self.rect.width
-		tempRect = pygame.Rect(healthx, healthy, width, self.rect.height)
-		pygame.draw.rect(globalvars.screen, colors.green, tempRect, 0)
+		x,y = self.rect.topleft
+		pos = x - offset[0], y - offset[1]
+
+		image = pygame.Surface([self.rect.width, self.rect.height])
+		image.fill(colors.red)
+		globalvars.screen.blit(image, pos)
+
+		image = pygame.Surface([self.new_width, self.rect.height])
+		image.fill(colors.green)
+		globalvars.screen.blit(image, pos)
 
 
 
