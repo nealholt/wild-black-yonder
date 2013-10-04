@@ -35,7 +35,6 @@ globalvars.localSystem.generateGalaxy()
 dirty_rects = []
 useDirty = True #Whether to flip or use dirty rectangles
 
-
 def redrawWholeBackground():
 	if globalvars.BGIMAGE is None:
 		globalvars.screen.fill(globalvars.BGCOLOR)
@@ -66,9 +65,11 @@ def addToDirtyRects(physObject, offset, cover=True):
 	return isOn
 
 
-def run():
-	"""Runs the game."""
+def run(countdown=-1):
+	'''Runs the game.
+	Countdown is used for profiling.'''
 	global dirty_rects
+
 	fps = globalvars.FPS
 	offsetx = 0
 	offsety = 0
@@ -96,6 +97,12 @@ def run():
 
 	#The in-round loop (while player is alive):
 	while running:
+		#Use this for more accurate profiling:
+		if countdown != -1:
+			countdown -= 1
+			if countdown < 0:
+				exit()
+
 		#Draw everything on the screen. Do so either using dirty rects or just by
 		#redrawing the whole screen. Dirty rects are usually more efficient.
 		if useDirty:
@@ -226,11 +233,14 @@ def run():
 					#Profile lots of methods, but not game.run()
 					profileEverything(offset)
 				elif event.key == 117: #u key
-					#game.run()
+					#Profile game.run()
 					import cProfile
-					print 'Profiling game.run(). Press escape to quit.'
-					cProfile.runctx('run()', globals(),locals(), 'profiling/game.run.profile')
-					print 'Done profiling run.'
+					print 'Profiling game.run(countdown=1800). '+\
+						'Press escape to quit early. '+\
+						'Profiling will stop automatically after 30 seconds.'
+					#Run for 1800 frames (or 30 seconds assuming 60 frames per second.
+					cProfile.runctx('run(countdown=1800)', globals(),None,
+						'profiling/game.run.profile')
 					exit()
 				elif event.key == 47:
 					#forward slash (question mark
