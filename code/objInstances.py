@@ -472,14 +472,14 @@ class HealthBar(physicalObject.PhysicalObject):
 		self.is_a = globalvars.OTHER
 		#To prevent smearing, we need to keep a separate width variable.
 		self.new_width = self.rect.width
+		self.red_bar = pygame.Surface([self.rect.width, self.rect.height])
+		self.red_bar.fill(colors.red)
 
 	def draw(self, offset):
 		x,y = self.rect.topleft
 		pos = x - offset[0], y - offset[1]
 
-		image = pygame.Surface([self.rect.width, self.rect.height])
-		image.fill(colors.red)
-		globalvars.screen.blit(image, pos)
+		globalvars.screen.blit(self.red_bar, pos)
 
 		image = pygame.Surface([self.new_width, self.rect.height])
 		image.fill(colors.green)
