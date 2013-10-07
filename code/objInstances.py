@@ -429,13 +429,14 @@ class Gem(physicalObject.PhysicalObject):
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
 		if other_sprite.is_a == globalvars.SHIP:
-			#give money to the ship
-			#Not all game huds are equipped to handle points yet so we use this try catch.
-			#http://stackoverflow.com/questions/610883/how-to-know-if-an-object-has-an-attribute-in-python/610923#610923
-			try:
-				globalvars.hud_helper.points += self.points
-			except AttributeError:
-				pass
+			#give money to the ship. This might not be the ideal way to do this.
+			#Look for the object in globalvars.intangibles_top that has attribute 
+			#'points' and add the points to it. This object should 
+			#be a displayUtilities.TimeLimitDisplay
+			for it in globalvars.intangibles_top:
+				if hasattr(it, 'points'):
+					it.points += self.points
+					break
 			announcement = TemporaryText(
 				x=self.rect.left, y=self.rect.top, 
 				text='+'+str(self.points), color=colors.blue,

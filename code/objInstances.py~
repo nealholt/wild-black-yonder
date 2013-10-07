@@ -429,13 +429,11 @@ class Gem(physicalObject.PhysicalObject):
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
 		if other_sprite.is_a == globalvars.SHIP:
-			#give money to the ship
-			#Not all game huds are equipped to handle points yet so we use this try catch.
-			#http://stackoverflow.com/questions/610883/how-to-know-if-an-object-has-an-attribute-in-python/610923#610923
-			try:
-				globalvars.hud_helper.points += self.points
-			except AttributeError:
-				pass
+			#give money to the ship. This might not be the ideal way to do this.
+			for it in globalvars.intangibles_top:
+				if hasattr(it, 'points'):
+					it.points += self.points
+					break
 			announcement = TemporaryText(
 				x=self.rect.left, y=self.rect.top, 
 				text='+'+str(self.points), color=colors.blue,
@@ -472,14 +470,14 @@ class HealthBar(physicalObject.PhysicalObject):
 		self.is_a = globalvars.OTHER
 		#To prevent smearing, we need to keep a separate width variable.
 		self.new_width = self.rect.width
+		self.red_bar = pygame.Surface([self.rect.width, self.rect.height])
+		self.red_bar.fill(colors.red)
 
 	def draw(self, offset):
 		x,y = self.rect.topleft
 		pos = x - offset[0], y - offset[1]
 
-		image = pygame.Surface([self.rect.width, self.rect.height])
-		image.fill(colors.red)
-		globalvars.screen.blit(image, pos)
+		globalvars.screen.blit(self.red_bar, pos)
 
 		image = pygame.Surface([self.new_width, self.rect.height])
 		image.fill(colors.green)
