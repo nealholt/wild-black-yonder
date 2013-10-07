@@ -411,7 +411,7 @@ def setDestinationNode(nodeid):
 					break
 			break
 	#Error check
-	if destNodeLoc is None
+	if destNodeLoc is None:
 		print 'ERROR: No destination node found. Exiting.'; exit()
 	#Search through intangibles_top and remove any existing arrows
 	for i in globalvars.intangibles_top:

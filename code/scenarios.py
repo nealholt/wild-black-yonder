@@ -29,9 +29,6 @@ def wipeOldScenario():
 	#Immediately clear the panel
 	globalvars.panel = None
 
-	#Reset the hud_helper
-	globalvars.hud_helper = None
-
 	#Reset the arena
 	globalvars.arena = 0
 
@@ -83,8 +80,6 @@ def testScenario00(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()
-	#TODO: temporary HUD that does nothing. You want to move the code away from this.
-	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
 	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
@@ -135,8 +130,6 @@ def asteroids(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDustOnTop()
-	#TODO: temporary HUD that does nothing. You want to move the code away from this.
-	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
 	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
@@ -210,8 +203,6 @@ def gemWild(seed=0):
 		globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
 
 	time_limit = 30 #time limit in seconds
-	#TODO I'm just testing initially here. Ultimately I want to get rid of HUDs altogether and replace them with intangibles. Also, however, the following will not display the arrow or finish line which are important.
-	globalvars.hud_helper = hudHelpers.Hud()
 	#Display timer and score count with the following:
 	globalvars.intangibles_top.add(displayUtilities.TimeLimitDisplay(time_limit=time_limit))
 
@@ -239,8 +230,6 @@ def race(seed=0):
 	globalvars.player.targetSpeed = 0.0
 	finish_line = (6000, 0)
 
-	#TODO I'm just testing initially here. Ultimately I want to get rid of HUDs altogether and replace them with intangibles. Also, however, the following will not display the arrow or finish line which are important.
-	globalvars.hud_helper = hudHelpers.Hud()
 	#Display timer with the following:
 	globalvars.intangibles_top.add(displayUtilities.TimerDisplay(finish_line))
 	#Display arrow to finish line
@@ -289,8 +278,6 @@ def furball(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()
-	#TODO: temporary HUD that does nothing. You want to move the code away from this.
-	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
 	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
@@ -322,8 +309,6 @@ def capitalShipScenario(seed=0):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
 	wipeOldScenario(); resetDust()
-	#TODO: temporary HUD that does nothing. You want to move the code away from this.
-	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
 	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
@@ -380,10 +365,7 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 			allWarps.append(temp)
 
 	#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
-	#globalvars.hud_helper = hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps)
 	globalvars.intangibles_bottom.add(hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps))
-	#TODO: temporary HUD that does nothing. You want to move the code away from this.
-	globalvars.hud_helper = hudHelpers.Hud()
 	#Display player location and speed info with the following:
 	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 

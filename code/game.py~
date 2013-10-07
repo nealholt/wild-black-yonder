@@ -241,7 +241,6 @@ def run(countdown=-1):
 					#Run for 1800 frames (or 30 seconds assuming 60 frames per second.
 					cProfile.runctx('run(countdown=1800)', globals(),None,
 						'profiling/game.run.profile')
-					print 'Profiling halted early.'
 					exit()
 				elif event.key == 47:
 					#forward slash (question mark

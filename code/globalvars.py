@@ -42,9 +42,6 @@ player = None
 #The point in space just ahead of the player that all the enemies will aim for.
 player_target_lead = (0.0,0.0)
 
-#An object that displays scenario-specific hud stuff.
-hud_helper = None
-
 #If arena is set to anything other than zero, then the player will be forced to stay inside the arena and all other objects will also be pointed roughly in the direction of the center of the arena. This is used for 
 arena = 0
 

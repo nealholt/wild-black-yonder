@@ -387,8 +387,6 @@ def run(countdown=-1):
 			if globalvars.deathcountdown < 0:
 				globalvars.panel = menus.getRestartPanel()
 
-		globalvars.hud_helper.update(offset)
-
 		#Calculate how long we took in the above loop to estimate the number of frames per second
 		#Alert user if fraps drops below half the desired threshold.
 		time_lapse = datetime.datetime.now() - start_time
@@ -512,7 +510,6 @@ def profileEverything(offset):
 	cProfile.runctx('for _ in range(10000): collisionHandling()', globals(),locals(), 'profiling/collisionHandling.profile')
 	cProfile.runctx('for _ in range(10000): setClosestSprites()', globals(),locals(), 'profiling/setClosestSprites.profile')
 	cProfile.runctx('for _ in range(10000): globalvars.tangibles.update()', globals(),locals(), 'profiling/updateTangibles.profile')
-	cProfile.runctx('for _ in range(10000): globalvars.hud_helper.update(offset)', globals(),locals(), 'profiling/updateHudHelper.profile')
 
 	#Profile some of the scenario functions.
 	menus.scenarios.profile()

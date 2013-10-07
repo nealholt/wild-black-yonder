@@ -141,24 +141,6 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	return toreturn
 
 
-class Hud():
-	'''This is the parent hud class.'''
-        def __init__(self):
-		#List of objects to update. This is where you should put
-		#objects that won't collide with anything but still need updated.
-		#self.toUpdate = []
-		pass
-
-	#def addObjectToUpdate(self, toUp):
-	#	self.toUpdate.append(toUp)
-
-	def update(self, _):
-		pass
-		#for tu in self.toUpdate:
-		#	if tu.update():
-		#		self.toUpdate.remove(tu)
-
-
 class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 	'''An object which will deterministically but randomly generate
 	objects in space based on the player's location.
