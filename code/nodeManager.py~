@@ -17,6 +17,8 @@ class Node():
 		self.loc = (x,y)
 		#list of id,location pairs this node is connected to
 		self.connections = []
+		#Parameters to distinguish nodes by parameterizing the infinite space generator.
+		
 
 	def addConnection(self, connectid, location):
 		self.connections.append((connectid,location))
@@ -91,6 +93,6 @@ class NodeManager():
 			for c in n.connections:
 				#Only add connections in one direction to prevent duplicates.
 				if c[0] > n.id:
-					otherend = self.getNode(c)
+					otherend = self.getNode(c[0])
 					self.connections.append([n.x, n.y, otherend.x, otherend.y])
 
