@@ -146,8 +146,7 @@ def run(countdown=-1):
 			for event in pygame.event.get():
 				#Check for event m key, n key, or escape key being 
 				#pressed to remove the menu.
-				if event.type == pygame.KEYDOWN and \
-				(event.key == 109 or event.key == 110 or event.key == 27):
+				if event.type == pygame.KEYDOWN:
 					globalvars.panel = None
 					redrawWholeBackground()
 					pygame.display.flip()
@@ -208,8 +207,11 @@ def run(countdown=-1):
 					else:
 						globalvars.panel = menus.getTestingPanel()
 					continue
+				elif event.key == 108: #l key
+					globalvars.panel = menus.getGalaxyPanel(False)
+					continue
 				elif event.key == 110: #n key
-					globalvars.panel = menus.getGalaxyPanel()
+					globalvars.panel = menus.getGalaxyPanel(True)
 					continue
 				elif event.key == 112: #p key
 					globalvars.player.parkingBrake()

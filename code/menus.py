@@ -137,10 +137,21 @@ def getTestingPanel():
 	return menu
 
 
-def getGalaxyPanel():
+def getGalaxyPanel(travel):
 	'''Pre: localSystem is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
 	radius = 10
+
+	font_size = 36
+	if travel:
+		temp = drawable.Text(x1=left+100, y1=top+font_size/2,\
+			string='Click on a node to set it as the destination.',\
+			font_size=font_size, color=colors.white)
+	else:
+		temp = drawable.Text(x1=left+100, y1=top+font_size/2,\
+			string='Click on a node to learn more about it.',\
+			font_size=font_size, color=colors.white)
+	menu.addDrawable(temp)
 
 	for n in globalvars.localSystem.nodes:
 		subpanel = Panel()
@@ -152,11 +163,16 @@ def getGalaxyPanel():
 		subpanel.addDrawable(temp)
 		#If this node is connected to the player's current node, make it clickable
 		isconnected = False
-		for c in n.connections:
-			if globalvars.player.nodeid == c[0]:
-				subpanel.setMethod(scenarios.setDestinationNode)
-				subpanel.argument = n.id
-				break
+		subpanel.argument = n.id
+		#If travel is set, then view options that can be traveled to
+		if travel:
+			for c in n.connections:
+				if globalvars.player.nodeid == c[0]:
+					subpanel.setMethod(scenarios.setDestinationNode)
+					break
+		else:
+			#Otherwise view options for information only
+			subpanel.setMethod(setNodeViewPanel)
 		#If this node is the player's current location then make this reset
 		#the player's scenario. This is really only for testing since the player
 		#can get away using the testing menu by pressing the m key.
@@ -170,6 +186,28 @@ def getGalaxyPanel():
 		menu.addDrawable(temp)
 
 	return menu
+
+
+def setNodeViewPanel(nodeid):
+	node = globalvars.localSystem.getNode(nodeid)
+
+	menu = getStandardMenu()
+
+	text = [
+	'Hostility: '+str(node.hostility)+'. Chance to generate opposing ships.',
+	'Enemy strength: '+str(node.strength)+'. Strength of opposing ships (initially just capital ship chance).',
+	'Debris: '+str(node.amt_debris)+'. Chance of asteroids.',
+	'Wealth: '+str(node.amt_wealth)+'. Chance of gems, health, and rich asteroids.'
+	]
+
+	#Then draw the contents of the menu
+	font_size = 24
+	for i in range(len(text)):
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+20+top, string=text[i],\
+			font_size=font_size, color=colors.white)
+		menu.addDrawable(temp)
+	globalvars.panel = menu
 
 
 def getRestartPanel():
@@ -208,8 +246,10 @@ def getHelpPanel():
 	'Press left arrow to turn counter-clockwise 30 degrees.',
 	'Press right arrow to turn clockwise 30 degrees.',
 	'Click on the screen to tell the starship to move towards the clicked point.',
-	'Press "m" open or close a menu. m is for menu in this case. TESTING.',
-	'Press "n" to display the galaxy nodes menu. Also closes this menu.',
+	'Press "m" open the scenarios menu.',
+	'Press "l" to display the galaxy node info menu.',
+	'Press "n" to display the galaxy node travel menu.',
+	'Press anything to close the current menu.',
 	'Press "p" to slow down and park at destination.',
 	'Press "s" to pause/unpause the game.',
 	'Press "q" to remove destination and simply fly in current direction.',
