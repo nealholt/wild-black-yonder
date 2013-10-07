@@ -383,10 +383,11 @@ def setDestinationNode(nodeid):
 	globalvars.player.destinationNode = nodeid
 	#Find the infinite space generator
 	destNodeLoc = None
+	foundObjWithWarps = False
 	for i in globalvars.intangibles_bottom:
 		if hasattr(i, 'warps'):
+			foundObjWithWarps = True
 			#Get the location of the destination node
-			destNodeLoc
 			for w in i.warps:
 				if w.destinationNode == nodeid:
 					destNodeLoc = w.rect.center
@@ -394,13 +395,18 @@ def setDestinationNode(nodeid):
 			break
 	#Error check
 	if destNodeLoc is None:
-		print 'ERROR: No destination node found. Exiting.'; exit()
-	#Search through intangibles_top and remove any existing arrows
-	for i in globalvars.intangibles_top:
-		if i.is_a == globalvars.ARROW:
-			globalvars.intangibles_top.remove(i)
-	#Create a new arrow pointing to the destination node and add it to intangibles_top
-	globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destNodeLoc))
+		if foundObjWithWarps:
+			print 'ERROR: No destination node found for nodeid '+\
+				str(nodeid)+'. Exiting.'; exit()
+		else:
+			print 'Warning: cannot set destination node from here.'
+	else:
+		#Search through intangibles_top and remove any existing arrows
+		for i in globalvars.intangibles_top:
+			if i.is_a == globalvars.ARROW:
+				globalvars.intangibles_top.remove(i)
+		#Create a new arrow pointing to the destination node and add it to intangibles_top
+		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destNodeLoc))
 
 
 def restart():

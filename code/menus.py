@@ -137,6 +137,10 @@ def getTestingPanel():
 	return menu
 
 
+def setGalaxyPanel(travel):
+	globalvars.panel = getGalaxyPanel(travel)
+
+
 def getGalaxyPanel(travel):
 	'''Pre: localSystem is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
@@ -207,6 +211,16 @@ def setNodeViewPanel(nodeid):
 			y1=font_size*i+20+top, string=text[i],\
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
+
+	#Put button to return to previous view.
+	subpanel = Panel()
+	temp = drawable.Text(x1=left+50, y1=font_size*len(text)+20+top,\
+		string='Return to node info menu.', font_size=font_size, color=colors.yellow)
+	subpanel.addDrawable(temp)
+	subpanel.setMethod(setGalaxyPanel)
+	subpanel.argument = False
+	menu.addPanel(subpanel)
+
 	globalvars.panel = menu
 
 
