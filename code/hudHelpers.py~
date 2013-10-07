@@ -163,7 +163,7 @@ class Hud():
 		#		self.toUpdate.remove(tu)
 
 
-class InfiniteSpaceGenerator(Hud):
+class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 	'''An object which will deterministically but randomly generate
 	objects in space based on the player's location.
 	The player can fly around freely and objects will be automatically 
@@ -171,7 +171,7 @@ class InfiniteSpaceGenerator(Hud):
 	objects will also be removed when they get too far from the player.
 	This allows the player to explore in effectively infinite space.'''
         def __init__(self, seed=0, warps=None):
-		Hud.__init__(self)
+		pygame.sprite.Sprite.__init__(self)
 		self.warps = warps
 		self.arrowTarget = None
 		#Distance above which to depopulate the grid cells.
@@ -200,6 +200,8 @@ class InfiniteSpaceGenerator(Hud):
 
 		#Keep an index into the dictionary's list of keys. At each update, check the next key and if it is too distant from the player, then delete it.
 		self.key_index = 0
+		self.useOffset = False
+		self.rect = pygame.Rect(0,0,0,0)
 
 	def setArrowTarget(self, targetid):
 		'''Pre: targetid is a node id.'''
@@ -210,13 +212,18 @@ class InfiniteSpaceGenerator(Hud):
 		self.arrowTarget = None
 		return
 
-	def update(self, offset):
+	def update(self):
 		#Get the player's location.
 		px,py = globalvars.player.rect.center
 		#Player's location divided by the length of each cell is the 
 		#square the player is currently in.
 		px = px / self.space_length
 		py = py / self.space_length
+
+		#The following is redundant with code in game.py, but for now, who cares.
+		offsetx = px - globalvars.CENTERX
+		offsety = py - globalvars.CENTERY
+		offset = offsetx, offsety
 
 		#Check to see if the player has moved into a
 		#different grid cell
@@ -273,4 +280,10 @@ class InfiniteSpaceGenerator(Hud):
 					width=self.space_length, height=self.space_length, 
 					center=(x*self.space_length, y*self.space_length), seed=loc)
 		return False
+
+	def draw(self, _):
+		pass
+
+	def isOnScreen(self, _):
+		return True
 

@@ -149,10 +149,6 @@ class Hud():
 		#self.toUpdate = []
 		pass
 
-	def setArrowTarget(self, targetid):
-		'''Pre: targetid is a node id.'''
-		print 'cannot set arrow target for this HUD'
-
 	#def addObjectToUpdate(self, toUp):
 	#	self.toUpdate.append(toUp)
 
@@ -173,7 +169,6 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
         def __init__(self, seed=0, warps=None):
 		pygame.sprite.Sprite.__init__(self)
 		self.warps = warps
-		self.arrowTarget = None
 		#Distance above which to depopulate the grid cells.
 		self.depopulatedistance = 4
 		self.seed = seed
@@ -202,15 +197,6 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 		self.key_index = 0
 		self.useOffset = False
 		self.rect = pygame.Rect(0,0,0,0)
-
-	def setArrowTarget(self, targetid):
-		'''Pre: targetid is a node id.'''
-		for w in self.warps:
-			if w.destinationNode == targetid:
-				self.arrowTarget = (w.rect.centerx, w.rect.centery)
-				return 
-		self.arrowTarget = None
-		return
 
 	def update(self):
 		#Get the player's location.
