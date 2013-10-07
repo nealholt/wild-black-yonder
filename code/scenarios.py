@@ -399,8 +399,26 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 
 def setDestinationNode(nodeid):
 	globalvars.player.destinationNode = nodeid
-	#Tell the hud helper to update its pointer arrow
-	globalvars.hud_helper.setArrowTarget(nodeid)
+	#Find the infinite space generator
+	destNodeLoc = None
+	for i in globalvars.intangibles_bottom:
+		if hasattr(i, 'warps'):
+			#Get the location of the destination node
+			destNodeLoc
+			for w in i.warps:
+				if w.destinationNode == nodeid:
+					destNodeLoc = w.rect.center
+					break
+			break
+	#Error check
+	if destNodeLoc is None:
+		print 'ERROR: No destination node found. Exiting.'; exit()
+	#Search through intangibles_top and remove any existing arrows
+	for i in globalvars.intangibles_top:
+		if i.is_a == globalvars.ARROW:
+			globalvars.intangibles_top.remove(i)
+	#Create a new arrow pointing to the destination node and add it to intangibles_top
+	globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destNodeLoc))
 
 
 def restart():

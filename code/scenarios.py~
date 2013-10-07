@@ -154,9 +154,6 @@ def asteroids(seed=0):
 	#Draw a black circle and put it in intangibles to show the limits 
 	#of the arena
 	temp = objInstances.FixedCircle(x=0, y=0, radius=globalvars.arena, color=colors.black)
-	#Insert at the beginning of intangibles so it doesn't draw over top of the health bars.
-	#globalvars.intangibles.insert(0,temp)
-	#TODO now that intangibles is a sprite group, you may need some other way of prioritizing what gets drawn in what order. SHIT now I remember why intangibles was a list and not a sprite group.
 	globalvars.intangibles_bottom.add(temp)
 	#Make 10 rocks centered around, but not on the player
 	for _ in range(10):
@@ -202,9 +199,6 @@ def gemWild(seed=0):
 	#Draw a black circle and put it in intangibles to show the limits 
 	#of the arena
 	temp = objInstances.FixedCircle(x=0, y=0, radius=globalvars.arena, color=colors.black)
-	#Insert at the beginning of intangibles so it doesn't draw over top of the health bars.
-	#globalvars.intangibles.insert(0,temp)
-	#TODO now that intangibles is a sprite group, you may need some other way of prioritizing what gets drawn in what order. SHIT now I remember why intangibles was a list and not a sprite group.
 	globalvars.intangibles_bottom.add(temp)
 
 	#Make 50 crystals centered around, but not on the player
@@ -405,8 +399,26 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 
 def setDestinationNode(nodeid):
 	globalvars.player.destinationNode = nodeid
-	#Tell the hud helper to update its pointer arrow
-	globalvars.hud_helper.setArrowTarget(nodeid)
+	#Find the infinite space generator
+	destNodeLoc = None
+	for i in globalvars.intangibles_bottom:
+		if hasattr(i, 'warps'):
+			#Get the location of the destination node
+			destNodeLoc
+			for w in i.warps:
+				if w.destinationNode == nodeid:
+					destNodeLoc = w.rect.center
+					break
+			break
+	#Error check
+	if destNodeLoc is None
+		print 'ERROR: No destination node found. Exiting.'; exit()
+	#Search through intangibles_top and remove any existing arrows
+	for i in globalvars.intangibles_top:
+		if i.is_a == globalvars.ARROW:
+			globalvars.intangibles_top.remove(i)
+	#Create a new arrow pointing to the destination node and add it to intangibles_top
+	globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destNodeLoc))
 
 
 def restart():

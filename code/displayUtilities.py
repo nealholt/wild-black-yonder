@@ -295,7 +295,7 @@ class ArrowToDestination(pygame.sprite.Sprite):
 	'''Paints a yellow arrow pointing to the given target.'''
         def __init__(self, target):
 		pygame.sprite.Sprite.__init__(self)
-		self.is_a = globalvars.OTHER
+		self.is_a = globalvars.ARROW
 		self.target = target #A location
 		self.dtt = 0.0 #Distance to target
 		#Whether to offset this object's location based on the camera.

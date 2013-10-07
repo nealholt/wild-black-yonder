@@ -19,6 +19,7 @@ HEALTH = 4
 ASTEROID = 5
 GEM = 6
 DUST = 7
+ARROW = 8
 
 #The least distance to check for a collision. Might need adjusted if we start using really big objects.
 MINSAFEDIST = 1024
