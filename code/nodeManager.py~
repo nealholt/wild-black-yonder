@@ -18,7 +18,10 @@ class Node():
 		#list of id,location pairs this node is connected to
 		self.connections = []
 		#Parameters to distinguish nodes by parameterizing the infinite space generator.
-		
+		self.hostility = 0.0 #chance to generate opposing ships
+		self.strength = 0.0 #strength of opposing ships (initially just capital ship chance)
+		self.amt_debris = 0.0 #chance of asteroids
+		self.amt_wealth = 0.0 #chance of gems, health, and rich asteroids
 
 	def addConnection(self, connectid, location):
 		self.connections.append((connectid,location))

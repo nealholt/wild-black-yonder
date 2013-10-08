@@ -23,6 +23,23 @@ class Node():
 		self.amt_debris = 0.0 #chance of asteroids
 		self.amt_wealth = 0.0 #chance of gems, health, and rich asteroids
 
+		self.enemy_min = 0.0
+		self.enemy_max = self.hostility
+		self.crystal_min = 0.0
+		self.crystal_max = self.amt_wealth / 2.0
+		self.large_asteroid_min = 0.0
+		self.large_asteroid_max = self.amt_debris / 3.0
+		self.medium_asteroid_min = 0.0
+		self.medium_asteroid_max = self.amt_debris / 2.0
+		self.small_asteroid_min = 0.0
+		self.small_asteroid_max = self.amt_debris
+		self.gold_metal_min = 0.0
+		self.gold_metal_max = self.amt_wealth
+		self.silver_metal_min = 0.0
+		self.silver_metal_max = self.amt_wealth
+		self.health_min = 0.0
+		self.health_max = 1.5
+
 	def addConnection(self, connectid, location):
 		self.connections.append((connectid,location))
 
