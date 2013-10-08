@@ -180,9 +180,8 @@ def getGalaxyPanel(travel):
 		#If this node is the player's current location then make this reset
 		#the player's scenario. This is really only for testing since the player
 		#can get away using the testing menu by pressing the m key.
-		if n.id == globalvars.player.nodeid:
+		if n.id == globalvars.player.nodeid and travel:
 			subpanel.setMethod(scenarios.goToInfiniteSpace)
-			subpanel.argument = n.id
 		menu.addPanel(subpanel)
 
 	for c in globalvars.localSystem.connections:

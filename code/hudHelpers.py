@@ -10,18 +10,36 @@ import objInstances
 import ship
 
 
-def getObstacles(seed=0):
+def getObstacles(seed=0,
+		enemy_min = 0.0,
+		enemy_max = 1.2,
+		crystal_min = 0.0,
+		crystal_max = 1.3,
+		large_asteroid_min = 0.0,
+		large_asteroid_max = 3.0,
+		medium_asteroid_min = 0.0,
+		medium_asteroid_max = 4.0,
+		small_asteroid_min = 0.0,
+		small_asteroid_max = 5.0,
+		gold_metal_min = 0.0,
+		gold_metal_max = 2.0,
+		silver_metal_min = 0.0,
+		silver_metal_max = 2.0,
+		health_min = 0.0,
+		health_max = 1.5,
+		capital_ship_min = 0.0,
+		capital_ship_max = 1.1):
 	'''TODO later I want to get profiles instead of pure random number generation. '''
 	rd.seed(seed) #Fix the seed for the random number generator.
 	numbers = [0 for _ in range(health+1)]
-	numbers[enemy] = 0 #rd.randint(0,2)
-	numbers[crystal] = rd.randint(0,1)
-	numbers[large_asteroid] = rd.randint(0,2)
-	numbers[medium_asteroid] = rd.randint(1,4)
-	numbers[small_asteroid] = rd.randint(2,4)
-	numbers[gold_metal] = rd.randint(0,2)
-	numbers[silver_metal] = rd.randint(0,2)
-	numbers[health] = rd.randint(0,1)
+	numbers[enemy] = int(rd.uniform(enemy_min, enemy_max))
+	numbers[crystal] = int(rd.uniform(crystal_min, crystal_max))
+	numbers[large_asteroid] = int(rd.uniform(large_asteroid_min, large_asteroid_max))
+	numbers[medium_asteroid] = int(rd.uniform(medium_asteroid_min, medium_asteroid_max))
+	numbers[small_asteroid] = int(rd.uniform(small_asteroid_min, small_asteroid_max))
+	numbers[gold_metal] = int(rd.uniform(gold_metal_min, gold_metal_max))
+	numbers[silver_metal] = int(rd.uniform(silver_metal_min, silver_metal_max))
+	numbers[health] = int(rd.uniform(health_min, health_max))
 	return numbers
 
 
