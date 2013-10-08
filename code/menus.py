@@ -198,6 +198,7 @@ def setNodeViewPanel(nodeid):
 	menu = getStandardMenu()
 
 	text = [
+	'Description: '+node.description+'.',
 	'Hostility: '+str(node.hostility)+'. Chance to generate opposing ships.',
 	'Enemy strength: '+str(node.strength)+'. Strength of opposing ships (initially just capital ship chance).',
 	'Debris: '+str(node.amt_debris)+'. Chance of asteroids.',

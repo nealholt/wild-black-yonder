@@ -23,6 +23,33 @@ class Node():
 		self.amt_debris = 0.0 #chance of asteroids
 		self.amt_wealth = 0.0 #chance of gems, health, and rich asteroids
 
+		#For now, deterministically set the profile of the node based on its index:
+		self.description = ''
+		if self.id % 4 == 0:
+			self.description = 'Hostile'
+			self.hostility = 5.0
+			self.strength = 0.0
+			self.amt_debris = 4.0
+			self.amt_wealth = 1.2
+		elif self.id % 3 == 0:
+			self.description = 'Capital ships'
+			self.hostility = 3.0
+			self.strength = 2.0
+			self.amt_debris = 4.0
+			self.amt_wealth = 1.1
+		elif self.id % 2 == 0:
+			self.description = 'Wealthy'
+			self.hostility = 0.0
+			self.strength = 0.0
+			self.amt_debris = 3.0
+			self.amt_wealth = 3.0
+		else:
+			self.description = 'Asteroids'
+			self.hostility = 2.0
+			self.strength = 0.0
+			self.amt_debris = 15.0
+			self.amt_wealth = 1.5
+
 		self.enemy_min = 0.0
 		self.enemy_max = self.hostility
 		self.crystal_min = 0.0
@@ -39,6 +66,9 @@ class Node():
 		self.silver_metal_max = self.amt_wealth
 		self.health_min = 0.0
 		self.health_max = 1.5
+		self.capital_ship_min = 0.0
+		self.capital_ship_max = self.strength
+
 
 	def addConnection(self, connectid, location):
 		self.connections.append((connectid,location))
