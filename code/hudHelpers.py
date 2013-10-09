@@ -8,7 +8,7 @@ import random as rd
 from geometry import getCoordsNearLoc, distance
 import objInstances
 import ship
-
+import capitalShip
 
 def getObstacles(seed=0,
 		enemy_min = 0.0,
@@ -31,7 +31,7 @@ def getObstacles(seed=0,
 		capital_ship_max = 1.1):
 	'''TODO later I want to get profiles instead of pure random number generation. '''
 	rd.seed(seed) #Fix the seed for the random number generator.
-	numbers = [0 for _ in range(health+1)]
+	numbers = [0 for _ in range(capital_ship+1)]
 	numbers[enemy] = int(rd.uniform(enemy_min, enemy_max))
 	numbers[crystal] = int(rd.uniform(crystal_min, crystal_max))
 	numbers[large_asteroid] = int(rd.uniform(large_asteroid_min, large_asteroid_max))
@@ -40,6 +40,7 @@ def getObstacles(seed=0,
 	numbers[gold_metal] = int(rd.uniform(gold_metal_min, gold_metal_max))
 	numbers[silver_metal] = int(rd.uniform(silver_metal_min, silver_metal_max))
 	numbers[health] = int(rd.uniform(health_min, health_max))
+	numbers[capital_ship] = int(rd.uniform(capital_ship_min, capital_ship_max))
 	return numbers
 
 
@@ -51,6 +52,7 @@ small_asteroid = 4
 gold_metal = 5
 silver_metal = 6
 health = 7
+capital_ship = 8
 def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	'''This is the first draft of a method to randomly populate space with objects.
 	This is currently called by the racing minigame.
@@ -76,6 +78,10 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	course_height = height/2 #actually half height because getCoordsNearLoc doubles it
 
 	physical_objs = []
+
+	for _ in xrange(objects[capital_ship]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		physical_objs.append(capitalShip.CapitalShip(centerx=x, centery=y, image_name='bigShip'))
 
 	for _ in xrange(objects[enemy]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)

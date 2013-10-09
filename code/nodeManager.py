@@ -27,25 +27,25 @@ class Node():
 		self.description = ''
 		if self.id % 4 == 0:
 			self.description = 'Hostile'
-			self.hostility = 5.0
+			self.hostility = 4.0
 			self.strength = 0.0
-			self.amt_debris = 4.0
-			self.amt_wealth = 1.2
+			self.amt_debris = 6.0
+			self.amt_wealth = 1.1
 		elif self.id % 3 == 0:
 			self.description = 'Capital ships'
-			self.hostility = 3.0
+			self.hostility = 2.5
 			self.strength = 2.0
-			self.amt_debris = 4.0
+			self.amt_debris = 6.0
 			self.amt_wealth = 1.1
 		elif self.id % 2 == 0:
 			self.description = 'Wealthy'
 			self.hostility = 0.0
 			self.strength = 0.0
-			self.amt_debris = 3.0
+			self.amt_debris = 6.0
 			self.amt_wealth = 3.0
 		else:
 			self.description = 'Asteroids'
-			self.hostility = 2.0
+			self.hostility = 1.5
 			self.strength = 0.0
 			self.amt_debris = 15.0
 			self.amt_wealth = 1.5
