@@ -142,7 +142,7 @@ def setGalaxyPanel(travel):
 
 
 def getGalaxyPanel(travel):
-	'''Pre: localSystem is a NodeManager object that has been initialized.'''
+	'''Pre: galaxy is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
 	radius = 3
 
@@ -157,7 +157,7 @@ def getGalaxyPanel(travel):
 			font_size=font_size, color=colors.white)
 	menu.addDrawable(temp)
 
-	for n in globalvars.localSystem.nodes:
+	for n in globalvars.galaxy.nodes:
 		subpanel = Panel()
 		color = colors.yellow
 		#Color the player's location red.
@@ -184,7 +184,7 @@ def getGalaxyPanel(travel):
 			subpanel.setMethod(scenarios.goToInfiniteSpace)
 		menu.addPanel(subpanel)
 
-	for c in globalvars.localSystem.connections:
+	for c in globalvars.galaxy.connections:
 		temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
 		menu.addDrawable(temp)
 
@@ -192,7 +192,7 @@ def getGalaxyPanel(travel):
 
 
 def setNodeViewPanel(nodeid):
-	node = globalvars.localSystem.getNode(nodeid)
+	node = globalvars.galaxy.getNode(nodeid)
 
 	menu = getStandardMenu()
 

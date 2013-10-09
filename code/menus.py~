@@ -144,7 +144,7 @@ def setGalaxyPanel(travel):
 def getGalaxyPanel(travel):
 	'''Pre: localSystem is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
-	radius = 2
+	radius = 3
 
 	font_size = 36
 	if travel:

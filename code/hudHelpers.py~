@@ -8,7 +8,7 @@ import random as rd
 from geometry import getCoordsNearLoc, distance
 import objInstances
 import ship
-
+import capitalShip
 
 def getObstacles(seed=0,
 		enemy_min = 0.0,
@@ -78,6 +78,10 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	course_height = height/2 #actually half height because getCoordsNearLoc doubles it
 
 	physical_objs = []
+
+	for _ in xrange(objects[capital_ship]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		physical_objs.append(capitalShip.CapitalShip(centerx=x, centery=y, image_name='bigShip'))
 
 	for _ in xrange(objects[enemy]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)

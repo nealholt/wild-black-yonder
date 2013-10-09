@@ -52,5 +52,5 @@ panel = None
 deathcountdown = 3 * FPS
 
 #Local system of nodes
-localSystem = None
+galaxy = None
 

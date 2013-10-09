@@ -333,7 +333,7 @@ def goToInfiniteSpace(nodeid):
 	'''This is a helper method that enables the menu system to function more easily.
 	nodeid of the infinite space and the seed to use to generate the space.'''
 	#Get the node that has the id that this portal will lead to
-	n = globalvars.localSystem.getNode(nodeid)
+	n = globalvars.galaxy.getNode(nodeid)
 	infiniteSpace(seed=nodeid, playerloc=n.loc, warps=n.connections)
 
 
