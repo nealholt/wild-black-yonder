@@ -188,7 +188,25 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 		py = py / self.space_length
 		#Generate obstacles in player's location and put them in the dictionary. You might want to modify populateSpace to return its newly created physical objects so they can be tracked here for easy removal later.
 		loc = str(px).zfill(3)+str(py).zfill(3)
-		obstacles = getObstacles(seed=loc)
+		obstacles = getObstacles(seed=loc,
+			enemy_min=self.node.enemy_min,
+			enemy_max=self.node.enemy_max,
+			crystal_min=self.node.crystal_min,
+			crystal_max=self.node.crystal_max,
+			large_asteroid_min=self.node.large_asteroid_min,
+			large_asteroid_max=self.node.large_asteroid_max,
+			medium_asteroid_min=self.node.medium_asteroid_min,
+			medium_asteroid_max=self.node.medium_asteroid_max,
+			small_asteroid_min=self.node.small_asteroid_min,
+			small_asteroid_max=self.node.small_asteroid_max,
+			gold_metal_min=self.node.gold_metal_min,
+			gold_metal_max=self.node.gold_metal_max,
+			silver_metal_min=self.node.silver_metal_min,
+			silver_metal_max=self.node.silver_metal_max,
+			health_min=self.node.health_min,
+			health_max=self.node.health_max,
+			capital_ship_min=self.node.capital_ship_min,
+			capital_ship_max=self.node.capital_ship_max)
 		self.dict[loc] = populateSpace(objects=obstacles, 
 			width=self.space_length, height=self.space_length, 
 			center=(px*self.space_length, py*self.space_length), seed=loc)
@@ -263,7 +281,25 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			loc = str(x).zfill(3)+str(y).zfill(3)
 			if not loc in self.dict.keys():
 				#print 'testing the location '+str(loc)+' is empty so we are populating it'
-				obstacles = getObstacles(seed=loc)
+				obstacles = getObstacles(seed=loc,
+					enemy_min=self.node.enemy_min,
+					enemy_max=self.node.enemy_max,
+					crystal_min=self.node.crystal_min,
+					crystal_max=self.node.crystal_max,
+					large_asteroid_min=self.node.large_asteroid_min,
+					large_asteroid_max=self.node.large_asteroid_max,
+					medium_asteroid_min=self.node.medium_asteroid_min,
+					medium_asteroid_max=self.node.medium_asteroid_max,
+					small_asteroid_min=self.node.small_asteroid_min,
+					small_asteroid_max=self.node.small_asteroid_max,
+					gold_metal_min=self.node.gold_metal_min,
+					gold_metal_max=self.node.gold_metal_max,
+					silver_metal_min=self.node.silver_metal_min,
+					silver_metal_max=self.node.silver_metal_max,
+					health_min=self.node.health_min,
+					health_max=self.node.health_max,
+					capital_ship_min=self.node.capital_ship_min,
+					capital_ship_max=self.node.capital_ship_max)
 				self.dict[loc] = populateSpace(objects=obstacles, 
 					width=self.space_length, height=self.space_length, 
 					center=(x*self.space_length, y*self.space_length), seed=loc)
