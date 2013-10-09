@@ -95,7 +95,7 @@ class NodeManager():
 
 	def generateGalaxy(self, seed=0, nodecount=10, minimumNodeDist=40):
 		'''Post: randomly populates self.nodes.'''
-		maxNeighbors = 4
+		maxNeighbors = 6
 		padding = 20
 		#Reset nodes
 		self.nodes = []
@@ -145,7 +145,6 @@ class NodeManager():
 				#node j is closer to node i than any other node in closetsNeighbors)
 				#Then replace the furthest node in closestNeighbors with node j
 				#and sort closestsNeighbors.
-				#print closestNeighbors; print
 				if i != j and\
 				not sortednodes[i].alreadyConnected(sortednodes[i].id) and\
 				((len(closestNeighbors) < vacancies) or\
@@ -165,6 +164,12 @@ class NodeManager():
 					sortednodes[cn[0]].loc)
 				sortednodes[cn[0]].addConnection(sortednodes[i].id,
 					sortednodes[i].loc)
+		#Randomly remove between 0 and (the number of connections -1) connections
+		for sn in sortednodes:
+			toRemove = rd.randint(0, len(sn.connections)-1)
+			for _ in range(toRemove):
+				removeIndex = rd.randint(0, len(sn.connections)-1)
+				sn.connections.pop(removeIndex)
 		#Copy all the final nodes to the self.nodes
 		self.nodes = sortednodes
 		#Create list of connections without duplicates.
