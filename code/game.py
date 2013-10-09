@@ -29,7 +29,7 @@ globalvars.whiskerables = pygame.sprite.Group()
 globalvars.player = playerObj.Player('ship')
 
 globalvars.localSystem = nodeManager.NodeManager()
-globalvars.localSystem.generateGalaxy()
+globalvars.localSystem.generateGalaxy(seed=0, nodecount=100, minimumNodeDist=4)
 
 #More efficient animations:
 dirty_rects = []

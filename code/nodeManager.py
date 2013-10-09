@@ -86,19 +86,21 @@ class NodeManager():
 				return n
 		return None
 
-	def generateGalaxy(self, seed=0):
-		'''Post randomly populates self.nodes'''
+	def generateGalaxy(self, seed=0, nodecount=10, minimumNodeDist=40, chanceNoConnect=0.8):
+		'''Post: randomly populates self.nodes.
+		chanceNoConnect is the probability that a connection will be skipped if at 
+		least one connection already exists at both endpoints.'''
+		connectionLimit = 5 #No node will have more than this number of connections.
 		padding = 20
-		minimumNodeDist = 40
 		#Reset nodes
 		self.nodes = []
 		rd.seed(seed)
-		#Select a random number of nodes.
-		nodecount = rd.randint(5,10)
 		#Randomly create locations for each node.
 		for i in range(nodecount):
-			x = rd.randint(0, globalvars.WIDTH-padding-menus.border_padding)
-			y = rd.randint(0, globalvars.HEIGHT-padding-menus.border_padding)
+			x = rd.randint(padding+menus.border_padding,
+				globalvars.WIDTH-padding-menus.border_padding)
+			y = rd.randint(padding+menus.border_padding,
+				globalvars.HEIGHT-padding-menus.border_padding)
 			self.nodes.append(Node(i, x, y))
 		#Sort the nodes by x
 		sortednodes = sorted(self.nodes, key=lambda n: n.x, reverse=True)
@@ -112,7 +114,8 @@ class NodeManager():
 					break
 			if keep:
 				finalNodeList.append(sortednodes[i])
-		#Re-id the nodes to ensure that a node with id 0 exists. This must be done before connecting the nodes.
+		#Re-id the nodes to ensure that a node with id 0 exists.
+		#This must be done before connecting the nodes.
 		for i in xrange(len(finalNodeList)):
 			finalNodeList[i].id = i
 		#Calculate the largest distance between nearest nodes for each node
@@ -121,20 +124,39 @@ class NodeManager():
 			largestNeighborDist = max(largestNeighborDist,\
 					distance(finalNodeList[i-1].loc, finalNodeList[i].loc),
 					distance(finalNodeList[i].loc, finalNodeList[i+1].loc))
+		'''
 		#Connect all nodes that are within the largest distance from each other.
 		for i in xrange(len(finalNodeList)-1):
 			for j in xrange(i+1, len(finalNodeList)):
 				dist = distance(finalNodeList[i].loc, finalNodeList[j].loc)
-				if dist < largestNeighborDist:
+				if dist < largestNeighborDist and \
+				len(finalNodeList[i].connections) < connectionLimit:
 					#Add a chance to not add connections if at least one connection 
 					#already exists at both endpoints
 					if len(finalNodeList[i].connections) == 0 or \
 					len(finalNodeList[j].connections) == 0 or \
-					rd.random() > 0.5:
+					rd.random() > chanceNoConnect:
 						finalNodeList[i].addConnection(finalNodeList[j].id, finalNodeList[j].loc)
 						finalNodeList[j].addConnection(finalNodeList[i].id, finalNodeList[i].loc)
 				else:
 					break
+		'''
+		#Connect each node only to its closest neighbor
+		for i in xrange(len(finalNodeList)-1):
+			closestIndex = 0
+			smallestDistance = largestNeighborDist
+			for j in xrange(i+1, len(finalNodeList)):
+				dist = distance(finalNodeList[i].loc, finalNodeList[j].loc)
+				if dist < smallestDistance:
+					closestIndex = j
+					smallestDistance = dist
+			#Connect the closest node
+			finalNodeList[i].addConnection(finalNodeList[closestIndex].id,
+							finalNodeList[closestIndex].loc)
+			finalNodeList[closestIndex].addConnection(finalNodeList[i].id,
+								finalNodeList[i].loc)
+
+
 		#Copy all the final nodes to the self.nodes
 		self.nodes = finalNodeList
 		#Create list of connections without duplicates.
