@@ -73,6 +73,13 @@ class Node():
 	def addConnection(self, connectid, location):
 		self.connections.append((connectid,location))
 
+	def alreadyConnected(self, connectid):
+		for c in self.connections:
+			if c[0] == connectid:
+				return True
+		return False
+
+
 
 class NodeManager():
 	def __init__(self):
@@ -87,9 +94,8 @@ class NodeManager():
 		return None
 
 	def generateGalaxy(self, seed=0, nodecount=10, minimumNodeDist=40):
-		'''Post: randomly populates self.nodes.
-		chanceNoConnect is the probability that a connection will be skipped if at 
-		least one connection already exists at both endpoints.'''
+		'''Post: randomly populates self.nodes.'''
+		maxNeighbors = 4
 		padding = 20
 		#Reset nodes
 		self.nodes = []
@@ -116,32 +122,49 @@ class NodeManager():
 						nodecount -= 1
 						break
 				if anyTooClose: break
+		print 'Final node count is '+str(nodecount)
 		#Re-id the nodes to ensure that a node with id 0 exists.
 		#This must be done before connecting the nodes.
 		for i in xrange(len(sortednodes)):
 			sortednodes[i].id = i
-		#Calculate the largest distance between nearest nodes for each node
-		largestNeighborDist = 0.0
-		for i in xrange(1, len(sortednodes)-1):
-			largestNeighborDist = max(largestNeighborDist,\
-					distance(sortednodes[i-1].loc, sortednodes[i].loc),
-					distance(sortednodes[i].loc, sortednodes[i+1].loc))
-		#Connect each node only to its closest neighbor
-		for i in xrange(len(sortednodes)-1):
-			closestIndex = 0
-			smallestDistance = largestNeighborDist
-			for j in xrange(i+1, len(sortednodes)):
+		#Connect each node only to its closest maxNeighbors neighbors.
+		closestsNeighbors = [] #Store pairs of neighbor ids and distances
+		for i in xrange(len(sortednodes)):
+			#Populate closestsNeighbors with
+			#maxNeighbors - len(sortednodes[i].connections) connections
+			closestNeighbors = []
+			for j in xrange(len(sortednodes)):
+				#Get the distance between the nodes
 				dist = distance(sortednodes[i].loc, sortednodes[j].loc)
-				if dist < smallestDistance:
-					closestIndex = j
-					smallestDistance = dist
-			#Connect the closest node
-			sortednodes[i].addConnection(sortednodes[closestIndex].id,
-							sortednodes[closestIndex].loc)
-			sortednodes[closestIndex].addConnection(sortednodes[i].id,
-								sortednodes[i].loc)
-
-
+				#Determine how full of connections the current node is
+				vacancies = maxNeighbors - len(sortednodes[i].connections)
+				if vacancies == 0: break
+				#If node i is not the same as node j and
+				#node i is not already connected to node j and
+				#(closestsNeighbors is not yet full or 
+				#node j is closer to node i than any other node in closetsNeighbors)
+				#Then replace the furthest node in closestNeighbors with node j
+				#and sort closestsNeighbors.
+				print closestNeighbors; print
+				if i != j and\
+				not sortednodes[i].alreadyConnected(sortednodes[i].id) and\
+				((len(closestNeighbors) < vacancies) or\
+				(dist < closestNeighbors[0][1])):
+					#If closestNeighbors is not yet full
+					if len(closestNeighbors) < vacancies:
+						closestNeighbors.append((j, dist))
+					else:
+						#Then replace the furthest node in closestNeighbors with node j
+						closestNeighbors[0] = (j, dist)
+					#and sort closestsNeighbors by distance.
+					closestNeighbors = sorted(closestNeighbors, reverse=True,
+							key=lambda neighbor: neighbor[1])
+			#Connect all the closest neighbors
+			for cn in closestNeighbors:
+				sortednodes[i].addConnection(sortednodes[cn[0]].id,
+					sortednodes[cn[0]].loc)
+				sortednodes[cn[0]].addConnection(sortednodes[i].id,
+					sortednodes[i].loc)
 		#Copy all the final nodes to the self.nodes
 		self.nodes = sortednodes
 		#Create list of connections without duplicates.
