@@ -38,7 +38,7 @@ class Circle(Drawable):
 		if not use_color is None:
 			color_to_use = use_color
 		self.rect = pygame.draw.circle(globalvars.screen, color_to_use, \
-			(int(self.x1), int(self.y1)), self.radius)
+			(int(self.x1), int(self.y1)), int(self.radius))
 
 
 class Line(Drawable):
