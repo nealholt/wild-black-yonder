@@ -15,11 +15,26 @@ class Ship(physicalObject.PhysicalObject):
 		physicalObject.PhysicalObject.__init__(self, centerx=centerx,\
 			centery=centery, image_name=image_name)
 
-		self.weapons=[]
 		self.engine=None
 
 		self.health=50
 		self.maxhealth=50
+		#number of gun addon hardpoints
+		self.gunHardpoints = 1
+		#number of missile addon hardpoints
+		self.missileHardpoints = 1
+		#number of mine addon hardpoints
+		self.mineHardpoints = 1
+		#number of mine addon hardpoints
+		self.weapons=[]
+		#number of misc addon hardpoints
+		self.miscHardpoints = 1
+		#int fuel (just make it a big number and divide it by 100 or 1000 and then display that number without the decimal.)
+		self.fuel = 1000000 #million
+		#cargo space
+		self.cargoSpace = 10
+		#cargo array
+		self.cargo = []
 
 		profiles.shipProfile(self, profile='mk1')
 		self.setProfile()

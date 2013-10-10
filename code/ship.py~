@@ -212,7 +212,6 @@ class Ship(physicalObject.PhysicalObject):
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
 			self.myHealthBar.kill()
-			self.myInjuryBar.kill()
 			died = True
 		return died
 
