@@ -96,16 +96,15 @@ class NodeManager():
 	def generateGalaxy(self, seed=0, nodecount=10, minimumNodeDist=40):
 		'''Post: randomly populates self.nodes.'''
 		maxNeighbors = 6
-		padding = 20
 		#Reset nodes
 		self.nodes = []
 		rd.seed(seed)
 		#Randomly create locations for each node.
 		for i in range(nodecount):
-			x = rd.randint(padding+menus.border_padding,
-				globalvars.WIDTH-padding-menus.border_padding)
-			y = rd.randint(padding+menus.border_padding,
-				globalvars.HEIGHT-padding-menus.border_padding)
+			x = rd.randint(menus.border_padding,
+				globalvars.WIDTH-menus.border_padding)
+			y = rd.randint(menus.border_padding,
+				globalvars.HEIGHT-menus.border_padding)
 			self.nodes.append(Node(i, x, y))
 		#Sort the nodes by x
 		sortednodes = sorted(self.nodes, key=lambda n: n.x, reverse=True)
@@ -167,7 +166,7 @@ class NodeManager():
 		#Randomly remove between 0 and (the number of connections -1) connections
 		for sn in sortednodes:
 			toRemove = rd.randint(0, len(sn.connections)-1)
-			for _ in toRemove:
+			for _ in range(toRemove):
 				removeIndex = rd.randint(0, len(sn.connections)-1)
 				sn.connections.pop(removeIndex)
 		#Copy all the final nodes to the self.nodes

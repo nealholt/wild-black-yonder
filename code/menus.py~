@@ -65,6 +65,7 @@ class Panel:
 
 #There was a lot of duplicate code so I moved some of it out.
 border_padding = 100
+padding = 25
 top = border_padding
 left = border_padding
 height = globalvars.HEIGHT-2*border_padding
@@ -192,11 +193,10 @@ def getGalaxyPanel(travel):
 	return menu
 
 
-def getLocalGalaxyPanel(travel): #TODO
+def getLocalGalaxyPanel(travel):
 	'''Pre: galaxy is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
 	radius = 10
-	padding = 20
 	#Magnitude of the stretch.
 	magnitude = 4
 
@@ -211,39 +211,52 @@ def getLocalGalaxyPanel(travel): #TODO
 			font_size=font_size, color=colors.white)
 	menu.addDrawable(temp)
 	#Center the player node location
-	playerNodeLoc = (globalvars.CENTERX-radius, globalvars.CENTERY-radius)
+	playerNodeLoc = (globalvars.CENTERX, globalvars.CENTERY)
 	#Get the player's node
 	playerNode = globalvars.galaxy.getNode(globalvars.player.nodeid)
 	#Draw player node in the center of the menu.
 	subpanel = Panel()
 	subpanel.argument = globalvars.player.nodeid
 	subpanel.setMethod(scenarios.setDestinationNode)
-	temp = drawable.Circle(x1=playerNodeLoc[0], y1=playerNodeLoc[1],
+	temp = drawable.Circle(x1=playerNodeLoc[0]-radius, y1=playerNodeLoc[1]-radius,
 				radius=radius, color=colors.red)
 	subpanel.addDrawable(temp)
 	menu.addPanel(subpanel)
 
-	#Connections
-	for c in playerNode.connections: #id,location pairs
-		angle = angleFromPosition(playerNode.loc, c[1])
-		dist = distance(playerNode.loc, c[1])
+	#Draw all the on-screen nodes and the connections between them
+	for n in globalvars.galaxy.nodes:
+		angle = angleFromPosition(playerNode.loc, n.loc)
+		dist = distance(playerNode.loc, n.loc)
 		position = translate(playerNodeLoc, angle, dist*magnitude)
-		#Draw node if it is on screen
-		if position[0] > padding+menus.border_padding and \
-		position[0] < globalvars.WIDTH-padding-menus.border_padding and \
-		position[1] > padding+menus.border_padding and \
-		position[1] < globalvars.HEIGHT-padding-menus.border_padding:
+		#If it is on screen...
+		if position[0] > padding+border_padding and \
+		position[0] < globalvars.WIDTH-padding-border_padding and \
+		position[1] > padding+border_padding and \
+		position[1] < globalvars.HEIGHT-padding-border_padding and \
+		n.id != playerNode.id:
+			#Draw it
 			subpanel = Panel()
-			subpanel.argument = c[0]
-			subpanel.setMethod(scenarios.setDestinationNode)
+			subpanel.argument = n.id
+			if travel:
+				for c in n.connections:
+					if globalvars.player.nodeid == c[0]:
+						subpanel.setMethod(scenarios.setDestinationNode)
+						break
+			else:
+				#Otherwise view options for information only
+				subpanel.setMethod(setNodeViewPanel)
 			temp = drawable.Circle(x1=position[0]-radius, y1=position[1]-radius,
 						radius=radius, color=colors.yellow)
 			subpanel.addDrawable(temp)
 			menu.addPanel(subpanel)
-		#connect it to the playerNode
-		temp = drawable.Line(x1=playerNodeLoc[0], y1=playerNodeLoc[1],
-					x2=position[0]-radius, y2=position[1]-radius)
-		menu.addDrawable(temp)
+			#draw connections
+			for c in n.connections:
+				angle = angleFromPosition(n.loc, c[1])
+				dist = distance(n.loc, c[1])
+				position2 = translate(position, angle, dist*magnitude)
+				temp = drawable.Line(x1=position[0]-radius, y1=position[1]-radius,
+					x2=position2[0]-radius, y2=position2[1]-radius)
+				menu.addDrawable(temp)
 	return menu
 
 
@@ -253,6 +266,7 @@ def setNodeViewPanel(nodeid):
 	menu = getStandardMenu()
 
 	text = [
+	'Id: '+str(node.id)+'.',
 	'Description: '+node.description+'.',
 	'Hostility: '+str(node.hostility)+'. Chance to generate opposing ships.',
 	'Enemy strength: '+str(node.strength)+'. Strength of opposing ships (initially just capital ship chance).',

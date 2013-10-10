@@ -96,16 +96,15 @@ class NodeManager():
 	def generateGalaxy(self, seed=0, nodecount=10, minimumNodeDist=40):
 		'''Post: randomly populates self.nodes.'''
 		maxNeighbors = 6
-		padding = 20
 		#Reset nodes
 		self.nodes = []
 		rd.seed(seed)
 		#Randomly create locations for each node.
 		for i in range(nodecount):
-			x = rd.randint(padding+menus.border_padding,
-				globalvars.WIDTH-padding-menus.border_padding)
-			y = rd.randint(padding+menus.border_padding,
-				globalvars.HEIGHT-padding-menus.border_padding)
+			x = rd.randint(menus.padding+menus.border_padding,
+				globalvars.WIDTH-menus.padding-menus.border_padding)
+			y = rd.randint(menus.padding+menus.border_padding,
+				globalvars.HEIGHT-menus.padding-menus.border_padding)
 			self.nodes.append(Node(i, x, y))
 		#Sort the nodes by x
 		sortednodes = sorted(self.nodes, key=lambda n: n.x, reverse=True)
