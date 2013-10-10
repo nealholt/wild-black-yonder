@@ -338,7 +338,7 @@ def goToInfiniteSpace(nodeid):
 
 
 #The distances between nodes in the galaxy view is proportional to the distance between warp portals in the regular ship view. The scaling factor is warpPortalScaling.
-warpPortalScaling = 25
+warpPortalScaling = 100
 def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
@@ -396,10 +396,9 @@ def setDestinationNode(nodeid):
 	#Error check
 	if destNodeLoc is None:
 		if foundObjWithWarps:
-			print 'ERROR: No destination node found for nodeid '+\
-				str(nodeid)+'. Exiting.'; exit()
+			print 'ERROR: The infiniteSpaceGenerator object was found in intangibles_bottom, but it has no warp with an id matching nodeid '+str(nodeid)+'. Exiting.'; exit()
 		else:
-			print 'Warning: cannot set destination node from here.'
+			print 'Warning: cannot set destination node from here. No infiniteSpaceGenerator object was found in intangibles_bottom.'
 	else:
 		#Search through intangibles_top and remove any existing arrows
 		for i in globalvars.intangibles_top:

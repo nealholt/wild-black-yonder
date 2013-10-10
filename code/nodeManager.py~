@@ -73,6 +73,12 @@ class Node():
 	def addConnection(self, connectid, location):
 		self.connections.append((connectid,location))
 
+	def removeConnection(self, connectid):
+		for c in self.connections:
+			if c[0] == connectid:
+				self.connections.remove(c)
+				break
+
 	def alreadyConnected(self, connectid):
 		for c in self.connections:
 			if c[0] == connectid:
@@ -101,10 +107,10 @@ class NodeManager():
 		rd.seed(seed)
 		#Randomly create locations for each node.
 		for i in range(nodecount):
-			x = rd.randint(menus.border_padding,
-				globalvars.WIDTH-menus.border_padding)
-			y = rd.randint(menus.border_padding,
-				globalvars.HEIGHT-menus.border_padding)
+			x = rd.randint(menus.padding+menus.border_padding,
+				globalvars.WIDTH-menus.padding-menus.border_padding)
+			y = rd.randint(menus.padding+menus.border_padding,
+				globalvars.HEIGHT-menus.padding-menus.border_padding)
 			self.nodes.append(Node(i, x, y))
 		#Sort the nodes by x
 		sortednodes = sorted(self.nodes, key=lambda n: n.x, reverse=True)
@@ -163,14 +169,16 @@ class NodeManager():
 					sortednodes[cn[0]].loc)
 				sortednodes[cn[0]].addConnection(sortednodes[i].id,
 					sortednodes[i].loc)
+		#Copy all the final nodes to the self.nodes
+		self.nodes = sortednodes
 		#Randomly remove between 0 and (the number of connections -1) connections
-		for sn in sortednodes:
+		for sn in self.nodes:
 			toRemove = rd.randint(0, len(sn.connections)-1)
 			for _ in range(toRemove):
 				removeIndex = rd.randint(0, len(sn.connections)-1)
-				sn.connections.pop(removeIndex)
-		#Copy all the final nodes to the self.nodes
-		self.nodes = sortednodes
+				removed = sn.connections.pop(removeIndex)
+				otherEndOfConnection = self.getNode(removed[0])
+				otherEndOfConnection.removeConnection(sn.id)
 		#Create list of connections without duplicates.
 		self.connections = []
 		for n in self.nodes:

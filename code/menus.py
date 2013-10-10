@@ -170,12 +170,9 @@ def getGalaxyPanel(travel):
 		#If this node is connected to the player's current node, make it clickable
 		isconnected = False
 		subpanel.argument = n.id
-		#If travel is set, then view options that can be traveled to
-		if travel:
-			for c in n.connections:
-				if globalvars.player.nodeid == c[0]:
-					subpanel.setMethod(scenarios.setDestinationNode)
-					break
+		#If travel is set and the node is already connected to the player's node
+		if travel and n.alreadyConnected(globalvars.player.nodeid):
+			subpanel.setMethod(scenarios.setDestinationNode)
 		else:
 			#Otherwise view options for information only
 			subpanel.setMethod(setNodeViewPanel)
@@ -243,11 +240,9 @@ def getLocalGalaxyPanel(travel):
 			#Draw it
 			subpanel = Panel()
 			subpanel.argument = n.id
-			if travel:
-				for c in n.connections:
-					if globalvars.player.nodeid == c[0]:
-						subpanel.setMethod(scenarios.setDestinationNode)
-						break
+			#If travel is set and the node is already connected to the player's node
+			if travel and n.alreadyConnected(globalvars.player.nodeid):
+				subpanel.setMethod(scenarios.setDestinationNode)
 			else:
 				#Otherwise view options for information only
 				subpanel.setMethod(setNodeViewPanel)

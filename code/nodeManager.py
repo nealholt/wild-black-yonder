@@ -73,6 +73,12 @@ class Node():
 	def addConnection(self, connectid, location):
 		self.connections.append((connectid,location))
 
+	def removeConnection(self, connectid):
+		for c in self.connections:
+			if c[0] == connectid:
+				self.connections.remove(c)
+				break
+
 	def alreadyConnected(self, connectid):
 		for c in self.connections:
 			if c[0] == connectid:
@@ -163,14 +169,16 @@ class NodeManager():
 					sortednodes[cn[0]].loc)
 				sortednodes[cn[0]].addConnection(sortednodes[i].id,
 					sortednodes[i].loc)
-		#Randomly remove between 0 and (the number of connections -1) connections
-		for sn in sortednodes:
-			toRemove = rd.randint(0, len(sn.connections)-1)
-			for _ in range(toRemove):
-				removeIndex = rd.randint(0, len(sn.connections)-1)
-				sn.connections.pop(removeIndex)
 		#Copy all the final nodes to the self.nodes
 		self.nodes = sortednodes
+		#Randomly remove between 0 and (the number of connections -2) connections
+		for sn in self.nodes:
+			toRemove = rd.randint(0, len(sn.connections)-2)
+			for _ in range(toRemove):
+				removeIndex = rd.randint(0, len(sn.connections)-1)
+				removed = sn.connections.pop(removeIndex)
+				otherEndOfConnection = self.getNode(removed[0])
+				otherEndOfConnection.removeConnection(sn.id)
 		#Create list of connections without duplicates.
 		self.connections = []
 		for n in self.nodes:
