@@ -84,7 +84,25 @@ def getStandardMenu():
 		color=colors.reddishgray)
 	menu.addDrawable(temp)
 
+	#Add tabs to the menu:
+	addAllTabs(menu)
+
 	return menu
+
+
+def addAllTabs(menu):
+	'''Takes a menu and adds a standard set of tabs along the top of the menu.'''
+	#Add a "tab" up at the top that switches to weapon selection
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=(left+30), y1=(top+5), width=100, height=20, \
+		color=colors.yellow, thickness=2)
+	subpanel.addDrawable(temp)
+	#Add text
+	temp = drawable.Text(x1=(left+30+5), y1=(top+5+5), string='Weapons', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	#This will be the panel that allows the user to change weapons.
+	subpanel.setMethod(setWeaponsPanel)
+	menu.addPanel(subpanel)
 
 
 def getTestingPanel():

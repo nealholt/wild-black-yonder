@@ -87,6 +87,21 @@ def getStandardMenu():
 	return menu
 
 
+def addAllTabs(menu):
+	'''Takes a menu and adds a standard set of tabs along the top of the menu.'''
+	#Add a "tab" up at the top that switches to weapon selection
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=(left+30), y1=(top+5), width=100, height=20, \
+		color=colors.yellow, thickness=2)
+	subpanel.addDrawable(temp)
+	#Add text
+	temp = drawable.Text(x1=(left+30+5), y1=(top+5+5), string='Weapons', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	#This will be the panel that allows the user to change weapons.
+	subpanel.setMethod(setWeaponsPanel)
+	menu.addPanel(subpanel)
+
+
 def getTestingPanel():
 	menu = getStandardMenu()
 
@@ -170,12 +185,9 @@ def getGalaxyPanel(travel):
 		#If this node is connected to the player's current node, make it clickable
 		isconnected = False
 		subpanel.argument = n.id
-		#If travel is set, then view options that can be traveled to
-		if travel:
-			for c in n.connections:
-				if globalvars.player.nodeid == c[0]:
-					subpanel.setMethod(scenarios.setDestinationNode)
-					break
+		#If travel is set and the node is already connected to the player's node
+		if travel and n.alreadyConnected(globalvars.player.nodeid):
+			subpanel.setMethod(scenarios.setDestinationNode)
 		else:
 			#Otherwise view options for information only
 			subpanel.setMethod(setNodeViewPanel)
@@ -243,11 +255,9 @@ def getLocalGalaxyPanel(travel):
 			#Draw it
 			subpanel = Panel()
 			subpanel.argument = n.id
-			if travel:
-				for c in n.connections:
-					if globalvars.player.nodeid == c[0]:
-						subpanel.setMethod(scenarios.setDestinationNode)
-						break
+			#If travel is set and the node is already connected to the player's node
+			if travel and n.alreadyConnected(globalvars.player.nodeid):
+				subpanel.setMethod(scenarios.setDestinationNode)
 			else:
 				#Otherwise view options for information only
 				subpanel.setMethod(setNodeViewPanel)
