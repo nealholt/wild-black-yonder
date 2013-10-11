@@ -201,17 +201,17 @@ def run(countdown=-1):
 				elif event.key == 27: #escape key or red button
 					running = False
 				elif event.key == 107: #k key
-					globalvars.panel = menus.getLocalGalaxyPanel(False)
+					menus.setLocalGalaxyPanel(False)
 					continue
 				elif event.key == 111: #o key
-					globalvars.panel = menus.getLocalGalaxyPanel(True)
+					menus.setLocalGalaxyPanel(True)
 					continue
 				elif event.key == 109: #m key
 					#If player is dead, access the restart panel, not the testing panel.
 					if globalvars.player.isDead():
-						globalvars.panel = menus.getRestartPanel()
+						menus.setRestartPanel()
 					else:
-						globalvars.panel = menus.getTestingPanel()
+						menus.setTestingPanel()
 					continue
 				elif event.key == 108: #l key
 					globalvars.panel = menus.getGalaxyPanel(False)

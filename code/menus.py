@@ -92,20 +92,100 @@ def getStandardMenu():
 
 def addAllTabs(menu):
 	'''Takes a menu and adds a standard set of tabs along the top of the menu.'''
-	#Add a "tab" up at the top that switches to weapon selection
+	width = 100
+	height = 20
+	textbuffer = 9
+	framethickness = 2
+	x_val = left
+	#ship
 	subpanel = Panel()
-	temp = drawable.Rectangle(x1=(left+30), y1=(top+5), width=100, height=20, \
-		color=colors.yellow, thickness=2)
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
 	#Add text
-	temp = drawable.Text(x1=(left+30+5), y1=(top+5+5), string='Weapons', font_size=24, color=colors.white)
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Ship', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	#This will be the panel that allows the user to change weapons.
+	subpanel.setMethod(setShipPanel)
+	menu.addPanel(subpanel)
+	x_val += width
+
+	#galaxy info
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	#Add text
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Galaxy', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	#This will be the panel that allows the user to change weapons.
+	subpanel.setMethod(setGalaxyPanel)
+	subpanel.argument = False
+	menu.addPanel(subpanel)
+	x_val += width
+
+	#local info
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	#Add text
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Local Info', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	#This will be the panel that allows the user to change weapons.
+	subpanel.setMethod(setLocalGalaxyPanel)
+	subpanel.argument = False
+	menu.addPanel(subpanel)
+	x_val += width
+
+	#local travel
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	#Add text
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Travel', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	#This will be the panel that allows the user to change weapons.
+	subpanel.setMethod(setLocalGalaxyPanel)
+	subpanel.argument = False
+	menu.addPanel(subpanel)
+	x_val += width
+
+	#test scenarios
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	#Add text
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Test', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	#This will be the panel that allows the user to change weapons.
+	subpanel.setMethod(setTestingPanel)
+	menu.addPanel(subpanel)
+	x_val += width
+
+	#Weapons tab:
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	#Add text
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Weapons', font_size=24, color=colors.white)
 	subpanel.addDrawable(temp)
 	#This will be the panel that allows the user to change weapons.
 	subpanel.setMethod(setWeaponsPanel)
 	menu.addPanel(subpanel)
+	x_val += width
 
 
-def getTestingPanel():
+def setTestingPanel():
 	menu = getStandardMenu()
 
 	#Then draw the contents of the menu
@@ -142,19 +222,7 @@ def getTestingPanel():
 		temp = drawable.Line(x1=x1, y1=y1, x2=x2, y2=y2)
 		menu.addDrawable(temp)
 
-	#Add a "tab" up at the top that switches to weapon selection
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=(left+30), y1=(top+5), width=100, height=20, \
-		color=colors.yellow, thickness=2)
-	subpanel.addDrawable(temp)
-	#Add text
-	temp = drawable.Text(x1=(left+30+5), y1=(top+5+5), string='Weapons', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	#This will be the panel that allows the user to change weapons.
-	subpanel.setMethod(setWeaponsPanel)
-	menu.addPanel(subpanel)
-
-	return menu
+	globalvars.panel = menu
 
 
 def setGalaxyPanel(travel):
@@ -165,18 +233,6 @@ def getGalaxyPanel(travel):
 	'''Pre: galaxy is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
 	radius = 3
-
-	font_size = 36
-	if travel:
-		temp = drawable.Text(x1=left+100, y1=top+font_size/2,\
-			string='Click on a node to set it as the destination.',\
-			font_size=font_size, color=colors.white)
-	else:
-		temp = drawable.Text(x1=left+100, y1=top+font_size/2,\
-			string='Click on a node to learn more about it.',\
-			font_size=font_size, color=colors.white)
-	menu.addDrawable(temp)
-
 	for n in globalvars.galaxy.nodes:
 		subpanel = Panel()
 		color = colors.yellow
@@ -208,23 +264,12 @@ def getGalaxyPanel(travel):
 	return menu
 
 
-def getLocalGalaxyPanel(travel):
+def setLocalGalaxyPanel(travel):
 	'''Pre: galaxy is a NodeManager object that has been initialized.'''
 	menu = getStandardMenu()
 	radius = 10
 	#Magnitude of the stretch.
 	magnitude = 4
-
-	font_size = 36
-	if travel:
-		temp = drawable.Text(x1=left+100, y1=top+font_size/2,\
-			string='Click on a node to set it as the destination.',\
-			font_size=font_size, color=colors.white)
-	else:
-		temp = drawable.Text(x1=left+100, y1=top+font_size/2,\
-			string='Click on a node to learn more about it.',\
-			font_size=font_size, color=colors.white)
-	menu.addDrawable(temp)
 	#Center the player node location
 	playerNodeLoc = (globalvars.CENTERX, globalvars.CENTERY)
 	#Get the player's node
@@ -276,12 +321,12 @@ def getLocalGalaxyPanel(travel):
 				temp = drawable.Line(x1=position[0]-radius, y1=position[1]-radius,
 					x2=position2[0]-radius, y2=position2[1]-radius)
 				menu.addDrawable(temp)
-	return menu
+	globalvars.panel = menu
 
 
 def setNodeViewPanel(nodeid):
 	node = globalvars.galaxy.getNode(nodeid)
-
+	topbuffer = 100
 	menu = getStandardMenu()
 
 	text = [
@@ -297,23 +342,23 @@ def setNodeViewPanel(nodeid):
 	font_size = 24
 	for i in range(len(text)):
 		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+20+top, string=text[i],\
+			y1=font_size*i+topbuffer+top, string=text[i],\
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
 
 	#Put button to return to previous view.
 	subpanel = Panel()
-	temp = drawable.Text(x1=left+50, y1=font_size*len(text)+20+top,\
+	temp = drawable.Text(x1=left+50, y1=font_size*len(text)+topbuffer+top,\
 		string='Return to node info menu.', font_size=font_size, color=colors.yellow)
 	subpanel.addDrawable(temp)
-	subpanel.setMethod(setGalaxyPanel)
+	subpanel.setMethod(setLocalGalaxyPanel)
 	subpanel.argument = False
 	menu.addPanel(subpanel)
 
 	globalvars.panel = menu
 
 
-def getRestartPanel():
+def setRestartPanel():
 	menu = getStandardMenu()
 
 	#Then draw the contents of the menu
@@ -332,7 +377,7 @@ def getRestartPanel():
 	subpanel.addDrawable(temp)
 	menu.addPanel(subpanel)
 
-	return menu
+	globalvars.panel = menu
 
 
 def getHelpPanel():
@@ -374,6 +419,12 @@ def getHelpPanel():
 		menu.addDrawable(temp)
 
 	return menu
+
+
+def setShipPanel():
+	menu = getStandardMenu()
+	#TODO
+	globalvars.panel = menu
 
 
 weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'spread_mk3', 'missile_mk1', 'mine', 'hit_box_test']
