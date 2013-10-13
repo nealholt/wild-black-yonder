@@ -107,7 +107,7 @@ def addAllTabs(menu):
 		string='Ship', font_size=24, color=colors.white)
 	subpanel.addDrawable(temp)
 	#This will be the panel that allows the user to change weapons.
-	#TODO subpanel.setMethod(setTestingPanel)
+	subpanel.setMethod(setShipPanel)
 	menu.addPanel(subpanel)
 	x_val += width
 
@@ -419,6 +419,12 @@ def getHelpPanel():
 		menu.addDrawable(temp)
 
 	return menu
+
+
+def setShipPanel():
+	menu = getStandardMenu()
+	#TODO
+	globalvars.panel = menu
 
 
 weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'spread_mk3', 'missile_mk1', 'mine', 'hit_box_test']
