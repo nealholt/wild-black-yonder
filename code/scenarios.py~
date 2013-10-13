@@ -338,7 +338,7 @@ def goToInfiniteSpace(nodeid):
 
 
 #The distances between nodes in the galaxy view is proportional to the distance between warp portals in the regular ship view. The scaling factor is warpPortalScaling.
-warpPortalScaling = 25
+warpPortalScaling = 100
 def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	rd.seed(seed) #Fix the seed for the random number generator.
 
