@@ -393,7 +393,7 @@ def run(countdown=-1):
 			#Countdown before kicking player back to menu
 			globalvars.deathcountdown -= 1
 			if globalvars.deathcountdown < 0:
-				globalvars.panel = menus.getRestartPanel()
+				menus.setRestartPanel()
 
 		#Calculate how long we took in the above loop to estimate the number of frames per second
 		#Alert user if fraps drops below half the desired threshold.
