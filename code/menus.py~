@@ -169,12 +169,6 @@ def setTestingPanel():
 	vert_space = 70
 	x1, y1 = horiz_space, globalvars.HEIGHT/2
 	radius = 10
-	#panel made of a circle centered at start
-	subpanel = Panel()
-	subpanel.setMethod(scenarios.testScenario00)
-	temp = drawable.Circle(x1=x1, y1=y1, radius=radius, color=colors.yellow)
-	subpanel.addDrawable(temp)
-	menu.addPanel(subpanel)
 
 	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Infinite space', 'Capital ship']
 	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.infiniteSpace, scenarios.capitalShipScenario]

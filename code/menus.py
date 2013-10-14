@@ -170,8 +170,8 @@ def setTestingPanel():
 	x1, y1 = horiz_space, globalvars.HEIGHT/2
 	radius = 10
 
-	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Infinite space', 'Capital ship']
-	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.infiniteSpace, scenarios.capitalShipScenario]
+	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Capital ship']
+	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.capitalShipScenario]
 
 	x2 = horiz_space*2
 	methodLength = len(methods)
