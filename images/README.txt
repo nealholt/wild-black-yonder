@@ -22,3 +22,10 @@ http://en.wikipedia.org/wiki/Portal:X-ray_astronomy/Picture/7
 http://upload.wikimedia.org/wikipedia/commons/c/cb/Cassiopeia_A_Spitzer_Crop.jpg
 warpPortal
 
+
+http://www.clker.com/clipart-space-ship-5.html
+ship outline
+
+http://lonelyconservative.com/2012/11/if-you-cant-find-a-gas-can-heres-why/
+gas can
+
