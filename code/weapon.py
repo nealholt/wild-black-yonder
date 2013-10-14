@@ -53,7 +53,6 @@ class Weapon():
 		#reset cooldown
 		self.cooldown = self.refire_rate
 
-
 	def makeBullet(self, angle):
 		tempbullet = Bullet(angle, self.shooter.rect.centerx+self.offset[0],\
 			self.shooter.rect.centery+self.offset[1], self.shooter)
@@ -64,6 +63,14 @@ class Weapon():
 		#Add bullet to the sprite groups
 		globalvars.tangibles.add(tempbullet)
 
+	def toStringArray(self):
+		str_array = [
+			'Refire rate: '+str(self.refire_rate),
+			'Projectile speed: '+str(self.bullet_speed),
+			'Range: '+str(self.weapon_range),
+			'Projectiles per shot: '+str(self.bullet_num),
+			'Spread: '+str(self.spread) ]
+		return str_array
 
 
 class HitBoxTesterGun():
@@ -96,6 +103,8 @@ class HitBoxTesterGun():
 		#Add bullet to the sprite groups
 		globalvars.tangibles.add(tempbullet)
 
+	def toStringArray(self):
+		return ['This is to be used for testing purposes only.']
 
 
 class MissileLauncher():
@@ -117,6 +126,11 @@ class MissileLauncher():
 		globalvars.tangibles.add(tempmissile)
 		self.cooldown=self.refire_rate
 
+	def toStringArray(self):
+		str_array = [
+			'Refire rate: '+str(self.refire_rate),
+			'Range: '+str(self.weapon_range) ]
+		return str_array
 
 
 class MineLayer():
@@ -126,7 +140,6 @@ class MineLayer():
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
 		self.attack_angle = 10 #if within this angle to target, can shoot at target
-		self.weapon_range = 700
 
 	def cool(self):
 		if self.cooldown > 0:
@@ -140,6 +153,10 @@ class MineLayer():
 		globalvars.whiskerables.add(tempmine)
 		self.cooldown=self.refire_rate
 
+	def toStringArray(self):
+		str_array = [
+			'Refire rate: '+str(self.refire_rate)]
+		return str_array
 
 
 def getWeapon(profile, weaponOwner):

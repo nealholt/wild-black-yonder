@@ -53,7 +53,6 @@ class Weapon():
 		#reset cooldown
 		self.cooldown = self.refire_rate
 
-
 	def makeBullet(self, angle):
 		tempbullet = Bullet(angle, self.shooter.rect.centerx+self.offset[0],\
 			self.shooter.rect.centery+self.offset[1], self.shooter)
@@ -64,6 +63,14 @@ class Weapon():
 		#Add bullet to the sprite groups
 		globalvars.tangibles.add(tempbullet)
 
+	def toStringArray(self):
+		str_array = [
+			'Refire rate: '+str(self.refire_rate),
+			'Projectile speed: '+str(self.bullet_speed),
+			'Range: '+str(self.weapon_range),
+			'Projectiles per shot: '+str(self.bullet_num),
+			'Spread: '+str(self.spread) ]
+		return str_array
 
 
 class HitBoxTesterGun():
@@ -96,6 +103,8 @@ class HitBoxTesterGun():
 		#Add bullet to the sprite groups
 		globalvars.tangibles.add(tempbullet)
 
+	def toStringArray(self):
+		return ['This is to be used for testing purposes only.']
 
 
 class MissileLauncher():
@@ -117,6 +126,11 @@ class MissileLauncher():
 		globalvars.tangibles.add(tempmissile)
 		self.cooldown=self.refire_rate
 
+	def toStringArray(self):
+		str_array = [
+			'Refire rate: '+str(self.refire_rate),
+			'Range: '+str(self.weapon_range) ]
+		return str_array
 
 
 class MineLayer():
@@ -190,10 +204,10 @@ def getWeapon(profile, weaponOwner):
 		weapon.attack_angle = 3
 		weapon.bullet_color=colors.pink
 	elif profile == 'missile_mk1':
-		weapon = MissileLauncher(weaponOwner)
+		weapon = MissileLauncher(weaponOwner, name='Missile Mk1')
 		weapon.refire_rate=3*globalvars.FPS #Fires once every refire_rate seconds
 	elif profile == 'mine':
-		weapon = MineLayer(weaponOwner)
+		weapon = MineLayer(weaponOwner, name='Mine Mk1')
 		weapon.refire_rate=1*globalvars.FPS #Fires once every refire_rate seconds
 	elif profile == 'hit_box_test':
 		weapon = HitBoxTesterGun(weaponOwner)

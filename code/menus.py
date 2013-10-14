@@ -160,18 +160,6 @@ def addAllTabs(menu):
 	menu.addPanel(subpanel)
 	x_val += width
 
-	#Weapons tab:
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-		string='Weapons', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setWeaponsPanel)
-	menu.addPanel(subpanel)
-	x_val += width
-
 
 def setTestingPanel():
 	menu = getStandardMenu()
@@ -521,21 +509,4 @@ def setShipPanel():
 
 	globalvars.panel = menu
 
-
-weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'spread_mk3', 'missile_mk1', 'mine', 'hit_box_test']
-def setWeaponsPanel():
-	'''Creates the weapon panel and sets the current panel to be the weapon panel.'''
-	menu = getStandardMenu()
-	#Then draw the contents of the menu
-	for i in xrange(len(weaponsList)):
-		subpanel = Panel()
-		temp = drawable.Text(x1=globalvars.WIDTH/2-100, y1=(40*i+150), \
-			string=weaponsList[i], font_size=24, color=colors.white)
-		subpanel.addDrawable(temp)
-		#The following commented code does not work so I created an argument attribute for the panel object.
-		#subpanel.setMethod(lambda: globalvars.player.setWeapon(weaponsList[i]))
-		subpanel.setMethod(globalvars.player.setWeapon)
-		subpanel.argument = weaponsList[i]
-		menu.addPanel(subpanel)
-	globalvars.panel = menu
 

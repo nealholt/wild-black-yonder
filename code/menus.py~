@@ -410,17 +410,19 @@ def getHelpPanel():
 
 
 def unequipPlayerWeapon():
+	'''This method allows me to keep the unequipWeapon method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
 	globalvars.player.unequipWeapon()
 	setShipPanel()
-	#globalvars.panel.draw()
-	#pygame.display.flip()
 
 
 def equipPlayerWeapon(cargo_index):
+	'''This method allows me to keep the equipWeaponFromCargo method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
 	globalvars.player.equipWeaponFromCargo(cargo_index)
 	setShipPanel()
-	#globalvars.panel.draw()
-	#pygame.display.flip()
 
 
 def setShipPanel():
