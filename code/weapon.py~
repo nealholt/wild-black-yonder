@@ -140,7 +140,6 @@ class MineLayer():
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
 		self.attack_angle = 10 #if within this angle to target, can shoot at target
-		self.weapon_range = 700
 
 	def cool(self):
 		if self.cooldown > 0:
@@ -154,6 +153,10 @@ class MineLayer():
 		globalvars.whiskerables.add(tempmine)
 		self.cooldown=self.refire_rate
 
+	def toStringArray(self):
+		str_array = [
+			'Refire rate: '+str(self.refire_rate)]
+		return str_array
 
 
 def getWeapon(profile, weaponOwner):

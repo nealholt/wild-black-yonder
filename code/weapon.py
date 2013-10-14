@@ -64,7 +64,7 @@ class Weapon():
 		globalvars.tangibles.add(tempbullet)
 
 	def toStringArray(self):
-		str_array = [
+		str_array = [self.name,
 			'Refire rate: '+str(self.refire_rate),
 			'Projectile speed: '+str(self.bullet_speed),
 			'Range: '+str(self.weapon_range),
@@ -104,7 +104,7 @@ class HitBoxTesterGun():
 		globalvars.tangibles.add(tempbullet)
 
 	def toStringArray(self):
-		return ['This is to be used for testing purposes only.']
+		return [self.name, 'This is to be used for testing purposes only.']
 
 
 class MissileLauncher():
@@ -127,7 +127,7 @@ class MissileLauncher():
 		self.cooldown=self.refire_rate
 
 	def toStringArray(self):
-		str_array = [
+		str_array = [self.name,
 			'Refire rate: '+str(self.refire_rate),
 			'Range: '+str(self.weapon_range) ]
 		return str_array
@@ -154,7 +154,7 @@ class MineLayer():
 		self.cooldown=self.refire_rate
 
 	def toStringArray(self):
-		str_array = [
+		str_array = [self.name,
 			'Refire rate: '+str(self.refire_rate)]
 		return str_array
 

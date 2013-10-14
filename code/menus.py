@@ -452,6 +452,8 @@ def setShipPanel():
 				y1=(top+y_val+font_size*2+textbuffer),\
 				string='View stats', font_size=font_size,\
 				color=colors.white)
+		subpanel.setMethod(setWeaponViewPanel)
+		subpanel.argument = globalvars.player.weapons[0]
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
 
@@ -494,6 +496,8 @@ def setShipPanel():
 					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size*2),\
 					string='View stats', font_size=font_size, \
 					color=colors.white)
+			subpanel.setMethod(setWeaponViewPanel)
+			subpanel.argument = c
 			subpanel.addDrawable(temp)
 			menu.addPanel(subpanel)
 			i += 1
@@ -502,17 +506,16 @@ def setShipPanel():
 
 
 
-def setWeaponViewPanel(text):
+def setWeaponViewPanel(weapon):
 	topbuffer = 100
 	menu = getStandardMenu()
-
 	#Then draw the contents of the menu
 	font_size = 24
+	text = weapon.toStringArray()
 	for i in range(len(text)):
 		temp = drawable.Text(x1=left+50,\
 			y1=font_size*i+topbuffer+top, string=text[i],\
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
-
 	globalvars.panel = menu
 
