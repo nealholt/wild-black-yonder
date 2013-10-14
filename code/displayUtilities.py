@@ -49,6 +49,8 @@ image_list['bgjupiter'] = preLoadImage('images/ioOverJupiter'+ext, transparency=
 image_list['bggalaxies'] = preLoadImage('images/galaxyLenses'+ext, transparency=False) #background galaxies
 image_list['bigShip'] = preLoadImage('images/bigShip'+ext) #capital ship
 image_list['warp'] = preLoadImage('images/warpPortal'+ext) #warp portal
+image_list['shipoutline'] = preLoadImage('images/space-ship-sm'+ext) #ship outline
+image_list['gas'] = preLoadImage('images/Gas-Can-256x300'+ext) #gas can
 
 
 

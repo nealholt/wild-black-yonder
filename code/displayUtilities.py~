@@ -49,6 +49,8 @@ image_list['bgjupiter'] = preLoadImage('images/ioOverJupiter'+ext, transparency=
 image_list['bggalaxies'] = preLoadImage('images/galaxyLenses'+ext, transparency=False) #background galaxies
 image_list['bigShip'] = preLoadImage('images/bigShip'+ext) #capital ship
 image_list['warp'] = preLoadImage('images/warpPortal'+ext) #warp portal
+image_list['shipoutline'] = preLoadImage('images/space-ship-hi'+ext) #ship outline
+image_list['gas'] = preLoadImage('images/Gas-Can-256x300'+ext) #gas can
 
 
 
@@ -295,7 +297,7 @@ class ArrowToDestination(pygame.sprite.Sprite):
 	'''Paints a yellow arrow pointing to the given target.'''
         def __init__(self, target):
 		pygame.sprite.Sprite.__init__(self)
-		self.is_a = globalvars.OTHER
+		self.is_a = globalvars.ARROW
 		self.target = target #A location
 		self.dtt = 0.0 #Distance to target
 		#Whether to offset this object's location based on the camera.

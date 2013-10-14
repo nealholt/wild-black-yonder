@@ -1,6 +1,7 @@
 import pygame
 from colors import *
 import globalvars
+from displayUtilities import image_list
 
 class Drawable:
 	def __init__(self, x1=0, y1=0, color=white):
@@ -68,4 +69,12 @@ class Text(Drawable):
 		self.rect = text.get_rect(center=(self.x1, self.y1))
 		self.rect.left += self.rect.width/2 #Shift the text right by half its own width.
 		globalvars.screen.blit(text, self.rect)
+
+class DrawableImage(Drawable):
+	def __init__(self, x1=0, y1=0, image=''):
+		Drawable.__init__(self, x1=x1, y1=y1)
+		self.image = image_list[image].convert()
+
+	def draw(self, use_color=None):
+		globalvars.screen.blit(self.image, (self.x1, self.y1))
 

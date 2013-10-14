@@ -102,11 +102,9 @@ def addAllTabs(menu):
 	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
-	#Add text
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
 		string='Ship', font_size=24, color=colors.white)
 	subpanel.addDrawable(temp)
-	#This will be the panel that allows the user to change weapons.
 	subpanel.setMethod(setShipPanel)
 	menu.addPanel(subpanel)
 	x_val += width
@@ -116,11 +114,9 @@ def addAllTabs(menu):
 	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
-	#Add text
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
 		string='Galaxy', font_size=24, color=colors.white)
 	subpanel.addDrawable(temp)
-	#This will be the panel that allows the user to change weapons.
 	subpanel.setMethod(setGalaxyPanel)
 	subpanel.argument = False
 	menu.addPanel(subpanel)
@@ -131,11 +127,9 @@ def addAllTabs(menu):
 	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
-	#Add text
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
 		string='Local Info', font_size=24, color=colors.white)
 	subpanel.addDrawable(temp)
-	#This will be the panel that allows the user to change weapons.
 	subpanel.setMethod(setLocalGalaxyPanel)
 	subpanel.argument = False
 	menu.addPanel(subpanel)
@@ -146,13 +140,11 @@ def addAllTabs(menu):
 	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
-	#Add text
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
 		string='Travel', font_size=24, color=colors.white)
 	subpanel.addDrawable(temp)
-	#This will be the panel that allows the user to change weapons.
 	subpanel.setMethod(setLocalGalaxyPanel)
-	subpanel.argument = False
+	subpanel.argument = True
 	menu.addPanel(subpanel)
 	x_val += width
 
@@ -161,11 +153,9 @@ def addAllTabs(menu):
 	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
-	#Add text
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
 		string='Test', font_size=24, color=colors.white)
 	subpanel.addDrawable(temp)
-	#This will be the panel that allows the user to change weapons.
 	subpanel.setMethod(setTestingPanel)
 	menu.addPanel(subpanel)
 	x_val += width
@@ -175,11 +165,9 @@ def addAllTabs(menu):
 	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
-	#Add text
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
 		string='Weapons', font_size=24, color=colors.white)
 	subpanel.addDrawable(temp)
-	#This will be the panel that allows the user to change weapons.
 	subpanel.setMethod(setWeaponsPanel)
 	menu.addPanel(subpanel)
 	x_val += width
@@ -424,6 +412,10 @@ def getHelpPanel():
 def setShipPanel():
 	menu = getStandardMenu()
 	#TODO
+	temp = drawable.DrawableImage(x1=left+50,\
+		y1=20+top, image='shipoutline')
+	menu.addDrawable(temp)
+
 	globalvars.panel = menu
 
 

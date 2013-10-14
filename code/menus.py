@@ -412,6 +412,9 @@ def getHelpPanel():
 def setShipPanel():
 	menu = getStandardMenu()
 	#TODO
+	temp = drawable.DrawableImage(x1=left+50, y1=20+top, image='shipoutline')
+	menu.addDrawable(temp)
+
 	globalvars.panel = menu
 
 
