@@ -409,14 +409,28 @@ def getHelpPanel():
 	return menu
 
 
+def unequipPlayerWeapon():
+	'''This method allows me to keep the unequipWeapon method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.unequipWeapon()
+	setShipPanel()
+
+
+def equipPlayerWeapon(cargo_index):
+	'''This method allows me to keep the equipWeaponFromCargo method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.equipWeaponFromCargo(cargo_index)
+	setShipPanel()
+
+
 def setShipPanel():
 	menu = getStandardMenu()
 	#TODO
-	temp = drawable.DrawableImage(x1=left+5, y1=20+top, image='shipoutline')
+	temp = drawable.DrawableImage(x1=left+20, y1=100+top, image='shipoutline')
 	menu.addDrawable(temp)
 
-	#Draw all the weapons in the cargo hold along the right side of the screen.
-	i = 0
 	textbuffer = 8
 	localtopbuffer = 50
 	leftoffset = 500
@@ -424,7 +438,49 @@ def setShipPanel():
 	localwidth = 200
 	font_size = 24
 	framethickness = 2
-	for c in globalvars.player.cargo:
+	#Draw the currently equipped weapon if any
+	if len(globalvars.player.weapons) > 0:
+		x_val = 200
+		y_val = 80
+		subpanel = Panel()
+		#Add frame around weapon
+		temp = drawable.Rectangle(x1=(left+x_val),\
+					y1=(top+y_val),\
+					width=localwidth,\
+					height=localheight,\
+					color=colors.yellow,\
+					thickness=framethickness)
+		subpanel.addDrawable(temp)
+		#Add weapon name
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+textbuffer),\
+				string=globalvars.player.weapons[0].name, font_size=font_size,\
+				color=colors.white)
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+		#Add option to unequip weapon
+		subpanel = Panel()
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+font_size+textbuffer),\
+				string='Unequip', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(unequipPlayerWeapon)
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+		#Add option to view information on weapon
+		subpanel = Panel()
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+font_size*2+textbuffer),\
+				string='View stats', font_size=font_size,\
+				color=colors.white)
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+
+
+	#Draw all the weapons in the cargo hold along the right side of the screen.
+	i = 0
+	for j in xrange(len(globalvars.player.cargo)):
+		c = globalvars.player.cargo[j]
 		#This is a clunky way to distinguish weapons from non-weapons, but it will work for now.
 		if hasattr(c, 'shooter'):
 			subpanel = Panel()
@@ -442,19 +498,24 @@ def setShipPanel():
 					string=c.name, font_size=font_size, \
 					color=colors.white)
 			subpanel.addDrawable(temp)
+			menu.addPanel(subpanel)
 			#Add option to equip weapon
+			subpanel = Panel()
 			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
 					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size),\
 					string='Equip', font_size=font_size, \
 					color=colors.white)
+			subpanel.setMethod(equipPlayerWeapon)
+			subpanel.argument = j
 			subpanel.addDrawable(temp)
+			menu.addPanel(subpanel)
 			#Add option to view information on weapon
+			subpanel = Panel()
 			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
 					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size*2),\
 					string='View stats', font_size=font_size, \
 					color=colors.white)
 			subpanel.addDrawable(temp)
-			#TODO subpanel.setMethod(setWeaponsPanel)
 			menu.addPanel(subpanel)
 			i += 1
 

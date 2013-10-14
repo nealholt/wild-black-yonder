@@ -32,7 +32,7 @@ class Ship(physicalObject.PhysicalObject):
 		#int fuel (just make it a big number and divide it by 100 or 1000 and then display that number without the decimal.)
 		self.fuel = 1000000 #million
 		#cargo space
-		self.cargoSpace = 10
+		self.cargoSpace = 30
 		#cargo array
 		self.cargo = []
 

@@ -1,6 +1,5 @@
 import ship
 import profiles
-import globalvars #TODO TESTING
 from geometry import translate
 import weapon
 
@@ -38,6 +37,10 @@ class Player(ship.Ship):
 		for w in weaponsList:
 			self.cargo.append(weapon.getWeapon(w, self))
 
+
+	def unequipWeapon(self):
+		self.cargo.append(self.weapons.pop(0))
+		
 
 	def parkingBrake(self):
 		'''Change the truth value of park.'''
