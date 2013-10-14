@@ -322,15 +322,6 @@ def setNodeViewPanel(nodeid):
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
 
-	#Put button to return to previous view.
-	subpanel = Panel()
-	temp = drawable.Text(x1=left+50, y1=font_size*len(text)+topbuffer+top,\
-		string='Return to node info menu.', font_size=font_size, color=colors.yellow)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setLocalGalaxyPanel)
-	subpanel.argument = False
-	menu.addPanel(subpanel)
-
 	globalvars.panel = menu
 
 
@@ -509,4 +500,19 @@ def setShipPanel():
 
 	globalvars.panel = menu
 
+
+
+def setWeaponViewPanel(text):
+	topbuffer = 100
+	menu = getStandardMenu()
+
+	#Then draw the contents of the menu
+	font_size = 24
+	for i in range(len(text)):
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+topbuffer+top, string=text[i],\
+			font_size=font_size, color=colors.white)
+		menu.addDrawable(temp)
+
+	globalvars.panel = menu
 
