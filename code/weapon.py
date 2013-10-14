@@ -4,8 +4,8 @@ import globalvars
 from testFunctions import HitBoxTestBullet
 
 class Weapon():
-	def __init__(self, shooter):
-		self.name='default'
+	def __init__(self, shooter, name='default'):
+		self.name=name
 		self.refire_rate=10 #Fires once every refire_rate frames
 		self.cooldown=0 #How long until next shot
 		self.bullet_speed=10
@@ -67,7 +67,7 @@ class Weapon():
 
 
 class HitBoxTesterGun():
-	def __init__(self, shooter):
+	def __init__(self, shooter, name='default'):
 		self.name='HitBoxTesterGun'
 		self.cooldown=0 #How long until next shot
 		self.bullet_speed=5
@@ -99,8 +99,8 @@ class HitBoxTesterGun():
 
 
 class MissileLauncher():
-	def __init__(self, shooter):
-		self.name='default'
+	def __init__(self, shooter, name='default'):
+		self.name=name
 		self.refire_rate=120 #Fires once every refire_rate frames
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
@@ -120,8 +120,8 @@ class MissileLauncher():
 
 
 class MineLayer():
-	def __init__(self, shooter):
-		self.name='default'
+	def __init__(self, shooter, name='default'):
+		self.name=name
 		self.refire_rate=10 #Fires once every refire_rate frames
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
@@ -190,10 +190,10 @@ def getWeapon(profile, weaponOwner):
 		weapon.attack_angle = 3
 		weapon.bullet_color=colors.pink
 	elif profile == 'missile_mk1':
-		weapon = MissileLauncher(weaponOwner)
+		weapon = MissileLauncher(weaponOwner, name='Missile Mk1')
 		weapon.refire_rate=3*globalvars.FPS #Fires once every refire_rate seconds
 	elif profile == 'mine':
-		weapon = MineLayer(weaponOwner)
+		weapon = MineLayer(weaponOwner, name='Mine Mk1')
 		weapon.refire_rate=1*globalvars.FPS #Fires once every refire_rate seconds
 	elif profile == 'hit_box_test':
 		weapon = HitBoxTesterGun(weaponOwner)

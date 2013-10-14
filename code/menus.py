@@ -93,13 +93,13 @@ def getStandardMenu():
 def addAllTabs(menu):
 	'''Takes a menu and adds a standard set of tabs along the top of the menu.'''
 	width = 100
-	height = 20
+	localheight = 20
 	textbuffer = 9
 	framethickness = 2
 	x_val = left
 	#ship
 	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
@@ -111,7 +111,7 @@ def addAllTabs(menu):
 
 	#galaxy info
 	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
@@ -124,7 +124,7 @@ def addAllTabs(menu):
 
 	#local info
 	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
@@ -137,7 +137,7 @@ def addAllTabs(menu):
 
 	#local travel
 	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
@@ -150,7 +150,7 @@ def addAllTabs(menu):
 
 	#test scenarios
 	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
@@ -162,7 +162,7 @@ def addAllTabs(menu):
 
 	#Weapons tab:
 	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=height, \
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
 		color=colors.yellow, thickness=framethickness)
 	subpanel.addDrawable(temp)
 	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
@@ -412,8 +412,51 @@ def getHelpPanel():
 def setShipPanel():
 	menu = getStandardMenu()
 	#TODO
-	temp = drawable.DrawableImage(x1=left+50, y1=20+top, image='shipoutline')
+	temp = drawable.DrawableImage(x1=left+5, y1=20+top, image='shipoutline')
 	menu.addDrawable(temp)
+
+	#Draw all the weapons in the cargo hold along the right side of the screen.
+	i = 0
+	textbuffer = 8
+	localtopbuffer = 50
+	leftoffset = 500
+	localheight = 70
+	localwidth = 200
+	font_size = 24
+	framethickness = 2
+	for c in globalvars.player.cargo:
+		#This is a clunky way to distinguish weapons from non-weapons, but it will work for now.
+		if hasattr(c, 'shooter'):
+			subpanel = Panel()
+			#Add frame around weapon
+			temp = drawable.Rectangle(x1=(left+leftoffset),\
+						y1=(localtopbuffer+top+i*localheight),\
+						width=localwidth,\
+						height=localheight, \
+						color=colors.yellow,\
+						thickness=framethickness)
+			subpanel.addDrawable(temp)
+			#Add weapon name
+			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
+					y1=(localtopbuffer+top+i*localheight+textbuffer),\
+					string=c.name, font_size=font_size, \
+					color=colors.white)
+			subpanel.addDrawable(temp)
+			#Add option to equip weapon
+			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
+					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size),\
+					string='Equip', font_size=font_size, \
+					color=colors.white)
+			subpanel.addDrawable(temp)
+			#Add option to view information on weapon
+			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
+					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size*2),\
+					string='View stats', font_size=font_size, \
+					color=colors.white)
+			subpanel.addDrawable(temp)
+			#TODO subpanel.setMethod(setWeaponsPanel)
+			menu.addPanel(subpanel)
+			i += 1
 
 	globalvars.panel = menu
 

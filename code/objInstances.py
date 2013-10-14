@@ -100,15 +100,6 @@ class Missile(physicalObject.PhysicalObject):
 					closest = d
 		else:
 			self.target = globalvars.player
-		#TODO TESTING
-		'''
-		print 'Missile target is none '+str(self.target is None)
-		print 'Missile speed: '+str(self.speed)
-		print 'Missile goal speed: '+str(self.targetSpeed)
-		print 'Missile angle: '+str(self.theta)
-		print 'Missile delta angle: '+str(self.dtheta)
-		'''
-
 
 	def update(self):
 		#TODO seek target like an npc ship does

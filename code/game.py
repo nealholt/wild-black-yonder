@@ -463,7 +463,6 @@ def setClosestSprites():
 					least_dist = dist
 					closest_sprite = B
 		#Set sprite A's closest sprite and the distance to that sprite.
-		#if not closest_sprite is None: print closest_sprite.image_name+' at '+str(least_dist) #TODO TESTING
 		A.setClosest(closest_sprite, least_dist)
 
 

@@ -176,7 +176,7 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 		pygame.sprite.Sprite.__init__(self)
 		self.warps = warps
 		#The node that this infinite space generator is generating space for.
-		self.node = globalvars.localSystem.getNode(seed)
+		self.node = globalvars.galaxy.getNode(seed)
 		#Distance above which to depopulate the grid cells.
 		self.depopulatedistance = 4
 		self.seed = seed

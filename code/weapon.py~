@@ -4,8 +4,8 @@ import globalvars
 from testFunctions import HitBoxTestBullet
 
 class Weapon():
-	def __init__(self, shooter):
-		self.name='default'
+	def __init__(self, shooter, name='default'):
+		self.name=name
 		self.refire_rate=10 #Fires once every refire_rate frames
 		self.cooldown=0 #How long until next shot
 		self.bullet_speed=10
@@ -67,7 +67,7 @@ class Weapon():
 
 
 class HitBoxTesterGun():
-	def __init__(self, shooter):
+	def __init__(self, shooter, name='default'):
 		self.name='HitBoxTesterGun'
 		self.cooldown=0 #How long until next shot
 		self.bullet_speed=5
@@ -99,8 +99,8 @@ class HitBoxTesterGun():
 
 
 class MissileLauncher():
-	def __init__(self, shooter):
-		self.name='default'
+	def __init__(self, shooter, name='default'):
+		self.name=name
 		self.refire_rate=120 #Fires once every refire_rate frames
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
@@ -120,8 +120,8 @@ class MissileLauncher():
 
 
 class MineLayer():
-	def __init__(self, shooter):
-		self.name='default'
+	def __init__(self, shooter, name='default'):
+		self.name=name
 		self.refire_rate=10 #Fires once every refire_rate frames
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
@@ -164,27 +164,27 @@ def getWeapon(profile, weaponOwner):
 		weapon.bullet_color=colors.pink
 	elif profile == 'mk2':
 		weapon.name='Laser Mk2'
-		weapon.refire_rate=0.5*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.refire_rate=int(0.5*globalvars.FPS) #Fires once every refire_rate seconds
 		weapon.bullet_speed=500./float(globalvars.FPS) #speed in pixels per second
-		weapon.bullet_lifespan=2.5*globalvars.FPS #How long the bullet lasts in seconds before expiring
+		weapon.bullet_lifespan=int(2.5*globalvars.FPS) #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=1 #number of bullets fired at a time
 		weapon.spread=0 #spread of bullets fired
 		weapon.attack_angle = 3
 		weapon.bullet_color=colors.pink
 	elif profile == 'spread_mk2':
 		weapon.name='Spread Shot Laser Mk2'
-		weapon.refire_rate=0.5*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.refire_rate=int(0.5*globalvars.FPS) #Fires once every refire_rate seconds
 		weapon.bullet_speed=500./float(globalvars.FPS) #speed in pixels per second
-		weapon.bullet_lifespan=2.5*globalvars.FPS #How long the bullet lasts in seconds before expiring
+		weapon.bullet_lifespan=int(2.5*globalvars.FPS) #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=2 #number of bullets fired at a time
 		weapon.spread=10 #spread of bullets fired
 		weapon.attack_angle = 3
 		weapon.bullet_color=colors.pink
 	elif profile == 'spread_mk3':
 		weapon.name='Spread Shot Laser Mk3'
-		weapon.refire_rate=0.2*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.refire_rate=int(0.2*globalvars.FPS) #Fires once every refire_rate seconds
 		weapon.bullet_speed=650./float(globalvars.FPS) #speed in pixels per second
-		weapon.bullet_lifespan=2.5*globalvars.FPS #How long the bullet lasts in seconds before expiring
+		weapon.bullet_lifespan=int(2.5*globalvars.FPS) #How long the bullet lasts in seconds before expiring
 		weapon.bullet_num=3 #number of bullets fired at a time
 		weapon.spread=10 #spread of bullets fired
 		weapon.attack_angle = 3
@@ -197,8 +197,8 @@ def getWeapon(profile, weaponOwner):
 		weapon.refire_rate=1*globalvars.FPS #Fires once every refire_rate seconds
 	elif profile == 'hit_box_test':
 		weapon = HitBoxTesterGun(weaponOwner)
-		weapon.refire_rate=0.2*globalvars.FPS #Fires once every refire_rate seconds
+		weapon.refire_rate=int(0.2*globalvars.FPS) #Fires once every refire_rate seconds
 		weapon.bullet_speed=650./float(globalvars.FPS) #speed in pixels per second
-		weapon.bullet_lifespan=2.5*globalvars.FPS #How long the bullet lasts in seconds before expiring
+		weapon.bullet_lifespan=int(2.5*globalvars.FPS) #How long the bullet lasts in seconds before expiring
 	return weapon
 

@@ -1,7 +1,7 @@
 import ship
 import profiles
-import globalvars #TODO TESTING
 from geometry import translate
+import weapon
 
 class Player(ship.Ship):
 	def __init__(self, image_name):
@@ -30,6 +30,12 @@ class Player(ship.Ship):
 		#Node location of the player.
 		self.nodeid = 0
 		self.destinationNode = 0
+
+		#For testing purposes, load all the weapons except the initially equipped 
+		#weapon into the player's cargo hold.
+		weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'missile_mk1', 'mine', 'hit_box_test']
+		for w in weaponsList:
+			self.cargo.append(weapon.getWeapon(w, self))
 
 
 	def parkingBrake(self):

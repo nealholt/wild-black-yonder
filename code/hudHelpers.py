@@ -61,8 +61,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	width is a nat specifying the width of the rectangle of space to be populated.
 	height is a nat specifying the height.
 	center is where the center of the rectangle should be positioned.
-	Post: 
-	TODO TESTING.'''
+	Post: '''
 	#print 'TESTING populate '+str(width)+'x'+str(height)+' space centered at '+str(center)
 	#Test variables START
 	TESTING = False #True #Turn on and off testing.
