@@ -76,55 +76,6 @@ def resetDustOnTop():
 		globalvars.intangibles_top.add(temp)
 
 
-def testScenario00(seed=0):
-	rd.seed(seed) #Fix the seed for the random number generator.
-
-	wipeOldScenario(); resetDust()
-	#Display player location and speed info with the following:
-	globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
-
-	#Create motionless objects for reference purposes while testing.
-	temp = objInstances.FixedBody(0, -100, image_name='gem') #little crystal
-	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of TyDfN_tiny is '+str(temp.collisionradius)
-	temp = objInstances.FixedBody(200, 200, image_name='bigrock') #largest asteroid
-	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of asteroidBigRoundTidied is '+str(temp.collisionradius)
-	temp = objInstances.FixedBody(500, 500, image_name='medrock') #medium asteroid
-	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of asteroidWild2 is '+str(temp.collisionradius)
-	temp = objInstances.FixedBody(500, 0, image_name='smallrock') #small asteroid
-	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of asteroidTempel is '+str(temp.collisionradius)
-	temp = objInstances.FixedBody(-500, -500, image_name='gold') #goldish metal rock
-	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of Sikhote_small is '+str(temp.collisionradius)
-	temp = objInstances.FixedBody(-500, 300, image_name='silver') #silvery metal rock
-	globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-	#print 'Radius of bournonite_30percent is '+str(temp.collisionradius)
-
-	temp = objInstances.Explosion(x=200,y=-150)
-	globalvars.tangibles.add(temp);
-
-	temp = objInstances.HealthKit(-100, 0) #health pack
-	globalvars.tangibles.add(temp)
-	
-	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
-		text='Press H to access the help menu',
-		timeOff=0, timeOn=1, ttl=3.0, fontSize=52)
-	globalvars.intangibles_top.add(announcement)
-	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
-		text=' and learn the controls.',
-		timeOff=0, timeOn=1, ttl=3.0, fontSize=52)
-	globalvars.intangibles_top.add(announcement)
-
-	#Draw the new background and flip the whole screen.
-	globalvars.BGCOLOR = colors.black
-	globalvars.BGIMAGE = displayUtilities.image_list['bgjupiter'].convert()
-	globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
-	pygame.display.flip()
-
-
 def asteroids(seed=0):
 	''' '''
 	rd.seed(seed) #Fix the seed for the random number generator.
@@ -415,7 +366,7 @@ def restart():
 	globalvars.panel = None
 
 	#Order matters. This has to go after making the new player.
-	testScenario00(seed=0)
+	goToInfiniteSpace(0)
 
 	#reset the death display countdown
 	globalvars.deathcountdown = 15

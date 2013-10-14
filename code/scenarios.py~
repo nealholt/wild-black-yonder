@@ -376,8 +376,8 @@ def infiniteSpace(seed=0, playerloc=(0.0,0.0), warps=None):
 	globalvars.intangibles_top.add(announcement)
 
 	#Draw the new background and flip the whole screen.
-	#globalvars.screen.fill(globalvars.BGCOLOR)
-	#pygame.display.flip()
+	globalvars.screen.fill(globalvars.BGCOLOR)
+	pygame.display.flip()
 
 
 def setDestinationNode(nodeid):

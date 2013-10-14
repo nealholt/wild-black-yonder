@@ -226,11 +226,6 @@ def getGalaxyPanel(travel):
 		else:
 			#Otherwise view options for information only
 			subpanel.setMethod(setNodeViewPanel)
-		#If this node is the player's current location then make this reset
-		#the player's scenario. This is really only for testing since the player
-		#can get away using the testing menu by pressing the m key.
-		if n.id == globalvars.player.nodeid and travel:
-			subpanel.setMethod(scenarios.goToInfiniteSpace)
 		menu.addPanel(subpanel)
 
 	for c in globalvars.galaxy.connections:
@@ -452,6 +447,8 @@ def setShipPanel():
 				y1=(top+y_val+font_size*2+textbuffer),\
 				string='View stats', font_size=font_size,\
 				color=colors.white)
+		subpanel.setMethod(setWeaponViewPanel)
+		subpanel.argument = globalvars.player.weapons[0]
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
 
@@ -494,6 +491,8 @@ def setShipPanel():
 					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size*2),\
 					string='View stats', font_size=font_size, \
 					color=colors.white)
+			subpanel.setMethod(setWeaponViewPanel)
+			subpanel.argument = c
 			subpanel.addDrawable(temp)
 			menu.addPanel(subpanel)
 			i += 1
@@ -513,6 +512,5 @@ def setWeaponViewPanel(weapon):
 			y1=font_size*i+topbuffer+top, string=text[i],\
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
-
 	globalvars.panel = menu
 
