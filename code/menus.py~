@@ -420,8 +420,8 @@ def setShipPanel():
 	textbuffer = 8
 	localtopbuffer = 50
 	leftoffset = 500
-	localheight = 80
-	localwidth = 180
+	localheight = 70
+	localwidth = 200
 	font_size = 24
 	framethickness = 2
 	for c in globalvars.player.cargo:

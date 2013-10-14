@@ -64,7 +64,7 @@ class Panel:
 
 
 #There was a lot of duplicate code so I moved some of it out.
-border_padding = 100
+border_padding = 50
 padding = 25
 top = border_padding
 left = border_padding
