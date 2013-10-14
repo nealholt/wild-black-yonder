@@ -57,6 +57,7 @@ class Ship(physicalObject.PhysicalObject):
 
 	def setHealthBar(self):
 		self.myHealthBar = objInstances.HealthBar(width=healthBarDefaultWidth, height=10)
+		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
 		globalvars.intangibles_top.add(self.myHealthBar)
 
 
