@@ -55,6 +55,26 @@ class Ship(physicalObject.PhysicalObject):
 		self.weapons = [weapon.getWeapon(weaponId, self)]
 
 
+	def unequipWeapon(self):
+		self.cargo.append(self.weapons.pop(0))
+		
+
+	def equipWeaponFromCargo(self, cargo_index):
+		#Error checking
+		if cargo_index >= len(self.cargo):
+			print 'ERROR: cargo_index '+str(cargo_index)+' is outside the cargo array.'
+			exit()
+		#This is a bad way to check if the indexed cargo is a weapon but it's what I've got for now.
+		if not hasattr(self.cargo[cargo_index], 'shooter'):
+			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not a weapon.'
+			exit()
+		#If there is a current weapon, unequip it.
+		while len(self.weapons) > 0:
+			self.unequipWeapon()
+		#Equip the weapon from cargo.
+		self.weapons.append(self.cargo.pop(cargo_index))
+
+
 	def setHealthBar(self):
 		self.myHealthBar = objInstances.HealthBar(width=healthBarDefaultWidth, height=10)
 		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth

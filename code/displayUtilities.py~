@@ -49,7 +49,7 @@ image_list['bgjupiter'] = preLoadImage('images/ioOverJupiter'+ext, transparency=
 image_list['bggalaxies'] = preLoadImage('images/galaxyLenses'+ext, transparency=False) #background galaxies
 image_list['bigShip'] = preLoadImage('images/bigShip'+ext) #capital ship
 image_list['warp'] = preLoadImage('images/warpPortal'+ext) #warp portal
-image_list['shipoutline'] = preLoadImage('images/space-ship-hi'+ext) #ship outline
+image_list['shipoutline'] = preLoadImage('images/space-ship-sm'+ext) #ship outline
 image_list['gas'] = preLoadImage('images/Gas-Can-256x300'+ext) #gas can
 
 
@@ -59,13 +59,6 @@ def trunc(f, n):
 	Source: http://stackoverflow.com/questions/783897/truncating-floats-in-python '''
 	slen = len('%.*f' % (n, f))
 	return str(f)[:slen]
-
-
-def displayShipLoc(ship):
-	#if ship is None: return True
-	string = "Player X,Y: "+trunc(ship.rect.centerx, 0)+','+trunc(ship.rect.centery,0)+\
-		'. Speed: '+trunc(ship.speed,0)+'. MaxSpeed: '+str(trunc(ship.maxSpeed,0))
-	writeTextToScreen(string=string, fontSize=36, color=colors.white, pos=(400,10))
 
 
 def formatTime(seconds):
@@ -198,10 +191,11 @@ class ShipStatsText(pygame.sprite.Sprite):
 		self.draw((0,0))
 
 	def draw(self, _):
-		string = 'Player X,Y: '+trunc(globalvars.player.rect.centerx, 0)+\
-			','+trunc(globalvars.player.rect.centery,0)+\
+		string = 'Fuel: '+str(globalvars.player.fuel/1000)+\
 			'. Speed: '+trunc(globalvars.player.speed,0)+\
-			'. MaxSpeed: '+str(trunc(globalvars.player.maxSpeed,0))
+			'. MaxSpeed: '+str(trunc(globalvars.player.maxSpeed,0))+\
+			'. Player X,Y: '+trunc(globalvars.player.rect.centerx, 0)+','+\
+			trunc(globalvars.player.rect.centery,0)
 		text = self.font.render(string, 1, self.color)
 		self.rect = text.get_rect()
 		self.rect.topleft = (250,10)

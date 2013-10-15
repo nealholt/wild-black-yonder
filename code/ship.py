@@ -99,6 +99,7 @@ class Ship(physicalObject.PhysicalObject):
 
 	def gainHealth(self, amount):
 		self.health = min(self.maxhealth, self.health+amount)
+		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
 
 	def isDead(self):
 		return self.health <= 0

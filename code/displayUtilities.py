@@ -61,13 +61,6 @@ def trunc(f, n):
 	return str(f)[:slen]
 
 
-def displayShipLoc(ship):
-	#if ship is None: return True
-	string = "Player X,Y: "+trunc(ship.rect.centerx, 0)+','+trunc(ship.rect.centery,0)+\
-		'. Speed: '+trunc(ship.speed,0)+'. MaxSpeed: '+str(trunc(ship.maxSpeed,0))
-	writeTextToScreen(string=string, fontSize=36, color=colors.white, pos=(400,10))
-
-
 def formatTime(seconds):
 	minutes = str(int(seconds/60))
 	sec = str(int(seconds%60))
@@ -198,13 +191,14 @@ class ShipStatsText(pygame.sprite.Sprite):
 		self.draw((0,0))
 
 	def draw(self, _):
-		string = 'Player X,Y: '+trunc(globalvars.player.rect.centerx, 0)+\
-			','+trunc(globalvars.player.rect.centery,0)+\
+		string = 'Fuel: '+str(globalvars.player.fuel/10000)+\
 			'. Speed: '+trunc(globalvars.player.speed,0)+\
-			'. MaxSpeed: '+str(trunc(globalvars.player.maxSpeed,0))
+			'. MaxSpeed: '+str(trunc(globalvars.player.maxSpeed,0))+\
+			'. Player X,Y: '+trunc(globalvars.player.rect.centerx, 0)+','+\
+			trunc(globalvars.player.rect.centery,0)
 		text = self.font.render(string, 1, self.color)
 		self.rect = text.get_rect()
-		self.rect.topleft = (250,10)
+		self.rect.topleft = (150,10)
 		globalvars.screen.blit(text, self.rect.topleft)
 
 	def isOnScreen(self, _): return True
