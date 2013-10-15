@@ -128,7 +128,7 @@ class TemporaryText(pygame.sprite.Sprite):
 		self.rect = self.text.get_rect(center=(x, y))
 		self.timeOn = timeOn * globalvars.FPS
 		self.timeOff = timeOff * globalvars.FPS
-		self.ttl = ttl * globalvars.FPS
+		self.ttl = int(ttl * globalvars.FPS)
 		#Whether to offset this object's location based on the camera.
 		#Text does not typically useOffset because we want to position it relative to 0,0
 		#Exceptions include +10 from gems and health pickups.
@@ -191,7 +191,7 @@ class ShipStatsText(pygame.sprite.Sprite):
 		self.draw((0,0))
 
 	def draw(self, _):
-		string = 'Fuel: '+str(globalvars.player.fuel/10000)+\
+		string = 'Fuel: '+str(globalvars.player.fuel/100)+\
 			'. Speed: '+trunc(globalvars.player.speed,0)+\
 			'. MaxSpeed: '+str(trunc(globalvars.player.maxSpeed,0))+\
 			'. Player X,Y: '+trunc(globalvars.player.rect.centerx, 0)+','+\

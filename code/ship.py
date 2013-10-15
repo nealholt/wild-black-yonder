@@ -30,7 +30,7 @@ class Ship(physicalObject.PhysicalObject):
 		#number of misc addon hardpoints
 		self.miscHardpoints = 1
 		#int fuel (just make it a big number and divide it by 100 or 1000 and then display that number without the decimal.)
-		self.fuel = 1000000 #million
+		self.fuel = 3600 #18000 #5*60*60 = 5 minutes of fuel assuming 60 frames per second.
 		#cargo space
 		self.cargoSpace = 30
 		#cargo array

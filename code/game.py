@@ -381,7 +381,7 @@ def run(countdown=-1):
 
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
-		if not globalvars.player.isDead():
+		if not globalvars.player.isDead() and globalvars.player.fuel > 0:
 			if useDirty:
 				addToDirtyRects(globalvars.player, offset, cover=False)
 			else:
