@@ -14,6 +14,10 @@ class Engine():
 		self.maxTurnSpeed=self.speedIncrements
 		#Rate at which turn rate decays as speed moves away from maxTurnSpeed
 		self.turnRateDecay=1.
+		#Think of this as the inverse of fuel economy. This is the amount of fuel 
+		#consumed by this engine per frame.
+		#In general, 10 will be the maximum and 1 the minimum.
+		self.fuel_consumption = 10
 
 def setProfile(profile, engine):
 	if profile == 'mk0':

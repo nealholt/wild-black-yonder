@@ -66,20 +66,23 @@ class Player(ship.Ship):
 
 
 	def playerUpdate(self):
-		self.fuel -= 1
-		if self.fuel < 10*globalvars.FPS and self.fuelAlertLevel > 1:  #10 seconds of fuel remain
+		self.fuel -= self.engine.fuel_consumption
+		if self.fuel < 10*globalvars.FPS*self.engine.fuel_consumption and \
+		self.fuelAlertLevel > 1:  #10 seconds of fuel remain
 			announcement = TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
 				text='Empty fuel tank imminent! 10 seconds!',
 				timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 			globalvars.intangibles_top.add(announcement)
 			self.fuelAlertLevel = 1
-		elif self.fuel < 30*globalvars.FPS and self.fuelAlertLevel > 2: #30 seconds of fuel remain
+		elif self.fuel < 30*globalvars.FPS*self.engine.fuel_consumption and \
+		self.fuelAlertLevel > 2: #30 seconds of fuel remain
 			announcement = TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
 				text='Fuel critical! 30 seconds of fuel remain.',
 				timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 			globalvars.intangibles_top.add(announcement)
 			self.fuelAlertLevel = 2
-		elif self.fuel < 60*globalvars.FPS and self.fuelAlertLevel > 3: #60 seconds of fuel remain
+		elif self.fuel < 60*globalvars.FPS*self.engine.fuel_consumption and \
+		self.fuelAlertLevel > 3: #60 seconds of fuel remain
 			announcement = TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
 				text='Fuel low! 60 seconds of fuel remain.',
 				timeOff=0, timeOn=1, ttl=3.5, fontSize=52)

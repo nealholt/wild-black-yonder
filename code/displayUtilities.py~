@@ -128,7 +128,7 @@ class TemporaryText(pygame.sprite.Sprite):
 		self.rect = self.text.get_rect(center=(x, y))
 		self.timeOn = timeOn * globalvars.FPS
 		self.timeOff = timeOff * globalvars.FPS
-		self.ttl = ttl * globalvars.FPS
+		self.ttl = int(ttl * globalvars.FPS)
 		#Whether to offset this object's location based on the camera.
 		#Text does not typically useOffset because we want to position it relative to 0,0
 		#Exceptions include +10 from gems and health pickups.

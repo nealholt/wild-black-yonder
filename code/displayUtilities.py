@@ -191,7 +191,7 @@ class ShipStatsText(pygame.sprite.Sprite):
 		self.draw((0,0))
 
 	def draw(self, _):
-		string = 'Fuel: '+str(globalvars.player.fuel/100)+\
+		string = 'Fuel: '+str(globalvars.player.fuel/1000)+\
 			'. Speed: '+trunc(globalvars.player.speed,0)+\
 			'. MaxSpeed: '+str(trunc(globalvars.player.maxSpeed,0))+\
 			'. Player X,Y: '+trunc(globalvars.player.rect.centerx, 0)+','+\

@@ -24,16 +24,16 @@ def setProfile(profile, engine):
 	elif profile == 'mk1':
 		engine.name = 'Thrusters Mk1'
 		engine.maxSpeed = 150./float(FPS) #Speed in pixels per second
-		engine.dv = 5./float(FPS*3.0) #Gets up to speed in 3 seconds
+		engine.dv = engine.maxSpeed/float(FPS*3.0) #Gets up to speed in 3 seconds
 		engine.dtheta = 90./float(FPS) #Turning angle per second
 	elif profile == 'mk2':
 		engine.name = 'Thrusters Mk2'
 		engine.maxSpeed = 300./float(FPS)
-		engine.dv = 10./float(FPS*2.0)
+		engine.dv = engine.maxSpeed/float(FPS*2.0)
 		engine.dtheta = 135./float(FPS)
 	elif profile == 'mk3':
 		engine.name = 'Thrusters Mk3'
 		engine.maxSpeed = 400./float(FPS)
-		engine.dv = 20./float(FPS*1.0)
+		engine.dv = engine.maxSpeed/float(FPS*1.0)
 		engine.dtheta = 180./float(FPS)
 
