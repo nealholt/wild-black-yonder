@@ -148,6 +148,18 @@ def addAllTabs(menu):
 	menu.addPanel(subpanel)
 	x_val += width
 
+	#Player profile page
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Profile', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	subpanel.setMethod(setPlayerProfilePanel)
+	menu.addPanel(subpanel)
+	x_val += width
+
 	#test scenarios
 	subpanel = Panel()
 	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \

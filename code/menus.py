@@ -207,6 +207,12 @@ def setTestingPanel():
 	globalvars.panel = menu
 
 
+def setGasStationPanel():
+	menu = getStandardMenu()
+	#TODO
+	globalvars.panel = menu
+
+
 def setGalaxyPanel(travel):
 	globalvars.panel = getGalaxyPanel(travel)
 

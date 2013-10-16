@@ -420,6 +420,7 @@ class Gem(physicalObject.PhysicalObject):
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
 		if other_sprite.is_a == globalvars.SHIP:
+			other_sprite.money += self.points
 			#give money to the ship. This might not be the ideal way to do this.
 			#Look for the object in globalvars.intangibles_top that has attribute 
 			#'points' and add the points to it. This object should 
@@ -501,6 +502,29 @@ class WarpPortal(physicalObject.PhysicalObject):
 				self.method(self.destinationNode)
 			else:
 				print 'WARNING: WarpPortal method set to None. This may have been done in error.'
+		return False
+
+
+class GasStation(physicalObject.PhysicalObject):
+	def __init__(self, x=0.0, y=0.0, method=None):
+		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, image_name='gas')
+		self.is_a = globalvars.OTHER
+		#self.method will invariably be set to a call to menus.setGasStationPanel
+		#This is done because I don't want obj_instances to import menus
+		self.method = method
+		#After player collides once, set a countdown before collision triggers another panel.
+		self.collisionCountDown = 0
+
+	def handleCollisionWith(self, other_sprite):
+		'''React to a collision with other_sprite.'''
+		#If other sprite is playership and this portal is the destination...
+		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer:
+			#Make sure the method is not none.
+			if not self.method is None:
+				#Call menus.setGasStationPanel
+				self.method()
+			else:
+				print 'WARNING: GasStation method set to None. This may have been done in error.'
 		return False
 
 

@@ -6,6 +6,7 @@ from geometry import translate, distance, rotateAngle
 import globalvars
 from displayUtilities import writeTextToScreen, TemporaryText
 from time import sleep
+from menus import setGasStationPanel
 
 class Bullet(physicalObject.PhysicalObject):
 
@@ -503,6 +504,26 @@ class WarpPortal(physicalObject.PhysicalObject):
 			else:
 				print 'WARNING: WarpPortal method set to None. This may have been done in error.'
 		return False
+
+
+class GasStation(physicalObject.PhysicalObject):
+	def __init__(self, x=0.0, y=0.0):
+		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, image_name='gas')
+		self.is_a = globalvars.OTHER
+		#After player collides once, set a countdown before collision triggers another panel.
+		self.collisionCountDown = 0
+
+	def handleCollisionWith(self, other_sprite):
+		'''React to a collision with other_sprite.'''
+		#If other sprite is playership and this portal is the destination...
+		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer and self.collisionCountDown==0:
+			setGasStationPanel()
+			#Delay next menu setting by 3 seconds.
+			self.collisionCountDown = 3.0 * globalvars.FPS
+		return False
+
+	def update(self):
+		if self.collisionCountDown > 0: self.collisionCountDown -= 1
 
 
 class Follower(physicalObject.PhysicalObject):

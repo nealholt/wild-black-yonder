@@ -171,9 +171,9 @@ class NodeManager():
 					sortednodes[i].loc)
 		#Copy all the final nodes to the self.nodes
 		self.nodes = sortednodes
-		#Randomly remove between 0 and (the number of connections -1) connections
+		#Randomly remove between 0 and (the number of connections -2) connections
 		for sn in self.nodes:
-			toRemove = rd.randint(0, len(sn.connections)-1)
+			toRemove = rd.randint(0, len(sn.connections)-2)
 			for _ in range(toRemove):
 				removeIndex = rd.randint(0, len(sn.connections)-1)
 				removed = sn.connections.pop(removeIndex)

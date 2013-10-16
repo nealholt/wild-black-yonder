@@ -28,10 +28,12 @@ def getObstacles(seed=0,
 		health_min = 0.0,
 		health_max = 1.5,
 		capital_ship_min = 0.0,
-		capital_ship_max = 1.1):
+		capital_ship_max = 1.1,
+		fuel_min = 0.0,
+		fuel_max = 1.1):
 	'''TODO later I want to get profiles instead of pure random number generation. '''
 	rd.seed(seed) #Fix the seed for the random number generator.
-	numbers = [0 for _ in range(capital_ship+1)]
+	numbers = [0 for _ in range(fuel+1)]
 	numbers[enemy] = int(rd.uniform(enemy_min, enemy_max))
 	numbers[crystal] = int(rd.uniform(crystal_min, crystal_max))
 	numbers[large_asteroid] = int(rd.uniform(large_asteroid_min, large_asteroid_max))
@@ -41,6 +43,7 @@ def getObstacles(seed=0,
 	numbers[silver_metal] = int(rd.uniform(silver_metal_min, silver_metal_max))
 	numbers[health] = int(rd.uniform(health_min, health_max))
 	numbers[capital_ship] = int(rd.uniform(capital_ship_min, capital_ship_max))
+	numbers[fuel] = int(rd.uniform(fuel_min, fuel_max))
 	return numbers
 
 
@@ -53,6 +56,7 @@ gold_metal = 5
 silver_metal = 6
 health = 7
 capital_ship = 8
+fuel = 9
 def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	'''This is the first draft of a method to randomly populate space with objects.
 	This is currently called by the racing minigame.
@@ -114,6 +118,10 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	for _ in xrange(objects[health]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.HealthKit(x, y))
+
+	for _ in xrange(objects[fuel]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		physical_objs.append(objInstances.GasStation(x, y))
 
 	#Prevent collisions.
 	#The following copied from collisionHandling()
@@ -211,7 +219,9 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			health_min=self.node.health_min,
 			health_max=self.node.health_max,
 			capital_ship_min=self.node.capital_ship_min,
-			capital_ship_max=self.node.capital_ship_max)
+			capital_ship_max=self.node.capital_ship_max,
+			fuel_min=self.node.fuel_min,
+			fuel_max=self.node.fuel_max)
 		self.dict[loc] = populateSpace(objects=obstacles, 
 			width=self.space_length, height=self.space_length, 
 			center=(px*self.space_length, py*self.space_length), seed=loc)
