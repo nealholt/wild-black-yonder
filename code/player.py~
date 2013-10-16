@@ -31,6 +31,8 @@ class Player(ship.Ship):
 		#Track the most recent fuel alert level to avoid giving multiple warnings.
 		self.fuelAlertLevel = 4
 
+		self.money = 0
+
 		#Node location of the player.
 		self.nodeid = 0
 		self.destinationNode = 0
@@ -79,12 +81,12 @@ class Player(ship.Ship):
 				timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 			globalvars.intangibles_top.add(announcement)
 			self.fuelAlertLevel = 2
-		#elif self.fuel < 60*globalvars.FPS and self.fuelAlertLevel > 3: #60 seconds of fuel remain
-		#	announcement = TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
-		#		text='Fuel low! 60 seconds of fuel remain.',
-		#		timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-		#	globalvars.intangibles_top.add(announcement)
-		#	self.fuelAlertLevel = 3
+		elif self.fuel < 60*globalvars.FPS and self.fuelAlertLevel > 3: #60 seconds of fuel remain
+			announcement = TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
+				text='Fuel low! 60 seconds of fuel remain.',
+				timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
+			globalvars.intangibles_top.add(announcement)
+			self.fuelAlertLevel = 3
 
 		if not self.destination is None:
 			#Turn towards target

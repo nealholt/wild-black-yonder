@@ -420,6 +420,7 @@ class Gem(physicalObject.PhysicalObject):
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
 		if other_sprite.is_a == globalvars.SHIP:
+			other_sprite.money += self.points
 			#give money to the ship. This might not be the ideal way to do this.
 			#Look for the object in globalvars.intangibles_top that has attribute 
 			#'points' and add the points to it. This object should 

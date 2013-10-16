@@ -170,8 +170,8 @@ def setTestingPanel():
 	x1, y1 = horiz_space, globalvars.HEIGHT/2
 	radius = 10
 
-	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Infinite space', 'Capital ship']
-	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.infiniteSpace, scenarios.capitalShipScenario]
+	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Capital ship']
+	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.capitalShipScenario]
 
 	x2 = horiz_space*2
 	methodLength = len(methods)
@@ -286,6 +286,27 @@ def setLocalGalaxyPanel(travel):
 				temp = drawable.Line(x1=position[0]-radius, y1=position[1]-radius,
 					x2=position2[0]-radius, y2=position2[1]-radius)
 				menu.addDrawable(temp)
+	globalvars.panel = menu
+
+
+def setPlayerProfilePanel():
+	topbuffer = 100
+	menu = getStandardMenu()
+
+	text = [
+	'Money: $'+str(globalvars.player.money),
+	'Health: '+str(globalvars.player.health),
+	'Fuel: '+str(globalvars.player.fuel)
+	]
+
+	#Then draw the contents of the menu
+	font_size = 24
+	for i in range(len(text)):
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+topbuffer+top, string=text[i],\
+			font_size=font_size, color=colors.white)
+		menu.addDrawable(temp)
+
 	globalvars.panel = menu
 
 

@@ -148,6 +148,18 @@ def addAllTabs(menu):
 	menu.addPanel(subpanel)
 	x_val += width
 
+	#Player profile page
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Profile', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	subpanel.setMethod(setPlayerProfilePanel)
+	menu.addPanel(subpanel)
+	x_val += width
+
 	#test scenarios
 	subpanel = Panel()
 	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
@@ -286,6 +298,27 @@ def setLocalGalaxyPanel(travel):
 				temp = drawable.Line(x1=position[0]-radius, y1=position[1]-radius,
 					x2=position2[0]-radius, y2=position2[1]-radius)
 				menu.addDrawable(temp)
+	globalvars.panel = menu
+
+
+def setPlayerProfilePanel():
+	topbuffer = 100
+	menu = getStandardMenu()
+
+	text = [
+	'Money: $'+str(globalvars.player.money),
+	'Health: '+str(globalvars.player.health),
+	'Fuel: '+str(globalvars.player.fuel)
+	]
+
+	#Then draw the contents of the menu
+	font_size = 24
+	for i in range(len(text)):
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+topbuffer+top, string=text[i],\
+			font_size=font_size, color=colors.white)
+		menu.addDrawable(temp)
+
 	globalvars.panel = menu
 
 
