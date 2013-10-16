@@ -207,9 +207,40 @@ def setTestingPanel():
 	globalvars.panel = menu
 
 
+def buyGas():
+	globalvars.player.fuel += 1000
+	globalvars.player.money -= 10
+	setGasStationPanel()
+
+
 def setGasStationPanel():
 	menu = getStandardMenu()
-	#TODO
+	textbuffer = 9
+
+	text = [
+	'Money: $'+str(globalvars.player.money),
+	'Fuel: '+str(globalvars.player.fuel)
+	]
+
+	#Then draw the contents of the menu
+	font_size = 24
+	for i in range(len(text)):
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+100+top, string=text[i],\
+			font_size=font_size, color=colors.white)
+		menu.addDrawable(temp)
+
+	framethickness = 2
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=(left+200), y1=(top+200), width=200, height=200, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	temp = drawable.Text(x1=(left+200+textbuffer), y1=(top+200+textbuffer), \
+		string='Buy 1000 Fuel for $10', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	subpanel.setMethod(buyGas)
+	menu.addPanel(subpanel)
+
 	globalvars.panel = menu
 
 
@@ -434,7 +465,6 @@ def equipPlayerWeapon(cargo_index):
 
 def setShipPanel():
 	menu = getStandardMenu()
-	#TODO
 	temp = drawable.DrawableImage(x1=left+20, y1=100+top, image='shipoutline')
 	menu.addDrawable(temp)
 
