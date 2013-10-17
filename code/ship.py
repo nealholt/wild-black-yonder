@@ -128,27 +128,31 @@ class Ship(physicalObject.PhysicalObject):
 		return self.health <= 0
 
 
-	def shoot(self, force_shot=False):
+	def shoot(self, force_shot=False, weapon=None):
 		#Force shot tells this to shoot even if a target 
 		#is not obviously in view. NPC's will not take such wild shots.
-		if not self.gun is None:
-			if self.gun.cooldown == 0:
+		if weapon is None:
+			weapon = self.gun
+		if not weapon is None:
+			if weapon.cooldown == 0:
 				#The player can shoot whenever he wants
 				if force_shot:
-					self.gun.shoot()
+					weapon.shoot()
 				#NPCs need some intelligence when shooting
 				else:
 					angle = self.getAngleToTarget()
 					#Decide whether or not we can shoot
 					if inSights(self, self.destination,\
-					self.gun.weapon_range, self.gun.attack_angle) and\
+					weapon.weapon_range, weapon.attack_angle) and\
 					self.clearLineOfSight():
-						self.gun.shoot()
+						weapon.shoot()
 
 
 	def cooldown(self):
 		'''Cool all our weapons'''
 		if not self.gun is None: self.gun.cool()
+		if not self.missile is None: self.missile.cool()
+		if not self.mine is None: self.mine.cool()
 
 
 	def clearLineOfSight(self):

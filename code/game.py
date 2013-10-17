@@ -173,6 +173,8 @@ def run(countdown=-1):
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				mouse[event.button] = 1
 				mouse[0] = event.pos
+				#Also causes shooting
+				globalvars.player.shoot(force_shot=True)
 			elif event.type == pygame.MOUSEBUTTONUP:
 				mouse[event.button] = 0
 			#elif event.type == pygame.MOUSEMOTION:
@@ -261,15 +263,20 @@ def run(countdown=-1):
 					#Display help menu.
 					globalvars.panel = menus.getHelpPanel()
 
-				#Separate if so other keys don't interfere
-				#with this.
-				if event.key == 32:
-					#Pressed space bar
+				#Separate if, so other keys don't interfere with this.
+				#Fire gun
+				if event.key == 32 or event.key == 99:
+					#Pressed space bar or c key
 					#Force shot tells this to shoot
 					#even if a target 
 					#is not obviously in view. NPC's
 					#will not take such wild shots.
 					globalvars.player.shoot(force_shot=True)
+				if event.key == 120: #Pressed space bar or x key
+					globalvars.player.shoot(force_shot=True,weapon=globalvars.player.missile)
+				if event.key == 122: #Pressed z key
+					globalvars.player.shoot(force_shot=True, weapon=globalvars.player.mine)
+
 
 			elif event.type == pygame.KEYUP:
 				#Keep track of which keys are no longer
