@@ -20,6 +20,7 @@ class Weapon():
 		self.shooter = shooter
 		#Use the following for ships like the capital ship that have guns offset from their center
 		self.offset = (0,0)
+		self.is_a = 'gun'
 
 	def cool(self):
 		if self.cooldown > 0:
@@ -82,6 +83,7 @@ class HitBoxTesterGun():
 		self.bullet_lifespan=150 #How long the bullet lasts before expiring
 		self.bullet_color=colors.yellow
 		self.shooter = shooter
+		self.is_a = 'gun'
 
 	def cool(self):
 		if self.cooldown > 0:
@@ -115,6 +117,7 @@ class MissileLauncher():
 		self.shooter = shooter
 		self.attack_angle = 10 #if within this angle to target, can shoot at target
 		self.weapon_range = 700
+		self.is_a = 'missile'
 
 	def cool(self):
 		if self.cooldown > 0:
@@ -140,6 +143,7 @@ class MineLayer():
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
 		self.attack_angle = 10 #if within this angle to target, can shoot at target
+		self.is_a = 'mine'
 
 	def cool(self):
 		if self.cooldown > 0:

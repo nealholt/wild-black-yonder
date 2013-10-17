@@ -21,12 +21,13 @@ class Ship(physicalObject.PhysicalObject):
 		self.maxhealth=50
 		#number of gun addon hardpoints
 		self.gunHardpoints = 1
+		self.gun = None
 		#number of missile addon hardpoints
 		self.missileHardpoints = 1
+		self.missile = None
 		#number of mine addon hardpoints
 		self.mineHardpoints = 1
-		#number of mine addon hardpoints
-		self.weapons=[]
+		self.mine = None
 		#number of misc addon hardpoints
 		self.miscHardpoints = 1
 		#int fuel (just make it a big number and divide it by 100 or 1000 and then display that number without the decimal.)
@@ -54,11 +55,22 @@ class Ship(physicalObject.PhysicalObject):
 		Assumes the ship only has one weapon equipped.
 		Post: Changes the player's weapon.
 		This is called by the weapons panel in menus.py.'''
-		self.weapons = [weapon.getWeapon(weaponId, self)]
+		self.gun = weapon.getWeapon(weaponId, self)
 
 
-	def unequipWeapon(self):
-		self.cargo.append(self.weapons.pop(0))
+	def unequipGun(self):
+		self.cargo.append(self.gun)
+		self.gun = None
+		
+
+	def unequipMissile(self):
+		self.cargo.append(self.missile)
+		self.missile = None
+		
+
+	def unequipMine(self):
+		self.cargo.append(self.mine)
+		self.mine = None
 		
 
 	def equipWeaponFromCargo(self, cargo_index):
@@ -70,11 +82,19 @@ class Ship(physicalObject.PhysicalObject):
 		if not hasattr(self.cargo[cargo_index], 'shooter'):
 			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not a weapon.'
 			exit()
-		#If there is a current weapon, unequip it.
-		while len(self.weapons) > 0:
-			self.unequipWeapon()
-		#Equip the weapon from cargo.
-		self.weapons.append(self.cargo.pop(cargo_index))
+		#Remove the weapon from cargo
+		weapon = self.cargo.pop(cargo_index)
+		if weapon.is_a == 'gun':
+			if not self.gun is None: self.unequipGun()
+			self.gun = weapon
+		elif weapon.is_a == 'missile':
+			if not self.missile is None: self.unequipMissile()
+			self.missile = weapon
+		elif weapon.is_a == 'mine':
+			if not self.mine is None: self.unequipMine()
+			self.mine = weapon
+		else:
+			print 'ERROR: weapon type not recognized.'; exit()
 
 
 	def setHealthBar(self):
@@ -103,30 +123,32 @@ class Ship(physicalObject.PhysicalObject):
 		self.health = min(self.maxhealth, self.health+amount)
 		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
 
+
 	def isDead(self):
 		return self.health <= 0
+
 
 	def shoot(self, force_shot=False):
 		#Force shot tells this to shoot even if a target 
 		#is not obviously in view. NPC's will not take such wild shots.
-		for w in self.weapons:
-			if w.cooldown == 0:
+		if not self.gun is None:
+			if self.gun.cooldown == 0:
 				#The player can shoot whenever he wants
 				if force_shot:
-					w.shoot()
+					self.gun.shoot()
 				#NPCs need some intelligence when shooting
 				else:
 					angle = self.getAngleToTarget()
 					#Decide whether or not we can shoot
 					if inSights(self, self.destination,\
-					w.weapon_range, w.attack_angle) and\
+					self.gun.weapon_range, self.gun.attack_angle) and\
 					self.clearLineOfSight():
-						w.shoot()
+						self.gun.shoot()
+
 
 	def cooldown(self):
 		'''Cool all our weapons'''
-		for w in self.weapons:
-			w.cool()
+		if not self.gun is None: self.gun.cool()
 
 
 	def clearLineOfSight(self):

@@ -447,11 +447,27 @@ def getHelpPanel():
 	return menu
 
 
-def unequipPlayerWeapon():
-	'''This method allows me to keep the unequipWeapon method in the ship object 
+def unequipPlayerGun():
+	'''This method allows me to keep the unequipGun method in the ship object 
 	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
 	player makes to his ship.'''
-	globalvars.player.unequipWeapon()
+	globalvars.player.unequipGun()
+	setShipPanel()
+
+
+def unequipPlayerMissile():
+	'''This method allows me to keep the unequipMissile method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.unequipMissile()
+	setShipPanel()
+
+
+def unequipPlayerMine():
+	'''This method allows me to keep the unequipMine method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.unequipMine()
 	setShipPanel()
 
 
@@ -476,7 +492,7 @@ def setShipPanel():
 	font_size = 24
 	framethickness = 2
 	#Draw the currently equipped weapon if any
-	if len(globalvars.player.weapons) > 0:
+	if not globalvars.player.gun is None:
 		x_val = 200
 		y_val = 80
 		subpanel = Panel()
@@ -491,8 +507,8 @@ def setShipPanel():
 		#Add weapon name
 		temp = drawable.Text(x1=(left+x_val+textbuffer),\
 				y1=(top+y_val+textbuffer),\
-				string=globalvars.player.weapons[0].name, font_size=font_size,\
-				color=colors.white)
+				string=globalvars.player.gun.name, font_size=font_size,\
+				color=colors.blue)
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
 		#Add option to unequip weapon
@@ -501,7 +517,7 @@ def setShipPanel():
 				y1=(top+y_val+font_size+textbuffer),\
 				string='Unequip', font_size=font_size,\
 				color=colors.white)
-		subpanel.setMethod(unequipPlayerWeapon)
+		subpanel.setMethod(unequipPlayerGun)
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
 		#Add option to view information on weapon
@@ -511,10 +527,89 @@ def setShipPanel():
 				string='View stats', font_size=font_size,\
 				color=colors.white)
 		subpanel.setMethod(setWeaponViewPanel)
-		subpanel.argument = globalvars.player.weapons[0]
+		subpanel.argument = globalvars.player.gun
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
 
+	#Draw the currently equipped missile if any
+	if not globalvars.player.missile is None:
+		x_val = 100
+		y_val = 180
+		subpanel = Panel()
+		#Add frame around weapon
+		temp = drawable.Rectangle(x1=(left+x_val),\
+					y1=(top+y_val),\
+					width=localwidth,\
+					height=localheight,\
+					color=colors.yellow,\
+					thickness=framethickness)
+		subpanel.addDrawable(temp)
+		#Add weapon name
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+textbuffer),\
+				string=globalvars.player.missile.name, font_size=font_size,\
+				color=colors.blue)
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+		#Add option to unequip weapon
+		subpanel = Panel()
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+font_size+textbuffer),\
+				string='Unequip', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(unequipPlayerMissile)
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+		#Add option to view information on weapon
+		subpanel = Panel()
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+font_size*2+textbuffer),\
+				string='View stats', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(setWeaponViewPanel)
+		subpanel.argument = globalvars.player.missile
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+
+	#Draw the currently equipped mine if any
+	if not globalvars.player.mine is None:
+		x_val = 100
+		y_val = 380
+		subpanel = Panel()
+		#Add frame around weapon
+		temp = drawable.Rectangle(x1=(left+x_val),\
+					y1=(top+y_val),\
+					width=localwidth,\
+					height=localheight,\
+					color=colors.yellow,\
+					thickness=framethickness)
+		subpanel.addDrawable(temp)
+		#Add weapon name
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+textbuffer),\
+				string=globalvars.player.mine.name, font_size=font_size,\
+				color=colors.blue)
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+		#Add option to unequip weapon
+		subpanel = Panel()
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+font_size+textbuffer),\
+				string='Unequip', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(unequipPlayerMine)
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+		#Add option to view information on weapon
+		subpanel = Panel()
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+font_size*2+textbuffer),\
+				string='View stats', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(setWeaponViewPanel)
+		subpanel.argument = globalvars.player.mine
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
 
 	#Draw all the weapons in the cargo hold along the right side of the screen.
 	i = 0
@@ -535,7 +630,7 @@ def setShipPanel():
 			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
 					y1=(localtopbuffer+top+i*localheight+textbuffer),\
 					string=c.name, font_size=font_size, \
-					color=colors.white)
+					color=colors.blue)
 			subpanel.addDrawable(temp)
 			menu.addPanel(subpanel)
 			#Add option to equip weapon
