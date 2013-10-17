@@ -411,24 +411,23 @@ def getHelpPanel():
 
 	help = [
 	'INSTRUCTIONS:', 
-	'Press space bar or c key to shoot primary weapon.',
+	'Press space bar or c key or click left mouse button to shoot primary weapon.',
+	'Press x key to shoot missile if equipped and not on cooldown.',
+	'Press z key to lay a mine if equipped and not on cooldown.',
 	'Press "/" or "?" to query game state. Currently this just prints the player\'s destination.',
 	'Press escape to quit.',
 	'Press "e" to create an enemy ship that will attack the player.',
-	'Press up arrow to increase player speed by one quarter of max up to max.',
-	'Press down arrow to decrease player speed by one quarter of max down to zero.',
-	'Press left arrow to turn counter-clockwise 30 degrees.',
-	'Press right arrow to turn clockwise 30 degrees.',
+	'Press up arrow or w key to increase player speed by one quarter of max up to max.',
+	'Press down arrow or s key to decrease player speed by one quarter of max down to zero.',
+	'Press left arrow or a key to turn counter-clockwise 30 degrees.',
+	'Press right arrow or d key to turn clockwise 30 degrees.',
 	'Click on the screen to tell the starship to move towards the clicked point.',
-	'Press "m" open the scenarios menu.',
-	'Press "l" to display the galaxy node info menu.',
-	'Press "n" to display the galaxy node travel menu.',
+	'Press "m" open the menus.',
 	'Press anything to close the current menu.',
-	'Press "p" to slow down and park at destination.',
-	'Press "s" to pause/unpause the game.',
-	'Press "q" to remove destination and simply fly in current direction.',
+	'Press "b" to slow down and park at destination.',
+	'Press "p" to pause/unpause the game.',
+	'Press "q" to remove destination set by mouse click and simply fly in current direction.',
 	'Press "t" for hit box test.',
-	'Press "s" to pause and unpause.',
 	'Press "y" profile a variety of methods.',
 	'Press "u" profile game.run().',
 	'Press "h" Display help info.',
@@ -440,7 +439,7 @@ def getHelpPanel():
 	font_size = 24
 	for i in range(len(help)):
 		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+20+top, string=help[i],\
+			y1=font_size*i+50+top, string=help[i],\
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
 

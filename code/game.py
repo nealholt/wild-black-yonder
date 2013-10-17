@@ -202,24 +202,12 @@ def run(countdown=-1):
 						globalvars.player.speedIncrements)
 				elif event.key == 27: #escape key or red button
 					running = False
-				elif event.key == 107: #k key
-					menus.setLocalGalaxyPanel(False)
-					continue
-				elif event.key == 111: #o key
-					menus.setLocalGalaxyPanel(True)
-					continue
 				elif event.key == 109: #m key
 					#If player is dead, access the restart panel, not the testing panel.
 					if globalvars.player.isDead():
 						menus.setRestartPanel()
 					else:
 						menus.setTestingPanel()
-					continue
-				elif event.key == 108: #l key
-					globalvars.panel = menus.getGalaxyPanel(False)
-					continue
-				elif event.key == 110: #n key
-					globalvars.panel = menus.getGalaxyPanel(True)
 					continue
 				elif event.key == 98: #b key
 					globalvars.player.parkingBrake()

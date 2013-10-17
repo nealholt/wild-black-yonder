@@ -133,7 +133,7 @@ def run(countdown=-1):
 				pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
 			#Check for another s key press to unpause the game.
 			for event in pygame.event.get():
-				if event.type == pygame.KEYDOWN and event.key == 115: #s key
+				if event.type == pygame.KEYDOWN and event.key == 112: #p key
 					pause = not pause
 			#Skip the rest of this loop until the game is unpaused.
 			continue
