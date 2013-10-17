@@ -508,7 +508,7 @@ def setShipPanel():
 		temp = drawable.Text(x1=(left+x_val+textbuffer),\
 				y1=(top+y_val+textbuffer),\
 				string=globalvars.player.gun.name, font_size=font_size,\
-				color=colors.white)
+				color=colors.blue)
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
 		#Add option to unequip weapon
@@ -548,7 +548,7 @@ def setShipPanel():
 		temp = drawable.Text(x1=(left+x_val+textbuffer),\
 				y1=(top+y_val+textbuffer),\
 				string=globalvars.player.missile.name, font_size=font_size,\
-				color=colors.white)
+				color=colors.blue)
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
 		#Add option to unequip weapon
@@ -588,7 +588,7 @@ def setShipPanel():
 		temp = drawable.Text(x1=(left+x_val+textbuffer),\
 				y1=(top+y_val+textbuffer),\
 				string=globalvars.player.mine.name, font_size=font_size,\
-				color=colors.white)
+				color=colors.blue)
 		subpanel.addDrawable(temp)
 		menu.addPanel(subpanel)
 		#Add option to unequip weapon
@@ -630,7 +630,7 @@ def setShipPanel():
 			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
 					y1=(localtopbuffer+top+i*localheight+textbuffer),\
 					string=c.name, font_size=font_size, \
-					color=colors.white)
+					color=colors.blue)
 			subpanel.addDrawable(temp)
 			menu.addPanel(subpanel)
 			#Add option to equip weapon

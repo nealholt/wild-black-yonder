@@ -411,7 +411,7 @@ def getHelpPanel():
 
 	help = [
 	'INSTRUCTIONS:', 
-	'Press space bar to shoot.',
+	'Press space bar or c key to shoot primary weapon.',
 	'Press "/" or "?" to query game state. Currently this just prints the player\'s destination.',
 	'Press escape to quit.',
 	'Press "e" to create an enemy ship that will attack the player.',
