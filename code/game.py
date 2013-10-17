@@ -133,7 +133,7 @@ def run(countdown=-1):
 				pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
 			#Check for another s key press to unpause the game.
 			for event in pygame.event.get():
-				if event.type == pygame.KEYDOWN and event.key == 115: #s key
+				if event.type == pygame.KEYDOWN and event.key == 112: #p key
 					pause = not pause
 			#Skip the rest of this loop until the game is unpaused.
 			continue
@@ -181,19 +181,19 @@ def run(countdown=-1):
 			#	mouse[0] = event.pos
 			elif event.type == pygame.KEYDOWN:
 				keys[event.key % 322] = 1
-				#print "TODO TESTING: key press "+str(event.key)
+				print "TODO TESTING: key press "+str(event.key)
 
 				#Respond to key taps.
 				#Keys that we want to respond to holding them down
 				#will be dealt with below.
-				if event.key == 273: #Pressed up arrow
+				if event.key == 273 or event.key == 119: #Pressed up arrow or w key
 					#increase speed by a fraction of max up to max.
 					globalvars.player.targetSpeed = min(\
 						globalvars.player.maxSpeed,\
 						globalvars.player.targetSpeed +\
 						globalvars.player.maxSpeed*\
 						globalvars.player.speedIncrements)
-				elif event.key == 274: #Pressed down arrow
+				elif event.key == 274 or event.key == 115: #Pressed down arrow or s key
 					#decrease speed by a fraction of 
 					#max down to zero.
 					globalvars.player.targetSpeed = max(0,\
@@ -221,13 +221,13 @@ def run(countdown=-1):
 				elif event.key == 110: #n key
 					globalvars.panel = menus.getGalaxyPanel(True)
 					continue
-				elif event.key == 112: #p key
+				elif event.key == 98: #b key
 					globalvars.player.parkingBrake()
 				elif event.key == 113: #q key
 					#Obliterate destination.
 					#Change to free flight.
 					globalvars.player.killDestination()
-				elif event.key == 115: #s key
+				elif event.key == 112: #p key
 					pause = not pause; continue
 				elif event.key == 116: #t key
 					#shoot a bunch of hit box testers 
@@ -263,16 +263,7 @@ def run(countdown=-1):
 					#Display help menu.
 					globalvars.panel = menus.getHelpPanel()
 
-				#Separate if, so other keys don't interfere with this.
-				#Fire gun
-				if event.key == 32 or event.key == 99:
-					#Pressed space bar or c key
-					#Force shot tells this to shoot
-					#even if a target 
-					#is not obviously in view. NPC's
-					#will not take such wild shots.
-					globalvars.player.shoot(force_shot=True)
-				if event.key == 120: #Pressed space bar or x key
+				if event.key == 120: #Pressed x key
 					globalvars.player.shoot(force_shot=True,weapon=globalvars.player.missile)
 				if event.key == 122: #Pressed z key
 					globalvars.player.shoot(force_shot=True, weapon=globalvars.player.mine)
@@ -295,16 +286,17 @@ def run(countdown=-1):
 		#Respond to key holds.
 		#Keys that we want to respond to tapping them
 		#will be dealt with above.
-		if keys[276]: #Pressed left arrow
+		if keys[276] or keys[97]: #Pressed left arrow or a key
 			globalvars.player.turnCounterClockwise()
-		elif keys[275]: #Pressed right arrow
+		elif keys[275] or keys[100]: #Pressed right arrow or d key
 			globalvars.player.turnClockwise()
 		#This is not part of the above else if.
 		#You can shoot and turn at the same time.
-		if keys[32]: #Pressed space bar
+		if keys[32] or keys[99]: #Pressed space bar or c key
 			#Force shot tells this to shoot even if a target 
 			#is not obviously in view. NPC's will not take such wild shots.
 			globalvars.player.shoot(force_shot=True)
+
 
 
 		#Check all collisions
