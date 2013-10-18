@@ -1,0 +1,26 @@
+import random as rd
+import globalvars
+from geometry import distance
+import menus
+
+class Faction():
+	def __init__(self, name, myid, color, flag=None):
+		''' '''
+		self.name = name
+		self.id = myid
+		self.color = color
+		self.flag = flag #Later this should be a small square image
+		self.allies = []
+		self.enemies = []
+		self.nodes = []
+
+
+class FactionManager():
+	def __init__(self):
+		self.factions = []
+		#initialize a short list of factions
+		
+
+	def example(self):
+		pass
+
