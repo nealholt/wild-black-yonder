@@ -17,6 +17,7 @@ from geometry import distance, angleFromPosition, translate, rotateAngle
 from displayUtilities import writeTextToScreen
 import datetime #Use for testing efficiency
 import nodeManager
+import factions
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
@@ -29,7 +30,9 @@ globalvars.whiskerables = pygame.sprite.Group()
 globalvars.player = playerObj.Player('ship')
 
 globalvars.galaxy = nodeManager.NodeManager()
-globalvars.galaxy.generateGalaxy(seed=0, nodecount=200, minimumNodeDist=4)
+globalvars.galaxy.generateGalaxy(seed=0, nodecount=globalvars.NUMBEROFNODES, minimumNodeDist=4)
+
+globalvars.factions = factions.FactionManager()
 
 #More efficient animations:
 dirty_rects = []
@@ -181,7 +184,7 @@ def run(countdown=-1):
 			#	mouse[0] = event.pos
 			elif event.type == pygame.KEYDOWN:
 				keys[event.key % 322] = 1
-				print "TODO TESTING: key press "+str(event.key)
+				#print "TODO TESTING: key press "+str(event.key)
 
 				#Respond to key taps.
 				#Keys that we want to respond to holding them down

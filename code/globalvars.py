@@ -2,6 +2,8 @@ DEBUG = True
 
 FPS = 60 #frames per second
 
+NUMBEROFNODES = 200
+
 WIDTH = 900
 HEIGHT = 700
 
@@ -53,4 +55,6 @@ deathcountdown = 3 * FPS
 
 #Local system of nodes
 galaxy = None
+
+factions = None
 

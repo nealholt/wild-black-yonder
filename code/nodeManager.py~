@@ -68,6 +68,8 @@ class Node():
 		self.health_max = 1.5
 		self.capital_ship_min = 0.0
 		self.capital_ship_max = self.strength
+		self.fuel_min = 0.0
+		self.fuel_max = self.amt_wealth/2
 
 
 	def addConnection(self, connectid, location):
