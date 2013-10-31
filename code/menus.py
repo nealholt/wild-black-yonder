@@ -172,6 +172,18 @@ def addAllTabs(menu):
 	menu.addPanel(subpanel)
 	x_val += width
 
+	#factions
+	subpanel = Panel()
+	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+		color=colors.yellow, thickness=framethickness)
+	subpanel.addDrawable(temp)
+	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+		string='Faction', font_size=24, color=colors.white)
+	subpanel.addDrawable(temp)
+	subpanel.setMethod(setFactionPanel)
+	menu.addPanel(subpanel)
+	x_val += width
+
 
 def setTestingPanel():
 	menu = getStandardMenu()
@@ -335,6 +347,40 @@ def setLocalGalaxyPanel(travel):
 				temp = drawable.Line(x1=position[0]-radius, y1=position[1]-radius,
 					x2=position2[0]-radius, y2=position2[1]-radius)
 				menu.addDrawable(temp)
+	globalvars.panel = menu
+
+
+
+def padStringLength(string, length, padding):
+	toReturn = string
+	while len(toReturn) < length:
+		toReturn += padding
+	return toReturn
+
+
+def setFactionPanel():
+	topbuffer = 100
+	#TODO LEFT OFF HERE
+	menu = getStandardMenu()
+
+	font_size = 24
+
+	stringLength = 30 #length in characters
+
+	temp = drawable.Text(x1=left+50,\
+		y1=topbuffer+top, \
+		string=padStringLength('Faction', stringLength, ' ')+'Relationship with player',\
+		font_size=font_size, color=colors.white)
+	menu.addDrawable(temp)
+
+	for i in range(1, len(globalvars.factions.factions)+1):
+		f = globalvars.factions.factions[i-1]
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+topbuffer+top, \
+			string=padStringLength(f.name, stringLength, ' ')+str(f.relationToPlayer),\
+			font_size=font_size, color=colors.white)
+		menu.addDrawable(temp)
+
 	globalvars.panel = menu
 
 
