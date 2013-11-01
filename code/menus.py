@@ -360,7 +360,6 @@ def padStringLength(string, length, padding):
 
 def setFactionPanel():
 	topbuffer = 100
-	#TODO LEFT OFF HERE
 	menu = getStandardMenu()
 
 	font_size = 24
@@ -378,6 +377,32 @@ def setFactionPanel():
 		temp = drawable.Text(x1=left+50,\
 			y1=font_size*i+topbuffer+top, \
 			string=padStringLength(f.name, stringLength, ' ')+str(f.relationToPlayer),\
+			font_size=font_size, color=colors.white)
+		subpanel = Panel()
+		subpanel.setMethod(setFactionSpecificPanel)
+		subpanel.argument = f.id
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+
+	globalvars.panel = menu
+
+
+def setFactionSpecificPanel(factionid):
+	topbuffer = 100
+	menu = getStandardMenu()
+	font_size = 24
+	stringLength = 30 #length in characters
+
+	f = globalvars.factions.getFactionById(factionid)
+	strings = []
+	strings.append(padStringLength('Name:', stringLength, ' ')+f.name)
+	strings.append(padStringLength('Flag:', stringLength, ' ')+str(f.flag))
+	strings.append(padStringLength('Count of owned nodes:', stringLength, ' ')+str(len(f.nodes)))
+
+	for i in range(len(strings)):
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+topbuffer+top, \
+			string=strings[i],\
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
 

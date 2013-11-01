@@ -29,9 +29,9 @@ class FactionManager():
 	def __init__(self):
 		self.factions = []
 		#initialize a short list of factions
-		self.factions.append(Faction('Federation', 0, colors.blue))
-		self.factions.append(Faction('Cephalopods', 1, colors.red))
-		self.factions.append(Faction('Pirates', 2, colors.black))
+		self.factions.append(Faction('Federation', 0, colors.blue, flag='flag00'))
+		self.factions.append(Faction('Cephalopods', 1, colors.red, flag='flag01'))
+		self.factions.append(Faction('Pirates', 2, colors.black, flag='flag02'))
 		#Assign each faction a random node
 		for f in self.factions:
 			#Get a node that is not yet owned:

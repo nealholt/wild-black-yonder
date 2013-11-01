@@ -43,6 +43,9 @@ class FactionManager():
 			#Give this node to the current faction
 			f.captureNode(nodeid)
 
-	def example(self):
-		pass
+	def getFactionById(self, factionid):
+		for f in self.factions:
+			if f.id == factionid:
+				return f
+		return None
 
