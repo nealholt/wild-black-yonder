@@ -23,6 +23,7 @@ class Node():
 		self.amt_debris = 0.0 #chance of asteroids
 		self.amt_wealth = 0.0 #chance of gems, health, and rich asteroids
 		self.owner = -1 #Id of the faction that owns this node.
+		self.flag = ''
 
 		#For now, deterministically set the profile of the node based on its index:
 		self.description = ''

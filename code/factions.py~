@@ -23,6 +23,7 @@ class Faction():
 		if nodeid in self.nodes: print 'ERROR: node is already owned by self.'; exit()
 		self.nodes.append(nodeid)
 		node.owner = self.id
+		node.flag = self.flag
 
 
 class FactionManager():
@@ -42,7 +43,11 @@ class FactionManager():
 				node = globalvars.galaxy.getNode(nodeid)
 			#Give this node to the current faction
 			f.captureNode(nodeid)
+		self.factions[0].captureNode(10) #TODO TESTING
 
-	def example(self):
-		pass
+	def getFactionById(self, factionid):
+		for f in self.factions:
+			if f.id == factionid:
+				return f
+		return None
 

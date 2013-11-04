@@ -23,6 +23,7 @@ class Faction():
 		if nodeid in self.nodes: print 'ERROR: node is already owned by self.'; exit()
 		self.nodes.append(nodeid)
 		node.owner = self.id
+		node.flag = self.flag
 
 
 class FactionManager():

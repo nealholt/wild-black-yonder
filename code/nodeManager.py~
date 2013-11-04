@@ -22,6 +22,7 @@ class Node():
 		self.strength = 0.0 #strength of opposing ships (initially just capital ship chance)
 		self.amt_debris = 0.0 #chance of asteroids
 		self.amt_wealth = 0.0 #chance of gems, health, and rich asteroids
+		self.owner = -1 #Id of the faction that owns this node.
 
 		#For now, deterministically set the profile of the node based on its index:
 		self.description = ''

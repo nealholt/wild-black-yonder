@@ -270,7 +270,11 @@ def getGalaxyPanel(travel):
 		#Color the player's location red.
 		if n.id == globalvars.player.nodeid:
 			color = colors.red
-		temp = drawable.Circle(x1=n.x, y1=n.y, radius=radius, color=color)
+		#If the node has an owner and the player is not here, display the owner's flag
+		if n.owner != -1 and n.id != globalvars.player.nodeid:
+			temp = drawable.DrawableImage(x1=n.x, y1=n.y, image=n.flag)
+		else:
+			temp = drawable.Circle(x1=n.x, y1=n.y, radius=radius, color=color)
 		subpanel.addDrawable(temp)
 		#If this node is connected to the player's current node, make it clickable
 		isconnected = False
@@ -310,6 +314,7 @@ def setLocalGalaxyPanel(travel):
 		subpanel.setMethod(scenarios.goToInfiniteSpace)
 	else:
 		subpanel.setMethod(setNodeViewPanel)
+
 	temp = drawable.Circle(x1=playerNodeLoc[0]-radius, y1=playerNodeLoc[1]-radius,
 				radius=radius, color=colors.red)
 	subpanel.addDrawable(temp)
@@ -335,7 +340,11 @@ def setLocalGalaxyPanel(travel):
 			else:
 				#Otherwise view options for information only
 				subpanel.setMethod(setNodeViewPanel)
-			temp = drawable.Circle(x1=position[0]-radius, y1=position[1]-radius,
+			#If the node has an owner and the player is not here, display the owner's flag
+			if n.owner != -1 and n.id != globalvars.player.nodeid:
+				temp = drawable.DrawableImage(x1=position[0], y1=position[1], image=n.flag)
+			else:
+				temp = drawable.Circle(x1=position[0]-radius, y1=position[1]-radius,
 						radius=radius, color=colors.yellow)
 			subpanel.addDrawable(temp)
 			menu.addPanel(subpanel)

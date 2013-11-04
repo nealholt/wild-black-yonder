@@ -7,7 +7,7 @@ class Drawable:
 	def __init__(self, x1=0, y1=0, color=white):
 		self.x1, self.y1 = x1, y1
 		self.color = color
-		self.rect = None
+		self.rect = pygame.Rect(0,0,0,0)
 
 	def draw(self):
 		pass
@@ -74,7 +74,16 @@ class DrawableImage(Drawable):
 	def __init__(self, x1=0, y1=0, image=''):
 		Drawable.__init__(self, x1=x1, y1=y1)
 		self.image = image_list[image].convert()
+		self.rect = self.image.get_rect()
+		self.rect.x = self.x1-self.rect.width/2
+		self.rect.y = self.y1-self.rect.height/2
 
 	def draw(self, use_color=None):
-		globalvars.screen.blit(self.image, (self.x1, self.y1))
+		'''Draw the image centered.'''
+		if not use_color is None:
+			pygame.draw.rect(globalvars.screen, use_color, \
+				self.rect)
+		else:
+			globalvars.screen.blit(self.image, 
+				(self.x1-self.rect.width/2, self.y1-self.rect.height/2))
 

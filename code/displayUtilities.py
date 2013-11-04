@@ -51,7 +51,9 @@ image_list['bigShip'] = preLoadImage('images/bigShip'+ext) #capital ship
 image_list['warp'] = preLoadImage('images/warpPortal'+ext) #warp portal
 image_list['shipoutline'] = preLoadImage('images/space-ship-sm'+ext) #ship outline
 image_list['gas'] = preLoadImage('images/Gas-Can-256x300'+ext) #gas can
-
+image_list['flag00'] = preLoadImage('images/flag00'+ext, transparency=False) #faction flag
+image_list['flag01'] = preLoadImage('images/flag01'+ext, transparency=False) #faction flag
+image_list['flag02'] = preLoadImage('images/flag02'+ext, transparency=False) #faction flag
 
 
 def trunc(f, n):
