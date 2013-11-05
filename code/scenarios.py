@@ -284,6 +284,8 @@ def capitalShipScenario(seed=0):
 def goToInfiniteSpace(nodeid):
 	'''This is a helper method that enables the menu system to function more easily.
 	nodeid of the infinite space and the seed to use to generate the space.'''
+	#Update all the factions
+	globalvars.factions.update()
 	#Get the node that has the id that this portal will lead to
 	n = globalvars.galaxy.getNode(nodeid)
 	infiniteSpace(seed=nodeid, playerloc=n.loc, warps=n.connections)

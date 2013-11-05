@@ -461,6 +461,19 @@ def setNodeViewPanel(nodeid):
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
 
+	#Write the owner if any
+	if node.owner != -1:
+		owner = globalvars.factions.getFactionById(node.owner)
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*len(text)+topbuffer+top,\
+			string='Owner: '+owner.name,\
+			font_size=font_size, color=colors.white)
+		subpanel = Panel()
+		subpanel.setMethod(setFactionSpecificPanel)
+		subpanel.argument = owner.id
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
+
 	globalvars.panel = menu
 
 

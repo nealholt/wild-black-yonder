@@ -315,13 +315,8 @@ def setLocalGalaxyPanel(travel):
 	else:
 		subpanel.setMethod(setNodeViewPanel)
 
-	#If the node has an owner and the player is not here, display the owner's flag
-	#if n.owner != -1 and n.id != globalvars.player.nodeid:
-	#	temp = drawable.DrawableImage(x1=n.x, y1=n.y, image=n.flag)
-	#else:
 	temp = drawable.Circle(x1=playerNodeLoc[0]-radius, y1=playerNodeLoc[1]-radius,
 				radius=radius, color=colors.red)
-
 	subpanel.addDrawable(temp)
 	menu.addPanel(subpanel)
 
@@ -345,7 +340,11 @@ def setLocalGalaxyPanel(travel):
 			else:
 				#Otherwise view options for information only
 				subpanel.setMethod(setNodeViewPanel)
-			temp = drawable.Circle(x1=position[0]-radius, y1=position[1]-radius,
+			#If the node has an owner and the player is not here, display the owner's flag
+			if n.owner != -1 and n.id != globalvars.player.nodeid:
+				temp = drawable.DrawableImage(x1=position[0], y1=position[1], image=n.flag)
+			else:
+				temp = drawable.Circle(x1=position[0]-radius, y1=position[1]-radius,
 						radius=radius, color=colors.yellow)
 			subpanel.addDrawable(temp)
 			menu.addPanel(subpanel)
@@ -461,6 +460,19 @@ def setNodeViewPanel(nodeid):
 			y1=font_size*i+topbuffer+top, string=text[i],\
 			font_size=font_size, color=colors.white)
 		menu.addDrawable(temp)
+
+	#Write the owner if any
+	if node.owner != -1:
+		owner = globalvars.factions.getFactionById(node.owner)
+		temp = drawable.Text(x1=left+50,\
+			y1=font_size*i+topbuffer+top,\
+			string='Owner: '+owner.name,\
+			font_size=font_size, color=colors.white)
+		subpanel = Panel()
+		subpanel.setMethod(setFactionSpecificPanel)
+		subpanel.argument = owner.id
+		subpanel.addDrawable(temp)
+		menu.addPanel(subpanel)
 
 	globalvars.panel = menu
 
