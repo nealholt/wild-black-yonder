@@ -1,7 +1,6 @@
 import random as rd
 import globalvars
 from geometry import distance
-import menus
 
 def printNodeLocations(nodelist):
 	for n in nodelist:
@@ -111,10 +110,10 @@ class NodeManager():
 		rd.seed(seed)
 		#Randomly create locations for each node.
 		for i in range(nodecount):
-			x = rd.randint(menus.padding+menus.border_padding,
-				globalvars.WIDTH-menus.padding-menus.border_padding)
-			y = rd.randint(menus.padding+menus.border_padding,
-				globalvars.HEIGHT-menus.padding-menus.border_padding)
+			x = rd.randint(globalvars.MENU_PADDING+globalvars.MENU_BORDER_PADDING,
+				globalvars.WIDTH-globalvars.MENU_PADDING-globalvars.MENU_BORDER_PADDING)
+			y = rd.randint(globalvars.MENU_PADDING+globalvars.MENU_BORDER_PADDING,
+				globalvars.HEIGHT-globalvars.MENU_PADDING-globalvars.MENU_BORDER_PADDING)
 			self.nodes.append(Node(i, x, y))
 		#Sort the nodes by x
 		sortednodes = sorted(self.nodes, key=lambda n: n.x, reverse=True)

@@ -38,6 +38,8 @@ globalvars.factions = factions.FactionManager()
 dirty_rects = []
 useDirty = True #Whether to flip or use dirty rectangles
 
+globalvars.menu = menus.Menu()
+
 def redrawWholeBackground():
 	if globalvars.BGIMAGE is None:
 		globalvars.screen.fill(globalvars.BGCOLOR)
@@ -142,28 +144,28 @@ def run(countdown=-1):
 			continue
 
 		#Display the panel
-		if not globalvars.panel is None:
-			globalvars.panel.draw()
+		if not globalvars.menu.main_panel is None:
+			globalvars.menu.main_panel.draw()
 			pygame.display.flip()
 			#Check for another key press to remove the panel.
 			for event in pygame.event.get():
 				#Check for event m key, n key, or escape key being 
 				#pressed to remove the menu.
 				if event.type == pygame.KEYDOWN:
-					globalvars.panel = None
+					globalvars.menu.main_panel = None
 					redrawWholeBackground()
 					pygame.display.flip()
 					break
 				#Panel event handeling can make the panel itself None so we have 
 				#to check if the panel has become None for every event. If the
 				#panel has become None we break and ignore further input events.
-				elif globalvars.panel is None:
+				elif globalvars.menu.main_panel is None:
 					redrawWholeBackground()
 					pygame.display.flip()
 					break
 				#Pass all other events to the panel
 				else:
-					globalvars.panel.handleEvent(event)
+					globalvars.menu.main_panel.handleEvent(event)
 			#Skip all the rest while displaying the menu.
 			#This effectively pauses the game.
 			continue
@@ -208,9 +210,9 @@ def run(countdown=-1):
 				elif event.key == 109: #m key
 					#If player is dead, access the restart panel, not the testing panel.
 					if globalvars.player.isDead():
-						menus.setRestartPanel()
+						globalvars.menu.setRestartPanel()
 					else:
-						menus.setTestingPanel()
+						globalvars.menu.setTestingPanel()
 					continue
 				elif event.key == 98: #b key
 					globalvars.player.parkingBrake()
@@ -252,8 +254,7 @@ def run(countdown=-1):
 					str(globalvars.player.desty)
 				elif event.key == 104 or event.key == 304: #"h key" lower or upper case.
 					#Display help menu.
-					globalvars.panel = menus.getHelpPanel()
-
+					globalvars.menu.setHelpPanel()
 				if event.key == 120: #Pressed x key
 					globalvars.player.shoot(force_shot=True,weapon=globalvars.player.missile)
 				if event.key == 122: #Pressed z key
@@ -383,7 +384,7 @@ def run(countdown=-1):
 			#Countdown before kicking player back to menu
 			globalvars.deathcountdown -= 1
 			if globalvars.deathcountdown < 0:
-				menus.setRestartPanel()
+				globalvars.menu.setRestartPanel()
 
 		#Calculate how long we took in the above loop to estimate the number of frames per second
 		#Alert user if fraps drops below half the desired threshold.

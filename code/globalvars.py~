@@ -2,6 +2,8 @@ DEBUG = True
 
 FPS = 60 #frames per second
 
+NUMBEROFNODES = 200
+
 WIDTH = 900
 HEIGHT = 700
 
@@ -46,7 +48,7 @@ player_target_lead = (0.0,0.0)
 arena = 0
 
 #Display menus and the like on the panel.
-panel = None
+menu = None
 
 #How many seconds to continue displaying while the player is dead before kicking him back to the restart menu.
 deathcountdown = 3 * FPS

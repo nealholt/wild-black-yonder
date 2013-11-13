@@ -282,7 +282,6 @@ def capitalShipScenario(seed=0):
 
 
 def goToInfiniteSpace(nodeid):
-	print 'going to infinite space '+str(nodeid)
 	'''This is a helper method that enables the menu system to function more easily.
 	nodeid of the infinite space and the seed to use to generate the space.'''
 	#Update all the factions

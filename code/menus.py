@@ -5,6 +5,61 @@ import scenarios
 import globalvars
 from geometry import angleFromPosition, translate, distance
 
+
+def buyGas(): #TODO This needs moved elsewhere. It should not be here!
+	globalvars.player.fuel += 1000
+	globalvars.player.money -= 10
+	globalvars.menu.setGasStationPanel()
+
+def padStringLength(string, length, padding): #TODO Can't this go somewhere else?
+	toReturn = string
+	while len(toReturn) < length:
+		toReturn += padding
+	return toReturn
+
+#TODO START should the following all go elsewhere?
+def unequipPlayerGun():
+	'''This method allows me to keep the unequipGun method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.unequipGun()
+	globalvars.menu.setShipPanel()
+
+
+def unequipPlayerMissile():
+	'''This method allows me to keep the unequipMissile method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.unequipMissile()
+	globalvars.menu.setShipPanel()
+
+
+def unequipPlayerMine():
+	'''This method allows me to keep the unequipMine method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.unequipMine()
+	globalvars.menu.setShipPanel()
+
+
+def equipPlayerWeapon(cargo_index):
+	'''This method allows me to keep the equipWeaponFromCargo method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.equipWeaponFromCargo(cargo_index)
+	globalvars.menu.setShipPanel()
+#TODO END
+
+
+top = globalvars.MENU_BORDER_PADDING
+left = globalvars.MENU_BORDER_PADDING
+height = globalvars.HEIGHT-2*globalvars.MENU_BORDER_PADDING
+width = globalvars.WIDTH-2*globalvars.MENU_BORDER_PADDING
+topbuffer = 100
+font_size = 24
+stringLength = 30
+
+
 class Panel:
 	"""The basic building block of the menu system. """
 	def __init__(self):
@@ -63,704 +118,583 @@ class Panel:
 			panel.draw()
 
 
-#There was a lot of duplicate code so I moved some of it out.
-border_padding = 50
-padding = 25
-top = border_padding
-left = border_padding
-height = globalvars.HEIGHT-2*border_padding
-width = globalvars.WIDTH-2*border_padding
-def getStandardMenu():
-	'''There was a lot of code duplication so I stuck it in a method all its own.'''
-	menu = Panel()
-
-	#First draw a white frame around the menu.
-	temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
-		color=colors.white, thickness=3)
-	menu.addDrawable(temp)
-
-	#Then draw the background for the menu
-	temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
-		color=colors.reddishgray)
-	menu.addDrawable(temp)
-
-	#Add tabs to the menu:
-	addAllTabs(menu)
-
-	return menu
+class Menu:
+	"""globalvars.menu points to one of these objects in order to reduce the amount of file imports while increasing the availability of menu methods."""
+	def __init__(self):
+		self.main_panel = None #When this is not none, it should be displayed on the screen.
 
 
-def addAllTabs(menu):
-	'''Takes a menu and adds a standard set of tabs along the top of the menu.'''
-	width = 100
-	localheight = 20
-	textbuffer = 9
-	framethickness = 2
-	x_val = left
-	#ship
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-		string='Ship', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setShipPanel)
-	menu.addPanel(subpanel)
-	x_val += width
-
-	#galaxy info
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-		string='Galaxy', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setGalaxyPanel)
-	subpanel.argument = False
-	menu.addPanel(subpanel)
-	x_val += width
-
-	#local info
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-		string='Local Info', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setLocalGalaxyPanel)
-	subpanel.argument = False
-	menu.addPanel(subpanel)
-	x_val += width
-
-	#local travel
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-		string='Travel', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setLocalGalaxyPanel)
-	subpanel.argument = True
-	menu.addPanel(subpanel)
-	x_val += width
-
-	#Player profile page
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-		string='Profile', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setPlayerProfilePanel)
-	menu.addPanel(subpanel)
-	x_val += width
-
-	#test scenarios
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-		string='Test', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setTestingPanel)
-	menu.addPanel(subpanel)
-	x_val += width
-
-	#factions
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-		string='Faction', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(setFactionPanel)
-	menu.addPanel(subpanel)
-	x_val += width
+	def setStandardMenu(self):
+		'''There was a lot of code duplication so I stuck it in a method all its own.'''
+		self.main_panel = Panel()
+		#First draw a white frame around the menu.
+		temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
+			color=colors.white, thickness=3)
+		self.main_panel.addDrawable(temp)
+		#Then draw the background for the menu
+		temp = drawable.Rectangle(x1=left, y1=top, width=width, height=height, \
+			color=colors.reddishgray)
+		self.main_panel.addDrawable(temp)
+		#Add tabs to the menu:
+		self.addAllTabs()
 
 
-def setTestingPanel():
-	menu = getStandardMenu()
-
-	#Then draw the contents of the menu
-	horiz_space = 200
-	vert_space = 70
-	x1, y1 = horiz_space, globalvars.HEIGHT/2
-	radius = 10
-
-	texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Capital ship']
-	methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.capitalShipScenario]
-
-	x2 = horiz_space*2
-	methodLength = len(methods)
-	for i in range(methodLength):
-		j = i-methodLength/2
-		y2 = globalvars.HEIGHT/2+vert_space*j
-
+	def addAllTabs(self):
+		'''Takes a menu and adds a standard set of tabs along the top of the menu.'''
+		width = 100
+		localheight = 20
+		textbuffer = 9
+		framethickness = 2
+		x_val = left
+		#ship
 		subpanel = Panel()
-		#http://www.secnetix.de/olli/Python/lambda_functions.hawk
-		subpanel.setMethod(methods[i])
-		temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
+		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+			color=colors.yellow, thickness=framethickness)
 		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\
-			font_size=24, color=colors.white)
+		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+			string='Ship', font_size=font_size, color=colors.white)
 		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-
-		temp = drawable.Line(x1=x1, y1=y1, x2=x2, y2=y2)
-		menu.addDrawable(temp)
-
-	globalvars.panel = menu
-
-
-def buyGas():
-	globalvars.player.fuel += 1000
-	globalvars.player.money -= 10
-	setGasStationPanel()
-
-
-def setGasStationPanel():
-	menu = getStandardMenu()
-	textbuffer = 9
-
-	text = [
-	'Money: $'+str(globalvars.player.money),
-	'Fuel: '+str(globalvars.player.fuel)
-	]
-
-	#Then draw the contents of the menu
-	font_size = 24
-	for i in range(len(text)):
-		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+100+top, string=text[i],\
-			font_size=font_size, color=colors.white)
-		menu.addDrawable(temp)
-
-	framethickness = 2
-	subpanel = Panel()
-	temp = drawable.Rectangle(x1=(left+200), y1=(top+200), width=200, height=200, \
-		color=colors.yellow, thickness=framethickness)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=(left+200+textbuffer), y1=(top+200+textbuffer), \
-		string='Buy 1000 Fuel for $10', font_size=24, color=colors.white)
-	subpanel.addDrawable(temp)
-	subpanel.setMethod(buyGas)
-	menu.addPanel(subpanel)
-
-	globalvars.panel = menu
-
-
-def setGalaxyPanel(travel):
-	globalvars.panel = getGalaxyPanel(travel)
-
-
-def getGalaxyPanel(travel):
-	'''Pre: galaxy is a NodeManager object that has been initialized.'''
-	menu = getStandardMenu()
-	radius = 3
-	for n in globalvars.galaxy.nodes:
+		subpanel.setMethod(globalvars.menu.setShipPanel)
+		self.main_panel.addPanel(subpanel)
+		x_val += width
+		#galaxy info
 		subpanel = Panel()
-		color = colors.yellow
-		#Color the player's location red.
-		if n.id == globalvars.player.nodeid:
-			color = colors.red
-		#If the node has an owner and the player is not here, display the owner's flag
-		if n.owner != -1 and n.id != globalvars.player.nodeid:
-			temp = drawable.DrawableImage(x1=n.x, y1=n.y, image=n.flag)
-		else:
-			temp = drawable.Circle(x1=n.x, y1=n.y, radius=radius, color=color)
+		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+			color=colors.yellow, thickness=framethickness)
 		subpanel.addDrawable(temp)
-		#If this node is connected to the player's current node, make it clickable
-		isconnected = False
-		subpanel.argument = n.id
-		#If travel is set and the node is already connected to the player's node
-		if travel and n.alreadyConnected(globalvars.player.nodeid):
-			subpanel.setMethod(scenarios.setDestinationNode)
-		else:
-			#Otherwise view options for information only
-			subpanel.setMethod(setNodeViewPanel)
-		menu.addPanel(subpanel)
+		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+			string='Galaxy', font_size=font_size, color=colors.white)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(globalvars.menu.setGalaxyPanel)
+		subpanel.argument = False
+		self.main_panel.addPanel(subpanel)
+		x_val += width
+		#local info
+		subpanel = Panel()
+		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+			color=colors.yellow, thickness=framethickness)
+		subpanel.addDrawable(temp)
+		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+			string='Local Info', font_size=font_size, color=colors.white)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(globalvars.menu.setLocalGalaxyPanel)
+		subpanel.argument = False
+		self.main_panel.addPanel(subpanel)
+		x_val += width
+		#local travel
+		subpanel = Panel()
+		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+			color=colors.yellow, thickness=framethickness)
+		subpanel.addDrawable(temp)
+		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+			string='Travel', font_size=font_size, color=colors.white)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(globalvars.menu.setLocalGalaxyPanel)
+		subpanel.argument = True
+		self.main_panel.addPanel(subpanel)
+		x_val += width
+		#Player profile page
+		subpanel = Panel()
+		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+			color=colors.yellow, thickness=framethickness)
+		subpanel.addDrawable(temp)
+		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+			string='Profile', font_size=font_size, color=colors.white)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(globalvars.menu.setPlayerProfilePanel)
+		self.main_panel.addPanel(subpanel)
+		x_val += width
+		#test scenarios
+		subpanel = Panel()
+		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+			color=colors.yellow, thickness=framethickness)
+		subpanel.addDrawable(temp)
+		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+			string='Test', font_size=font_size, color=colors.white)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(globalvars.menu.setTestingPanel)
+		self.main_panel.addPanel(subpanel)
+		x_val += width
+		#factions
+		subpanel = Panel()
+		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+			color=colors.yellow, thickness=framethickness)
+		subpanel.addDrawable(temp)
+		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+			string='Faction', font_size=font_size, color=colors.white)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(globalvars.menu.setFactionPanel)
+		self.main_panel.addPanel(subpanel)
+		x_val += width
 
-	for c in globalvars.galaxy.connections:
-		temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
-		menu.addDrawable(temp)
 
-	return menu
+	def setTestingPanel(self):
+		self.setStandardMenu()
+		#Then draw the contents of the menu
+		horiz_space = 200
+		vert_space = 70
+		x1, y1 = horiz_space, globalvars.HEIGHT/2
+		radius = 10
+		texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Capital ship']
+		methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.capitalShipScenario]
+		x2 = horiz_space*2
+		methodLength = len(methods)
+		for i in range(methodLength):
+			j = i-methodLength/2
+			y2 = globalvars.HEIGHT/2+vert_space*j
 
-
-def setLocalGalaxyPanel(travel):
-	'''Pre: galaxy is a NodeManager object that has been initialized.'''
-	menu = getStandardMenu()
-	radius = 10
-	#Magnitude of the stretch.
-	magnitude = 4
-	#Center the player node location
-	playerNodeLoc = (globalvars.CENTERX, globalvars.CENTERY)
-	#Get the player's node
-	playerNode = globalvars.galaxy.getNode(globalvars.player.nodeid)
-	#Draw player node in the center of the menu.
-	subpanel = Panel()
-	subpanel.argument = globalvars.player.nodeid
-	#If this node is the player's current location then make this reset
-	#the player's scenario. This is really only for testing since the player
-	#can get away using the testing menu by pressing the m key.
-	if travel:
-		subpanel.setMethod(scenarios.goToInfiniteSpace)
-	else:
-		subpanel.setMethod(setNodeViewPanel)
-
-	temp = drawable.Circle(x1=playerNodeLoc[0]-radius, y1=playerNodeLoc[1]-radius,
-				radius=radius, color=colors.red)
-	subpanel.addDrawable(temp)
-	menu.addPanel(subpanel)
-
-	#Draw all the on-screen nodes and the connections between them
-	for n in globalvars.galaxy.nodes:
-		angle = angleFromPosition(playerNode.loc, n.loc)
-		dist = distance(playerNode.loc, n.loc)
-		position = translate(playerNodeLoc, angle, dist*magnitude)
-		#If it is on screen...
-		if position[0] > padding+border_padding and \
-		position[0] < globalvars.WIDTH-padding-border_padding and \
-		position[1] > padding+border_padding and \
-		position[1] < globalvars.HEIGHT-padding-border_padding and \
-		n.id != playerNode.id:
-			#Draw it
 			subpanel = Panel()
+			#http://www.secnetix.de/olli/Python/lambda_functions.hawk
+			subpanel.setMethod(methods[i])
+			temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
+			subpanel.addDrawable(temp)
+			temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\
+				font_size=font_size, color=colors.white)
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+
+			temp = drawable.Line(x1=x1, y1=y1, x2=x2, y2=y2)
+			self.main_panel.addDrawable(temp)
+
+
+	def setGasStationPanel(self):
+		self.setStandardMenu()
+		textbuffer = 9
+		text = [
+		'Money: $'+str(globalvars.player.money),
+		'Fuel: '+str(globalvars.player.fuel)
+		]
+		#Then draw the contents of the menu
+		for i in range(len(text)):
+			temp = drawable.Text(x1=left+50,\
+				y1=font_size*i+100+top, string=text[i],\
+				font_size=font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
+
+		framethickness = 2
+		subpanel = Panel()
+		temp = drawable.Rectangle(x1=(left+200), y1=(top+200), width=200, height=200, \
+			color=colors.yellow, thickness=framethickness)
+		subpanel.addDrawable(temp)
+		temp = drawable.Text(x1=(left+200+textbuffer), y1=(top+200+textbuffer), \
+			string='Buy 1000 Fuel for $10', font_size=font_size, color=colors.white)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(buyGas)
+		self.main_panel.addPanel(subpanel)
+
+
+	def setGalaxyPanel(self, travel):
+		'''Pre: galaxy is a NodeManager object that has been initialized.'''
+		self.setStandardMenu()
+		radius = 3
+		for n in globalvars.galaxy.nodes:
+			subpanel = Panel()
+			color = colors.yellow
+			#Color the player's location red.
+			if n.id == globalvars.player.nodeid:
+				color = colors.red
+			#If the node has an owner and the player is not here, display the owner's flag
+			if n.owner != -1 and n.id != globalvars.player.nodeid:
+				temp = drawable.DrawableImage(x1=n.x, y1=n.y, image=n.flag)
+			else:
+				temp = drawable.Circle(x1=n.x, y1=n.y, radius=radius, color=color)
+			subpanel.addDrawable(temp)
+			#If this node is connected to the player's current node, make it clickable
+			isconnected = False
 			subpanel.argument = n.id
 			#If travel is set and the node is already connected to the player's node
 			if travel and n.alreadyConnected(globalvars.player.nodeid):
 				subpanel.setMethod(scenarios.setDestinationNode)
 			else:
 				#Otherwise view options for information only
-				subpanel.setMethod(setNodeViewPanel)
-			#If the node has an owner and the player is not here, display the owner's flag
-			if n.owner != -1 and n.id != globalvars.player.nodeid:
-				temp = drawable.DrawableImage(x1=position[0], y1=position[1], image=n.flag)
-			else:
-				temp = drawable.Circle(x1=position[0]-radius, y1=position[1]-radius,
-						radius=radius, color=colors.yellow)
+				subpanel.setMethod(globalvars.menu.setNodeViewPanel)
+			self.main_panel.addPanel(subpanel)
+
+		for c in globalvars.galaxy.connections:
+			temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
+			self.main_panel.addDrawable(temp)
+
+
+	def setLocalGalaxyPanel(self, travel):
+		'''Pre: galaxy is a NodeManager object that has been initialized.'''
+		self.setStandardMenu()
+		radius = 10
+		#Magnitude of the stretch.
+		magnitude = 4
+		#Center the player node location
+		playerNodeLoc = (globalvars.CENTERX, globalvars.CENTERY)
+		#Get the player's node
+		playerNode = globalvars.galaxy.getNode(globalvars.player.nodeid)
+		#Draw player node in the center of the menu.
+		subpanel = Panel()
+		subpanel.argument = globalvars.player.nodeid
+		#If this node is the player's current location then make this reset
+		#the player's scenario. This is really only for testing since the player
+		#can get away using the testing menu by pressing the m key.
+		if travel:
+			subpanel.setMethod(scenarios.goToInfiniteSpace)
+		else:
+			subpanel.setMethod(globalvars.menu.setNodeViewPanel)
+
+		temp = drawable.Circle(x1=playerNodeLoc[0]-radius, y1=playerNodeLoc[1]-radius,
+					radius=radius, color=colors.red)
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
+
+		#Draw all the on-screen nodes and the connections between them
+		for n in globalvars.galaxy.nodes:
+			angle = angleFromPosition(playerNode.loc, n.loc)
+			dist = distance(playerNode.loc, n.loc)
+			position = translate(playerNodeLoc, angle, dist*magnitude)
+			#If it is on screen...
+			if position[0] > globalvars.MENU_PADDING+globalvars.MENU_BORDER_PADDING and \
+			position[0] < globalvars.WIDTH-globalvars.MENU_PADDING-globalvars.MENU_BORDER_PADDING and \
+			position[1] > globalvars.MENU_PADDING+globalvars.MENU_BORDER_PADDING and \
+			position[1] < globalvars.HEIGHT-globalvars.MENU_PADDING-globalvars.MENU_BORDER_PADDING and \
+			n.id != playerNode.id:
+				#Draw it
+				subpanel = Panel()
+				subpanel.argument = n.id
+				#If travel is set and the node is already connected to the player's node
+				if travel and n.alreadyConnected(globalvars.player.nodeid):
+					subpanel.setMethod(scenarios.setDestinationNode)
+				else:
+					#Otherwise view options for information only
+					subpanel.setMethod(globalvars.menu.setNodeViewPanel)
+				#If the node has an owner and the player is not here, display the owner's flag
+				if n.owner != -1 and n.id != globalvars.player.nodeid:
+					temp = drawable.DrawableImage(x1=position[0], y1=position[1], image=n.flag)
+				else:
+					temp = drawable.Circle(x1=position[0]-radius, y1=position[1]-radius,
+							radius=radius, color=colors.yellow)
+				subpanel.addDrawable(temp)
+				self.main_panel.addPanel(subpanel)
+				#draw connections
+				for c in n.connections:
+					angle = angleFromPosition(n.loc, c[1])
+					dist = distance(n.loc, c[1])
+					position2 = translate(position, angle, dist*magnitude)
+					temp = drawable.Line(x1=position[0]-radius, y1=position[1]-radius,
+						x2=position2[0]-radius, y2=position2[1]-radius)
+					self.main_panel.addDrawable(temp)
+
+
+	def setFactionPanel(self):
+		self.setStandardMenu()
+		temp = drawable.Text(x1=left+50,\
+			y1=topbuffer+top, \
+			string=padStringLength('Faction', stringLength, ' ')+'Relationship with player',\
+			font_size=font_size, color=colors.white)
+		self.main_panel.addDrawable(temp)
+
+		for i in range(1, len(globalvars.factions.factions)+1):
+			f = globalvars.factions.factions[i-1]
+			temp = drawable.Text(x1=left+50,\
+				y1=font_size*i+topbuffer+top, \
+				string=padStringLength(f.name, stringLength, ' ')+str(f.relationToPlayer),\
+				font_size=font_size, color=colors.white)
+			subpanel = Panel()
+			subpanel.setMethod(globalvars.menu.setFactionSpecificPanel)
+			subpanel.argument = f.id
 			subpanel.addDrawable(temp)
-			menu.addPanel(subpanel)
-			#draw connections
-			for c in n.connections:
-				angle = angleFromPosition(n.loc, c[1])
-				dist = distance(n.loc, c[1])
-				position2 = translate(position, angle, dist*magnitude)
-				temp = drawable.Line(x1=position[0]-radius, y1=position[1]-radius,
-					x2=position2[0]-radius, y2=position2[1]-radius)
-				menu.addDrawable(temp)
-	globalvars.panel = menu
+			self.main_panel.addPanel(subpanel)
 
 
+	def setFactionSpecificPanel(self, factionid):
+		self.setStandardMenu()
+		f = globalvars.factions.getFactionById(factionid)
+		strings = []
+		strings.append(padStringLength('Name:', stringLength, ' ')+f.name)
+		strings.append(padStringLength('Flag:', stringLength, ' ')+str(f.flag))
+		strings.append(padStringLength('Count of owned nodes:', stringLength, ' ')+str(len(f.nodes)))
+		for i in range(len(strings)):
+			temp = drawable.Text(x1=left+50,\
+				y1=font_size*i+topbuffer+top, \
+				string=strings[i],\
+				font_size=font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
 
-def padStringLength(string, length, padding):
-	toReturn = string
-	while len(toReturn) < length:
-		toReturn += padding
-	return toReturn
+
+	def setPlayerProfilePanel(self):
+		self.setStandardMenu()
+		text = [
+		'Money: $'+str(globalvars.player.money),
+		'Health: '+str(globalvars.player.health),
+		'Fuel: '+str(globalvars.player.fuel)
+		]
+		#Then draw the contents of the menu
+		for i in range(len(text)):
+			temp = drawable.Text(x1=left+50,\
+				y1=font_size*i+topbuffer+top, string=text[i],\
+				font_size=font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
 
 
-def setFactionPanel():
-	topbuffer = 100
-	menu = getStandardMenu()
+	def setNodeViewPanel(self, nodeid):
+		node = globalvars.galaxy.getNode(nodeid)
+		self.setStandardMenu()
+		text = [
+		'Id: '+str(node.id)+'.',
+		'Description: '+node.description+'.',
+		'Hostility: '+str(node.hostility)+'. Chance to generate opposing ships.',
+		'Enemy strength: '+str(node.strength)+'. Strength of opposing ships (initially just capital ship chance).',
+		'Debris: '+str(node.amt_debris)+'. Chance of asteroids.',
+		'Wealth: '+str(node.amt_wealth)+'. Chance of gems, health, and rich asteroids.'
+		]
+		#Then draw the contents of the menu
+		for i in range(len(text)):
+			temp = drawable.Text(x1=left+50,\
+				y1=font_size*i+topbuffer+top, string=text[i],\
+				font_size=font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
 
-	font_size = 24
+		#Write the owner if any
+		if node.owner != -1:
+			owner = globalvars.factions.getFactionById(node.owner)
+			temp = drawable.Text(x1=left+50,\
+				y1=font_size*len(text)+topbuffer+top,\
+				string='Owner: '+owner.name,\
+				font_size=font_size, color=colors.white)
+			subpanel = Panel()
+			subpanel.setMethod(globalvars.menu.setFactionSpecificPanel)
+			subpanel.argument = owner.id
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
 
-	stringLength = 30 #length in characters
 
-	temp = drawable.Text(x1=left+50,\
-		y1=topbuffer+top, \
-		string=padStringLength('Faction', stringLength, ' ')+'Relationship with player',\
-		font_size=font_size, color=colors.white)
-	menu.addDrawable(temp)
-
-	for i in range(1, len(globalvars.factions.factions)+1):
-		f = globalvars.factions.factions[i-1]
-		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+topbuffer+top, \
-			string=padStringLength(f.name, stringLength, ' ')+str(f.relationToPlayer),\
+	def setRestartPanel(self):
+		self.setStandardMenu()
+		#Then draw the contents of the menu
+		#Display text explaining that player died.
+		temp = drawable.Text(x1=globalvars.WIDTH/2-100, y1=200, string='You have died',\
 			font_size=font_size, color=colors.white)
+		self.main_panel.addDrawable(temp)
+		#Display button allowing player to restart.
 		subpanel = Panel()
-		subpanel.setMethod(setFactionSpecificPanel)
-		subpanel.argument = f.id
+		subpanel.setMethod(scenarios.restart)
+		temp = drawable.Rectangle(x1=globalvars.WIDTH/2-75, y1=300, width=200, height=50, \
+			color=colors.blue)
 		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-
-	globalvars.panel = menu
-
-
-def setFactionSpecificPanel(factionid):
-	topbuffer = 100
-	menu = getStandardMenu()
-	font_size = 24
-	stringLength = 30 #length in characters
-
-	f = globalvars.factions.getFactionById(factionid)
-	strings = []
-	strings.append(padStringLength('Name:', stringLength, ' ')+f.name)
-	strings.append(padStringLength('Flag:', stringLength, ' ')+str(f.flag))
-	strings.append(padStringLength('Count of owned nodes:', stringLength, ' ')+str(len(f.nodes)))
-
-	for i in range(len(strings)):
-		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+topbuffer+top, \
-			string=strings[i],\
-			font_size=font_size, color=colors.white)
-		menu.addDrawable(temp)
-
-	globalvars.panel = menu
-
-
-def setPlayerProfilePanel():
-	topbuffer = 100
-	menu = getStandardMenu()
-
-	text = [
-	'Money: $'+str(globalvars.player.money),
-	'Health: '+str(globalvars.player.health),
-	'Fuel: '+str(globalvars.player.fuel)
-	]
-
-	#Then draw the contents of the menu
-	font_size = 24
-	for i in range(len(text)):
-		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+topbuffer+top, string=text[i],\
-			font_size=font_size, color=colors.white)
-		menu.addDrawable(temp)
-
-	globalvars.panel = menu
-
-
-def setNodeViewPanel(nodeid):
-	node = globalvars.galaxy.getNode(nodeid)
-	topbuffer = 100
-	menu = getStandardMenu()
-
-	text = [
-	'Id: '+str(node.id)+'.',
-	'Description: '+node.description+'.',
-	'Hostility: '+str(node.hostility)+'. Chance to generate opposing ships.',
-	'Enemy strength: '+str(node.strength)+'. Strength of opposing ships (initially just capital ship chance).',
-	'Debris: '+str(node.amt_debris)+'. Chance of asteroids.',
-	'Wealth: '+str(node.amt_wealth)+'. Chance of gems, health, and rich asteroids.'
-	]
-
-	#Then draw the contents of the menu
-	font_size = 24
-	for i in range(len(text)):
-		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+topbuffer+top, string=text[i],\
-			font_size=font_size, color=colors.white)
-		menu.addDrawable(temp)
-
-	#Write the owner if any
-	if node.owner != -1:
-		owner = globalvars.factions.getFactionById(node.owner)
-		temp = drawable.Text(x1=left+50,\
-			y1=font_size*len(text)+topbuffer+top,\
-			string='Owner: '+owner.name,\
-			font_size=font_size, color=colors.white)
-		subpanel = Panel()
-		subpanel.setMethod(setFactionSpecificPanel)
-		subpanel.argument = owner.id
+		temp = drawable.Text(x1=globalvars.WIDTH/2, y1=340, string='Restart',\
+			font_size=32, color=colors.white)
 		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-
-	globalvars.panel = menu
+		self.main_panel.addPanel(subpanel)
 
 
-def setRestartPanel():
-	menu = getStandardMenu()
-
-	#Then draw the contents of the menu
-	#Display text explaining that player died.
-	temp = drawable.Text(x1=globalvars.WIDTH/2-100, y1=200, string='You have died',\
-		font_size=24, color=colors.white)
-	menu.addDrawable(temp)
-	#Display button allowing player to restart.
-	subpanel = Panel()
-	subpanel.setMethod(scenarios.restart)
-	temp = drawable.Rectangle(x1=globalvars.WIDTH/2-75, y1=300, width=200, height=50, \
-		color=colors.blue)
-	subpanel.addDrawable(temp)
-	temp = drawable.Text(x1=globalvars.WIDTH/2, y1=340, string='Restart',\
-		font_size=32, color=colors.white)
-	subpanel.addDrawable(temp)
-	menu.addPanel(subpanel)
-
-	globalvars.panel = menu
-
-
-def getHelpPanel():
-	menu = getStandardMenu()
-
-	help = [
-	'INSTRUCTIONS:', 
-	'Press space bar or c key or click left mouse button to shoot primary weapon.',
-	'Press x key to shoot missile if equipped and not on cooldown.',
-	'Press z key to lay a mine if equipped and not on cooldown.',
-	'Press "/" or "?" to query game state. Currently this just prints the player\'s destination.',
-	'Press escape to quit.',
-	'Press "e" to create an enemy ship that will attack the player.',
-	'Press up arrow or w key to increase player speed by one quarter of max up to max.',
-	'Press down arrow or s key to decrease player speed by one quarter of max down to zero.',
-	'Press left arrow or a key to turn counter-clockwise 30 degrees.',
-	'Press right arrow or d key to turn clockwise 30 degrees.',
-	'Click on the screen to tell the starship to move towards the clicked point.',
-	'Press "m" open the menus.',
-	'Press anything to close the current menu.',
-	'Press "b" to slow down and park at destination.',
-	'Press "p" to pause/unpause the game.',
-	'Press "q" to remove destination set by mouse click and simply fly in current direction.',
-	'Press "t" for hit box test.',
-	'Press "y" profile a variety of methods.',
-	'Press "u" profile game.run().',
-	'Press "h" Display help info.',
-	'Press "k" to display the galaxy node info menu.',
-	'Press "o" to display the galaxy node travel menu.'
-	]
-
-	#Then draw the contents of the menu
-	font_size = 24
-	for i in range(len(help)):
-		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+50+top, string=help[i],\
-			font_size=font_size, color=colors.white)
-		menu.addDrawable(temp)
-
-	return menu
+	def setHelpPanel(self):
+		self.setStandardMenu()
+		help = [
+		'INSTRUCTIONS:', 
+		'Press space bar or c key or click left mouse button to shoot primary weapon.',
+		'Press x key to shoot missile if equipped and not on cooldown.',
+		'Press z key to lay a mine if equipped and not on cooldown.',
+		'Press "/" or "?" to query game state. Currently this just prints the player\'s destination.',
+		'Press escape to quit.',
+		'Press "e" to create an enemy ship that will attack the player.',
+		'Press up arrow or w key to increase player speed by one quarter of max up to max.',
+		'Press down arrow or s key to decrease player speed by one quarter of max down to zero.',
+		'Press left arrow or a key to turn counter-clockwise 30 degrees.',
+		'Press right arrow or d key to turn clockwise 30 degrees.',
+		'Click on the screen to tell the starship to move towards the clicked point.',
+		'Press "m" open the menus.',
+		'Press anything to close the current menu.',
+		'Press "b" to slow down and park at destination.',
+		'Press "p" to pause/unpause the game.',
+		'Press "q" to remove destination set by mouse click and simply fly in current direction.',
+		'Press "t" for hit box test.',
+		'Press "y" profile a variety of methods.',
+		'Press "u" profile game.run().',
+		'Press "h" Display help info.',
+		'Press "k" to display the galaxy node info menu.',
+		'Press "o" to display the galaxy node travel menu.'
+		]
+		#Then draw the contents of the menu
+		for i in range(len(help)):
+			temp = drawable.Text(x1=left+50,\
+				y1=font_size*i+50+top, string=help[i],\
+				font_size=font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
 
 
-def unequipPlayerGun():
-	'''This method allows me to keep the unequipGun method in the ship object 
-	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
-	player makes to his ship.'''
-	globalvars.player.unequipGun()
-	setShipPanel()
-
-
-def unequipPlayerMissile():
-	'''This method allows me to keep the unequipMissile method in the ship object 
-	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
-	player makes to his ship.'''
-	globalvars.player.unequipMissile()
-	setShipPanel()
-
-
-def unequipPlayerMine():
-	'''This method allows me to keep the unequipMine method in the ship object 
-	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
-	player makes to his ship.'''
-	globalvars.player.unequipMine()
-	setShipPanel()
-
-
-def equipPlayerWeapon(cargo_index):
-	'''This method allows me to keep the equipWeaponFromCargo method in the ship object 
-	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
-	player makes to his ship.'''
-	globalvars.player.equipWeaponFromCargo(cargo_index)
-	setShipPanel()
-
-
-def setShipPanel():
-	menu = getStandardMenu()
-	temp = drawable.DrawableImage(x1=left+20, y1=100+top, image='shipoutline')
-	menu.addDrawable(temp)
-
-	textbuffer = 8
-	localtopbuffer = 50
-	leftoffset = 500
-	localheight = 70
-	localwidth = 200
-	font_size = 24
-	framethickness = 2
-	#Draw the currently equipped weapon if any
-	if not globalvars.player.gun is None:
-		x_val = 200
-		y_val = 80
-		subpanel = Panel()
-		#Add frame around weapon
-		temp = drawable.Rectangle(x1=(left+x_val),\
-					y1=(top+y_val),\
-					width=localwidth,\
-					height=localheight,\
-					color=colors.yellow,\
-					thickness=framethickness)
-		subpanel.addDrawable(temp)
-		#Add weapon name
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+textbuffer),\
-				string=globalvars.player.gun.name, font_size=font_size,\
-				color=colors.blue)
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-		#Add option to unequip weapon
-		subpanel = Panel()
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+font_size+textbuffer),\
-				string='Unequip', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(unequipPlayerGun)
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-		#Add option to view information on weapon
-		subpanel = Panel()
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+font_size*2+textbuffer),\
-				string='View stats', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(setWeaponViewPanel)
-		subpanel.argument = globalvars.player.gun
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-
-	#Draw the currently equipped missile if any
-	if not globalvars.player.missile is None:
-		x_val = 100
-		y_val = 180
-		subpanel = Panel()
-		#Add frame around weapon
-		temp = drawable.Rectangle(x1=(left+x_val),\
-					y1=(top+y_val),\
-					width=localwidth,\
-					height=localheight,\
-					color=colors.yellow,\
-					thickness=framethickness)
-		subpanel.addDrawable(temp)
-		#Add weapon name
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+textbuffer),\
-				string=globalvars.player.missile.name, font_size=font_size,\
-				color=colors.blue)
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-		#Add option to unequip weapon
-		subpanel = Panel()
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+font_size+textbuffer),\
-				string='Unequip', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(unequipPlayerMissile)
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-		#Add option to view information on weapon
-		subpanel = Panel()
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+font_size*2+textbuffer),\
-				string='View stats', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(setWeaponViewPanel)
-		subpanel.argument = globalvars.player.missile
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-
-	#Draw the currently equipped mine if any
-	if not globalvars.player.mine is None:
-		x_val = 100
-		y_val = 380
-		subpanel = Panel()
-		#Add frame around weapon
-		temp = drawable.Rectangle(x1=(left+x_val),\
-					y1=(top+y_val),\
-					width=localwidth,\
-					height=localheight,\
-					color=colors.yellow,\
-					thickness=framethickness)
-		subpanel.addDrawable(temp)
-		#Add weapon name
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+textbuffer),\
-				string=globalvars.player.mine.name, font_size=font_size,\
-				color=colors.blue)
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-		#Add option to unequip weapon
-		subpanel = Panel()
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+font_size+textbuffer),\
-				string='Unequip', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(unequipPlayerMine)
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-		#Add option to view information on weapon
-		subpanel = Panel()
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+font_size*2+textbuffer),\
-				string='View stats', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(setWeaponViewPanel)
-		subpanel.argument = globalvars.player.mine
-		subpanel.addDrawable(temp)
-		menu.addPanel(subpanel)
-
-	#Draw all the weapons in the cargo hold along the right side of the screen.
-	i = 0
-	for j in xrange(len(globalvars.player.cargo)):
-		c = globalvars.player.cargo[j]
-		#This is a clunky way to distinguish weapons from non-weapons, but it will work for now.
-		if hasattr(c, 'shooter'):
+	def setShipPanel(self):
+		self.setStandardMenu()
+		temp = drawable.DrawableImage(x1=left+230, y1=300+top, image='shipoutline')
+		self.main_panel.addDrawable(temp)
+		textbuffer = 8
+		localtopbuffer = 50
+		leftoffset = 500
+		localheight = 70
+		localwidth = 200
+		framethickness = 2
+		#Draw the currently equipped weapon if any
+		if not globalvars.player.gun is None:
+			x_val = 200
+			y_val = 80
 			subpanel = Panel()
 			#Add frame around weapon
-			temp = drawable.Rectangle(x1=(left+leftoffset),\
-						y1=(localtopbuffer+top+i*localheight),\
+			temp = drawable.Rectangle(x1=(left+x_val),\
+						y1=(top+y_val),\
 						width=localwidth,\
-						height=localheight, \
+						height=localheight,\
 						color=colors.yellow,\
 						thickness=framethickness)
 			subpanel.addDrawable(temp)
 			#Add weapon name
-			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
-					y1=(localtopbuffer+top+i*localheight+textbuffer),\
-					string=c.name, font_size=font_size, \
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+textbuffer),\
+					string=globalvars.player.gun.name, font_size=font_size,\
 					color=colors.blue)
 			subpanel.addDrawable(temp)
-			menu.addPanel(subpanel)
-			#Add option to equip weapon
+			self.main_panel.addPanel(subpanel)
+			#Add option to unequip weapon
 			subpanel = Panel()
-			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
-					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size),\
-					string='Equip', font_size=font_size, \
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+font_size+textbuffer),\
+					string='Unequip', font_size=font_size,\
 					color=colors.white)
-			subpanel.setMethod(equipPlayerWeapon)
-			subpanel.argument = j
+			subpanel.setMethod(unequipPlayerGun)
 			subpanel.addDrawable(temp)
-			menu.addPanel(subpanel)
+			self.main_panel.addPanel(subpanel)
 			#Add option to view information on weapon
 			subpanel = Panel()
-			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
-					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size*2),\
-					string='View stats', font_size=font_size, \
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+font_size*2+textbuffer),\
+					string='View stats', font_size=font_size,\
 					color=colors.white)
-			subpanel.setMethod(setWeaponViewPanel)
-			subpanel.argument = c
+			subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
+			subpanel.argument = globalvars.player.gun
 			subpanel.addDrawable(temp)
-			menu.addPanel(subpanel)
-			i += 1
+			self.main_panel.addPanel(subpanel)
+		#Draw the currently equipped missile if any
+		if not globalvars.player.missile is None:
+			x_val = 100
+			y_val = 180
+			subpanel = Panel()
+			#Add frame around weapon
+			temp = drawable.Rectangle(x1=(left+x_val),\
+						y1=(top+y_val),\
+						width=localwidth,\
+						height=localheight,\
+						color=colors.yellow,\
+						thickness=framethickness)
+			subpanel.addDrawable(temp)
+			#Add weapon name
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+textbuffer),\
+					string=globalvars.player.missile.name, font_size=font_size,\
+					color=colors.blue)
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+			#Add option to unequip weapon
+			subpanel = Panel()
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+font_size+textbuffer),\
+					string='Unequip', font_size=font_size,\
+					color=colors.white)
+			subpanel.setMethod(unequipPlayerMissile)
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+			#Add option to view information on weapon
+			subpanel = Panel()
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+font_size*2+textbuffer),\
+					string='View stats', font_size=font_size,\
+					color=colors.white)
+			subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
+			subpanel.argument = globalvars.player.missile
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+		#Draw the currently equipped mine if any
+		if not globalvars.player.mine is None:
+			x_val = 100
+			y_val = 380
+			subpanel = Panel()
+			#Add frame around weapon
+			temp = drawable.Rectangle(x1=(left+x_val),\
+						y1=(top+y_val),\
+						width=localwidth,\
+						height=localheight,\
+						color=colors.yellow,\
+						thickness=framethickness)
+			subpanel.addDrawable(temp)
+			#Add weapon name
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+textbuffer),\
+					string=globalvars.player.mine.name, font_size=font_size,\
+					color=colors.blue)
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+			#Add option to unequip weapon
+			subpanel = Panel()
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+font_size+textbuffer),\
+					string='Unequip', font_size=font_size,\
+					color=colors.white)
+			subpanel.setMethod(unequipPlayerMine)
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+			#Add option to view information on weapon
+			subpanel = Panel()
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+font_size*2+textbuffer),\
+					string='View stats', font_size=font_size,\
+					color=colors.white)
+			subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
+			subpanel.argument = globalvars.player.mine
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+		#Draw all the weapons in the cargo hold along the right side of the screen.
+		i = 0
+		for j in xrange(len(globalvars.player.cargo)):
+			c = globalvars.player.cargo[j]
+			#This is a clunky way to distinguish weapons from non-weapons, but it will work for now.
+			if hasattr(c, 'shooter'):
+				subpanel = Panel()
+				#Add frame around weapon
+				temp = drawable.Rectangle(x1=(left+leftoffset),\
+							y1=(localtopbuffer+top+i*localheight),\
+							width=localwidth,\
+							height=localheight, \
+							color=colors.yellow,\
+							thickness=framethickness)
+				subpanel.addDrawable(temp)
+				#Add weapon name
+				temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
+						y1=(localtopbuffer+top+i*localheight+textbuffer),\
+						string=c.name, font_size=font_size, \
+						color=colors.blue)
+				subpanel.addDrawable(temp)
+				self.main_panel.addPanel(subpanel)
+				#Add option to equip weapon
+				subpanel = Panel()
+				temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
+						y1=(localtopbuffer+top+i*localheight+textbuffer+font_size),\
+						string='Equip', font_size=font_size, \
+						color=colors.white)
+				subpanel.setMethod(equipPlayerWeapon)
+				subpanel.argument = j
+				subpanel.addDrawable(temp)
+				self.main_panel.addPanel(subpanel)
+				#Add option to view information on weapon
+				subpanel = Panel()
+				temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
+						y1=(localtopbuffer+top+i*localheight+textbuffer+font_size*2),\
+						string='View stats', font_size=font_size, \
+						color=colors.white)
+				subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
+				subpanel.argument = c
+				subpanel.addDrawable(temp)
+				self.main_panel.addPanel(subpanel)
+				i += 1
 
-	globalvars.panel = menu
 
-
-
-def setWeaponViewPanel(weapon):
-	topbuffer = 100
-	menu = getStandardMenu()
-	#Then draw the contents of the menu
-	font_size = 24
-	text = weapon.toStringArray()
-	for i in range(len(text)):
-		temp = drawable.Text(x1=left+50,\
-			y1=font_size*i+topbuffer+top, string=text[i],\
-			font_size=font_size, color=colors.white)
-		menu.addDrawable(temp)
-	globalvars.panel = menu
+	def setWeaponViewPanel(self, weapon):
+		self.setStandardMenu()
+		#Then draw the contents of the menu
+		text = weapon.toStringArray()
+		for i in range(len(text)):
+			temp = drawable.Text(x1=left+50,\
+				y1=font_size*i+topbuffer+top, string=text[i],\
+				font_size=font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
 

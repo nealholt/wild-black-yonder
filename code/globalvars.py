@@ -12,6 +12,9 @@ CENTERY = HEIGHT / 2
 #Radius of a circle that just barely fits inside the screen:
 SCREENRADIUS = min(WIDTH, HEIGHT)/2
 
+MENU_BORDER_PADDING = 50
+MENU_PADDING = 25
+
 #Used by physicalObject to define what each physicalObject is.
 BULLET = 0
 OTHER = 1
@@ -48,7 +51,7 @@ player_target_lead = (0.0,0.0)
 arena = 0
 
 #Display menus and the like on the panel.
-panel = None
+menu = None
 
 #How many seconds to continue displaying while the player is dead before kicking him back to the restart menu.
 deathcountdown = 3 * FPS

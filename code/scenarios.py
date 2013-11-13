@@ -27,7 +27,7 @@ def wipeOldScenario():
 	globalvars.player.setHealthBar()
 
 	#Immediately clear the panel
-	globalvars.panel = None
+	globalvars.menu.main_panel = None
 
 	#Reset the arena
 	globalvars.arena = 0
@@ -365,7 +365,7 @@ def setDestinationNode(nodeid):
 def restart():
 	'''Give the player a new ship and boot him to the testing scenario. '''
 	globalvars.player = player.Player('ship')
-	globalvars.panel = None
+	globalvars.menu.main_panel = None
 
 	#Order matters. This has to go after making the new player.
 	goToInfiniteSpace(0)

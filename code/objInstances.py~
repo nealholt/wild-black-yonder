@@ -500,7 +500,6 @@ class WarpPortal(physicalObject.PhysicalObject):
 			#Make sure the method is not none.
 			if not self.method is None:
 				#Call scenarios.goToInfiniteSpace
-				print 'TODO TESTING'
 				self.method(self.destinationNode)
 			else:
 				print 'WARNING: WarpPortal method set to None. This may have been done in error.'
