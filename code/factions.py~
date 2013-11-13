@@ -2,6 +2,16 @@ import globalvars
 import colors
 import random as rd
 
+class FactionAction():
+	def __init__(self, action, node, actor):
+		self.action = action #a string
+		self.node = node #a node object
+		self.actor = actor #a faction object
+
+	def toString(self):
+		return self.actor.name+' takes action '+self.action+' on node with id '+str(self.node.id)
+
+
 class Faction():
 	def __init__(self, name, myid, color, flag=None):
 		''' '''
@@ -57,13 +67,87 @@ class FactionManager():
 			#Give this node to the current faction
 			f.captureNode(nodeid)
 
+
 	def getFactionById(self, factionid):
 		for f in self.factions:
 			if f.id == factionid:
 				return f
 		return None
 
-	def update(self):
+
+	def getFactionActions(self):
+		actions = [] #Store all faction actions
+		for f in self.factions:
+			#Get a random number corresponding to an action to perform
+			rand = rd.randint(0, 3)
+			#Get a random owned node
+			randnode = rd.randint(0, len(f.nodes)-1)
+			randnode = globalvars.galaxy.getNode(randnode)
+			if rand == 0: #increase strength at one of the owned nodes
+				actions.append(FactionAction('strength+', randnode, f))
+			elif rand == 1: #increase wealth at one of owned nodes
+				actions.append(FactionAction('wealth+', randnode, f))
+			elif rand == 2: #decrease debris at one of owned nodes
+				actions.append(FactionAction('debris-', randnode, f))
+			elif rand == 3: #pick a neighboring node and attack it
+				#Pick a neighboring node
+				randnode = f.getRandomBorderNode()
+				#If no border node exists then skip and no action is performed.
+				if randnode == -1: continue
+				randnode = globalvars.galaxy.getNode(randnode)
+				#if node is unoccupied then add it to list of owned nodes
+				if randnode.owner == -1 or randnode.strength == 0.0:
+					actions.append(FactionAction('capture', randnode, f))
+				#else do one of the following
+				else:
+					rand = rd.randint(0, 3)
+					#decrease strength of node
+					if rand < 2:
+						actions.append(FactionAction('strength-', randnode, f))
+					#decrease wealth of node
+					elif rand == 2:
+						actions.append(FactionAction('wealth-', randnode, f))
+					#increase debris of node
+					else:
+						actions.append(FactionAction('debris+', randnode, f))
+		#for a in actions: #TESTING
+		#	print a.toString()
+		return actions
+
+
+	def performFactionActions(self, action_list):
+		for a in action_list:
+			if a.action == 'strength+':
+				a.node.strength = min(2.0, a.node.strength+0.2)
+			elif a.action == 'strength-':
+				a.node.strength = max(0.0, a.node.strength-0.2)
+			elif a.action == 'wealth+':
+				a.node.amt_wealth = min(3.0, a.node.amt_wealth+0.4)
+			elif a.action == 'wealth-':
+				a.node.amt_wealth = max(0.0, a.node.amt_wealth-0.4)
+			elif a.action == 'debris+':
+				a.node.amt_debris = min(15.0, a.node.amt_debris+1.0)
+			elif a.action == 'debris-':
+				a.node.amt_debris = max(0.0, a.node.amt_debris-1.0)
+			elif a.action == 'capture':
+				#if node is unoccupied then add it to list of owned nodes
+				if a.node.owner == -1:
+					a.actor.captureNode(a.node.id)
+				#else if strength of node is sufficiently low
+				elif a.node.strength == 0.0:
+					#remove it from current owner
+					owner = self.getFactionById(a.node.owner)
+					owner.nodes.remove(a.node.id)
+					a.node.owner = -1
+					#add it to this owner.
+					a.actor.captureNode(a.node.id)
+			else:
+				print 'Error, unrecognized action in performFactionActions from action "'\
+					+a.toString()+'"'
+				exit()
+
+
+	def update(self, player_dest_nodeid):
 		'''Update each faction. On each update, every faction will do one of the following:
 		  increase strength at one of the owned nodes
 		  increase wealth at one of owned nodes
@@ -76,44 +160,15 @@ class FactionManager():
 		      decrease strength of node
 		      decrease wealth of node
 		      increase debris of node'''
-		for f in self.factions:
-			#Get a random number corresponding to an action to perform
-			rand = rd.randint(0, 3)
-			#Get a random owned node
-			randnode = rd.randint(0, len(f.nodes)-1)
-			randnode = globalvars.galaxy.getNode(randnode)
-			if rand == 0: #increase strength at one of the owned nodes
-				randnode.strength = min(2.0, randnode.strength+0.2)
-			elif rand == 1: #increase wealth at one of owned nodes
-				randnode.wealth = min(3.0, randnode.wealth+0.4)
-			elif rand == 2: #decrease debris at one of owned nodes
-				randnode.amt_debris = max(0.0, randnode.amt_debris-1.0)
-			elif rand == 3: #pick a neighboring node and attack it
-				#Pick a neighboring node
-				randnode = f.getRandomBorderNode()
-				if randnode == -1: continue
-				randnode = globalvars.galaxy.getNode(randnode)
-				#if node is unoccupied then add it to list of owned nodes
-				if randnode.owner == -1:
-					f.captureNode(randnode.id)
-				#else if strength of node is sufficiently low
-				elif randnode.strength == 0.0:
-					#remove it from current owner
-					owner = self.getFactionById(randnode.owner)
-					owner.nodes.remove(randnode.id)
-					randnode.owner = -1
-					#add it to this owner.
-					f.captureNode(randnode.id)
-				#else do one of the following
-				else:
-					rand = rd.randint(0, 3)
-					#decrease strength of node
-					if rand < 2:
-						randnode.strength = max(0.0, randnode.strength-0.2)
-					#decrease wealth of node
-					elif rand == 2:
-						randnode.wealth = max(0.0, randnode.wealth-0.4)
-					#increase debris of node
-					else:
-						randnode.amt_debris = min(15.0, randnode.amt_debris+1.0)
+		actions = self.getFactionActions()
+		#Find and extract an action, if any, that occurs at the player's destination node.
+		to_return = None
+		for a in actions:
+			if a.node.id == player_dest_nodeid
+				to_return = actions.remove(a)
+				break
+		#Perform the actions
+		self.performFactionActions(actions)
+		#Return the action for the player to influence
+		return to_return
 
