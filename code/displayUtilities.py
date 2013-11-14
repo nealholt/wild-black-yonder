@@ -240,12 +240,13 @@ class TimerDisplay(pygame.sprite.Sprite):
 
 
 
-class TimeLimitDisplay(pygame.sprite.Sprite):
+class TimeLimitDisplay(pygame.sprite.Sprite): #TODO flag whether or not to use points? pass in point goal and make ship deaths check for the presence of this and add points? Maybe you do want this to be a globalvar object? Yes, I think so. call it score keeper
 	'''Initially to be used for the gem wild scenario in 
 	which the player has a limited amount of time to 
 	grab as many gems as possible.'''
-        def __init__(self, time_limit=0, fontSize=36):
+        def __init__(self, time_limit=0, fontSize=36, use_points=True):
 		pygame.sprite.Sprite.__init__(self)
+		self.use_points = use_points
 		self.is_a = globalvars.OTHER
 		self.font = pygame.font.Font(None, fontSize)
 		self.points = 0
@@ -262,17 +263,16 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 
 	def draw(self, _):
 		if self.finish_reached: return True
-
 		#Update elapsed time
 		elapsed = time.time() - self.start_time
 		#Write the elapsed time to the top of the screen.
-		string = 'Time: '+formatTime(elapsed)+\
-			' Points:'+str(self.points)
+		string = 'Time: '+formatTime(self.time_limit-elapsed)
+		if self.use_points:
+			string += ' Points:'+str(self.points)
 		text = self.font.render(string, 1, colors.white)
 		self.rect = text.get_rect()
 		self.rect.topleft = (250,10)
 		globalvars.screen.blit(text, self.rect.topleft)
-
 		#Check to see if time has run out.
 		if elapsed >= self.time_limit:
 			#If so, end the scenario.

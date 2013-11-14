@@ -18,17 +18,14 @@ def wipeOldScenario():
 	globalvars.intangibles_bottom.empty()
 	globalvars.intangibles_top.empty()
 	globalvars.whiskerables.empty()
-
 	globalvars.BGCOLOR = colors.black
 	globalvars.BGIMAGE = None
-
+	globalvars.score_keeper = None
 	#Add the player back in.
 	globalvars.tangibles.add(globalvars.player)
 	globalvars.player.setHealthBar()
-
 	#Immediately clear the panel
-	globalvars.panel = None
-
+	globalvars.menu.main_panel = None
 	#Reset the arena
 	globalvars.arena = 0
 
@@ -155,7 +152,8 @@ def gemWild(seed=0):
 
 	time_limit = 30 #time limit in seconds
 	#Display timer and score count with the following:
-	globalvars.intangibles_top.add(displayUtilities.TimeLimitDisplay(time_limit=time_limit))
+	globalvars.score_keeper = displayUtilities.TimeLimitDisplay(time_limit=time_limit)
+	globalvars.intangibles_top.add(score_keeper)
 
 	announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 		text='Collect as many gems as you can in '+str(time_limit)+' seconds.',
@@ -285,10 +283,14 @@ def goToInfiniteSpace(nodeid):
 	'''This is a helper method that enables the menu system to function more easily.
 	nodeid of the infinite space and the seed to use to generate the space.'''
 	#Update all the factions
-	globalvars.factions.update(nodeid)
+	opportunity = globalvars.factions.update(nodeid)
 	#Get the node that has the id that this portal will lead to
 	n = globalvars.galaxy.getNode(nodeid)
 	infiniteSpace(seed=nodeid, playerloc=n.loc, warps=n.connections)
+	#Check for an opportunity. This is when a player is moving to a node that is
+	#the target of an action from a faction.
+	if not opportunity is None:
+		globalvars.menu.setOpportunityPanel(opportunity)
 
 
 #The distances between nodes in the galaxy view is proportional to the distance between warp portals in the regular ship view. The scaling factor is warpPortalScaling.
@@ -365,7 +367,7 @@ def setDestinationNode(nodeid):
 def restart():
 	'''Give the player a new ship and boot him to the testing scenario. '''
 	globalvars.player = player.Player('ship')
-	globalvars.panel = None
+	globalvars.menu.main_panel = None
 
 	#Order matters. This has to go after making the new player.
 	goToInfiniteSpace(0)

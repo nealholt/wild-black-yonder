@@ -124,7 +124,7 @@ class Menu:
 		self.main_panel = None #When this is not none, it should be displayed on the screen.
 
 
-	def setStandardMenu(self):
+	def setStandardMenu(self, tabs=True):
 		'''There was a lot of code duplication so I stuck it in a method all its own.'''
 		self.main_panel = Panel()
 		#First draw a white frame around the menu.
@@ -136,7 +136,15 @@ class Menu:
 			color=colors.reddishgray)
 		self.main_panel.addDrawable(temp)
 		#Add tabs to the menu:
-		self.addAllTabs()
+		if tabs: self.addAllTabs()
+
+
+	def addTextToMainPanel(self, text_array, this_left, this_top):
+		for i in range(len(text_array)):
+			temp = drawable.Text(x1=this_left,\
+				y1=font_size*i+this_top, string=text_array[i],\
+				font_size=font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
 
 
 	def addAllTabs(self):
@@ -262,14 +270,9 @@ class Menu:
 		textbuffer = 9
 		text = [
 		'Money: $'+str(globalvars.player.money),
-		'Fuel: '+str(globalvars.player.fuel)
-		]
+		'Fuel: '+str(globalvars.player.fuel)]
 		#Then draw the contents of the menu
-		for i in range(len(text)):
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*i+100+top, string=text[i],\
-				font_size=font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
+		self.addTextToMainPanel(text, left+50, 100+top)
 
 		framethickness = 2
 		subpanel = Panel()
@@ -386,7 +389,6 @@ class Menu:
 			string=padStringLength('Faction', stringLength, ' ')+'Relationship with player',\
 			font_size=font_size, color=colors.white)
 		self.main_panel.addDrawable(temp)
-
 		for i in range(1, len(globalvars.factions.factions)+1):
 			f = globalvars.factions.factions[i-1]
 			temp = drawable.Text(x1=left+50,\
@@ -407,12 +409,7 @@ class Menu:
 		strings.append(padStringLength('Name:', stringLength, ' ')+f.name)
 		strings.append(padStringLength('Flag:', stringLength, ' ')+str(f.flag))
 		strings.append(padStringLength('Count of owned nodes:', stringLength, ' ')+str(len(f.nodes)))
-		for i in range(len(strings)):
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*i+topbuffer+top, \
-				string=strings[i],\
-				font_size=font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
+		self.addTextToMainPanel(strings, left+50, topbuffer+top)
 
 
 	def setPlayerProfilePanel(self):
@@ -420,14 +417,9 @@ class Menu:
 		text = [
 		'Money: $'+str(globalvars.player.money),
 		'Health: '+str(globalvars.player.health),
-		'Fuel: '+str(globalvars.player.fuel)
-		]
+		'Fuel: '+str(globalvars.player.fuel)]
 		#Then draw the contents of the menu
-		for i in range(len(text)):
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*i+topbuffer+top, string=text[i],\
-				font_size=font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
+		self.addTextToMainPanel(text, left+50, topbuffer+top)
 
 
 	def setNodeViewPanel(self, nodeid):
@@ -442,12 +434,7 @@ class Menu:
 		'Wealth: '+str(node.amt_wealth)+'. Chance of gems, health, and rich asteroids.'
 		]
 		#Then draw the contents of the menu
-		for i in range(len(text)):
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*i+topbuffer+top, string=text[i],\
-				font_size=font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
-
+		self.addTextToMainPanel(text, left+50, topbuffer+top)
 		#Write the owner if any
 		if node.owner != -1:
 			owner = globalvars.factions.getFactionById(node.owner)
@@ -509,11 +496,7 @@ class Menu:
 		'Press "o" to display the galaxy node travel menu.'
 		]
 		#Then draw the contents of the menu
-		for i in range(len(help)):
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*i+50+top, string=help[i],\
-				font_size=font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
+		self.addTextToMainPanel(help, left+50, 50+top)
 
 
 	def setShipPanel(self):
@@ -692,9 +675,15 @@ class Menu:
 		self.setStandardMenu()
 		#Then draw the contents of the menu
 		text = weapon.toStringArray()
-		for i in range(len(text)):
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*i+topbuffer+top, string=text[i],\
-				font_size=font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
+		self.addTextToMainPanel(text, left+50, topbuffer+top)
+
+
+	def setOpportunityPanel(self, opportunity):
+		self.setStandardMenu(tabs=False)
+		text = [
+		'Faction: '+opportunity.actor.name+' is taking action ',
+		'"'+opportunity.action+'"',
+		'on your node.'
+		]
+		self.addTextToMainPanel(text, left+50, topbuffer+top)
 

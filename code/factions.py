@@ -170,5 +170,6 @@ class FactionManager():
 		#Perform the actions
 		self.performFactionActions(actions)
 		#Return the action for the player to influence
+		to_return = FactionAction('strength+', 0, self.factions[0]) #TODO TESTING
 		return to_return
 

@@ -164,7 +164,7 @@ class FactionManager():
 		#Find and extract an action, if any, that occurs at the player's destination node.
 		to_return = None
 		for a in actions:
-			if a.node.id == player_dest_nodeid
+			if a.node.id == player_dest_nodeid:
 				to_return = actions.remove(a)
 				break
 		#Perform the actions

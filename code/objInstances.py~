@@ -6,7 +6,6 @@ from geometry import translate, distance, rotateAngle
 import globalvars
 from displayUtilities import writeTextToScreen, TemporaryText
 from time import sleep
-from menus import setGasStationPanel
 
 class Bullet(physicalObject.PhysicalObject):
 
@@ -517,7 +516,7 @@ class GasStation(physicalObject.PhysicalObject):
 		'''React to a collision with other_sprite.'''
 		#If other sprite is playership and this portal is the destination...
 		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer and self.collisionCountDown==0:
-			setGasStationPanel()
+			globalvars.menu.setGasStationPanel()
 			#Delay next menu setting by 3 seconds.
 			self.collisionCountDown = 3.0 * globalvars.FPS
 		return False

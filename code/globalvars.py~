@@ -12,6 +12,9 @@ CENTERY = HEIGHT / 2
 #Radius of a circle that just barely fits inside the screen:
 SCREENRADIUS = min(WIDTH, HEIGHT)/2
 
+MENU_BORDER_PADDING = 50
+MENU_PADDING = 25
+
 #Used by physicalObject to define what each physicalObject is.
 BULLET = 0
 OTHER = 1

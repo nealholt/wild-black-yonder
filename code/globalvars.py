@@ -59,5 +59,8 @@ deathcountdown = 3 * FPS
 #Local system of nodes
 galaxy = None
 
+#List of all the factions and object to manage them:
 factions = None
 
+#Track score and time limit in minigames
+score_keeper = None

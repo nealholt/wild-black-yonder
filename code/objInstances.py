@@ -421,14 +421,9 @@ class Gem(physicalObject.PhysicalObject):
 		'''React to a collision with other_sprite.'''
 		if other_sprite.is_a == globalvars.SHIP:
 			other_sprite.money += self.points
-			#give money to the ship. This might not be the ideal way to do this.
-			#Look for the object in globalvars.intangibles_top that has attribute 
-			#'points' and add the points to it. This object should 
-			#be a displayUtilities.TimeLimitDisplay
-			for it in globalvars.intangibles_top:
-				if hasattr(it, 'points'):
-					it.points += self.points
-					break
+			#give money to the ship.
+			if not globalvars.score_keeper is None:
+				globalvars.score_keeper.points += self.points
 			announcement = TemporaryText(
 				x=self.rect.left, y=self.rect.top, 
 				text='+'+str(self.points), color=colors.blue,
