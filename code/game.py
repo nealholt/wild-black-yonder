@@ -18,6 +18,7 @@ from displayUtilities import writeTextToScreen
 import datetime #Use for testing efficiency
 import nodeManager
 import factions
+import scenarios
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
@@ -39,6 +40,8 @@ dirty_rects = []
 useDirty = True #Whether to flip or use dirty rectangles
 
 globalvars.menu = menus.Menu()
+
+globalvars.scenario_manager = scenarios.ScenarioManager()
 
 def redrawWholeBackground():
 	if globalvars.BGIMAGE is None:

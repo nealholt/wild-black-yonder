@@ -518,18 +518,14 @@ class Menu:
 		self.main_panel.addPanel(subpanel)
 
 		subpanel = Panel()
+		string = 'Equip'
 		if not equip:
-			#Add option to unequip weapon
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+font_size+textbuffer),\
-					string='Unequip', font_size=font_size,\
-					color=colors.white)
-		else:
-			#Add option to equip weapon
-			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
-					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size),\
-					string='Equip', font_size=font_size, \
-					color=colors.white)
+			string = 'Unequip'
+		#Add option to equip or unequip weapon
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+font_size+textbuffer),\
+				string=string, font_size=font_size,\
+				color=colors.white)
 		subpanel.setMethod(method)
 		if not argument is None:
 			subpanel.argument = argument

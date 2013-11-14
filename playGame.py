@@ -1,7 +1,6 @@
 import sys
 sys.path.append('code')
 import game
-from scenarios import goToInfiniteSpace
 if __name__=="__main__":
 	print 'Using flip instead of dirty rectangles can be set with -flip. For example:\n'+\
 		'   python playGame.py -flip\n'+\
@@ -10,7 +9,7 @@ if __name__=="__main__":
 		game.useDirty = False
 
 	#Send player to node 0 in infinite space
-	goToInfiniteSpace(0)
+	game.globalvars.scenario_manager.goToInfiniteSpace(0)
 
 	game.run()
 
