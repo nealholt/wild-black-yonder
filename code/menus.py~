@@ -270,14 +270,9 @@ class Menu:
 		textbuffer = 9
 		text = [
 		'Money: $'+str(globalvars.player.money),
-		'Fuel: '+str(globalvars.player.fuel)
-		]
+		'Fuel: '+str(globalvars.player.fuel)]
 		#Then draw the contents of the menu
-		for i in range(len(text)):
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*i+100+top, string=text[i],\
-				font_size=font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
+		self.addTextToMainPanel(text, left+50, 100+top)
 
 		framethickness = 2
 		subpanel = Panel()
@@ -394,7 +389,6 @@ class Menu:
 			string=padStringLength('Faction', stringLength, ' ')+'Relationship with player',\
 			font_size=font_size, color=colors.white)
 		self.main_panel.addDrawable(temp)
-
 		for i in range(1, len(globalvars.factions.factions)+1):
 			f = globalvars.factions.factions[i-1]
 			temp = drawable.Text(x1=left+50,\
@@ -505,6 +499,54 @@ class Menu:
 		self.addTextToMainPanel(help, left+50, 50+top)
 
 
+	def addWeaponSubpanel(self, x_val, y_val, localwidth, localheight, framethickness, textbuffer, weapon, method, argument=None, equip=False):
+		subpanel = Panel()
+		#Add frame around weapon
+		temp = drawable.Rectangle(x1=(left+x_val),\
+					y1=(top+y_val),\
+					width=localwidth,\
+					height=localheight,\
+					color=colors.yellow,\
+					thickness=framethickness)
+		subpanel.addDrawable(temp)
+		#Add weapon name
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+textbuffer),\
+				string=weapon.name, font_size=font_size,\
+				color=colors.blue)
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
+
+		subpanel = Panel()
+		if not equip:
+			#Add option to unequip weapon
+			temp = drawable.Text(x1=(left+x_val+textbuffer),\
+					y1=(top+y_val+font_size+textbuffer),\
+					string='Unequip', font_size=font_size,\
+					color=colors.white)
+		else:
+			#Add option to equip weapon
+			temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
+					y1=(localtopbuffer+top+i*localheight+textbuffer+font_size),\
+					string='Equip', font_size=font_size, \
+					color=colors.white)
+		subpanel.setMethod(method)
+		if not argument is None:
+			subpanel.argument = argument
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
+		#Add option to view information on weapon
+		subpanel = Panel()
+		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+				y1=(top+y_val+font_size*2+textbuffer),\
+				string='View stats', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
+		subpanel.argument = weapon
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
+
+
 	def setShipPanel(self):
 		self.setStandardMenu()
 		temp = drawable.DrawableImage(x1=left+230, y1=300+top, image='shipoutline')
@@ -519,161 +561,30 @@ class Menu:
 		if not globalvars.player.gun is None:
 			x_val = 200
 			y_val = 80
-			subpanel = Panel()
-			#Add frame around weapon
-			temp = drawable.Rectangle(x1=(left+x_val),\
-						y1=(top+y_val),\
-						width=localwidth,\
-						height=localheight,\
-						color=colors.yellow,\
-						thickness=framethickness)
-			subpanel.addDrawable(temp)
-			#Add weapon name
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+textbuffer),\
-					string=globalvars.player.gun.name, font_size=font_size,\
-					color=colors.blue)
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
-			#Add option to unequip weapon
-			subpanel = Panel()
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+font_size+textbuffer),\
-					string='Unequip', font_size=font_size,\
-					color=colors.white)
-			subpanel.setMethod(unequipPlayerGun)
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
-			#Add option to view information on weapon
-			subpanel = Panel()
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+font_size*2+textbuffer),\
-					string='View stats', font_size=font_size,\
-					color=colors.white)
-			subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
-			subpanel.argument = globalvars.player.gun
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
+			self.addWeaponSubpanel(x_val, y_val, localwidth, localheight,\
+				framethickness, textbuffer, globalvars.player.gun, unequipPlayerGun)
 		#Draw the currently equipped missile if any
 		if not globalvars.player.missile is None:
 			x_val = 100
 			y_val = 180
-			subpanel = Panel()
-			#Add frame around weapon
-			temp = drawable.Rectangle(x1=(left+x_val),\
-						y1=(top+y_val),\
-						width=localwidth,\
-						height=localheight,\
-						color=colors.yellow,\
-						thickness=framethickness)
-			subpanel.addDrawable(temp)
-			#Add weapon name
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+textbuffer),\
-					string=globalvars.player.missile.name, font_size=font_size,\
-					color=colors.blue)
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
-			#Add option to unequip weapon
-			subpanel = Panel()
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+font_size+textbuffer),\
-					string='Unequip', font_size=font_size,\
-					color=colors.white)
-			subpanel.setMethod(unequipPlayerMissile)
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
-			#Add option to view information on weapon
-			subpanel = Panel()
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+font_size*2+textbuffer),\
-					string='View stats', font_size=font_size,\
-					color=colors.white)
-			subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
-			subpanel.argument = globalvars.player.missile
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
+			self.addWeaponSubpanel(x_val, y_val, localwidth, localheight,\
+				framethickness, textbuffer, globalvars.player.missile, unequipPlayerMissile)
 		#Draw the currently equipped mine if any
 		if not globalvars.player.mine is None:
 			x_val = 100
 			y_val = 380
-			subpanel = Panel()
-			#Add frame around weapon
-			temp = drawable.Rectangle(x1=(left+x_val),\
-						y1=(top+y_val),\
-						width=localwidth,\
-						height=localheight,\
-						color=colors.yellow,\
-						thickness=framethickness)
-			subpanel.addDrawable(temp)
-			#Add weapon name
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+textbuffer),\
-					string=globalvars.player.mine.name, font_size=font_size,\
-					color=colors.blue)
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
-			#Add option to unequip weapon
-			subpanel = Panel()
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+font_size+textbuffer),\
-					string='Unequip', font_size=font_size,\
-					color=colors.white)
-			subpanel.setMethod(unequipPlayerMine)
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
-			#Add option to view information on weapon
-			subpanel = Panel()
-			temp = drawable.Text(x1=(left+x_val+textbuffer),\
-					y1=(top+y_val+font_size*2+textbuffer),\
-					string='View stats', font_size=font_size,\
-					color=colors.white)
-			subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
-			subpanel.argument = globalvars.player.mine
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
+			self.addWeaponSubpanel(x_val, y_val, localwidth, localheight,\
+				framethickness, textbuffer, globalvars.player.mine, unequipPlayerMine)
 		#Draw all the weapons in the cargo hold along the right side of the screen.
 		i = 0
 		for j in xrange(len(globalvars.player.cargo)):
 			c = globalvars.player.cargo[j]
 			#This is a clunky way to distinguish weapons from non-weapons, but it will work for now.
 			if hasattr(c, 'shooter'):
-				subpanel = Panel()
-				#Add frame around weapon
-				temp = drawable.Rectangle(x1=(left+leftoffset),\
-							y1=(localtopbuffer+top+i*localheight),\
-							width=localwidth,\
-							height=localheight, \
-							color=colors.yellow,\
-							thickness=framethickness)
-				subpanel.addDrawable(temp)
-				#Add weapon name
-				temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
-						y1=(localtopbuffer+top+i*localheight+textbuffer),\
-						string=c.name, font_size=font_size, \
-						color=colors.blue)
-				subpanel.addDrawable(temp)
-				self.main_panel.addPanel(subpanel)
-				#Add option to equip weapon
-				subpanel = Panel()
-				temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
-						y1=(localtopbuffer+top+i*localheight+textbuffer+font_size),\
-						string='Equip', font_size=font_size, \
-						color=colors.white)
-				subpanel.setMethod(equipPlayerWeapon)
-				subpanel.argument = j
-				subpanel.addDrawable(temp)
-				self.main_panel.addPanel(subpanel)
-				#Add option to view information on weapon
-				subpanel = Panel()
-				temp = drawable.Text(x1=(left+leftoffset+textbuffer),\
-						y1=(localtopbuffer+top+i*localheight+textbuffer+font_size*2),\
-						string='View stats', font_size=font_size, \
-						color=colors.white)
-				subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
-				subpanel.argument = c
-				subpanel.addDrawable(temp)
-				self.main_panel.addPanel(subpanel)
+				self.addWeaponSubpanel(leftoffset, localtopbuffer+i*localheight,\
+					localwidth, localheight,\
+					framethickness, textbuffer, c, equipPlayerWeapon,\
+					argument=j, equip=True)
 				i += 1
 
 
