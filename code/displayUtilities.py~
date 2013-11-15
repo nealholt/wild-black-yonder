@@ -243,17 +243,21 @@ class TimerDisplay(pygame.sprite.Sprite):
 class TimeLimitDisplay(pygame.sprite.Sprite): #TODO flag whether or not to use points? pass in point goal and make ship deaths check for the presence of this and add points? Maybe you do want this to be a globalvar object? Yes, I think so. call it score keeper
 	'''Initially to be used for the gem wild scenario in 
 	which the player has a limited amount of time to 
-	grab as many gems as possible.'''
-        def __init__(self, time_limit=0, fontSize=36, use_points=True):
+	grab as many gems as possible.
+	Text is the message to display to the user when the minigame completes.
+	points_to_win is the number of points at which the scenario is considered won.
+	If time runs out before the amount of points is acquired then the player loses.'''
+        def __init__(self, time_limit=0, text, points_to_win=1, fontSize=36, display_points=True):
 		pygame.sprite.Sprite.__init__(self)
-		self.use_points = use_points
+		self.text = text
+		self.points_to_win = points_to_win
+		self.display_points = display_points
 		self.is_a = globalvars.OTHER
 		self.font = pygame.font.Font(None, fontSize)
 		self.points = 0
 		self.time_limit = time_limit #in seconds
 		#Track time in seconds
 		self.start_time = time.time()
-		self.finish_reached = False
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
 		self.useOffset = False
@@ -262,32 +266,26 @@ class TimeLimitDisplay(pygame.sprite.Sprite): #TODO flag whether or not to use p
 		self.draw((0,0))
 
 	def draw(self, _):
-		if self.finish_reached: return True
 		#Update elapsed time
 		elapsed = time.time() - self.start_time
 		#Write the elapsed time to the top of the screen.
 		string = 'Time: '+formatTime(self.time_limit-elapsed)
-		if self.use_points:
+		if self.display_points:
 			string += ' Points:'+str(self.points)
 		text = self.font.render(string, 1, colors.white)
 		self.rect = text.get_rect()
 		self.rect.topleft = (250,10)
 		globalvars.screen.blit(text, self.rect.topleft)
+		#Check to see if the player won the minigame
+		if self.points >= self.points_to_win:
+			self.text.append('You Won!')
+			if self.display_points:
+				self.text.append('You acquired '+str(self.points)+' points.')
+			globalvars.menu.setEndMinigamePanel(self.text)
 		#Check to see if time has run out.
 		if elapsed >= self.time_limit:
-			#If so, end the scenario.
-			self.finish_reached = True
-			text = ['GEM WILD COMPLETED',
-				'You earned '+str(self.points)+' points.']
-			globalvars.menu.setEndMinigamePanel(text)
-
-			#writeTextToScreen(string='GEM WILD COMPLETED',\
-			#	fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
-			#pygame.display.flip()
-			#time.sleep(2) #Sleep for 2 seconds.
-			#Wipe out all the gems:
-			#for t in globalvars.tangibles:
-			#	if t.is_a == globalvars.GEM: t.kill()
+			self.text.append('You lost.')
+			globalvars.menu.setEndMinigamePanel(self.text)
 
 	def isOnScreen(self, _): return True
 

@@ -504,6 +504,8 @@ class Menu:
 		#Next set the menu displaying the results of the minigame.
 		self.setStandardMenu()
 		self.addTextToMainPanel(text, left+50, topbuffer+top)
+		pygame.display.flip()
+		sleep(5)
 
 
 	def addWeaponSubpanel(self, x_val, y_val, localwidth, localheight, framethickness, textbuffer, weapon, method, argument=None, equip=False):
