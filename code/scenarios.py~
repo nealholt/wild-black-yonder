@@ -14,8 +14,7 @@ import hudHelpers
 
 
 
-#TODO LEFT OFF HERE - TODO TESTING - Can I simplify code or reduce the number of global variables by storing state in the scenaio manager object?
-#complete list of files that import from scenarios: just menus, but soon to be object instances too
+#TODO - Can I simplify code or reduce the number of global variables by storing state in the scenaio manager object?
 class ScenarioManager:
 	"""I created this to reduce the number of files importing scenarios.py which was getting cumbersome and limiting usability because I had to avoid mutual imports. An object referenced by a global variable seems like a much better option even if it doesn't have much state. """
 	def __init__(self):

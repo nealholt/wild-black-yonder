@@ -228,11 +228,13 @@ class ScenarioManager:
 		pygame.display.flip()
 
 
-	def goToInfiniteSpace(self, nodeid):
+	def goToInfiniteSpace(self, nodeid, update=True):
 		'''This is a helper method that enables the menu system to function more easily.
 		nodeid of the infinite space and the seed to use to generate the space.'''
-		#Update all the factions
-		opportunity = globalvars.factions.update(nodeid)
+		opportunity = None
+		if update:
+			#Update all the factions
+			opportunity = globalvars.factions.update(nodeid)
 		#Get the node that has the id that this portal will lead to
 		n = globalvars.galaxy.getNode(nodeid)
 		self.infiniteSpace(seed=nodeid, playerloc=n.loc, warps=n.connections)

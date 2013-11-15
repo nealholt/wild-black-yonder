@@ -498,6 +498,14 @@ class Menu:
 		self.addTextToMainPanel(help, left+50, 50+top)
 
 
+	def setEndMinigamePanel(self, text): #TODO LEFT OFF HERE
+		#First kick player back to infinite space but don't update all the nodes:
+		globalvars.scenario_manager.goToInfiniteSpace(globalvars.player.nodeid, update=False)
+		#Next set the menu displaying the results of the minigame.
+		self.setStandardMenu()
+		self.addTextToMainPanel(text, left+50, topbuffer+top)
+
+
 	def addWeaponSubpanel(self, x_val, y_val, localwidth, localheight, framethickness, textbuffer, weapon, method, argument=None, equip=False):
 		subpanel = Panel()
 		#Add frame around weapon

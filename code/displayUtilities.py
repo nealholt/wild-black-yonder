@@ -277,13 +277,9 @@ class TimeLimitDisplay(pygame.sprite.Sprite): #TODO flag whether or not to use p
 		if elapsed >= self.time_limit:
 			#If so, end the scenario.
 			self.finish_reached = True
-			writeTextToScreen(string='GEM WILD COMPLETED',\
-				fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
-			pygame.display.flip()
-			time.sleep(2) #Sleep for 2 seconds.
-			#Wipe out all the gems:
-			for t in globalvars.tangibles:
-				if t.is_a == globalvars.GEM: t.kill()
+			text = ['GEM WILD COMPLETED',
+				'You earned '+str(self.points)+' points.']
+			globalvars.menu.setEndMinigamePanel(text)
 
 	def isOnScreen(self, _): return True
 

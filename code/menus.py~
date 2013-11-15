@@ -1,7 +1,6 @@
 import drawable
 import pygame
 import colors
-import scenarios
 import globalvars
 from geometry import angleFromPosition, translate, distance
 
@@ -244,7 +243,7 @@ class Menu:
 		x1, y1 = horiz_space, globalvars.HEIGHT/2
 		radius = 10
 		texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Capital ship']
-		methods = [scenarios.asteroids, scenarios.gemWild, scenarios.race, scenarios.furball, scenarios.capitalShipScenario]
+		methods = [globalvars.scenario_manager.asteroids, globalvars.scenario_manager.gemWild, globalvars.scenario_manager.race, globalvars.scenario_manager.furball, globalvars.scenario_manager.capitalShipScenario]
 		x2 = horiz_space*2
 		methodLength = len(methods)
 		for i in range(methodLength):
@@ -307,7 +306,7 @@ class Menu:
 			subpanel.argument = n.id
 			#If travel is set and the node is already connected to the player's node
 			if travel and n.alreadyConnected(globalvars.player.nodeid):
-				subpanel.setMethod(scenarios.setDestinationNode)
+				subpanel.setMethod(globalvars.scenario_manager.setDestinationNode)
 			else:
 				#Otherwise view options for information only
 				subpanel.setMethod(globalvars.menu.setNodeViewPanel)
@@ -335,7 +334,7 @@ class Menu:
 		#the player's scenario. This is really only for testing since the player
 		#can get away using the testing menu by pressing the m key.
 		if travel:
-			subpanel.setMethod(scenarios.goToInfiniteSpace)
+			subpanel.setMethod(globalvars.scenario_manager.goToInfiniteSpace)
 		else:
 			subpanel.setMethod(globalvars.menu.setNodeViewPanel)
 
@@ -360,7 +359,7 @@ class Menu:
 				subpanel.argument = n.id
 				#If travel is set and the node is already connected to the player's node
 				if travel and n.alreadyConnected(globalvars.player.nodeid):
-					subpanel.setMethod(scenarios.setDestinationNode)
+					subpanel.setMethod(globalvars.scenario_manager.setDestinationNode)
 				else:
 					#Otherwise view options for information only
 					subpanel.setMethod(globalvars.menu.setNodeViewPanel)
@@ -458,7 +457,7 @@ class Menu:
 		self.main_panel.addDrawable(temp)
 		#Display button allowing player to restart.
 		subpanel = Panel()
-		subpanel.setMethod(scenarios.restart)
+		subpanel.setMethod(globalvars.scenario_manager.restart)
 		temp = drawable.Rectangle(x1=globalvars.WIDTH/2-75, y1=300, width=200, height=50, \
 			color=colors.blue)
 		subpanel.addDrawable(temp)
