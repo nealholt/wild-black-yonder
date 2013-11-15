@@ -385,11 +385,9 @@ class Asteroid(physicalObject.PhysicalObject):
 				splitRock(self.image_name,\
 					centerx=self.rect.centerx,\
 					centery=self.rect.centery)
-		#The following was added to automatically nudge apart any colliding asteroids, but populate space has been debugged so I feel that this is no longer needed at this time.
-		#elif other_sprite.is_a == globalvars.ASTEROID and self.speed == 0:
-		#	magnitude = max(self.radius, other_sprite.radius)
-		#	angle = self.getAngleToTarget(target=other_sprite)
-		#	other_sprite.translate(angle, magnitude)
+				#Award points
+				if not globalvars.score_keeper is None:
+					globalvars.score_keeper.points += 1
 		return died
 
 
@@ -584,8 +582,6 @@ class FinishBullsEye(physicalObject.PhysicalObject):
 		if self.dtt < 40:
 			#If so, end the race.
 			self.finish_reached = True
-			writeTextToScreen(string='TIME TRIAL COMPLETED',\
-				fontSize=64,pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
-			pygame.display.flip()
-			sleep(2) #Sleep for 2 seconds.
+			if not globalvars.score_keeper is None:
+				globalvars.score_keeper.points += 1000000
 

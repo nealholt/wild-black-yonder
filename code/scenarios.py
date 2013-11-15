@@ -25,11 +25,7 @@ class ScenarioManager:
 	def asteroids(self, seed=0):
 		''' '''
 		rd.seed(seed) #Fix the seed for the random number generator.
-
 		wipeOldScenario(); resetDustOnTop()
-		#Display player location and speed info with the following:
-		globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
-
 		rocks = ['bigrock','medrock','smallrock','gold','silver']
 		#Reset the player's location to 0,0 and his speed to zero
 		globalvars.player.loc = (0.0, 0.0)
@@ -61,7 +57,7 @@ class ScenarioManager:
 		text = ['ASTEROIDS COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=150, time_limit=time_limit)
+			points_to_win=10, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
@@ -168,7 +164,7 @@ class ScenarioManager:
 		text = ['RACE COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=150, time_limit=time_limit)
+			points_to_win=1000000, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
@@ -191,32 +187,26 @@ class ScenarioManager:
 
 	def furball(self, seed=0):
 		rd.seed(seed) #Fix the seed for the random number generator.
-
 		wipeOldScenario(); resetDust()
-		#Display player location and speed info with the following:
-		globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
-
 		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
-
 		#Make a few enemies near the player
 		mindist = 200
 		maxdist = 800
+		#Make 3 enemy units:
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
 		makeNewEnemy(x=x, y=y)
-
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
 		makeNewEnemy(x=x, y=y)
-
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
 		makeNewEnemy(x=x, y=y, weaponType='missile_mk1') #The third enemy gets a missile.
-
+		#Make the score keeper:
 		time_limit = 30 #time limit in seconds
 		text = ['FURBALL COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=150, time_limit=time_limit)
+			points_to_win=3, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
-
+		#Announce the start of the furball.
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 			text='Fight off 3 enemy ships!',
 			timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
@@ -229,30 +219,24 @@ class ScenarioManager:
 
 	def capitalShipScenario(self, seed=0):
 		rd.seed(seed) #Fix the seed for the random number generator.
-
 		wipeOldScenario(); resetDust()
-		#Display player location and speed info with the following:
-		globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
-
 		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
-
 		#Make the capital ship
 		enemy_ship = capitalShip.CapitalShip(centerx=0, centery=400, image_name='bigShip')
 		globalvars.tangibles.add(enemy_ship)
 		globalvars.whiskerables.add(enemy_ship)
-
+		#Create the score keeper.
 		time_limit = 30 #time limit in seconds
 		text = ['CAPITAL SHIP BATTLE COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=150, time_limit=time_limit)
+			points_to_win=100, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
-
+		#Announce the goal of this minigame.
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
 			text='Blow up the capital ship!',
 			timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
 		globalvars.intangibles_top.add(announcement)
-
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 		pygame.display.flip()
@@ -276,7 +260,6 @@ class ScenarioManager:
 
 	def infiniteSpace(self, seed=0, playerloc=(0.0,0.0), warps=None):
 		rd.seed(seed) #Fix the seed for the random number generator.
-
 		wipeOldScenario(); resetDust()	
 		#Reset the player's location to 0,0 and his speed to zero
 		globalvars.player.loc = playerloc
@@ -284,7 +267,6 @@ class ScenarioManager:
 		globalvars.player.targetSpeed = 0.0
 		globalvars.player.nodeid = seed #Player's new node id is set to be the seed argument.
 		globalvars.player.destinationNode = seed
-
 		#Place warp portals
 		allWarps = []
 		if not warps is None:

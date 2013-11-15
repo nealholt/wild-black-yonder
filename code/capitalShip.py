@@ -114,5 +114,8 @@ class CapitalShip(physicalObject.PhysicalObject):
 			#kill removes the calling sprite from all sprite groups
 			self.kill()
 			died = True
+			#Award points
+			if not globalvars.score_keeper is None:
+				globalvars.score_keeper.points += 100
 		return died
 

@@ -151,6 +151,8 @@ class Ship(physicalObject.PhysicalObject):
 	def cooldown(self):
 		'''Cool all our weapons'''
 		if not self.gun is None: self.gun.cool()
+		if not self.missile is None: self.missile.cool()
+		if not self.mine is None: self.mine.cool()
 
 
 	def clearLineOfSight(self):

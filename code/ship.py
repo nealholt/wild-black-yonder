@@ -278,5 +278,8 @@ class Ship(physicalObject.PhysicalObject):
 			self.kill()
 			self.myHealthBar.kill()
 			died = True
+			#Award points
+			if not globalvars.score_keeper is None:
+				globalvars.score_keeper.points += 1
 		return died
 
