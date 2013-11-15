@@ -504,8 +504,11 @@ class Menu:
 		#Next set the menu displaying the results of the minigame.
 		self.setStandardMenu()
 		self.addTextToMainPanel(text, left+50, topbuffer+top)
+		#Draw the panel and sleep a brief time so that the user does not accidentally
+		#close the menu while furiously clicking. This happened to me a few times.
+		self.main_panel.draw()
 		pygame.display.flip()
-		sleep(5)
+		pygame.time.wait(1000) #Wait this many milliseconds
 
 
 	def addWeaponSubpanel(self, x_val, y_val, localwidth, localheight, framethickness, textbuffer, weapon, method, argument=None, equip=False):
