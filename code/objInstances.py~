@@ -105,6 +105,7 @@ class Missile(physicalObject.PhysicalObject):
 		else:
 			self.target = globalvars.player
 
+
 	def update(self):
 		#TODO seek target like an npc ship does
 		'''The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''

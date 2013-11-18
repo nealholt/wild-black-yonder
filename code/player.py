@@ -1,13 +1,10 @@
-import ship
-import profiles
-from geometry import translate
-import weapon
-import globalvars
+from ship import *
 from displayUtilities import TemporaryText
-class Player(ship.Ship):
+
+class Player(Ship):
 	def __init__(self, image_name):
 
-		ship.Ship.__init__(self,image_name=image_name)
+		Ship.__init__(self,image_name=image_name)
 
 		profiles.shipProfile(self, profile='mk3')
 		self.setProfile()
@@ -61,7 +58,7 @@ class Player(ship.Ship):
 		'''Return the point in space that enemies should shoot 
 		at to hit the player when the player is moving.'''
 		#return self.rect.center
-		return translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
+		return geometry.translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
 		#Why when self.rect.center is used does this still not work for the capital ship? Specifically there is a problem when I perch over the upper left corner of the capital ship. It creates a kind-of cool blind spot though. Maybe this is not a problem.
 
 

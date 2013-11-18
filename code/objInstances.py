@@ -1,20 +1,13 @@
-import physicalObject
+from physicalObject import *
 import random as rd
-import pygame
-import colors
-from geometry import translate, rotateAngle
-import globalvars
 from displayUtilities import writeTextToScreen, TemporaryText
 from time import sleep
-import sys
-sys.path.append('code/cython')
-import cygeometry
 
-class Bullet(physicalObject.PhysicalObject):
+class Bullet(PhysicalObject):
 
 	def __init__(self, direction, x, y, dontClipMe, width=5, height=5):
 
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
+		PhysicalObject.__init__(self, centerx=x, centery=y,\
 			width=width, height=height)
 
 		self.theta = direction
@@ -60,13 +53,13 @@ class Bullet(physicalObject.PhysicalObject):
 		return died
 
 
-class Missile(physicalObject.PhysicalObject):
+class Missile(PhysicalObject):
 	'''missile - new object that seeks nearest enemy target, damage and explosion on impact. 
 	initial direction is same as firer. initial speed is firer plus some amount. 
 	will not impact firer.'''
 	def __init__(self, shooter):
 
-		physicalObject.PhysicalObject.__init__(self, \
+		PhysicalObject.__init__(self, \
 			centerx=shooter.rect.centerx, \
 			centery=shooter.rect.centery,\
 			width=10, height=10)
@@ -144,12 +137,12 @@ class Missile(physicalObject.PhysicalObject):
 
 
 
-class Mine(physicalObject.PhysicalObject):
+class Mine(PhysicalObject):
 	'''mine - new object does not move. collides with nothing until short timer elapses. 
 	on contact explodes and causes damage. enemy will avoid it.'''
 	def __init__(self, shooter):
 
-		physicalObject.PhysicalObject.__init__(self, \
+		PhysicalObject.__init__(self, \
 			centerx=shooter.rect.centerx, \
 			centery=shooter.rect.centery,\
 			width=10, height=10,\
@@ -190,12 +183,12 @@ class Mine(physicalObject.PhysicalObject):
 		return died
 
 
-class Explosion(physicalObject.PhysicalObject):
+class Explosion(PhysicalObject):
 	'''Just flash some red and orange circles on the screen and throw out some debris.
 	xMinAdj, xMaxAdj, yMinAdj, and yMaxAdj are used to spread explosions around the screen.
 	Time to live is in seconds.'''
 	def __init__(self, x=0, y=0, xMinAdj=0, xMaxAdj=0, yMinAdj=0, yMaxAdj=0, ttl=0.5):
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
+		PhysicalObject.__init__(self, centerx=x, centery=y)
 
 		self.xMinAdj=xMinAdj
 		self.xMaxAdj=xMaxAdj
@@ -223,7 +216,7 @@ class Explosion(physicalObject.PhysicalObject):
 	def isOnScreen(self, _): return False
 
 
-class Flash(physicalObject.PhysicalObject):
+class Flash(PhysicalObject):
 	'''There are lots of default values for a basic flash. It can be fun to modify these.
 	Time to live is in seconds.'''
 	def __init__(self, x=0, y=0, flashCenterRadius = 20, flashRadiusMin = 20, flashRadiusMax = 50, flashMinTimeToLive = 0.3, flashMaxTimeToLive =0.8):
@@ -232,7 +225,7 @@ class Flash(physicalObject.PhysicalObject):
 		x += rd.randint(-flashCenterRadius,flashCenterRadius)
 		self.radius = rd.randint(flashRadiusMin, flashRadiusMax)
 
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, 
+		PhysicalObject.__init__(self, centerx=x, centery=y, 
 			width=self.radius*2, height=self.radius*2)
 
 		self.timeToLive = int((flashMinTimeToLive + 
@@ -253,11 +246,11 @@ class Flash(physicalObject.PhysicalObject):
 		pygame.draw.circle(globalvars.screen, self.color, pos, self.radius, 0)
 
 
-class Debris(physicalObject.PhysicalObject):
+class Debris(PhysicalObject):
 	'''TTL is in seconds.
 	Speeds are in pixels per second.'''
 	def __init__(self, x=0, y=0, minTTL=0.5, maxTTL=1.5, minSpeed=300, maxSpeed=500, minTheta=-179, maxTheta=180):
-		physicalObject.PhysicalObject.__init__(self, \
+		PhysicalObject.__init__(self, \
 			centerx=x, centery=y, width=4, height=4)
 		self.timeToLive = int((minTTL + rd.random()*(maxTTL-minTTL))*globalvars.FPS)
 		self.theta = rd.randint(minTheta, maxTheta)
@@ -271,10 +264,10 @@ class Debris(physicalObject.PhysicalObject):
 		self.move()
 
 
-class Dust(physicalObject.PhysicalObject):
+class Dust(PhysicalObject):
 	'''Useful for giving player a sense of motion.'''
 	def __init__(self, x=0, y=0, width=2, height=2, image_name=None, color=colors.white):
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
+		PhysicalObject.__init__(self, centerx=x, centery=y,\
 						width=width, height=height, \
 						image_name=image_name, color=color)
 		self.is_a = globalvars.DUST
@@ -289,24 +282,24 @@ class Dust(physicalObject.PhysicalObject):
 		if dist > globalvars.WIDTH:
 			magnitude = rd.randint(globalvars.CENTERX, globalvars.WIDTH)
 			rotation = rd.randint(-70, 70)
-			self.rect.center = translate(globalvars.player.rect.center,\
-				rotateAngle(globalvars.player.theta, rotation),\
+			self.rect.center = geometry.translate(globalvars.player.rect.center,\
+				geometry.rotateAngle(globalvars.player.theta, rotation),\
 				magnitude)
 
 
-class FixedBody(physicalObject.PhysicalObject):
+class FixedBody(PhysicalObject):
 	'''A motionless body created for testing purposes.'''
 	def __init__(self, x=0, y=0, width=40, height=40, image_name=None, color=colors.white):
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
+		PhysicalObject.__init__(self, centerx=x, centery=y,\
 						width=width, height=height, \
 						image_name=image_name, color=color)
 		self.is_a = globalvars.FIXEDBODY
 
 
-class FixedCircle(physicalObject.PhysicalObject):
+class FixedCircle(PhysicalObject):
 	'''A motionless colored circle currently used to show the edges of the arena.'''
 	def __init__(self, x=0, y=0, radius=10, color=colors.white):
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y)
+		PhysicalObject.__init__(self, centerx=x, centery=y)
 		self.color = color
 		self.radius = radius
 		#Override the parent class with the following so that we make sure the 
@@ -349,13 +342,13 @@ def splitRock(image_name, centerx=0, centery=0):
 			globalvars.whiskerables.add(temp)
 
 
-class Asteroid(physicalObject.PhysicalObject):
+class Asteroid(PhysicalObject):
 	'''An object that moves in only one direction, independent of rotation.
 	It takes damage from bullets, collides with ships, but does not 
 	collide with anything else.
 	Speed is in pixels per second.'''
 	def __init__(self, x=0, y=0, image_name='', speed_min=50, speed_max=220):
-		physicalObject.PhysicalObject.__init__(self, \
+		PhysicalObject.__init__(self, \
 			centerx=x, centery=y, image_name=image_name)
 		self.is_a = globalvars.ASTEROID
 		self.health_amt = 100
@@ -372,7 +365,7 @@ class Asteroid(physicalObject.PhysicalObject):
 		#Rotate
 		#if self.dtheta != 0: self.turn(self.dtheta) #TODO temporarily remove rotation because it gums up the hit box and causes us to drop frames when there are a lot of objects.
 		#Move in a direction independent of rotation
-		self.loc = translate(self.loc, self.direction, self.speed)
+		self.loc = geometry.translate(self.loc, self.direction, self.speed)
 		self.rect.centerx = self.loc[0]
 		self.rect.centery = self.loc[1]
 
@@ -396,10 +389,10 @@ class Asteroid(physicalObject.PhysicalObject):
 		return died
 
 
-class Gem(physicalObject.PhysicalObject):
+class Gem(PhysicalObject):
 	'''A valuable gem.'''
 	def __init__(self, x=0, y=0, speed_min=50, speed_max=250):
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,
+		PhysicalObject.__init__(self, centerx=x, centery=y,
 						image_name='gem')
 		self.is_a = globalvars.GEM
 		#Choose a random rotation
@@ -416,7 +409,7 @@ class Gem(physicalObject.PhysicalObject):
 		#Rotate
 		self.turn(self.dtheta)
 		#Move in a direction independent of rotation
-		self.loc = translate(self.loc, \
+		self.loc = geometry.translate(self.loc, \
 			self.direction, self.speed)
 		self.rect.center = self.loc[0], self.loc[1]
 
@@ -436,10 +429,10 @@ class Gem(physicalObject.PhysicalObject):
 		return False
 
 
-class HealthKit(physicalObject.PhysicalObject):
+class HealthKit(PhysicalObject):
 	'''A motionless body created for testing purposes.'''
 	def __init__(self, x=0, y=0):
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,
+		PhysicalObject.__init__(self, centerx=x, centery=y,
 						image_name='health')
 		self.is_a = globalvars.HEALTH
 		self.health_amt = 10
@@ -457,9 +450,9 @@ class HealthKit(physicalObject.PhysicalObject):
 		return False
 
 
-class HealthBar(physicalObject.PhysicalObject):
+class HealthBar(PhysicalObject):
 	def __init__(self, width=40, height=40):
-		physicalObject.PhysicalObject.__init__(self, width=width, height=height)
+		PhysicalObject.__init__(self, width=width, height=height)
 		self.is_a = globalvars.OTHER
 		#To prevent smearing, we need to keep a separate width variable.
 		self.new_width = self.rect.width
@@ -478,9 +471,9 @@ class HealthBar(physicalObject.PhysicalObject):
 
 
 
-class WarpPortal(physicalObject.PhysicalObject):
+class WarpPortal(PhysicalObject):
 	def __init__(self, x=0.0, y=0.0, destinationNode=0, method=None):
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, image_name='warp')
+		PhysicalObject.__init__(self, centerx=x, centery=y, image_name='warp')
 		self.destinationNode = destinationNode
 		self.is_a = globalvars.OTHER
 		#self.method will almost invariably be set to a call to scenarios.goToInfiniteSpace
@@ -503,9 +496,9 @@ class WarpPortal(physicalObject.PhysicalObject):
 		return False
 
 
-class GasStation(physicalObject.PhysicalObject):
+class GasStation(PhysicalObject):
 	def __init__(self, x=0.0, y=0.0):
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y, image_name='gas')
+		PhysicalObject.__init__(self, centerx=x, centery=y, image_name='gas')
 		self.is_a = globalvars.OTHER
 		#After player collides once, set a countdown before collision triggers another panel.
 		self.collisionCountDown = 0
@@ -523,12 +516,12 @@ class GasStation(physicalObject.PhysicalObject):
 		if self.collisionCountDown > 0: self.collisionCountDown -= 1
 
 
-class Follower(physicalObject.PhysicalObject):
+class Follower(PhysicalObject):
 	def __init__(self, x=0, y=0):
 		'''This is the object that invisibly follows the player and the 
 		screen centers on it.
 		This mechanism was intended to give a sense of speed and direction.'''
-		physicalObject.PhysicalObject.__init__(self, centerx=x, centery=y,\
+		PhysicalObject.__init__(self, centerx=x, centery=y,\
 			width=10,height=10)
 
 		self.setColor((155,155,0))
@@ -550,10 +543,10 @@ class Follower(physicalObject.PhysicalObject):
 		self.move()
 
 
-class FinishBullsEye(physicalObject.PhysicalObject):
+class FinishBullsEye(PhysicalObject):
 	'''Paints a bullseye at the finish line.'''
         def __init__(self, target):
-		physicalObject.PhysicalObject.__init__(self, \
+		PhysicalObject.__init__(self, \
 			centerx=target[0], \
 			centery=target[1],\
 			width=100, height=100)
