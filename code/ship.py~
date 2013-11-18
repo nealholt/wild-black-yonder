@@ -1,18 +1,20 @@
-import pygame
-import physicalObject
+from physicalObject import *
 import profiles
 import colors
 import objInstances
-from geometry import distance, lineIntersectsCircle, angleToSlope, inSights
+from geometry import lineIntersectsCircle, angleToSlope, inSights
 import globalvars
 import weapon
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 healthBarDefaultWidth = 20
 
-class Ship(physicalObject.PhysicalObject):
+class Ship(PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
 
-		physicalObject.PhysicalObject.__init__(self, centerx=centerx,\
+		PhysicalObject.__init__(self, centerx=centerx,\
 			centery=centery, image_name=image_name)
 
 		self.engine=None
@@ -160,11 +162,11 @@ class Ship(physicalObject.PhysicalObject):
 		Post: Returns true if there are no whiskerables in the line of sight of this ship.
 		Useful for avoiding friendly fire.'''
 		#Get distance to target
-		dtt = distance(self.rect.center, self.destination)
+		dtt = cygeometry.distance(self.rect.center, self.destination)
 		#For each potential obstacle...
 		for w in globalvars.whiskerables:
 			#Get distance to the obstacle
-			dist = distance(self.rect.center, w.rect.center)
+			dist = cygeometry.distance(self.rect.center, w.rect.center)
 			#   If the distance to the obstacle is less than the distance 
 			#to the target then the obstacle might be obstructing our 
 			#sight of the target.
@@ -205,7 +207,7 @@ class Ship(physicalObject.PhysicalObject):
 		#Turn towards target
 		self.turnTowards()
 
-		d = distance(self.rect.center, self.destination)
+		d = cygeometry.distance(self.rect.center, self.destination)
 		#If target is far, increase goal speed.
 		if d > 200:
 			self.targetSpeed = self.maxSpeed
@@ -278,5 +280,8 @@ class Ship(physicalObject.PhysicalObject):
 			self.kill()
 			self.myHealthBar.kill()
 			died = True
+			#Award points
+			if not globalvars.score_keeper is None:
+				globalvars.score_keeper.points += 1
 		return died
 

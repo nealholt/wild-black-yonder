@@ -1,18 +1,15 @@
-import pygame
-import physicalObject
+from physicalObject import *
 import profiles
 import colors
 import objInstances
-from geometry import distance, lineIntersectsCircle, angleToSlope, inSights
-import globalvars
 import weapon
 
 healthBarDefaultWidth = 20
 
-class Ship(physicalObject.PhysicalObject):
+class Ship(PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
 
-		physicalObject.PhysicalObject.__init__(self, centerx=centerx,\
+		PhysicalObject.__init__(self, centerx=centerx,\
 			centery=centery, image_name=image_name)
 
 		self.engine=None
@@ -142,7 +139,7 @@ class Ship(physicalObject.PhysicalObject):
 				else:
 					angle = self.getAngleToTarget()
 					#Decide whether or not we can shoot
-					if inSights(self, self.destination,\
+					if geometry.inSights(self, self.destination,\
 					weapon.weapon_range, weapon.attack_angle) and\
 					self.clearLineOfSight():
 						weapon.shoot()
@@ -160,11 +157,11 @@ class Ship(physicalObject.PhysicalObject):
 		Post: Returns true if there are no whiskerables in the line of sight of this ship.
 		Useful for avoiding friendly fire.'''
 		#Get distance to target
-		dtt = distance(self.rect.center, self.destination)
+		dtt = cygeometry.distance(self.rect.center, self.destination)
 		#For each potential obstacle...
 		for w in globalvars.whiskerables:
 			#Get distance to the obstacle
-			dist = distance(self.rect.center, w.rect.center)
+			dist = cygeometry.distance(self.rect.center, w.rect.center)
 			#   If the distance to the obstacle is less than the distance 
 			#to the target then the obstacle might be obstructing our 
 			#sight of the target.
@@ -182,7 +179,7 @@ class Ship(physicalObject.PhysicalObject):
 				r = w.collisionradius
 				#I boost the radius by a 1.5 fudge factor to 
 				#help the NPCs avoid friendly fire.
-				if lineIntersectsCircle(m, b, x, y, r*1.5):
+				if geometry.lineIntersectsCircle(m, b, x, y, r*1.5):
 					return False
 		return True
 
@@ -191,7 +188,7 @@ class Ship(physicalObject.PhysicalObject):
 		'''Pre: 
 		Post: returns slope and intercept of line extending straight 
 		ahead from this ship'''
-		slope = angleToSlope(self.theta)
+		slope = geometry.angleToSlope(self.theta)
 		x,y = self.rect.center
 		intercept = y - slope * x
 		return slope, intercept
@@ -205,7 +202,7 @@ class Ship(physicalObject.PhysicalObject):
 		#Turn towards target
 		self.turnTowards()
 
-		d = distance(self.rect.center, self.destination)
+		d = cygeometry.distance(self.rect.center, self.destination)
 		#If target is far, increase goal speed.
 		if d > 200:
 			self.targetSpeed = self.maxSpeed

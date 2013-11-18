@@ -41,7 +41,7 @@ useDirty = True #Whether to flip or use dirty rectangles
 
 globalvars.menu = menus.Menu()
 
-globalvars.scenario_manager = ScenarioManager()
+globalvars.scenario_manager = scenarios.ScenarioManager()
 
 def redrawWholeBackground():
 	if globalvars.BGIMAGE is None:

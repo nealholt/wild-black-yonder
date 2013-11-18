@@ -2,18 +2,17 @@ import pygame
 import math
 from displayUtilities import image_list
 import geometry
-from colors import white
+import colors
 import globalvars
-
 import sys
 sys.path.append('code/cython')
-import distance
+import cygeometry
 
 
 class PhysicalObject(pygame.sprite.Sprite):
 	'''The four collision options are available to specify different collision zones than would 
 	normally be specified by the size of this physical object's image.'''
-	def __init__(self, centerx=0.0, centery=0.0, width=0, height=0, image_name=None, color=white, collisiontopleft=None, collisionwidth=None,  collisionheight=None, collisionradius=None):
+	def __init__(self, centerx=0.0, centery=0.0, width=0, height=0, image_name=None, color=colors.white, collisiontopleft=None, collisionwidth=None,  collisionheight=None, collisionradius=None):
 
 		#Sprite tutorial being used is here:
 		# http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
@@ -207,7 +206,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		'''Slow to a stop near target destination.'''
 		itersToStop = self.speed / self.dv
 		if not self.speed == 0 and \
-		itersToStop >= distance.distance(self.rect.center, self.destination) / self.speed:
+		itersToStop >= cygeometry.distance(self.rect.center, self.destination) / self.speed:
 			#Decelerate
 			self.speed = max(0, self.speed - self.dv)
 			self.targetSpeed = self.speed
@@ -330,8 +329,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		can prevent diagonal motion. That's why we use self.loc instead.'''
 		self.loc = geometry.translate(self.loc, \
 			self.theta, self.speed)
-		self.rect.centerx = self.loc[0]
-		self.rect.centery = self.loc[1]
+		self.rect.center = self.loc
 
 
 	def translate(self, angle, magnitude):
@@ -393,7 +391,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#If the distance between our centers is less than our 
 		#summed radii, then we have collided.
 		else:
-			return distance.distance(self.rect.center, other.rect.center) < self.collisionradius+other.collisionradius
+			return cygeometry.distance(self.rect.center, other.rect.center) < self.collisionradius+other.collisionradius
 
 
 

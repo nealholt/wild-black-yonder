@@ -1,5 +1,8 @@
 import math
 import random as rd
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 adjustments = [(1,0),(0,1),(-1,0),(0,-1),(1,1),(-1,-1)]
 def getCoordsNearLoc(loc, mindist, xmax, ymax):
@@ -11,7 +14,7 @@ def getCoordsNearLoc(loc, mindist, xmax, ymax):
 	y = rd.randint(-ymax, ymax)+loc[1]
 	#Select a random direction in which to push away any x,y that is too close to loc
 	adjust = adjustments[ rd.randint(0,len(adjustments)-1) ]
-	while distance((x,y), loc) < mindist:
+	while cygeometry.distance((x,y), loc) < mindist:
 		#Push x,y away from loc
 		x = x+adjust[0]
 		y = y+adjust[1]
@@ -26,7 +29,7 @@ def inSights(shooter, target_loc, weapon_range, angle_min):
 	#Check angle to target.
 	#Also check that the target is roughly within this weapon's range.
 	return abs(angle) < angle_min and \
-	distance(shooter.rect.center, target_loc) < weapon_range
+	cygeometry.distance(shooter.rect.center, target_loc) < weapon_range
 
 
 def angleToSlope(angle):

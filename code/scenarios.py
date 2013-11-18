@@ -3,7 +3,7 @@ import pygame.display
 import objInstances
 import colors
 import random as rd
-from geometry import getCoordsNearLoc, translate, distance, angleFromPosition
+from geometry import getCoordsNearLoc, translate, angleFromPosition
 import ship
 import capitalShip
 import displayUtilities
@@ -11,7 +11,9 @@ import globalvars
 import math
 import player
 import hudHelpers
-
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 
 #TODO - Can I simplify code or reduce the number of global variables by storing state in the scenaio manager object?
@@ -273,7 +275,7 @@ class ScenarioManager:
 			for w in warps:
 				#Get the slope of the line from playerLoc to this warp
 				angle = angleFromPosition(playerloc, w[1])
-				scaledDistance = distance(playerloc, w[1]) * self.warpPortalScaling
+				scaledDistance = cygeometry.distance(playerloc, w[1]) * self.warpPortalScaling
 				#print scaledDistance #TESTING
 				x,y = translate(playerloc, angle, scaledDistance)
 				temp = objInstances.WarpPortal(x=x, y=y, destinationNode=w[0],

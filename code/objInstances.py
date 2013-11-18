@@ -2,10 +2,13 @@ import physicalObject
 import random as rd
 import pygame
 import colors
-from geometry import translate, distance, rotateAngle
+from geometry import translate, rotateAngle
 import globalvars
 from displayUtilities import writeTextToScreen, TemporaryText
 from time import sleep
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 class Bullet(physicalObject.PhysicalObject):
 
@@ -90,16 +93,18 @@ class Missile(physicalObject.PhysicalObject):
 			#Search through globalvars.whiskerables
 			closest = 999999.
 			for w in globalvars.whiskerables:
-				d = distance(w.rect.center, self.rect.center)
+				d = cygeometry.distance(w.rect.center, self.rect.center)
 				print d
 				if d < closest and w.is_a == globalvars.SHIP:
-					print 'nearer target found'
-					print closest
-					print d
+					#TODO TESTING
+					#print 'nearer target found'
+					#print closest
+					#print d
 					self.target = w
 					closest = d
 		else:
 			self.target = globalvars.player
+
 
 	def update(self):
 		#TODO seek target like an npc ship does
@@ -280,7 +285,7 @@ class Dust(physicalObject.PhysicalObject):
 		offscreen, but in the direction that the player is moving.
 		Otherwise, just draw the dust with the update function.'''
 		#left, top = offset
-		dist = distance(self.rect.center, globalvars.player.rect.center)
+		dist = cygeometry.distance(self.rect.center, globalvars.player.rect.center)
 		if dist > globalvars.WIDTH:
 			magnitude = rd.randint(globalvars.CENTERX, globalvars.WIDTH)
 			rotation = rd.randint(-70, 70)
@@ -564,7 +569,7 @@ class FinishBullsEye(physicalObject.PhysicalObject):
 	def update(self):
 		''' '''
 		#Distance to target
-		self.dtt = distance(globalvars.player.rect.center, self.target)
+		self.dtt = cygeometry.distance(globalvars.player.rect.center, self.target)
 
 	def draw(self, offset):
 		#Draw a bulls eye (multiple overlapping red and white 

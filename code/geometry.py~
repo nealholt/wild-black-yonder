@@ -1,11 +1,6 @@
 import math
 import random as rd
 
-def distance(p1, p2):
-	'''Returns distance between two points.'''
-	return math.sqrt( (p1[0]-p2[0])**2 + (p1[1]-p2[1])**2 )
-
-
 adjustments = [(1,0),(0,1),(-1,0),(0,-1),(1,1),(-1,-1)]
 def getCoordsNearLoc(loc, mindist, xmax, ymax):
 	'''Returns random coordinates in a rectangle centered at loc

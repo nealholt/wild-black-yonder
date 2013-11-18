@@ -5,10 +5,13 @@ import time
 import globalvars
 import displayUtilities
 import random as rd
-from geometry import getCoordsNearLoc, distance
+from geometry import getCoordsNearLoc
 import objInstances
 import ship
 import capitalShip
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 def getObstacles(seed=0,
 		enemy_min = 0.0,
@@ -137,7 +140,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 			if A.rect.top > B.rect.bottom:
 				break
 			else:
-				if distance(A.rect.center, B.rect.center) > A.collisionradius+B.collisionradius:
+				if cygeometry.distance(A.rect.center, B.rect.center) > A.collisionradius+B.collisionradius:
 					pass
 				else:
 					#They collide. Move them apart.

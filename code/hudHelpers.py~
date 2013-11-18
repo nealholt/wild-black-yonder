@@ -219,7 +219,7 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			health_min=self.node.health_min,
 			health_max=self.node.health_max,
 			capital_ship_min=self.node.capital_ship_min,
-			capital_ship_max=self.node.capital_ship_max
+			capital_ship_max=self.node.capital_ship_max,
 			fuel_min=self.node.fuel_min,
 			fuel_max=self.node.fuel_max)
 		self.dict[loc] = populateSpace(objects=obstacles, 

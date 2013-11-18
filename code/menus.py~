@@ -3,7 +3,6 @@ import pygame
 import colors
 import globalvars
 from geometry import angleFromPosition, translate, distance
-from time import wait
 
 
 def buyGas(): #TODO This needs moved elsewhere. It should not be here!

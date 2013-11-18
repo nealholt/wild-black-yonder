@@ -6,7 +6,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
-ext_modules = [ Extension("distance", ["distance.pyx"])#,
+ext_modules = [ Extension("cygeometry", ["cygeometry.pyx"])#,
 		#Extension("c1", ["c1.pyx"]),
 		#Extension("c2", ["c2.pyx"]),
 		#Extension("c3", ["c3.pyx"]),
