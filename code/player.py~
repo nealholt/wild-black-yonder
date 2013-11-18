@@ -10,9 +10,10 @@ class Player(Ship):
 		profiles.shipProfile(self, profile='mk3')
 		self.setProfile()
 
-		#Initialize the player with just one weapon. Make it a spread shot.
-		self.weapons = None
-		self.setWeapon('mk1')
+		#Give player a random weapon
+		temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
+		temp.shooter = self
+		self.gun = temp
 
 		self.health=300
 		self.maxhealth=300
@@ -41,7 +42,7 @@ class Player(Ship):
 		#Load 4 more randomly generated guns
 		for _ in range(4):
 			temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
-			temp.owner = self
+			temp.shooter = self
 			self.cargo.append(temp)
 
 

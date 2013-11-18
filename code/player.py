@@ -4,15 +4,13 @@ import random as rd
 
 class Player(Ship):
 	def __init__(self, image_name):
-
 		Ship.__init__(self,image_name=image_name)
 
-		profiles.shipProfile(self, profile='mk3')
 		self.setProfile()
-
-		#Initialize the player with just one weapon. Make it a spread shot.
-		self.weapons = None
-		self.setWeapon('mk1')
+		#Give player a random weapon
+		temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
+		temp.shooter = self
+		self.gun = temp
 
 		self.health=300
 		self.maxhealth=300

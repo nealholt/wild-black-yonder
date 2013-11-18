@@ -1,8 +1,8 @@
 from physicalObject import *
-import profiles
 import colors
 import objInstances
 import weapon
+import random as rd
 
 healthBarDefaultWidth = 20
 
@@ -36,7 +36,6 @@ class Ship(PhysicalObject):
 		#cargo array
 		self.cargo = []
 
-		profiles.shipProfile(self, profile='mk1')
 		self.setProfile()
 
 		self.myHealthBar = None
@@ -58,17 +57,17 @@ class Ship(PhysicalObject):
 	def unequipGun(self):
 		self.cargo.append(self.gun)
 		self.gun = None
-		
+
 
 	def unequipMissile(self):
 		self.cargo.append(self.missile)
 		self.missile = None
-		
+
 
 	def unequipMine(self):
 		self.cargo.append(self.mine)
 		self.mine = None
-		
+
 
 	def equipWeaponFromCargo(self, cargo_index):
 		#Error checking
@@ -101,6 +100,14 @@ class Ship(PhysicalObject):
 
 
 	def setProfile(self):
+		#Give enemy a random weapon
+		temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
+		temp.shooter = self
+		self.gun = temp
+		#Give enemy an engine
+		self.engine = engine.Engine()
+		engine.setProfile('mk1', self.engine)
+
 		self.maxSpeed = self.engine.maxSpeed
 		self.dv = self.engine.dv
 		self.dtheta = self.engine.dtheta
@@ -112,7 +119,7 @@ class Ship(PhysicalObject):
 
 
 	def takeDamage(self, damage):
-		self.health -= other_sprite.damage
+		self.health -= damage
 		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
 
 
