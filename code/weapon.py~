@@ -256,9 +256,6 @@ class Weapon():
 			half = self.bullet_num/2
 			if self.bullet_num%2 == 0:
 				range_of_spread = range(-half/2, half+1)
-				#There will be one too many bullets if the number is even so 
-				#remove the middle one
-				#range_of_spread.pop(len(range_of_spread)/2)
 			else:
 				range_of_spread = range(-half, half+1)
 			#Adjust the angle for each bullet in the spread

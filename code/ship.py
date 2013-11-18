@@ -111,8 +111,8 @@ class Ship(PhysicalObject):
 		self.turnRateDecay = self.engine.turnRateDecay
 
 
-	def takeDamage(self):
-		self.health -= 10
+	def takeDamage(self, damage):
+		self.health -= damage
 		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
 
 
@@ -244,23 +244,21 @@ class Ship(PhysicalObject):
 		#Check for collisions with one's own bullets.
 		#Don't respond to such collisions.
 		if other_sprite.is_a == globalvars.BULLET:
-			if other_sprite.dontClipMe == self:
-				return died
-			else:
-				self.takeDamage()
+			if other_sprite.dontClipMe == self: return died
+			else: self.takeDamage(other_sprite.damage)
 		elif other_sprite.is_a == globalvars.SHIP:
 			#Check for bounce off
 			#For now, area stands in for mass and only the
 			#less massive object bounces off
 			if other_sprite.getArea() >= self.getArea():
 				self.bounceOff(other_sprite)
-				self.takeDamage()
+				self.takeDamage(1)
 		elif other_sprite.is_a == globalvars.FIXEDBODY:
 			self.bounceOff(other_sprite)
 			return died
 		elif other_sprite.is_a == globalvars.ASTEROID:
 			self.bounceOff(other_sprite)
-			self.takeDamage()
+			self.takeDamage(1)
 		#This if is not necessary since falling through has the same effect.
 		#elif other_sprite.is_a == globalvars.HEALTH:
 			#The health kit gives the player health. This is better because otherwise

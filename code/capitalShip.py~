@@ -3,7 +3,10 @@ import physicalObject
 import globalvars
 import objInstances
 import weapon
-from geometry import distance, angleFromPosition
+from geometry import angleFromPosition
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 class CapitalShip(physicalObject.PhysicalObject):
 
@@ -55,21 +58,21 @@ class CapitalShip(physicalObject.PhysicalObject):
 		#If weapon is cool, player is above ship and in range, then fire.
 		if self.weapons[0].cooldown == 0 and \
 		self.destination[1] < self.myTop and \
-		distance(self.gunlocs[0], self.destination) < self.weapons[0].weapon_range:
+		cygeometry.distance(self.gunlocs[0], self.destination) < self.weapons[0].weapon_range:
 			angle = angleFromPosition(self.gunlocs[0], self.destination)
 			self.weapons[0].shoot(angle)
 		#Front
 		#If weapon is cool, player is in front of ship and in range, then fire.
 		if self.weapons[1].cooldown == 0 and \
 		self.destination[0] < self.myLeft and \
-		distance(self.gunlocs[1], self.destination) < self.weapons[1].weapon_range:
+		cygeometry.distance(self.gunlocs[1], self.destination) < self.weapons[1].weapon_range:
 			angle = angleFromPosition(self.gunlocs[1], self.destination)
 			self.weapons[1].shoot(angle)
 		#Bottom
 		#If weapon is cool, player is under ship and in range, then fire.
 		if self.weapons[2].cooldown == 0 and \
 		self.destination[1] > self.myBottom and \
-		distance(self.gunlocs[2], self.destination) < self.weapons[2].weapon_range:
+		cygeometry.distance(self.gunlocs[2], self.destination) < self.weapons[2].weapon_range:
 			angle = angleFromPosition(self.gunlocs[2], self.destination)
 			self.weapons[2].shoot(angle)
 

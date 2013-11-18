@@ -2,12 +2,7 @@ from physicalObject import *
 import profiles
 import colors
 import objInstances
-from geometry import lineIntersectsCircle, angleToSlope, inSights
-import globalvars
 import weapon
-import sys
-sys.path.append('code/cython')
-import cygeometry
 
 healthBarDefaultWidth = 20
 
@@ -116,8 +111,8 @@ class Ship(PhysicalObject):
 		self.turnRateDecay = self.engine.turnRateDecay
 
 
-	def takeDamage(self):
-		self.health -= 10
+	def takeDamage(self, damage):
+		self.health -= other_sprite.damage
 		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
 
 
@@ -144,7 +139,7 @@ class Ship(PhysicalObject):
 				else:
 					angle = self.getAngleToTarget()
 					#Decide whether or not we can shoot
-					if inSights(self, self.destination,\
+					if geometry.inSights(self, self.destination,\
 					weapon.weapon_range, weapon.attack_angle) and\
 					self.clearLineOfSight():
 						weapon.shoot()
@@ -184,7 +179,7 @@ class Ship(PhysicalObject):
 				r = w.collisionradius
 				#I boost the radius by a 1.5 fudge factor to 
 				#help the NPCs avoid friendly fire.
-				if lineIntersectsCircle(m, b, x, y, r*1.5):
+				if geometry.lineIntersectsCircle(m, b, x, y, r*1.5):
 					return False
 		return True
 
@@ -193,7 +188,7 @@ class Ship(PhysicalObject):
 		'''Pre: 
 		Post: returns slope and intercept of line extending straight 
 		ahead from this ship'''
-		slope = angleToSlope(self.theta)
+		slope = geometry.angleToSlope(self.theta)
 		x,y = self.rect.center
 		intercept = y - slope * x
 		return slope, intercept
@@ -249,23 +244,21 @@ class Ship(PhysicalObject):
 		#Check for collisions with one's own bullets.
 		#Don't respond to such collisions.
 		if other_sprite.is_a == globalvars.BULLET:
-			if other_sprite.dontClipMe == self:
-				return died
-			else:
-				self.takeDamage()
+			if other_sprite.dontClipMe == self: return died
+			else: self.takeDamage(other_sprite.damage)
 		elif other_sprite.is_a == globalvars.SHIP:
 			#Check for bounce off
 			#For now, area stands in for mass and only the
 			#less massive object bounces off
 			if other_sprite.getArea() >= self.getArea():
 				self.bounceOff(other_sprite)
-				self.takeDamage()
+				self.takeDamage(1)
 		elif other_sprite.is_a == globalvars.FIXEDBODY:
 			self.bounceOff(other_sprite)
 			return died
 		elif other_sprite.is_a == globalvars.ASTEROID:
 			self.bounceOff(other_sprite)
-			self.takeDamage()
+			self.takeDamage(1)
 		#This if is not necessary since falling through has the same effect.
 		#elif other_sprite.is_a == globalvars.HEALTH:
 			#The health kit gives the player health. This is better because otherwise

@@ -4,25 +4,20 @@ from displayUtilities import writeTextToScreen, TemporaryText
 from time import sleep
 
 class Bullet(PhysicalObject):
-
-	def __init__(self, direction, x, y, dontClipMe, width=5, height=5):
-
+	def __init__(self, direction, x, y, damage, dontClipMe, width=5, height=5):
 		PhysicalObject.__init__(self, centerx=x, centery=y,\
 			width=width, height=height)
-
 		self.theta = direction
-
 		#How long this object will live. Unit is... frames?
 		self.timeToLive = 50
-
 		#dontClipMe is almost certainly the shooter of this bullet.
 		#This is important because bullets usually start out at a 
 		#location that is immediately clipping the shooter but we 
 		#don't want ships to blow themselves up.
 		self.dontClipMe = dontClipMe
-
+		#Type:
 		self.is_a = globalvars.BULLET
-
+		self.damage = damage
 		#A brief invulnerability is necessary so that spread shot 
 		#bullets don't collide with each other immediately and
 		#disappear. This is only a bullet-on-bullet invulnerability
@@ -42,7 +37,6 @@ class Bullet(PhysicalObject):
 		died = False
 		if other_sprite.is_a == globalvars.BULLET and self.briefinvulnerability > 0:
 			return died
-
 		#self.dontClipMe is usually the shooter of the bullet who would 
 		#otherwise immediately collide with it.
 		#For now, shoot through health packs with no effect.
@@ -79,6 +73,7 @@ class Missile(PhysicalObject):
 		self.dontClipMe = shooter
 
 		self.is_a = globalvars.BULLET
+		self.damage = 50
 
 		#Find nearest enemy ship and set it as target.
 		self.target = None
@@ -87,7 +82,7 @@ class Missile(PhysicalObject):
 			closest = 999999.
 			for w in globalvars.whiskerables:
 				d = cygeometry.distance(w.rect.center, self.rect.center)
-				print d
+				#print d
 				if d < closest and w.is_a == globalvars.SHIP:
 					#TODO TESTING
 					#print 'nearer target found'
@@ -141,24 +136,20 @@ class Mine(PhysicalObject):
 	'''mine - new object does not move. collides with nothing until short timer elapses. 
 	on contact explodes and causes damage. enemy will avoid it.'''
 	def __init__(self, shooter):
-
-		PhysicalObject.__init__(self, \
-			centerx=shooter.rect.centerx, \
+		PhysicalObject.__init__(self,\
+			centerx=shooter.rect.centerx,\
 			centery=shooter.rect.centery,\
 			width=10, height=10,\
 			color=colors.orange)
-
 		self.theta = 0.
 		self.speed = 0.
 		self.targetSpeed = 0.
 		self.dv = 0.0
-
 		#This is needed so that the shooter doesn't immediately take damage
 		#from his own mine.
 		self.dontClipMe = shooter
-
+		self.damage = 50
 		self.is_a = globalvars.BULLET
-
 		#A timer. This mine will explode on contact after this many seconds.
 		self.explodeAfter = 4*globalvars.FPS
 
@@ -351,7 +342,7 @@ class Asteroid(PhysicalObject):
 		PhysicalObject.__init__(self, \
 			centerx=x, centery=y, image_name=image_name)
 		self.is_a = globalvars.ASTEROID
-		self.health_amt = 100
+		self.health_amt = 30
 		#Choose a random rotation
 		#self.dtheta = rd.randint(-2, 2) #TODO temporarily remove rotation because it gums up the hit box and causes us to drop frames when there are a lot of objects.
 		#Choose a random direction. This is different from theta 
@@ -375,7 +366,7 @@ class Asteroid(PhysicalObject):
 		#print self.speed
 		died = False
 		if other_sprite.is_a == globalvars.BULLET:
-			self.health_amt -= 10
+			self.health_amt -= other_sprite.damage
 			if self.health_amt < 0:
 				#die. spawn mini asteroids
 				self.kill()

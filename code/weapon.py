@@ -269,7 +269,7 @@ class Weapon():
 
 	def makeBullet(self, angle):
 		tempbullet = Bullet(angle, self.shooter.rect.centerx+self.offset[0],\
-			self.shooter.rect.centery+self.offset[1], self.shooter)
+			self.shooter.rect.centery+self.offset[1], self.damage, self.shooter)
 		#Set bullet attributes
 		tempbullet.speed = self.bullet_speed
 		tempbullet.setColor(self.bullet_color)
