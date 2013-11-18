@@ -1,6 +1,6 @@
 from ship import *
-import profiles
 from displayUtilities import TemporaryText
+import random as rd
 
 class Player(Ship):
 	def __init__(self, image_name):
@@ -12,7 +12,7 @@ class Player(Ship):
 
 		#Initialize the player with just one weapon. Make it a spread shot.
 		self.weapons = None
-		self.setWeapon('spread_mk3')
+		self.setWeapon('mk1')
 
 		self.health=300
 		self.maxhealth=300
@@ -35,9 +35,14 @@ class Player(Ship):
 
 		#For testing purposes, load all the weapons except the initially equipped 
 		#weapon into the player's cargo hold.
-		weaponsList = ['mk0', 'mk1', 'mk2', 'spread_mk2', 'missile_mk1', 'mine', 'hit_box_test']
+		weaponsList = ['missile_mk1', 'mine', 'hit_box_test']
 		for w in weaponsList:
 			self.cargo.append(weapon.getWeapon(w, self))
+		#Load 4 more randomly generated guns
+		for _ in range(4):
+			temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
+			temp.owner = self
+			self.cargo.append(temp)
 
 
 	def parkingBrake(self):

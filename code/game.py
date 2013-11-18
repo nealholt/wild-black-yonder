@@ -101,8 +101,6 @@ def run(countdown=-1):
 	#pygame setup:
 	clock = pygame.time.Clock()
 
-	pause = False
-
 	running = True
 
 	#The in-round loop (while player is alive):
@@ -135,18 +133,6 @@ def run(countdown=-1):
 			for x in globalvars.intangibles_bottom: addToDirtyRects(x, offset)
 			for x in globalvars.tangibles: addToDirtyRects(x, offset)
 			for x in globalvars.intangibles_top: addToDirtyRects(x, offset)
-
-		#Skip the rest of this loop until the game is unpaused.
-		if pause:
-			#Write paused in the middle of the screen
-			writeTextToScreen(string='PAUSED', fontSize=128,\
-				pos=(globalvars.WIDTH/3, globalvars.HEIGHT/2))
-			#Check for another s key press to unpause the game.
-			for event in pygame.event.get():
-				if event.type == pygame.KEYDOWN and event.key == 112: #p key
-					pause = not pause
-			#Skip the rest of this loop until the game is unpaused.
-			continue
 
 		#Display the panel
 		if not globalvars.menu.main_panel is None:
@@ -225,8 +211,6 @@ def run(countdown=-1):
 					#Obliterate destination.
 					#Change to free flight.
 					globalvars.player.killDestination()
-				elif event.key == 112: #p key
-					pause = not pause; continue
 				elif event.key == 116: #t key
 					#shoot a bunch of hit box testers 
 					#in towards the player

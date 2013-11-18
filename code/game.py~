@@ -13,12 +13,14 @@ import player as playerObj
 import colors
 import testFunctions as test
 import menus
-from geometry import distance, angleFromPosition, translate, rotateAngle
+from geometry import angleFromPosition, translate, rotateAngle
 from displayUtilities import writeTextToScreen
 import datetime #Use for testing efficiency
 import nodeManager
 import factions
 import scenarios
+sys.path.append('code/cython')
+import cygeometry
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
@@ -309,7 +311,7 @@ def run(countdown=-1):
 
 			#Make sure player is within arena.
 			#If not, change player's heading to be towards 0,0
-			if distance(globalvars.player.rect.center, (0.,0.)) > globalvars.arena:
+			if cygeometry.distance(globalvars.player.rect.center, (0.,0.)) > globalvars.arena:
 				globalvars.player.theta = angleFromPosition(\
 					globalvars.player.rect.center, (0.,0.))
 				globalvars.player.updateImageAngle()
@@ -317,7 +319,7 @@ def run(countdown=-1):
 			#arena + diameter from center, then change its 
 			#angle to point somewhere within the arena too.
 			for w in globalvars.whiskerables:
-				if distance(w.rect.center, (0.,0.)) > \
+				if cygeometry.distance(w.rect.center, (0.,0.)) > \
 				globalvars.arena + w.collisionradius:
 					#Whiskerables reflect randomly
 					#off arena boundaries towards a
@@ -452,7 +454,7 @@ def setClosestSprites():
 		for j in xrange(len(sprite_list)):
 			if j != i:
 				B = sprite_list[j]
-				dist = distance(A.rect.center, B.rect.center) - B.collisionradius - A.collisionradius
+				dist = cygeometry.distance(A.rect.center, B.rect.center) - B.collisionradius - A.collisionradius
 				if dist < least_dist:
 					least_dist = dist
 					closest_sprite = B

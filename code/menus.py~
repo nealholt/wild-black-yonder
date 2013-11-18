@@ -2,8 +2,10 @@ import drawable
 import pygame
 import colors
 import globalvars
-from geometry import angleFromPosition, translate, distance
-
+from geometry import angleFromPosition, translate
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 def buyGas(): #TODO This needs moved elsewhere. It should not be here!
 	globalvars.player.fuel += 1000
@@ -346,7 +348,7 @@ class Menu:
 		#Draw all the on-screen nodes and the connections between them
 		for n in globalvars.galaxy.nodes:
 			angle = angleFromPosition(playerNode.loc, n.loc)
-			dist = distance(playerNode.loc, n.loc)
+			dist = cygeometry.distance(playerNode.loc, n.loc)
 			position = translate(playerNodeLoc, angle, dist*magnitude)
 			#If it is on screen...
 			if position[0] > globalvars.MENU_PADDING+globalvars.MENU_BORDER_PADDING and \
@@ -374,7 +376,7 @@ class Menu:
 				#draw connections
 				for c in n.connections:
 					angle = angleFromPosition(n.loc, c[1])
-					dist = distance(n.loc, c[1])
+					dist = cygeometry.distance(n.loc, c[1])
 					position2 = translate(position, angle, dist*magnitude)
 					temp = drawable.Line(x1=position[0]-radius, y1=position[1]-radius,
 						x2=position2[0]-radius, y2=position2[1]-radius)
