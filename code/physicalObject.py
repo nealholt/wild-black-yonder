@@ -5,6 +5,11 @@ import geometry
 from colors import white
 import globalvars
 
+import sys
+sys.path.append('code/cython')
+import distance
+
+
 class PhysicalObject(pygame.sprite.Sprite):
 	'''The four collision options are available to specify different collision zones than would 
 	normally be specified by the size of this physical object's image.'''
@@ -202,7 +207,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		'''Slow to a stop near target destination.'''
 		itersToStop = self.speed / self.dv
 		if not self.speed == 0 and \
-		itersToStop >= geometry.distance(self.rect.center, self.destination) / self.speed:
+		itersToStop >= distance.distance(self.rect.center, self.destination) / self.speed:
 			#Decelerate
 			self.speed = max(0, self.speed - self.dv)
 			self.targetSpeed = self.speed
@@ -388,7 +393,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#If the distance between our centers is less than our 
 		#summed radii, then we have collided.
 		else:
-			return geometry.distance(self.rect.center, other.rect.center) < self.collisionradius+other.collisionradius
+			return distance.distance(self.rect.center, other.rect.center) < self.collisionradius+other.collisionradius
 
 
 

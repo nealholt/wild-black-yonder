@@ -57,7 +57,7 @@ class ScenarioManager:
 		text = ['ASTEROIDS COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=10, time_limit=time_limit)
+			points_to_win=50, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
