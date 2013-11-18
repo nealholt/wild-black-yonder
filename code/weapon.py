@@ -163,6 +163,9 @@ class Weapon():
 			self.bullet_color=colors.blue
 		elif type_classes[self.type_index] == 'laser':
 			self.bullet_color=colors.red
+		#1.2 is a fudge factor used so that the ship shoots slightly before 
+		#its target moves into range, in case the two ships are closing
+		self.weapon_range = self.bullet_speed*self.bullet_lifespan*1.2
 
 	def decrementAttribute(self, attribute_index):
 		if attribute_index == 0:
@@ -253,9 +256,6 @@ class Weapon():
 			half = self.bullet_num/2
 			if self.bullet_num%2 == 0:
 				range_of_spread = range(-half/2, half+1)
-				#There will be one too many bullets if the number is even so 
-				#remove the middle one
-				range_of_spread.pop(len(range_of_spread)/2)
 			else:
 				range_of_spread = range(-half, half+1)
 			#Adjust the angle for each bullet in the spread
@@ -279,11 +279,13 @@ class Weapon():
 
 	def toStringArray(self):
 		str_array = [self.name,
+			'Class: '+weapon_class_names[self.getWeaponClass()],
+			'Type: '+type_classes[self.type_index],
 			'Refire rate: '+str(self.refire_rate),
 			'Projectile speed: '+str(self.bullet_speed),
+			'Damage: '+str(self.damage),
 			'Range: '+str(self.weapon_range),
-			'Projectiles per shot: '+str(self.bullet_num),
-			'Spread: '+str(self.spread) ]
+			'Projectiles per shot: '+str(self.bullet_num)]
 		return str_array
 
 
