@@ -9,6 +9,9 @@ sys.path.append('code/cython')
 import cygeometry
 
 
+
+
+
 class PhysicalObject(pygame.sprite.Sprite):
 	'''The four collision options are available to specify different collision zones than would 
 	normally be specified by the size of this physical object's image.'''
@@ -103,6 +106,30 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#We use closest_sprite to help the NPC's avoid objects.
 		self.closest_sprite = None
 		self.dist_to_closest = globalvars.MINSAFEDIST
+
+		#The following parameters could be tweaked to improve NPC performance, 
+		#or they could be customized so that different NPCs could have 
+		#different levels of caution.
+
+		#Angle within which npc should consider avoiding an object. If the 
+		#object is in a 90 degree wide cone, for instance, then it will test 
+		#to see if the object is close enough to initiate an avoidance behavior.
+		self.danger_cone = 90
+
+		#If the distance between this object and another is less than this 
+		#number of pixels, then this object will turn away.
+		self.avoidance_threshold = 20
+
+		#If the distance between this object and another is less than this 
+		#number of pixels, then this object will not turn in the direction of 
+		#the object even if this object's target is in that direction.
+		self.suppress_turn_threshold = 40
+
+		#Set the recommended ship speed to 1/4 max speed if another object is on 
+		#a collision course with us and is danger_red_distance distance away, 
+		#1/2 max speed if yellow and otherwise 3/4 max speed.
+		self.danger_red_distance = 10
+		self.danger_yellow_distance = 20
 
 
 	def handleCollisionWith(self, other_sprite):
@@ -278,28 +305,31 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#If there is a closest sprite, amend turning to avoid it.
 		if not self.closest_sprite is None:
 			angle = self.getAngleToTarget(target=self.closest_sprite)
-			#If the ship is at any angle closer than a right angle, consider altering its turn
+			#If the closest sprite is at any angle closer 
+			#than danger_cone degrees, consider altering this 
+			#physical object's turn to avoid the other sprite.
 			abs_angle = abs(angle)
-			if abs_angle < 90:
+			if abs_angle < self.danger_cone:
 				#self.dist_to_closest is the distance from this sprite's
 				#center to self.closest_sprite's center. We need to factor 
 				#in the radius for these sprites.
 				actual_distance = self.dist_to_closest - \
 					self.collisionradius-self.closest_sprite.collisionradius
-				#TODO. These constants might need adjusted.
-				if actual_distance < 20:
+				if actual_distance < self.avoidance_threshold:
 					#Too close. It's vital that we turn away from the object.
 					if angle < 0:
 						self.turnClockwise()
 					else:
 						self.turnCounterClockwise()
 					#Figure out optimal speed
-					if actual_distance < 10:
+					if actual_distance < self.danger_red_distance:
 						return self.maxTurnSpeed
-					elif actual_distance < 20:
+					elif actual_distance < self.danger_yellow_distance:
 						return self.maxTurnSpeed*2
+					else:
+						return self.maxTurnSpeed*3
 				#elif actual_distance + abs_angle < 70:
-				elif actual_distance < 40:
+				elif actual_distance < self.suppress_turn_threshold:
 					#It's not too close yet, but don't get any closer.
 					if angle < 0:
 						dontTurnLeft = True
