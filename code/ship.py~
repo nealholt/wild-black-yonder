@@ -2,6 +2,7 @@ from physicalObject import *
 import colors
 import objInstances
 import weapon
+import engine
 import random as rd
 
 healthBarDefaultWidth = 20
@@ -106,7 +107,7 @@ class Ship(PhysicalObject):
 		self.gun = temp
 		#Give enemy an engine
 		self.engine = engine.Engine()
-		engine.setProfile('mk1', self.engine)
+		engine.setProfile('mk2', self.engine)
 
 		self.maxSpeed = self.engine.maxSpeed
 		self.dv = self.engine.dv
@@ -205,11 +206,27 @@ class Ship(PhysicalObject):
 		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
 		#for now we assume that every ship is hostile to the player
 		self.setDestination(globalvars.player_target_lead)
-
 		#Turn towards target
-		self.turnTowards()
-
+		recommended_turn_speed = self.turnTowards()
+		#Get distance to target
 		d = cygeometry.distance(self.rect.center, self.destination)
+		#If target is far, increase goal speed.
+		recommended_targeting_speed = 0
+		if d > 400:
+			recommended_targeting_speed = self.maxSpeed
+		elif d > 300:
+			recommended_targeting_speed = self.maxSpeed * 3./4.
+		elif d > 200:
+			recommended_targeting_speed = self.maxSpeed * 1./2.
+		elif d > 100:
+			recommended_targeting_speed = self.maxSpeed * 1./4.
+		else:
+			recommended_targeting_speed = 0.0
+		#Set goal speed to the minimum of the recommended speeds
+		self.targetSpeed = min(recommended_targeting_speed, recommended_turn_speed)
+
+		#TODO LEFT OFF HERE
+		'''d = cygeometry.distance(self.rect.center, self.destination)
 		#If target is far, increase goal speed.
 		if d > 200:
 			self.targetSpeed = self.maxSpeed
@@ -217,7 +234,7 @@ class Ship(PhysicalObject):
 		elif d < 120:
 			self.targetSpeed = 0
 		else:
-			self.targetSpeed = self.maxSpeed/2
+			self.targetSpeed = self.maxSpeed/2'''
 
 		#cooldown all the weapons
 		self.cooldown()

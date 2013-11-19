@@ -168,6 +168,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 				* self.dtheta,\
 			0)
 
+	def testCalculateDTheta(self):
+		pass
+
 	def turnCounterClockwise(self, delta=None):
 		'''Turn in the desired direction.
 		I'm using an angle system like stardog uses such that 
@@ -216,7 +219,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def approachSpeed(self):
 		'''Modify this object's speed to approach the 
 		goal speed (aka targetSpeed).'''
-		if abs(self.speed - self.targetSpeed) < self.dv:
+		if abs(self.speed - self.targetSpeed) < self.dv and \
+		self.targetSpeed <= self.maxSpeed and \
+		self.targetSpeed >= 0:
 			self.speed = self.targetSpeed
 		elif self.speed < self.targetSpeed:
 			#Accelerate
@@ -258,7 +263,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 	def turnTowards(self):
 		"""This was copied out of scripts.py in stardog and 
 		modified slightly. Collision avoidance is all my 
-		own, however."""
+		own, however.
+		Returns recommended speed for optimal turning. """
 		#Collision avoidance: Avoid Collisions!
 		#The following can only be used to suppress
 		#turning if they are true. If false, they have no effect.
@@ -277,14 +283,16 @@ class PhysicalObject(pygame.sprite.Sprite):
 					self.collisionradius-self.closest_sprite.collisionradius
 				#TODO. These constants might need adjusted.
 				if actual_distance < 20:
-
 					#Too close. It's vital that we turn away from the object.
 					if angle < 0:
 						self.turnClockwise()
-						return True
 					else:
 						self.turnCounterClockwise()
-						return True
+					#Figure out optimal speed
+					if actual_distance < 10:
+						return self.maxTurnSpeed
+					elif actual_distance < 20:
+						return self.maxTurnSpeed*2
 				#elif actual_distance + abs_angle < 70:
 				elif actual_distance < 40:
 					#It's not too close yet, but don't get any closer.
@@ -296,16 +304,16 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.closest_sprite = None
 			self.dist_to_closest = globalvars.MINSAFEDIST
 
-
 		angleToTarget = self.getAngleToTarget()
 		#If we need to turn more towards the target or there is an 
 		#object in front of us
-		if abs(angleToTarget) > self.acceptableError:
+		abs_angle = abs(angleToTarget)
+		if abs_angle > self.acceptableError:
 			#Get the amount to turn. It may be less than the 
 			#amount this object is capable of turning.
 			#Only turn this small amount if there is no object in
 			#front of us.
-			if abs(angleToTarget) < self.calculateDTheta():
+			if abs_angle < self.calculateDTheta():
 				if dontTurnLeft and angleToTarget < 0:
 					pass
 				elif dontTurnRight and angleToTarget > 0:
@@ -320,6 +328,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#In all other cases turn clockwise
 			elif not dontTurnRight:
 				self.turnClockwise()
+		return self.maxSpeed
 
 
 	def move(self):
