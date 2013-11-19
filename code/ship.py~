@@ -9,12 +9,9 @@ healthBarDefaultWidth = 20
 
 class Ship(PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
-
 		PhysicalObject.__init__(self, centerx=centerx,\
 			centery=centery, image_name=image_name)
-
 		self.engine=None
-
 		self.health=50
 		self.maxhealth=50
 		#number of gun addon hardpoints
@@ -45,6 +42,15 @@ class Ship(PhysicalObject):
 
 		self.is_a = globalvars.SHIP
 		self.isPlayer = False
+
+		#If the target is further away than this then recommended target engagement speed is max speed.
+		self.target_long_range = 600
+		#If the target is further away than this then recommended target engagement speed is 3/4 max speed.
+		self.target_med_range = 400
+		#If the target is further away than this then recommended target engagement speed is 1/2 max speed.
+		self.target_short_range = 200
+		#If the target is within self.target_front_rear degrees of the axis of our ship, then initiate a squat-and-shoot or flee behavior depending on whether target is in front or behind. Said another way, if the target is in the self.target_front_rear degree cone in front or behind us, then do the corresponding behavior.
+		self.target_front_center = 30
 
 
 	def setWeapon(self, weaponId):
@@ -204,49 +210,59 @@ class Ship(PhysicalObject):
 
 	def update(self):
 		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
-		#for now we assume that every ship is hostile to the player
-		self.setDestination(globalvars.player_target_lead)
-		#Turn towards target
-		recommended_turn_speed = self.turnTowards()
+		#Flee the battle field at less than 5% health.
+		if float(self.health) / float(self.maxhealth) < 0.5:
+			print 'flight'
+			#Get the direction in which to flee
+			angle = geometry.angleFromPosition(globalvars.player_target_lead, self.rect.center)
+			#Flee far away!
+			magnitude = 1000000
+			#Get the point to flee towards
+			objective = geometry.translate(self.rect.center, angle, magnitude)
+			self.setDestination(objective)
+		else:
+			#Otherwise just attack the player
+			#for now we assume that every ship is hostile to the player
+			self.setDestination(globalvars.player_target_lead)
+
+		#Get angle to target
+		self.angle_to_target = self.getAngleToTarget()
 		#Get distance to target
 		d = cygeometry.distance(self.rect.center, self.destination)
+		
 		#If target is far, increase goal speed.
-		recommended_targeting_speed = 0
-		if d > 400:
+		recommended_targeting_speed = self.maxTurnSpeed
+		force_turn = False
+		if d > self.target_long_range:
 			recommended_targeting_speed = self.maxSpeed
-		elif d > 300:
+		elif d > self.target_med_range:
 			recommended_targeting_speed = self.maxSpeed * 3./4.
-		elif d > 200:
+		elif d > self.target_short_range:
 			recommended_targeting_speed = self.maxSpeed * 1./2.
-		elif d > 100:
-			recommended_targeting_speed = self.maxSpeed * 1./4.
-		else:
+		#Only set speed to zero if target is infront of us.
+		elif abs(self.angle_to_target) < self.target_front_center:
 			recommended_targeting_speed = 0.0
-		#Set goal speed to the minimum of the recommended speeds
-		self.targetSpeed = min(recommended_targeting_speed, recommended_turn_speed)
+			#Ignore collision avoidance to turn towards the target.
+			force_turn = True
 
-		#TODO LEFT OFF HERE
-		'''d = cygeometry.distance(self.rect.center, self.destination)
-		#If target is far, increase goal speed.
-		if d > 200:
+		#If the target is behind us at short range, flee quickly away. Ignore all else.
+		if d < self.target_short_range and abs(self.angle_to_target) > 180 - self.target_front_center:
 			self.targetSpeed = self.maxSpeed
-		#If target is near, decrease goal speed.
-		elif d < 120:
-			self.targetSpeed = 0
+			self.turnTowards()
 		else:
-			self.targetSpeed = self.maxSpeed/2'''
+			#Turn towards target
+			recommended_turn_speed = self.turnTowards(force_turn=force_turn)
+			#Set goal speed to the minimum of the recommended speeds
+			self.targetSpeed = min(recommended_targeting_speed, recommended_turn_speed)
 
 		#cooldown all the weapons
 		self.cooldown()
 		#Check for firing solutions
 		self.shoot()
-
 		#modify speed
 		self.approachSpeed()
-
 		#move
 		self.move()
-
 		#Update my health bar
 		self.updateHealthBar()
 

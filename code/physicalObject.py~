@@ -9,20 +9,7 @@ sys.path.append('code/cython')
 import cygeometry
 
 
-#The following parameters could be tweaked to improve NPC performance, or they could be wrapped into the PhysicalObject as attributes of the object so that different NPCs could have different levels of caution.
 
-#Angle within which npc should consider avoiding an object. If the object is in a 90 degree wide cone, for instance, then it will test to see if the object is close enough to initiate an avoidance behavior.
-self.danger_cone = 90
-
-#If the distance between this object and another is less than this number of pixels, then this object will turn away.
-self.avoidance_threshold = 20
-
-#If the distance between this object and another is less than this number of pixels, then this object will not turn in the direction of the object even if this object's target is in that direction.
-self.suppress_turn_threshold = 40
-
-#Set the recommended ship speed to 1/4 max speed if another object is on a collision course with us and is danger_red_distance distance away, 1/2 max speed if yellow and otherwise 3/4 max speed.
-self.danger_red_distance = 10
-self.danger_yellow_distance = 20
 
 
 class PhysicalObject(pygame.sprite.Sprite):
@@ -60,6 +47,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.turnRateDecay=0.5
 		#you can be within this many degrees of the target to stop turning
 		self.acceptableError = 0.5
+		#Calculate angle to target in turnTowards and store it so that ships don't have to recalculate it
+		self.angle_to_target = 0.0
 
 		self.destination = (0.0, 0.0)
 
@@ -119,6 +108,30 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#We use closest_sprite to help the NPC's avoid objects.
 		self.closest_sprite = None
 		self.dist_to_closest = globalvars.MINSAFEDIST
+
+		#The following parameters could be tweaked to improve NPC performance, 
+		#or they could be customized so that different NPCs could have 
+		#different levels of caution.
+
+		#Angle within which npc should consider avoiding an object. If the 
+		#object is in a 90 degree wide cone, for instance, then it will test 
+		#to see if the object is close enough to initiate an avoidance behavior.
+		self.danger_cone = 90
+
+		#If the distance between this object and another is less than this 
+		#number of pixels, then this object will turn away.
+		self.avoidance_threshold = 20
+
+		#If the distance between this object and another is less than this 
+		#number of pixels, then this object will not turn in the direction of 
+		#the object even if this object's target is in that direction.
+		self.suppress_turn_threshold = 40
+
+		#Set the recommended ship speed to 1/4 max speed if another object is on 
+		#a collision course with us and is danger_red_distance distance away, 
+		#1/2 max speed if yellow and otherwise 3/4 max speed.
+		self.danger_red_distance = 10
+		self.danger_yellow_distance = 20
 
 
 	def handleCollisionWith(self, other_sprite):
@@ -281,10 +294,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if angle_to_target > 180: angle_to_target -= 360
 		return angle_to_target
 
-	def turnTowards(self):
+	def turnTowards(self, force_turn=False):
 		"""This was copied out of scripts.py in stardog and 
 		modified slightly. Collision avoidance is all my 
 		own, however.
+		force_turn causes the object to turn off collision avoidance.
 		Returns recommended speed for optimal turning. """
 		#Collision avoidance: Avoid Collisions!
 		#The following can only be used to suppress
@@ -292,7 +306,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		dontTurnLeft = False
 		dontTurnRight = False
 		#If there is a closest sprite, amend turning to avoid it.
-		if not self.closest_sprite is None:
+		if not force_turn and not self.closest_sprite is None:
 			angle = self.getAngleToTarget(target=self.closest_sprite)
 			#If the closest sprite is at any angle closer 
 			#than danger_cone degrees, consider altering this 
@@ -328,26 +342,26 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.closest_sprite = None
 			self.dist_to_closest = globalvars.MINSAFEDIST
 
-		angleToTarget = self.getAngleToTarget()
+		self.angle_to_target = self.getAngleToTarget()
 		#If we need to turn more towards the target or there is an 
 		#object in front of us
-		abs_angle = abs(angleToTarget)
+		abs_angle = abs(self.angle_to_target)
 		if abs_angle > self.acceptableError:
 			#Get the amount to turn. It may be less than the 
 			#amount this object is capable of turning.
 			#Only turn this small amount if there is no object in
 			#front of us.
 			if abs_angle < self.calculateDTheta():
-				if dontTurnLeft and angleToTarget < 0:
+				if dontTurnLeft and self.angle_to_target < 0:
 					pass
-				elif dontTurnRight and angleToTarget > 0:
+				elif dontTurnRight and self.angle_to_target > 0:
 					pass
 				else:
-					self.turn(angleToTarget)
+					self.turn(self.angle_to_target)
 			#Turn counter clockwise if that's the direction of our 
 			#target and there is no obstacle in that direction or
 			#if there is an obstacle in front of us and to the right.
-			elif angleToTarget < 0 and not dontTurnLeft:
+			elif self.angle_to_target < 0 and not dontTurnLeft:
 				self.turnCounterClockwise()
 			#In all other cases turn clockwise
 			elif not dontTurnRight:

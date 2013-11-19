@@ -47,6 +47,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.turnRateDecay=0.5
 		#you can be within this many degrees of the target to stop turning
 		self.acceptableError = 0.5
+		#Calculate angle to target in turnTowards and store it so that ships don't have to recalculate it
+		self.angle_to_target = 0.0
 
 		self.destination = (0.0, 0.0)
 
@@ -292,18 +294,22 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if angle_to_target > 180: angle_to_target -= 360
 		return angle_to_target
 
-	def turnTowards(self):
+	def turnTowards(self, force_turn=False):
 		"""This was copied out of scripts.py in stardog and 
 		modified slightly. Collision avoidance is all my 
 		own, however.
-		Returns recommended speed for optimal turning. """
+		force_turn causes the object to turn off collision avoidance.
+		PRE: The following code MUST MUST MUST be set in order to make 
+		self.angle_to_target current before calling this method:
+		self.angle_to_target = self.getAngleToTarget()
+		POST: Returns recommended speed for optimal turning. """
 		#Collision avoidance: Avoid Collisions!
 		#The following can only be used to suppress
 		#turning if they are true. If false, they have no effect.
 		dontTurnLeft = False
 		dontTurnRight = False
 		#If there is a closest sprite, amend turning to avoid it.
-		if not self.closest_sprite is None:
+		if not force_turn and not self.closest_sprite is None:
 			angle = self.getAngleToTarget(target=self.closest_sprite)
 			#If the closest sprite is at any angle closer 
 			#than danger_cone degrees, consider altering this 
@@ -339,26 +345,25 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.closest_sprite = None
 			self.dist_to_closest = globalvars.MINSAFEDIST
 
-		angleToTarget = self.getAngleToTarget()
 		#If we need to turn more towards the target or there is an 
 		#object in front of us
-		abs_angle = abs(angleToTarget)
+		abs_angle = abs(self.angle_to_target)
 		if abs_angle > self.acceptableError:
 			#Get the amount to turn. It may be less than the 
 			#amount this object is capable of turning.
 			#Only turn this small amount if there is no object in
 			#front of us.
 			if abs_angle < self.calculateDTheta():
-				if dontTurnLeft and angleToTarget < 0:
+				if dontTurnLeft and self.angle_to_target < 0:
 					pass
-				elif dontTurnRight and angleToTarget > 0:
+				elif dontTurnRight and self.angle_to_target > 0:
 					pass
 				else:
-					self.turn(angleToTarget)
+					self.turn(self.angle_to_target)
 			#Turn counter clockwise if that's the direction of our 
 			#target and there is no obstacle in that direction or
 			#if there is an obstacle in front of us and to the right.
-			elif angleToTarget < 0 and not dontTurnLeft:
+			elif self.angle_to_target < 0 and not dontTurnLeft:
 				self.turnCounterClockwise()
 			#In all other cases turn clockwise
 			elif not dontTurnRight:
