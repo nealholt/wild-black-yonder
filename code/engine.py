@@ -19,7 +19,7 @@ class Engine():
 		#In general, 10 will be the maximum and 1 the minimum.
 		self.fuel_consumption = 10
 
-def setProfile(profile, engine):
+def setProfile(_, engine):
 	engine.name = 'Thrusters Mk2'
 	engine.maxSpeed = 300./float(FPS) #Speed in pixels per second
 	engine.dv = engine.maxSpeed/float(FPS*1.0) #Gets up to speed in 1 second

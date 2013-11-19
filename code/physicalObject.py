@@ -41,7 +41,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Speed at which turn rate is maximal
 		self.maxTurnSpeed=self.maxSpeed*self.speedIncrements
 		#Rate at which turn rate decays as speed moves away from maxTurnSpeed
-		self.turnRateDecay=1.
+		self.turnRateDecay=0.5
 		#you can be within this many degrees of the target to stop turning
 		self.acceptableError = 0.5
 
@@ -147,22 +147,34 @@ class PhysicalObject(pygame.sprite.Sprite):
 		maneuvering in which turn rate is reduced at 
 		higher speeds. The following formula gives the maximum turn rate of
 		self.dtheta only at 1/4 max velocity. The modifier on turn rate
-		breaks down as follows:
+		breaks down as follows when self.turnRateDecay = 1.0:
 		f(x) = -abs(x-1/4)+1
 		Speed	Turn
 		0	3/4
 		1/4	1
 		1/2	3/4
 		3/4	1/2
-		1	1/4'''
+		1	1/4
+		You can test the above out by pasting the following code to the 
+		bottom of this file and running the game:
+		po = PhysicalObject()
+		po.testCalculateDTheta()
+		exit()
+		I changed self.turnRateDecay to be less severe because the ship was too hard to handle. '''
 		return max((-self.turnRateDecay*\
-				abs((self.speed / self.maxSpeed) - \
-				self.maxTurnSpeed) + 1)\
+				abs((self.speed - self.maxTurnSpeed) / self.maxSpeed)\
+				 + 1.0)\
 				* self.dtheta,\
-			0)
+			0.0)
 
 	def testCalculateDTheta(self):
-		pass
+		'''See the comments for method calculateDTheta for more details about this.'''
+		self.turnRateDecay = 1.0
+		self.dtheta = 10
+		for i in range(5):
+			fraction = float(i)/4.0
+			self.speed = self.maxSpeed * fraction
+			print str(fraction)+' - '+str(self.calculateDTheta())
 
 	def turnCounterClockwise(self, delta=None):
 		'''Turn in the desired direction.
@@ -472,5 +484,4 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Prevent multiple consecutive collisions with the same object
 		while self.speed > 0 and self.inCollision(other):
 			self.move()
-
 
