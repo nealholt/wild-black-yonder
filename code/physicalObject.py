@@ -13,21 +13,18 @@ class PhysicalObject(pygame.sprite.Sprite):
 	'''The four collision options are available to specify different collision zones than would 
 	normally be specified by the size of this physical object's image.'''
 	def __init__(self, centerx=0.0, centery=0.0, width=0, height=0, image_name=None, color=colors.white, collisiontopleft=None, collisionwidth=None,  collisionheight=None, collisionradius=None):
-
 		#Sprite tutorial being used is here:
 		# http://kai.vm.bytemark.co.uk/~piman/writing/sprite-tutorial.shtml
 		#Sprite class:
 		# http://pygame.org/docs/ref/sprite.html
 		pygame.sprite.Sprite.__init__(self)
-
+		#Keep track of whether or not this object's angle changed for efficiency
+		self.angleChanged = False
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
 		self.useOffset = True
-
 		#There is nothing particularly special about any of the following default values.
-
 		self.color = color
-
 		#speed. All speeds will be in pixels per second.
 		self.speed = 0.0
 		self.targetSpeed = 0.0
@@ -35,11 +32,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Acceleration in pixels per second squared. 
 		#Each frame the speed goes up by this amount.
 		self.dv = 1.0
-
 		#Rotation. All rotations are in degrees
 		self.theta = 0.0
 		self.dtheta = 3.0
-
 		#For simplicity, the player can set the target or goal speed in 
 		#increments equal to this fraction of the maxSpeed.
 		self.speedIncrements=1./4.
@@ -47,14 +42,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.maxTurnSpeed=self.maxSpeed*self.speedIncrements
 		#Rate at which turn rate decays as speed moves away from maxTurnSpeed
 		self.turnRateDecay=1.
-
 		#you can be within this many degrees of the target to stop turning
 		self.acceptableError = 0.5
 
 		self.destination = (0.0, 0.0)
 
 		self.image_name = image_name
-
 		#The location of this object. It is two floats for accuracy, 
 		#because rectangles will be rounded to an integer which can cause 
 		#an inability to move diagonally at slow speeds because the integer 
@@ -178,7 +171,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if delta is None: delta = self.calculateDTheta()
 		self.theta -= delta
 		if self.theta < -180: self.theta += 360
-		self.updateImageAngle()
+		self.angleChanged = True
 
 	def turnClockwise(self, delta=None):
 		'''Turn in the desired direction
@@ -187,7 +180,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if delta is None: delta = self.calculateDTheta()
 		self.theta += delta
 		if self.theta > 180: self.theta -= 360
-		self.updateImageAngle()
+		self.angleChanged = True
 
 	def turn(self, delta):
 		'''I'm using an angle system like stardog uses such that 
@@ -195,7 +188,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.theta += delta
 		if self.theta > 180: self.theta -= 360
 		elif self.theta < -180: self.theta += 360
-		self.updateImageAngle()
+		self.angleChanged = True
 
 	def setAngle(self, angle):
 		'''I'm using an angle system like stardog uses such that 
@@ -203,7 +196,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.theta = angle
 		while self.theta > 180: self.theta -= 360
 		while self.theta < -180: self.theta += 360
-		self.updateImageAngle()
+		self.angleChanged = True
 
 	def park(self):
 		'''Slow to a stop near target destination.'''
@@ -349,11 +342,17 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 
 	def draw(self, offset=(0,0)):
+		if self.angleChanged:
+			self.updateImageAngle()
+			self.angleChanged = False
 		x,y = self.rect.topleft
 		pos = x - offset[0], y - offset[1]
 		globalvars.screen.blit(self.image, pos)
 
 	def drawAt(self, position=(0,0)):
+		if self.angleChanged:
+			self.updateImageAngle()
+			self.angleChanged = False
 		pos = position[0] - self.rect.width/2, position[1] - self.rect.height/2
 		globalvars.screen.blit(self.image, pos)
 

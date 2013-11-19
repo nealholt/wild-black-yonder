@@ -19,15 +19,13 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Sprite class:
 		# http://pygame.org/docs/ref/sprite.html
 		pygame.sprite.Sprite.__init__(self)
-
+		#Keep track of whether or not this object's angle changed for efficiency
+		self.angleChanged = False
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
 		self.useOffset = True
-
 		#There is nothing particularly special about any of the following default values.
-
 		self.color = color
-
 		#speed. All speeds will be in pixels per second.
 		self.speed = 0.0
 		self.targetSpeed = 0.0
@@ -35,11 +33,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Acceleration in pixels per second squared. 
 		#Each frame the speed goes up by this amount.
 		self.dv = 1.0
-
 		#Rotation. All rotations are in degrees
 		self.theta = 0.0
 		self.dtheta = 3.0
-
 		#For simplicity, the player can set the target or goal speed in 
 		#increments equal to this fraction of the maxSpeed.
 		self.speedIncrements=1./4.
@@ -47,14 +43,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.maxTurnSpeed=self.maxSpeed*self.speedIncrements
 		#Rate at which turn rate decays as speed moves away from maxTurnSpeed
 		self.turnRateDecay=1.
-
 		#you can be within this many degrees of the target to stop turning
 		self.acceptableError = 0.5
 
 		self.destination = (0.0, 0.0)
 
 		self.image_name = image_name
-
 		#The location of this object. It is two floats for accuracy, 
 		#because rectangles will be rounded to an integer which can cause 
 		#an inability to move diagonally at slow speeds because the integer 
@@ -220,7 +214,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		'''Modify this object's speed to approach the 
 		goal speed (aka targetSpeed).'''
 		if abs(self.speed - self.targetSpeed) < self.dv and \
-		self.targetSpeed <= self.maxSpeed and
+		self.targetSpeed <= self.maxSpeed and \
 		self.targetSpeed >= 0:
 			self.speed = self.targetSpeed
 		elif self.speed < self.targetSpeed:
