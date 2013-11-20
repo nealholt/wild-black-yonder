@@ -210,9 +210,8 @@ class Ship(PhysicalObject):
 
 	def update(self):
 		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
-		#Flee the battle field at less than 5% health.
-		if float(self.health) / float(self.maxhealth) < 0.5:
-			print 'flight'
+		#Flee the battle field at less than self.min_percent_health health.
+		if float(self.health) / float(self.maxhealth) < self.min_percent_health:
 			#Get the direction in which to flee
 			angle = geometry.angleFromPosition(globalvars.player_target_lead, self.rect.center)
 			#Flee far away!

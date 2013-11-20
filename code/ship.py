@@ -51,6 +51,8 @@ class Ship(PhysicalObject):
 		self.target_short_range = 200
 		#If the target is within self.target_front_rear degrees of the axis of our ship, then initiate a squat-and-shoot or flee behavior depending on whether target is in front or behind. Said another way, if the target is in the self.target_front_rear degree cone in front or behind us, then do the corresponding behavior.
 		self.target_front_center = 30
+		#Ship flees the battle field below min_percent_health
+		self.min_percent_health = 0.10 #10 percent
 
 
 	def setWeapon(self, weaponId):
@@ -210,8 +212,8 @@ class Ship(PhysicalObject):
 
 	def update(self):
 		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
-		#Flee the battle field at less than 5% health.
-		if float(self.health) / float(self.maxhealth) < 0.5:
+		#Flee the battle field at less than self.min_percent_health health.
+		if float(self.health) / float(self.maxhealth) < self.min_percent_health:
 			#Get the direction in which to flee
 			angle = geometry.angleFromPosition(globalvars.player_target_lead, self.rect.center)
 			#Flee far away!

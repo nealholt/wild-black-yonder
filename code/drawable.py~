@@ -43,16 +43,17 @@ class Circle(Drawable):
 
 
 class Line(Drawable):
-	def __init__(self, x1=0, y1=0, x2=0, y2=0, color=white):
+	def __init__(self, x1=0, y1=0, x2=0, y2=0, color=white, width=1):
 		Drawable.__init__(self, x1=x1, y1=y1, color=color)
 		self.p2 = x2, y2
+		self.width = width
 
 	def draw(self, use_color=None):
 		color_to_use = self.color
 		if not use_color is None:
 			color_to_use = use_color
 		self.rect = pygame.draw.line(globalvars.screen, color_to_use, \
-			(self.x1, self.y1), self.p2)
+			(self.x1, self.y1), self.p2, width=self.width)
 
 class Text(Drawable):
 	def __init__(self, x1=0, y1=0, string='', font_size=12, color=white):
@@ -80,5 +81,10 @@ class DrawableImage(Drawable):
 
 	def draw(self, use_color=None):
 		'''Draw the image centered.'''
-		globalvars.screen.blit(self.image, (self.x1-self.rect.width/2, self.y1-self.rect.height/2))
+		if not use_color is None:
+			pygame.draw.rect(globalvars.screen, use_color, \
+				self.rect)
+		else:
+			globalvars.screen.blit(self.image, 
+				(self.x1-self.rect.width/2, self.y1-self.rect.height/2))
 

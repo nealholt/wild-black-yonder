@@ -29,7 +29,7 @@ class Player(Ship):
 
 		#Node location of the player.
 		self.nodeid = 0
-		self.destinationNode = 0
+		self.destinationNode = [0]
 
 		#For testing purposes, load all the weapons except the initially equipped 
 		#weapon into the player's cargo hold.

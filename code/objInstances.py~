@@ -464,7 +464,7 @@ class HealthBar(PhysicalObject):
 
 	def kill(self):
 		self.is_dead = True
-		self.kill(PhysicalObject)
+		super(HealthBar, self).kill()
 
 
 class WarpPortal(PhysicalObject):

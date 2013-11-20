@@ -1,6 +1,8 @@
 import random as rd
 import globalvars
-from geometry import distance
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 def printNodeLocations(nodelist):
 	for n in nodelist:
@@ -124,7 +126,7 @@ class NodeManager():
 			#Check for pairs of nodes that are too close together and remove one of them.
 			for i in xrange(nodecount-1):
 				for j in xrange(i+1, nodecount):
-					if distance(sortednodes[i].loc, sortednodes[j].loc) < minimumNodeDist:
+					if cygeometry.distance(sortednodes[i].loc, sortednodes[j].loc) < minimumNodeDist:
 						anyTooClose = True
 						sortednodes.pop(j)
 						nodecount -= 1
@@ -143,7 +145,7 @@ class NodeManager():
 			closestNeighbors = []
 			for j in xrange(len(sortednodes)):
 				#Get the distance between the nodes
-				dist = distance(sortednodes[i].loc, sortednodes[j].loc)
+				dist = cygeometry.distance(sortednodes[i].loc, sortednodes[j].loc)
 				#Determine how full of connections the current node is
 				vacancies = maxNeighbors - len(sortednodes[i].connections)
 				if vacancies == 0: break

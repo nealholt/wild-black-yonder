@@ -178,6 +178,18 @@ class Menu:
 		subpanel.argument = False
 		self.main_panel.addPanel(subpanel)
 		x_val += width
+		#galaxy travel
+		subpanel = Panel()
+		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
+			color=colors.yellow, thickness=framethickness)
+		subpanel.addDrawable(temp)
+		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
+			string='Far Travel', font_size=font_size, color=colors.white)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(globalvars.menu.setGalaxyPanel)
+		subpanel.argument = True
+		self.main_panel.addPanel(subpanel)
+		x_val += width
 		#local info
 		subpanel = Panel()
 		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
@@ -287,10 +299,21 @@ class Menu:
 		self.main_panel.addPanel(subpanel)
 
 
-	def setGalaxyPanel(self, travel):
+	def setDestinationUpdateGalaxyTravel(self, destination_node_id):
+		'''Set the player's destination to be the given node
+		then update the galaxy view to highlight the path.
+		If the player cannot reach the selected node, display an error message.'''
+		success = globalvars.scenario_manager.setDestinationNode(destination_node_id)
+		text = []
+		if not success:
+			text = ['You cannot reach the selected node from here.']
+		self.setGalaxyPanel(True)
+
+
+	def setGalaxyPanel(self, travel, text=None):
 		'''Pre: galaxy is a NodeManager object that has been initialized.'''
 		self.setStandardMenu()
-		radius = 3
+		radius = 3 #Radius of the nodes.
 		for n in globalvars.galaxy.nodes:
 			subpanel = Panel()
 			color = colors.yellow
@@ -306,17 +329,28 @@ class Menu:
 			#If this node is connected to the player's current node, make it clickable
 			isconnected = False
 			subpanel.argument = n.id
-			#If travel is set and the node is already connected to the player's node
-			if travel and n.alreadyConnected(globalvars.player.nodeid):
-				subpanel.setMethod(globalvars.scenario_manager.setDestinationNode)
+			#If travel is set then the node method is to make a destination to the node.
+			if travel:
+				subpanel.setMethod(globalvars.menu.setDestinationUpdateGalaxyTravel)
 			else:
 				#Otherwise view options for information only
 				subpanel.setMethod(globalvars.menu.setNodeViewPanel)
 			self.main_panel.addPanel(subpanel)
-
+		#Draw the connections between nodes
 		for c in globalvars.galaxy.connections:
 			temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
 			self.main_panel.addDrawable(temp)
+		#Draw a thicker orange line over the player's path
+		for i in range(len(globalvars.player.destinationNode)-1):
+			start = globalvars.galaxy.getNode(globalvars.player.destinationNode[i])
+			end = globalvars.galaxy.getNode(globalvars.player.destinationNode[i+1])
+			temp = drawable.Line(x1=start.loc[0], y1=start.loc[1],\
+					x2=end.loc[0], y2=end.loc[1],\
+					color=colors.blue, width=2)
+			self.main_panel.addDrawable(temp)
+		#Display optional text
+		if not text is None:
+			self.addTextToMainPanel(text, left+100, topbuffer+top)
 
 
 	def setLocalGalaxyPanel(self, travel):
@@ -499,7 +533,7 @@ class Menu:
 		self.addTextToMainPanel(help, left+50, 50+top)
 
 
-	def setEndMinigamePanel(self, text): #TODO LEFT OFF HERE
+	def setEndMinigamePanel(self, text):
 		#First kick player back to infinite space but don't update all the nodes:
 		globalvars.scenario_manager.goToInfiniteSpace(globalvars.player.nodeid, update=False)
 		#Next set the menu displaying the results of the minigame.

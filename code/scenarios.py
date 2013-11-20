@@ -268,7 +268,6 @@ class ScenarioManager:
 		globalvars.player.speed = 0.0
 		globalvars.player.targetSpeed = 0.0
 		globalvars.player.nodeid = seed #Player's new node id is set to be the seed argument.
-		globalvars.player.destinationNode = seed
 		#Place warp portals
 		allWarps = []
 		if not warps is None:
@@ -299,7 +298,71 @@ class ScenarioManager:
 
 
 	def setDestinationNode(self, nodeid):
-		globalvars.player.destinationNode = nodeid
+		'''Chart a shortest path using breadth first search to the node with the given id.
+		Set the player's destination to be the path.
+		Get the very first node in the path and point an arrow to it to lead 
+		the player in the right direction.'''
+		#End conditions
+		failure = False #But this can be true if we run out of destinations to append.
+				#There are disconnects in the graph.
+		success = False #This is set true when we find the destination
+		#Append as tuples all nodes reachable from player's current node along with the distance to them.
+		visited_node_ids = [globalvars.player.nodeid]
+		old_bfs_array = []
+		new_bfs_array = []
+		current_node = globalvars.galaxy.getNode(globalvars.player.nodeid)
+		for connectid,location in current_node.connections:
+			#If connectid is the destination then we can shortcircuit here
+			if connectid == nodeid:
+				globalvars.player.destinationNode = [nodeid]
+				new_bfs_array = []
+				success = True
+				break
+			if not connectid in visited_node_ids:
+				#Calculate the distance (aka cost)
+				cost = cygeometry.distance(current_node.loc, location)
+				visited_node_ids.append(connectid)
+				#Append a tuple where the first element is a path in the form of 
+				#an array of node ids and the second element is the cost of the path.
+				new_bfs_array.append(([connectid], cost))
+		while not success and not failure:
+			old_bfs_array = new_bfs_array[:]
+			new_bfs_array = []
+			#We may exhaust all the connections if the destination is not 
+			#connected to the player's location.
+			if len(old_bfs_array) == 0:
+				failure = True
+				continue
+			#Then for each node by id in the current list
+			for path, cost in old_bfs_array:
+				if success == True: break
+				#Get the last node in the path
+				current_node = globalvars.galaxy.getNode(path[-1])
+				#For each of the node's neighbors
+				for connectid,location in current_node.connections:
+					#If connectid is the destination then we can shortcircuit here
+					if connectid == nodeid:
+						path.append(nodeid)
+						globalvars.player.destinationNode = path
+						success = True
+						break
+					#skip if the neighbor has already been considered
+					#otherwise add node+neighbor + the sum of the distances to a new list
+					elif not connectid in visited_node_ids:
+						#Calculate the distance (aka cost)
+						extra_cost = cygeometry.distance(current_node.loc, location)
+						visited_node_ids.append(connectid)
+						#Append a tuple where the first element is a path in the form of 
+						#an array of node ids and the second element is the cost of 
+						#the path.
+						new_bfs_array.append((path+[connectid], cost+extra_cost))
+		#If we failed to find a path, return false
+		if failure: return False
+		#Otherwise, make a new arrow point to the first warp point on the path and remove any old arrows.
+
+		#Get the first node on the path:
+		next_node_id = globalvars.player.destinationNode[0]
+
 		#Find the infinite space generator
 		destNodeLoc = None
 		foundObjWithWarps = False
@@ -308,14 +371,14 @@ class ScenarioManager:
 				foundObjWithWarps = True
 				#Get the location of the destination node
 				for w in i.warps:
-					if w.destinationNode == nodeid:
+					if w.destinationNode == next_node_id:
 						destNodeLoc = w.rect.center
 						break
 				break
 		#Error check
 		if destNodeLoc is None:
 			if foundObjWithWarps:
-				print 'ERROR: The infiniteSpaceGenerator object was found in intangibles_bottom, but it has no warp with an id matching nodeid '+str(nodeid)+'. Exiting.'; exit()
+				print 'ERROR: The infiniteSpaceGenerator object was found in intangibles_bottom, but it has no warp with an id matching nodeid '+str(next_node_id)+'. Exiting.'; exit()
 			else:
 				print 'Warning: cannot set destination node from here. No infiniteSpaceGenerator object was found in intangibles_bottom.'
 		else:
@@ -325,6 +388,7 @@ class ScenarioManager:
 					globalvars.intangibles_top.remove(i)
 			#Create a new arrow pointing to the destination node and add it to intangibles_top
 			globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destNodeLoc))
+		return True #Indicate that the destination was successfully set.
 
 
 	def restart(self):
