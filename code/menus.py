@@ -304,10 +304,10 @@ class Menu:
 		then update the galaxy view to highlight the path.
 		If the player cannot reach the selected node, display an error message.'''
 		success = globalvars.scenario_manager.setDestinationNode(destination_node_id)
-		text = []
+		text = None
 		if not success:
 			text = ['You cannot reach the selected node from here.']
-		self.setGalaxyPanel(True)
+		self.setGalaxyPanel(True, text=text)
 
 
 	def setGalaxyPanel(self, travel, text=None):
@@ -341,13 +341,20 @@ class Menu:
 			temp = drawable.Line(x1=c[0], y1=c[1], x2=c[2], y2=c[3])
 			self.main_panel.addDrawable(temp)
 		#Draw a thicker orange line over the player's path
-		for i in range(len(globalvars.player.destinationNode)-1):
-			start = globalvars.galaxy.getNode(globalvars.player.destinationNode[i])
-			end = globalvars.galaxy.getNode(globalvars.player.destinationNode[i+1])
+		if len(globalvars.player.destinationNode) > 0:
+			start = globalvars.galaxy.getNode(globalvars.player.nodeid)
+			end = globalvars.galaxy.getNode(globalvars.player.destinationNode[0])
 			temp = drawable.Line(x1=start.loc[0], y1=start.loc[1],\
 					x2=end.loc[0], y2=end.loc[1],\
 					color=colors.blue, width=2)
 			self.main_panel.addDrawable(temp)
+			for i in range(len(globalvars.player.destinationNode)-1):
+				start = globalvars.galaxy.getNode(globalvars.player.destinationNode[i])
+				end = globalvars.galaxy.getNode(globalvars.player.destinationNode[i+1])
+				temp = drawable.Line(x1=start.loc[0], y1=start.loc[1],\
+						x2=end.loc[0], y2=end.loc[1],\
+						color=colors.blue, width=2)
+				self.main_panel.addDrawable(temp)
 		#Display optional text
 		if not text is None:
 			self.addTextToMainPanel(text, left+100, topbuffer+top)

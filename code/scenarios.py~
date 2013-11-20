@@ -258,6 +258,9 @@ class ScenarioManager:
 		#the target of an action from a faction.
 		if not opportunity is None:
 			globalvars.menu.setOpportunityPanel(opportunity)
+		#If the player has moved to a node in his path, then pop it.
+		if globalvars.player.destinationNode[0] == nodeid:
+			globalvars.player.destinationNode.pop(0)
 
 
 	def infiniteSpace(self, seed=0, playerloc=(0.0,0.0), warps=None):
@@ -326,7 +329,8 @@ class ScenarioManager:
 				#an array of node ids and the second element is the cost of the path.
 				new_bfs_array.append(([connectid], cost))
 		while not success and not failure:
-			old_bfs_array = new_bfs_array[:]
+			#Sort by shortest path when updating the arrays
+			old_bfs_array = sorted(new_bfs_array, key=lambda pair: pair[1])
 			new_bfs_array = []
 			#We may exhaust all the connections if the destination is not 
 			#connected to the player's location.
@@ -359,6 +363,17 @@ class ScenarioManager:
 		#If we failed to find a path, return false
 		if failure: return False
 		#Otherwise, make a new arrow point to the first warp point on the path and remove any old arrows.
+		self.resetArrow()
+		return True #Indicate that the destination was successfully set.
+
+
+	def resetArrow(self):
+		if len(globalvars.player.destinationNode) == 0:
+			#Search through intangibles_top and remove any existing arrows
+			for i in globalvars.intangibles_top:
+				if i.is_a == globalvars.ARROW:
+					globalvars.intangibles_top.remove(i)
+			return True
 
 		#Get the first node on the path:
 		next_node_id = globalvars.player.destinationNode[0]
