@@ -56,8 +56,8 @@ def generateWeapon(weapon_class):
 		#print 'Weapon name: '+weapon.getWeaponName()
 	#randomly select an attribute of the weapon
 	randatt = rd.randint(0, num_weapon_attributes-1)
-	#while the weapon is above the selected class...
-	while actual_class > weapon_class:
+	#while the weapon is below the selected class...
+	while actual_class < weapon_class:
 		#Increment selected attribute
 		weapon.incrementAttribute(randatt)
 		#move to the next weapon attribute
@@ -269,7 +269,7 @@ class Weapon():
 
 	def makeBullet(self, angle):
 		tempbullet = Bullet(angle, self.shooter.rect.centerx+self.offset[0],\
-			self.shooter.rect.centery+self.offset[1], self.shooter)
+			self.shooter.rect.centery+self.offset[1], self.damage, self.shooter)
 		#Set bullet attributes
 		tempbullet.speed = self.bullet_speed
 		tempbullet.setColor(self.bullet_color)

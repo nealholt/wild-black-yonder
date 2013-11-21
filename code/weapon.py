@@ -56,8 +56,8 @@ def generateWeapon(weapon_class):
 		#print 'Weapon name: '+weapon.getWeaponName()
 	#randomly select an attribute of the weapon
 	randatt = rd.randint(0, num_weapon_attributes-1)
-	#while the weapon is above the selected class...
-	while actual_class > weapon_class:
+	#while the weapon is below the selected class...
+	while actual_class < weapon_class:
 		#Increment selected attribute
 		weapon.incrementAttribute(randatt)
 		#move to the next weapon attribute
@@ -187,15 +187,15 @@ class Weapon():
 		if attribute_index == 0:
 			if self.spread_index < len(spread_classes)-1: self.spread_index += 1
 		elif attribute_index == 1:
-			if self.refire_index < len(refire_classes)-1: self.refire_index -= 1
+			if self.refire_index < len(refire_classes)-1: self.refire_index += 1
 		elif attribute_index == 2:
 			pass #Type has no influence on class
 		elif attribute_index == 3:
-			if self.speed_index < len(speed_classes)-1: self.speed_index -= 1
+			if self.speed_index < len(speed_classes)-1: self.speed_index += 1
 		elif attribute_index == 4:
-			if self.damage_index < len(damage_classes)-1: self.damage_index -= 1
+			if self.damage_index < len(damage_classes)-1: self.damage_index += 1
 		elif attribute_index == 5:
-			if self.lifespan_index < len(lifespan_classes)-1: self.lifespan_index -= 1
+			if self.lifespan_index < len(lifespan_classes)-1: self.lifespan_index += 1
 		else:
 			print 'ERROR in weapon.incrementAttribute. Exiting'; exit()
 

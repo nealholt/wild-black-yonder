@@ -113,10 +113,9 @@ class Ship(PhysicalObject):
 		temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
 		temp.shooter = self
 		self.gun = temp
-		#Give enemy an engine
-		self.engine = engine.Engine()
-		engine.setProfile('mk2', self.engine)
-
+		#Give enemy a random engine
+		self.engine = engine.generateEngine(rd.randint(0, len(engine.engine_class_names)-1))
+		#Set this object's movement parameters based on the engine.
 		self.maxSpeed = self.engine.maxSpeed
 		self.dv = self.engine.dv
 		self.dtheta = self.engine.dtheta

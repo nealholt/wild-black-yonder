@@ -51,6 +51,8 @@ class Ship(PhysicalObject):
 		self.target_short_range = 200
 		#If the target is within self.target_front_rear degrees of the axis of our ship, then initiate a squat-and-shoot or flee behavior depending on whether target is in front or behind. Said another way, if the target is in the self.target_front_rear degree cone in front or behind us, then do the corresponding behavior.
 		self.target_front_center = 30
+		#Ship flees the battle field below min_percent_health
+		self.min_percent_health = 0.10 #10 percent
 
 
 	def setWeapon(self, weaponId):
@@ -111,10 +113,9 @@ class Ship(PhysicalObject):
 		temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
 		temp.shooter = self
 		self.gun = temp
-		#Give enemy an engine
-		self.engine = engine.Engine()
-		engine.setProfile('mk2', self.engine)
-
+		#Give enemy a random engine
+		self.engine = generateEngine(rd.randint(0, len(engine.engine_class_names)-1))
+		#Set this object's movement parameters based on the engine.
 		self.maxSpeed = self.engine.maxSpeed
 		self.dv = self.engine.dv
 		self.dtheta = self.engine.dtheta

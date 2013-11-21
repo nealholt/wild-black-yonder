@@ -7,10 +7,6 @@ class Player(Ship):
 		Ship.__init__(self,image_name=image_name)
 
 		self.setProfile()
-		#Give player a random weapon
-		temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
-		temp.shooter = self
-		self.gun = temp
 
 		self.health=300
 		self.maxhealth=300
