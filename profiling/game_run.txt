@@ -1,181 +1,191 @@
-Tue Nov 19 12:17:39 2013    profiling/game.run.profile
+Fri Nov 22 15:12:12 2013    profiling/game.run.profile
 
-         15527536 function calls in 29.501 seconds
+         17484551 function calls in 29.104 seconds
 
    Ordered by: cumulative time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.000    0.000   29.501   29.501 <string>:1(<module>)
-        1    0.378    0.378   29.501   29.501 code/game.py:78(run)
-     1800    9.145    0.005    9.145    0.005 {pygame.display.update}
-     1800    5.713    0.003    5.713    0.003 {method 'tick' of 'Clock' objects}
-     1800    1.496    0.001    4.848    0.003 code/game.py:449(collisionHandling)
-     1800    2.808    0.002    4.214    0.002 code/game.py:414(setClosestSprites)
-  2143372    2.068    0.000    3.048    0.000 code/physicalObject.py:377(inCollision)
-  6024112    2.539    0.000    2.539    0.000 {cygeometry.distance}
-     5400    0.230    0.000    2.511    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:393(update)
-  1142245    0.681    0.000    1.300    0.000 code/game.py:55(addToDirtyRects)
-   405419    0.445    0.000    1.080    0.000 code/objInstances.py:354(update)
-    13957    0.068    0.000    0.913    0.000 code/ship.py:205(update)
-    83198    0.887    0.000    0.887    0.000 {method 'blit' of 'pygame.Surface' objects}
-    59828    0.067    0.000    0.803    0.000 code/physicalObject.py:344(draw)
-   442026    0.465    0.000    0.702    0.000 code/geometry.py:94(translate)
-    13957    0.020    0.000    0.555    0.000 code/ship.py:136(shoot)
-     1921    0.210    0.000    0.465    0.000 code/ship.py:163(clearLineOfSight)
-  1134304    0.447    0.000    0.447    0.000 code/physicalObject.py:360(isOnScreen)
-     1825    0.173    0.000    0.259    0.000 {sorted}
-     7333    0.008    0.000    0.218    0.000 code/ship.py:244(draw)
-     7333    0.014    0.000    0.210    0.000 code/physicalObject.py:352(drawAt)
-     1800    0.016    0.000    0.193    0.000 code/displayUtilities.py:197(draw)
-    74126    0.131    0.000    0.179    0.000 code/physicalObject.py:233(getAngleToTarget)
-    13957    0.046    0.000    0.163    0.000 code/physicalObject.py:256(turnTowards)
-    85473    0.158    0.000    0.158    0.000 {method 'fill' of 'pygame.Surface' objects}
-     5367    0.021    0.000    0.158    0.000 code/physicalObject.py:120(updateImageAngle)
-    90000    0.080    0.000    0.126    0.000 code/objInstances.py:266(update)
-    34498    0.040    0.000    0.100    0.000 code/physicalObject.py:327(move)
-    22016    0.046    0.000    0.095    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:271(sprites)
-   457441    0.089    0.000    0.089    0.000 {math.cos}
-   455348    0.086    0.000    0.086    0.000 code/game.py:461(<lambda>)
-   914882    0.080    0.000    0.080    0.000 {math.radians}
-   457441    0.075    0.000    0.075    0.000 {math.sin}
-    13016    0.013    0.000    0.070    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:301(__iter__)
-     5367    0.069    0.000    0.069    0.000 {method 'convert_alpha' of 'pygame.Surface' objects}
-     1801    0.068    0.000    0.068    0.000 {method 'render' of 'pygame.font.Font' objects}
-     1800    0.015    0.000    0.067    0.000 code/hudHelpers.py:239(update)
-     5367    0.066    0.000    0.066    0.000 {pygame.transform.rotate}
-    18672    0.015    0.000    0.062    0.000 code/objInstances.py:26(update)
-    24214    0.050    0.000    0.050    0.000 {method 'keys' of 'dict' objects}
-       25    0.002    0.000    0.048    0.002 code/hudHelpers.py:63(populateSpace)
-     6978    0.026    0.000    0.046    0.000 code/objInstances.py:453(draw)
-    15415    0.017    0.000    0.042    0.000 code/ship.py:195(getStraightAhead)
-    11574    0.013    0.000    0.039    0.000 code/geometry.py:24(inSights)
-    18190    0.025    0.000    0.034    0.000 code/physicalObject.py:145(calculateDTheta)
-   482575    0.029    0.000    0.029    0.000 {len}
-    15415    0.029    0.000    0.029    0.000 code/geometry.py:67(lineIntersectsCircle)
-    74126    0.027    0.000    0.027    0.000 {math.atan2}
-    15757    0.022    0.000    0.026    0.000 code/physicalObject.py:212(approachSpeed)
-     3600    0.025    0.000    0.025    0.000 {built-in method now}
-    15415    0.016    0.000    0.025    0.000 code/geometry.py:35(angleToSlope)
-      557    0.006    0.000    0.025    0.000 code/physicalObject.py:15(__init__)
-    15757    0.018    0.000    0.022    0.000 code/ship.py:156(cooldown)
-      268    0.001    0.000    0.021    0.000 code/objInstances.py:341(__init__)
-    15757    0.019    0.000    0.019    0.000 code/ship.py:239(updateHealthBar)
-     1800    0.006    0.000    0.019    0.000 code/player.py:69(playerUpdate)
-   158380    0.019    0.000    0.019    0.000 {method 'append' of 'list' objects}
-     5546    0.007    0.000    0.017    0.000 code/physicalObject.py:167(turnCounterClockwise)
-      283    0.011    0.000    0.017    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:1393(spritecollideany)
-      574    0.017    0.000    0.017    0.000 {method 'convert' of 'pygame.Surface' objects}
-     5114    0.006    0.000    0.016    0.000 code/physicalObject.py:176(turnClockwise)
-     7200    0.013    0.000    0.014    0.000 code/displayUtilities.py:61(trunc)
-    53443    0.013    0.000    0.013    0.000 {isinstance}
-    26024    0.012    0.000    0.012    0.000 {max}
-     1800    0.012    0.000    0.012    0.000 {pygame.event.get}
-   100062    0.009    0.000    0.009    0.000 {abs}
-     1800    0.003    0.000    0.008    0.000 code/player.py:61(getLeadIndicator)
-      144    0.000    0.000    0.008    0.000 code/weapon.py:245(shoot)
-    74126    0.007    0.000    0.007    0.000 {math.degrees}
-    13948    0.007    0.000    0.007    0.000 code/physicalObject.py:141(setClosest)
-      258    0.001    0.000    0.007    0.000 code/weapon.py:270(makeBullet)
-     1800    0.002    0.000    0.007    0.000 code/player.py:51(update)
-    18660    0.006    0.000    0.006    0.000 {min}
-      281    0.000    0.000    0.005    0.000 code/displayUtilities.py:160(draw)
-      258    0.001    0.000    0.005    0.000 code/objInstances.py:7(__init__)
-     1983    0.001    0.000    0.005    0.000 /usr/lib/python2.7/random.py:237(randint)
-    15757    0.005    0.000    0.005    0.000 code/weapon.py:241(cool)
-    64865    0.004    0.000    0.004    0.000 {method 'colliderect' of 'pygame.Rect' objects}
-    33940    0.004    0.000    0.004    0.000 code/physicalObject.py:113(update)
-    13016    0.003    0.000    0.003    0.000 {iter}
-    13957    0.003    0.000    0.003    0.000 code/physicalObject.py:226(setDestination)
-     1983    0.003    0.000    0.003    0.000 /usr/lib/python2.7/random.py:173(randrange)
-     1060    0.002    0.000    0.003    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:307(add)
-      283    0.001    0.000    0.003    0.000 code/geometry.py:8(getCoordsNearLoc)
-     1226    0.001    0.000    0.002    0.000 code/ship.py:250(handleCollisionWith)
-     2124    0.001    0.000    0.002    0.000 code/objInstances.py:35(handleCollisionWith)
-     7725    0.002    0.000    0.002    0.000 {method 'get_rect' of 'pygame.Surface' objects}
-     1544    0.001    0.000    0.001    0.000 code/physicalObject.py:185(turn)
-       12    0.000    0.000    0.001    0.000 code/ship.py:11(__init__)
-       55    0.000    0.000    0.001    0.000 code/physicalObject.py:406(bounceOff)
-      318    0.001    0.000    0.001    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:165(kill)
-     2007    0.001    0.000    0.001    0.000 code/objInstances.py:363(handleCollisionWith)
-     3600    0.001    0.000    0.001    0.000 code/displayUtilities.py:208(isOnScreen)
-     3600    0.001    0.000    0.001    0.000 code/hudHelpers.py:329(isOnScreen)
-       25    0.000    0.000    0.001    0.000 code/hudHelpers.py:16(getObstacles)
-     2353    0.001    0.000    0.001    0.000 code/objInstances.py:506(update)
-     1906    0.001    0.000    0.001    0.000 code/ship.py:132(isDead)
-       12    0.000    0.000    0.001    0.000 code/ship.py:103(setProfile)
-     1800    0.001    0.000    0.001    0.000 code/hudHelpers.py:326(draw)
-       50    0.000    0.000    0.001    0.000 /usr/lib/python2.7/random.py:100(seed)
-        2    0.000    0.000    0.001    0.000 code/objInstances.py:491(__init__)
-      741    0.001    0.000    0.001    0.000 code/displayUtilities.py:166(isOnScreen)
-       50    0.000    0.000    0.000    0.000 {function seed at 0x2c179b0}
-       12    0.000    0.000    0.000    0.000 code/weapon.py:36(generateWeapon)
-     1800    0.000    0.000    0.000    0.000 {method 'get_fps' of 'Clock' objects}
-        1    0.000    0.000    0.000    0.000 code/objInstances.py:431(handleCollisionWith)
-      372    0.000    0.000    0.000    0.000 code/displayUtilities.py:144(update)
-        1    0.000    0.000    0.000    0.000 code/displayUtilities.py:127(__init__)
-      258    0.000    0.000    0.000    0.000 code/physicalObject.py:137(setColor)
-      558    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:112(__init__)
-       12    0.000    0.000    0.000    0.000 code/ship.py:97(setHealthBar)
-     1035    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:281(add_internal)
-      530    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:284(remove_internal)
-     2233    0.000    0.000    0.000    0.000 {method 'random' of '_random.Random' objects}
-     1035    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:290(has_internal)
+        1    0.000    0.000   29.104   29.104 <string>:1(<module>)
+        1    0.075    0.075   29.104   29.104 code/game.py:78(run)
+     1800    6.888    0.004    6.888    0.004 {method 'tick' of 'Clock' objects}
+     1800    3.791    0.002    5.657    0.003 code/game.py:414(setClosestSprites)
+     1800    5.299    0.003    5.299    0.003 {pygame.display.flip}
+     5400    0.518    0.000    4.877    0.001 /usr/lib/python2.7/dist-packages/pygame/sprite.py:393(update)
+     5400    0.471    0.000    2.923    0.001 code/game.py:395(drawThoseOnScreen)
+     1800    0.889    0.000    2.842    0.002 code/game.py:449(collisionHandling)
+  6307253    2.443    0.000    2.443    0.000 {cygeometry.distance}
+  1086197    1.166    0.000    1.598    0.000 code/physicalObject.py:424(inCollision)
+   570041    0.536    0.000    1.404    0.000 code/physicalObject.py:374(move)
+    29288    0.190    0.000    1.365    0.000 code/ship.py:212(update)
+   387663    0.231    0.000    1.189    0.000 code/objInstances.py:250(update)
+   750876    0.772    0.000    1.150    0.000 code/geometry.py:94(translate)
+    29357    0.038    0.000    0.591    0.000 code/ship.py:143(shoot)
+  1121512    0.578    0.000    0.578    0.000 code/physicalObject.py:407(isOnScreen)
+   274875    0.556    0.000    0.556    0.000 {method 'blit' of 'pygame.Surface' objects}
+    79210    0.084    0.000    0.533    0.000 code/objInstances.py:234(draw)
+   151128    0.113    0.000    0.482    0.000 code/objInstances.py:26(update)
+   238717    0.234    0.000    0.478    0.000 code/physicalObject.py:391(draw)
+    28254    0.473    0.000    0.473    0.000 {method 'fill' of 'pygame.Surface' objects}
+    13204    0.023    0.000    0.471    0.000 code/physicalObject.py:399(drawAt)
+     6397    0.038    0.000    0.465    0.000 code/objInstances.py:191(update)
+   168929    0.193    0.000    0.450    0.000 code/objInstances.py:354(update)
+    79210    0.449    0.000    0.449    0.000 {pygame.draw.circle}
+     1800    0.003    0.000    0.444    0.000 code/game.py:48(redrawWholeBackground)
+     3106    0.169    0.000    0.409    0.000 code/ship.py:170(clearLineOfSight)
+    11082    0.011    0.000    0.335    0.000 code/ship.py:275(draw)
+   130623    0.215    0.000    0.293    0.000 code/physicalObject.py:274(getAngleToTarget)
+     1821    0.172    0.000    0.280    0.000 {sorted}
+    29288    0.099    0.000    0.272    0.000 code/physicalObject.py:297(turnTowards)
+     8389    0.030    0.000    0.251    0.000 code/physicalObject.py:149(updateImageAngle)
+    14564    0.173    0.000    0.239    0.000 code/physicalObject.py:18(__init__)
+     6397    0.039    0.000    0.226    0.000 code/objInstances.py:213(__init__)
+     1800    0.018    0.000    0.197    0.000 code/displayUtilities.py:197(draw)
+      322    0.000    0.000    0.140    0.000 code/capitalShip.py:93(draw)
+   770499    0.138    0.000    0.138    0.000 {math.cos}
+    90000    0.084    0.000    0.135    0.000 code/objInstances.py:266(update)
+    17628    0.047    0.000    0.135    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:271(sprites)
+     6417    0.024    0.000    0.134    0.000 code/objInstances.py:243(__init__)
+  1540998    0.132    0.000    0.132    0.000 {math.radians}
+    65535    0.030    0.000    0.121    0.000 /usr/lib/python2.7/random.py:237(randint)
+   770499    0.118    0.000    0.118    0.000 {math.sin}
+     8389    0.111    0.000    0.111    0.000 {method 'convert_alpha' of 'pygame.Surface' objects}
+     8389    0.109    0.000    0.109    0.000 {pygame.transform.rotate}
+   388840    0.108    0.000    0.108    0.000 code/game.py:461(<lambda>)
+    34013    0.095    0.000    0.095    0.000 {method 'keys' of 'dict' objects}
+    65535    0.084    0.000    0.091    0.000 /usr/lib/python2.7/random.py:173(randrange)
+   214740    0.066    0.000    0.080    0.000 code/objInstances.py:228(update)
+    10244    0.015    0.000    0.074    0.000 code/capitalShip.py:85(update)
+    10577    0.041    0.000    0.071    0.000 code/objInstances.py:456(draw)
+     1800    0.071    0.000    0.071    0.000 {method 'render' of 'pygame.font.Font' objects}
+     8628    0.009    0.000    0.070    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:301(__iter__)
+    21446    0.022    0.000    0.068    0.000 code/geometry.py:24(inSights)
+     1800    0.003    0.000    0.063    0.000 code/displayUtilities.py:315(draw)
+    39522    0.047    0.000    0.062    0.000 code/physicalObject.py:174(calculateDTheta)
+     1800    0.018    0.000    0.060    0.000 code/displayUtilities.py:75(drawArrowAtTarget)
+    19623    0.021    0.000    0.050    0.000 code/ship.py:202(getStraightAhead)
+   133261    0.049    0.000    0.049    0.000 {math.atan2}
+     1800    0.015    0.000    0.048    0.000 code/hudHelpers.py:239(update)
+    31088    0.035    0.000    0.046    0.000 code/ship.py:163(cooldown)
+    14772    0.026    0.000    0.044    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:307(add)
+    31088    0.038    0.000    0.044    0.000 code/physicalObject.py:253(approachSpeed)
+     6397    0.007    0.000    0.040    0.000 code/colors.py:14(getRandHotColor)
+    14489    0.023    0.000    0.039    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:165(kill)
+      554    0.002    0.000    0.037    0.000 code/weapon.py:245(shoot)
+    31088    0.036    0.000    0.036    0.000 code/ship.py:270(updateHealthBar)
+     1434    0.005    0.000    0.035    0.000 code/weapon.py:270(makeBullet)
+    10244    0.022    0.000    0.035    0.000 code/capitalShip.py:52(shoot)
+     3600    0.033    0.000    0.033    0.000 {built-in method now}
+    19623    0.032    0.000    0.032    0.000 code/geometry.py:67(lineIntersectsCircle)
+   441642    0.029    0.000    0.029    0.000 {len}
+    19623    0.019    0.000    0.029    0.000 code/geometry.py:35(angleToSlope)
+       21    0.001    0.000    0.029    0.001 code/hudHelpers.py:63(populateSpace)
+    10016    0.013    0.000    0.028    0.000 code/physicalObject.py:208(turnCounterClockwise)
+     9180    0.012    0.000    0.025    0.000 code/physicalObject.py:217(turnClockwise)
+    94640    0.025    0.000    0.025    0.000 {isinstance}
+     1434    0.003    0.000    0.023    0.000 code/objInstances.py:7(__init__)
+    10244    0.016    0.000    0.022    0.000 code/capitalShip.py:80(cooldown)
+    67122    0.020    0.000    0.020    0.000 {max}
+    54102    0.019    0.000    0.019    0.000 {min}
+     1800    0.019    0.000    0.019    0.000 {pygame.event.get}
+     1800    0.007    0.000    0.018    0.000 code/player.py:65(playerUpdate)
+    39516    0.016    0.000    0.016    0.000 code/physicalObject.py:170(setClosest)
+   180567    0.015    0.000    0.015    0.000 {abs}
+    61820    0.015    0.000    0.015    0.000 code/weapon.py:241(cool)
+     7200    0.014    0.000    0.015    0.000 code/displayUtilities.py:61(trunc)
+      270    0.015    0.000    0.015    0.000 {method 'convert' of 'pygame.Surface' objects}
+    14564    0.013    0.000    0.013    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:112(__init__)
+   133261    0.012    0.000    0.012    0.000 {math.degrees}
+       11    0.000    0.000    0.011    0.001 code/capitalShip.py:13(__init__)
+     1800    0.011    0.000    0.011    0.000 {pygame.draw.polygon}
+     1800    0.002    0.000    0.010    0.000 code/player.py:47(update)
+    39532    0.009    0.000    0.009    0.000 code/physicalObject.py:267(setDestination)
+    13545    0.006    0.000    0.009    0.000 code/objInstances.py:35(handleCollisionWith)
+     1800    0.003    0.000    0.008    0.000 code/player.py:57(getLeadIndicator)
+    14575    0.008    0.000    0.008    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:284(remove_internal)
+    78559    0.008    0.000    0.008    0.000 {method 'random' of '_random.Random' objects}
+    62601    0.008    0.000    0.008    0.000 code/physicalObject.py:142(update)
+     2638    0.004    0.000    0.007    0.000 code/geometry.py:51(angleFromPosition)
+      115    0.004    0.000    0.007    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:1393(spritecollideany)
+      103    0.000    0.000    0.006    0.000 code/objInstances.py:341(__init__)
+     5697    0.004    0.000    0.006    0.000 code/ship.py:281(handleCollisionWith)
+     1800    0.003    0.000    0.006    0.000 code/displayUtilities.py:310(update)
+      487    0.001    0.000    0.006    0.000 code/capitalShip.py:98(handleCollisionWith)
+    14751    0.005    0.000    0.005    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:290(has_internal)
+    14751    0.005    0.000    0.005    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:281(add_internal)
+     4937    0.004    0.000    0.004    0.000 code/physicalObject.py:226(turn)
+     1800    0.004    0.000    0.004    0.000 {pygame.draw.line}
+    14751    0.004    0.000    0.004    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:146(add_internal)
+    24753    0.004    0.000    0.004    0.000 {method 'get_rect' of 'pygame.Surface' objects}
+      167    0.001    0.000    0.004    0.000 code/objInstances.py:181(__init__)
+    14489    0.003    0.000    0.003    0.000 {method 'clear' of 'dict' objects}
+     2770    0.001    0.000    0.003    0.000 code/objInstances.py:363(handleCollisionWith)
+     3673    0.002    0.000    0.002    0.000 code/objInstances.py:481(handleCollisionWith)
+     8628    0.002    0.000    0.002    0.000 {iter}
+     3869    0.002    0.000    0.002    0.000 code/geometry.py:42(rotateAngle)
+       14    0.000    0.000    0.002    0.000 code/ship.py:11(__init__)
+     1434    0.001    0.000    0.002    0.000 code/physicalObject.py:166(setColor)
+    24608    0.002    0.000    0.002    0.000 {method 'colliderect' of 'pygame.Rect' objects}
+     1800    0.002    0.000    0.002    0.000 code/displayUtilities.py:318(isOnScreen)
+        7    0.000    0.000    0.001    0.000 code/objInstances.py:317(splitRock)
+       27    0.000    0.000    0.001    0.000 code/physicalObject.py:453(bounceOff)
+     6229    0.001    0.000    0.001    0.000 code/objInstances.py:207(isOnScreen)
+     4305    0.001    0.000    0.001    0.000 code/objInstances.py:512(update)
+       14    0.000    0.000    0.001    0.000 code/ship.py:111(setProfile)
+      115    0.000    0.000    0.001    0.000 code/geometry.py:8(getCoordsNearLoc)
+     2064    0.001    0.000    0.001    0.000 code/ship.py:139(isDead)
+       47    0.000    0.000    0.001    0.000 code/weapon.py:125(__init__)
+       21    0.000    0.000    0.001    0.000 code/hudHelpers.py:16(getObstacles)
+       14    0.000    0.000    0.001    0.000 code/weapon.py:36(generateWeapon)
+       33    0.000    0.000    0.001    0.000 code/weapon.py:381(getWeapon)
+     1800    0.001    0.000    0.001    0.000 {method 'get_fps' of 'Clock' objects}
+      260    0.001    0.000    0.001    0.000 code/ship.py:129(takeDamage)
+     1800    0.001    0.000    0.001    0.000 code/hudHelpers.py:329(isOnScreen)
+       42    0.000    0.000    0.000    0.000 /usr/lib/python2.7/random.py:100(seed)
+     1800    0.000    0.000    0.000    0.000 code/weapon.py:363(cool)
+       14    0.000    0.000    0.000    0.000 code/engine.py:27(generateEngine)
+     1800    0.000    0.000    0.000    0.000 code/weapon.py:337(cool)
+     1800    0.000    0.000    0.000    0.000 code/displayUtilities.py:208(isOnScreen)
+       42    0.000    0.000    0.000    0.000 {function seed at 0x1b209b0}
+       14    0.000    0.000    0.000    0.000 code/ship.py:105(setHealthBar)
+      348    0.000    0.000    0.000    0.000 {range}
+     1800    0.000    0.000    0.000    0.000 code/hudHelpers.py:326(draw)
+       14    0.000    0.000    0.000    0.000 code/objInstances.py:445(__init__)
      1800    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:152(update)
-     1035    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:146(add_internal)
-       64    0.000    0.000    0.000    0.000 code/physicalObject.py:337(translate)
-       12    0.000    0.000    0.000    0.000 code/objInstances.py:445(__init__)
-       12    0.000    0.000    0.000    0.000 code/weapon.py:125(__init__)
-       98    0.000    0.000    0.000    0.000 code/ship.py:122(takeDamage)
-      245    0.000    0.000    0.000    0.000 code/geometry.py:42(rotateAngle)
-      250    0.000    0.000    0.000    0.000 /usr/lib/python2.7/random.py:355(uniform)
-        1    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/pkgdata.py:34(getResource)
-        1    0.000    0.000    0.000    0.000 code/objInstances.py:317(splitRock)
-        5    0.000    0.000    0.000    0.000 code/objInstances.py:425(__init__)
-       12    0.000    0.000    0.000    0.000 code/weapon.py:151(initialize)
-       94    0.000    0.000    0.000    0.000 {range}
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:206(get_provider)
-        1    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:891(resource_exists)
-       25    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:477(__init__)
-      318    0.000    0.000    0.000    0.000 {method 'clear' of 'dict' objects}
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:1277(__init__)
-      283    0.000    0.000    0.000    0.000 code/hudHelpers.py:132(<lambda>)
-       12    0.000    0.000    0.000    0.000 code/weapon.py:236(getWeaponName)
-      180    0.000    0.000    0.000    0.000 {method 'zfill' of 'str' objects}
-        1    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:907(resource_stream)
-       57    0.000    0.000    0.000    0.000 code/weapon.py:202(getWeaponClass)
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:1281(_setup_prefix)
-        1    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:1191(has_resource)
-       12    0.000    0.000    0.000    0.000 /usr/lib/python2.7/posixpath.py:89(split)
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:1178(__init__)
-       45    0.000    0.000    0.000    0.000 code/weapon.py:170(decrementAttribute)
-        1    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:1312(get_resource_stream)
-       12    0.000    0.000    0.000    0.000 code/engine.py:22(setProfile)
-        1    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:1303(_has)
-        1    0.000    0.000    0.000    0.000 /usr/lib/python2.7/genericpath.py:15(exists)
-       25    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:267(__init__)
-       12    0.000    0.000    0.000    0.000 code/engine.py:4(__init__)
-        1    0.000    0.000    0.000    0.000 {open}
-        1    0.000    0.000    0.000    0.000 {posix.stat}
-       28    0.000    0.000    0.000    0.000 code/physicalObject.py:373(getArea)
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:1259(_fn)
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/posixpath.py:127(dirname)
-       14    0.000    0.000    0.000    0.000 {method 'rfind' of 'str' objects}
-       12    0.000    0.000    0.000    0.000 code/weapon.py:94(getWeaponVerb)
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:2640(_find_adapter)
+        1    0.000    0.000    0.000    0.000 code/objInstances.py:497(__init__)
+       14    0.000    0.000    0.000    0.000 code/engine.py:100(__init__)
+      210    0.000    0.000    0.000    0.000 /usr/lib/python2.7/random.py:355(uniform)
+       14    0.000    0.000    0.000    0.000 code/weapon.py:151(initialize)
+        6    0.000    0.000    0.000    0.000 code/objInstances.py:425(__init__)
+       14    0.000    0.000    0.000    0.000 code/engine.py:129(initialize)
+       99    0.000    0.000    0.000    0.000 code/weapon.py:202(getWeaponClass)
+       14    0.000    0.000    0.000    0.000 code/weapon.py:236(getWeaponName)
+       21    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:477(__init__)
+      216    0.000    0.000    0.000    0.000 {method 'zfill' of 'str' objects}
+      437    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+       14    0.000    0.000    0.000    0.000 code/engine.py:170(getEngineName)
+       11    0.000    0.000    0.000    0.000 code/physicalObject.py:384(translate)
+      115    0.000    0.000    0.000    0.000 code/hudHelpers.py:132(<lambda>)
+       55    0.000    0.000    0.000    0.000 code/weapon.py:186(incrementAttribute)
+       70    0.000    0.000    0.000    0.000 code/engine.py:167(getEngineClass)
+        4    0.000    0.000    0.000    0.000 code/objInstances.py:465(kill)
+       29    0.000    0.000    0.000    0.000 code/objInstances.py:431(handleCollisionWith)
+       32    0.000    0.000    0.000    0.000 code/physicalObject.py:420(getArea)
+       36    0.000    0.000    0.000    0.000 code/engine.py:139(decrementAttribute)
+       14    0.000    0.000    0.000    0.000 code/engine.py:125(setAcceleration)
+        8    0.000    0.000    0.000    0.000 code/physicalObject.py:234(setAngle)
+       20    0.000    0.000    0.000    0.000 code/engine.py:153(incrementAttribute)
+       14    0.000    0.000    0.000    0.000 code/weapon.py:78(getWeaponNoun)
+       30    0.000    0.000    0.000    0.000 code/weapon.py:170(decrementAttribute)
+       14    0.000    0.000    0.000    0.000 code/engine.py:74(getEngineAdj2)
+       21    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pygame/sprite.py:267(__init__)
+       14    0.000    0.000    0.000    0.000 code/weapon.py:94(getWeaponVerb)
+       14    0.000    0.000    0.000    0.000 code/weapon.py:112(getWeaponAdj)
         1    0.000    0.000    0.000    0.000 /usr/lib/python2.7/site.py:367(__call__)
-       12    0.000    0.000    0.000    0.000 code/weapon.py:78(getWeaponNoun)
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/posixpath.py:68(join)
-        8    0.000    0.000    0.000    0.000 {getattr}
-        1    0.000    0.000    0.000    0.000 code/ship.py:127(gainHealth)
-       12    0.000    0.000    0.000    0.000 code/weapon.py:112(getWeaponAdj)
-       10    0.000    0.000    0.000    0.000 {method 'rstrip' of 'str' objects}
-       14    0.000    0.000    0.000    0.000 {method 'endswith' of 'str' objects}
-       12    0.000    0.000    0.000    0.000 {method 'lower' of 'str' objects}
-        2    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
-        2    0.000    0.000    0.000    0.000 /usr/lib/python2.7/dist-packages/pkg_resources.py:2633(_get_mro)
-        1    0.000    0.000    0.000    0.000 {pygame.time.Clock}
+       14    0.000    0.000    0.000    0.000 code/engine.py:67(getEngineAdj1)
+       14    0.000    0.000    0.000    0.000 code/engine.py:88(getEngineNoun)
+        3    0.000    0.000    0.000    0.000 code/objInstances.py:503(handleCollisionWith)
         1    0.000    0.000    0.000    0.000 {method 'close' of 'file' objects}
-        2    0.000    0.000    0.000    0.000 {method 'startswith' of 'str' objects}
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 {pygame.time.Clock}
 
 

@@ -30,8 +30,8 @@ def generateEngine(engine_class):
 	engine = Engine()
 	#Calculate the class of the engine.
 	actual_class = engine.getEngineClass()
-	print 'engine is class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
-	print 'engine name: '+engine.getEngineName()
+	#print 'engine is class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
+	#print 'engine name: '+engine.getEngineName()
 	#Now nudge the engine in the direction of the desired engine class.
 	#randomly select an attribute of the engine
 	randatt = rd.randint(0, num_engine_attributes-1)
@@ -43,8 +43,8 @@ def generateEngine(engine_class):
 		randatt = (randatt+1)%num_engine_attributes
 		#Calculate the class of the engine.
 		actual_class = engine.getEngineClass()
-		print 'Engine is now class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
-		print 'Engine name: '+engine.getEngineName()
+		#print 'Engine is now class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
+		#print 'Engine name: '+engine.getEngineName()
 	#randomly select an attribute of the engine
 	randatt = rd.randint(0, num_engine_attributes-1)
 	#while the engine is below the selected class...
@@ -55,10 +55,10 @@ def generateEngine(engine_class):
 		randatt = (randatt+1)%num_engine_attributes
 		#Calculate the class of the engine.
 		actual_class = engine.getEngineClass()
-		print 'Engine is now class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
-		print 'Engine name: '+engine.getEngineName()
-	print 'Final Engine is class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
-	print 'Final Engine name: '+engine.getEngineName()+'\n'
+		#print 'Engine is now class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
+		#print 'Engine name: '+engine.getEngineName()
+	#print 'Final Engine is class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
+	#print 'Final Engine name: '+engine.getEngineName()+'\n'
 	engine.initialize()
 	return engine
 
@@ -99,11 +99,11 @@ def getEngineNoun(top_speed_index, efficiency_index):
 class Engine():
 	def __init__(self):
 		''' '''
-		self.top_speed_index = 0
-		self.efficiency_index = 0
-		self.turn_index = 0
-		self.turn_scaling_index = 0
-		self.acceleration_index = 0
+		self.top_speed_index = rd.randint(0, len(top_speed_classes)-1)
+		self.efficiency_index = rd.randint(0, len(efficiency_classes)-1)
+		self.turn_index = rd.randint(0, len(turn_classes)-1)
+		self.turn_scaling_index = rd.randint(0, len(turn_scaling_classes)-1)
+		self.acceleration_index = rd.randint(0, len(acceleration_classes)-1)
 
 		self.name='default'
 		self.maxSpeed=8. #in pixels per frame
@@ -171,14 +171,6 @@ class Engine():
 		return getEngineAdj1(self.acceleration_index)+' '+\
 			getEngineAdj2(self.turn_index, self.turn_scaling_index)+' '+\
 			getEngineNoun(self.top_speed_index, self.efficiency_index)
-
-
-def setProfile(_, engine):
-	engine.name = 'Thrusters Mk2'
-	engine.maxSpeed = 300./float(FPS) #Speed in pixels per second
-	engine.dv = engine.maxSpeed/float(FPS*1.0) #Gets up to speed in 1 second
-	engine.dtheta = 180./float(FPS) #Turning angle per second
-
 
 
 #def testing():

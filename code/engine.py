@@ -99,11 +99,11 @@ def getEngineNoun(top_speed_index, efficiency_index):
 class Engine():
 	def __init__(self):
 		''' '''
-		self.top_speed_index = 0
-		self.efficiency_index = 0
-		self.turn_index = 0
-		self.turn_scaling_index = 0
-		self.acceleration_index = 0
+		self.top_speed_index = rd.randint(0, len(top_speed_classes)-1)
+		self.efficiency_index = rd.randint(0, len(efficiency_classes)-1)
+		self.turn_index = rd.randint(0, len(turn_rate_classes)-1)
+		self.turn_scaling_index = rd.randint(0, len(turn_scaling_classes)-1)
+		self.acceleration_index = rd.randint(0, len(acceleration_classes)-1)
 
 		self.name='default'
 		self.maxSpeed=8. #in pixels per frame
