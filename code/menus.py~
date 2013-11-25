@@ -304,10 +304,10 @@ class Menu:
 		then update the galaxy view to highlight the path.
 		If the player cannot reach the selected node, display an error message.'''
 		success = globalvars.scenario_manager.setDestinationNode(destination_node_id)
-		text = []
+		text = None
 		if not success:
 			text = ['You cannot reach the selected node from here.']
-		self.setGalaxyPanel(True)
+		self.setGalaxyPanel(True, text=text)
 
 
 	def setGalaxyPanel(self, travel, text=None):
@@ -636,6 +636,16 @@ class Menu:
 					framethickness, textbuffer, c, equipPlayerWeapon,\
 					argument=j, equip=True)
 				i += 1
+		#TODO TESTING
+		subpanel = Panel()
+		temp = drawable.Text(x1=500, y1=500,\
+				string='Weapon Compare', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
+		subpanel.argument = 0
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
+
 
 
 	def setWeaponViewPanel(self, weapon):
@@ -643,6 +653,172 @@ class Menu:
 		#Then draw the contents of the menu
 		text = weapon.toStringArray()
 		self.addTextToMainPanel(text, left+50, topbuffer+top)
+
+
+	def setWeaponComparePanel(self, index):
+		'''Pre: index is a valid index into globalvars.player.cargo
+		and index indexes an object of type Weapon.
+		Post: displays a panel comparing the currently equipped weapon with
+		the indexed weapon. Also provides options to view next or previous 
+		weapon in the cargo hold.
+		Also gives option to replace currently equipped gun with indexed gun.'''
+		local_font_size = 32
+		self.setStandardMenu()
+		#Equipped gun (if any)
+		equipped_gun_column = None
+		equipped_gun_comparator = None
+		if globalvars.player.gun is None:
+			equipped_gun_column = ['None equipped','','','','','','','']
+			equipped_gun_comparator = [0.0 for _ in range(8)]
+		else:
+			equipped_gun_column = [globalvars.player.gun.name,
+						globalvars.player.gun.getWeaponClassName(),
+						globalvars.player.gun.getWeaponType(),
+						str(globalvars.player.gun.refire_rate),
+						str(globalvars.player.gun.bullet_speed),
+						str(globalvars.player.gun.damage),
+						str(globalvars.player.gun.weapon_range),
+						str(globalvars.player.gun.bullet_num)]
+			equipped_gun_comparator = [0,
+						globalvars.player.gun.getWeaponClass(),
+						0,
+						globalvars.player.gun.refire_rate,
+						globalvars.player.gun.bullet_speed,
+						globalvars.player.gun.damage,
+						globalvars.player.gun.weapon_range,
+						globalvars.player.gun.bullet_num]
+		#error check the cargo hold
+		cargo_gun_column = None
+		cargo_gun_comparator = None
+		if len(globalvars.player.cargo) == 0:
+			cargo_gun_column = ['There are no guns in your cargo hold.','','','','','','','']
+			cargo_gun_comparator = [0.0 for _ in range(8)]
+		else:
+			if index < 0 or index >= len(globalvars.player.cargo):
+				index = 0
+			if globalvars.player.cargo[index].is_a != 'gun':
+				for i in range(len(globalvars.player.cargo)):
+					if globalvars.player.cargo[i].is_a == 'gun':
+						index = i
+						break
+			if globalvars.player.cargo[index].is_a != 'gun':
+				cargo_gun_column = ['There are no guns in your cargo hold.','','','','','','','']
+				cargo_gun_comparator = [0.0 for _ in range(8)]
+			else:
+				cargo_gun_column = [globalvars.player.cargo[index].name,
+						globalvars.player.cargo[index].getWeaponClassName(),
+						globalvars.player.cargo[index].getWeaponType(),
+						str(globalvars.player.cargo[index].refire_rate),
+						str(globalvars.player.cargo[index].bullet_speed),
+						str(globalvars.player.cargo[index].damage),
+						str(globalvars.player.cargo[index].weapon_range),
+						str(globalvars.player.cargo[index].bullet_num)]
+				cargo_gun_comparator = [0,
+						globalvars.player.cargo[index].getWeaponClass(),
+						0,
+						globalvars.player.cargo[index].refire_rate,
+						globalvars.player.cargo[index].bullet_speed,
+						globalvars.player.cargo[index].damage,
+						globalvars.player.cargo[index].weapon_range,
+						globalvars.player.cargo[index].bullet_num]
+		i = 0
+		column1_offset = 5
+		column2_offset = 200
+		column3_offset = 525
+		#The last two values for refire rate are reversed since smaller refire rate is better.
+		comparison_array = [
+			['','EQUIPPED','CARGO',0,0],
+			['',equipped_gun_column[0],cargo_gun_column[0],
+				equipped_gun_comparator[0],cargo_gun_comparator[0]],
+			['Class:',equipped_gun_column[1],cargo_gun_column[1],
+				equipped_gun_comparator[1],cargo_gun_comparator[1]],
+			['Type:',equipped_gun_column[2],cargo_gun_column[2],
+				equipped_gun_comparator[2],cargo_gun_comparator[2]],
+			['Refire rate:',equipped_gun_column[3],cargo_gun_column[3],
+				cargo_gun_comparator[3],equipped_gun_comparator[3]],
+			['Velocity:',equipped_gun_column[4],cargo_gun_column[4],
+				equipped_gun_comparator[4],cargo_gun_comparator[4]],
+			['Damage:',equipped_gun_column[5],cargo_gun_column[5],
+				equipped_gun_comparator[5],cargo_gun_comparator[5]],
+			['Range:',equipped_gun_column[6],cargo_gun_column[6],
+				equipped_gun_comparator[6],cargo_gun_comparator[6]],
+			['Projectiles:',equipped_gun_column[7],cargo_gun_column[7],
+				equipped_gun_comparator[7],cargo_gun_comparator[7]]
+		]
+		for row in comparison_array:
+			equipped_color = colors.white
+			cargo_color = colors.white
+			equipped_val = row[3]
+			cargo_val = row[4]
+			if equipped_val != cargo_val:
+				if equipped_val > cargo_val:
+					equipped_color = colors.green
+					cargo_color = colors.red
+				else:
+					equipped_color = colors.red
+					cargo_color = colors.green
+			temp = drawable.Text(x1=left+column1_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[0],\
+				font_size=local_font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
+			temp = drawable.Text(x1=left+column2_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[1],\
+				font_size=local_font_size, color=equipped_color)
+			self.main_panel.addDrawable(temp)
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[2],\
+				font_size=local_font_size, color=cargo_color)
+			self.main_panel.addDrawable(temp)
+			i += 1
+		#Reset color scheme
+		equipped_color = colors.white
+		cargo_color = colors.white
+		#Give player option to equip currently selected weapon in cargo
+		i += 1
+		subpanel = Panel()
+		temp = drawable.Text(x1=left+column3_offset,\
+			y1=local_font_size*i+topbuffer+top,\
+			string='Equip',\
+			font_size=local_font_size, color=cargo_color)
+		subpanel.addDrawable(temp)
+		subpanel.setMethod(equipPlayerWeapon)
+		subpanel.argument = index
+		self.main_panel.addPanel(subpanel)
+		i += 2
+		#Find previous weapon in cargo to examine.
+		previous = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			previous -= 1
+			if previous < 0: previous = len(globalvars.player.cargo)-1
+			if globalvars.player.cargo[previous].is_a == 'gun':
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column2_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Previous',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
+				subpanel.argument = previous
+				self.main_panel.addPanel(subpanel)
+				break
+		#Find next weapon in cargo to examine.
+		next = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			next = (next+1) % len(globalvars.player.cargo)
+			if globalvars.player.cargo[next].is_a == 'gun':
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column3_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Next',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
+				subpanel.argument = next
+				self.main_panel.addPanel(subpanel)
+				break
 
 
 	def setOpportunityPanel(self, opportunity):

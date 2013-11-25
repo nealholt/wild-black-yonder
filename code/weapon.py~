@@ -187,15 +187,15 @@ class Weapon():
 		if attribute_index == 0:
 			if self.spread_index < len(spread_classes)-1: self.spread_index += 1
 		elif attribute_index == 1:
-			if self.refire_index < len(refire_classes)-1: self.refire_index -= 1
+			if self.refire_index < len(refire_classes)-1: self.refire_index += 1
 		elif attribute_index == 2:
 			pass #Type has no influence on class
 		elif attribute_index == 3:
-			if self.speed_index < len(speed_classes)-1: self.speed_index -= 1
+			if self.speed_index < len(speed_classes)-1: self.speed_index += 1
 		elif attribute_index == 4:
-			if self.damage_index < len(damage_classes)-1: self.damage_index -= 1
+			if self.damage_index < len(damage_classes)-1: self.damage_index += 1
 		elif attribute_index == 5:
-			if self.lifespan_index < len(lifespan_classes)-1: self.lifespan_index -= 1
+			if self.lifespan_index < len(lifespan_classes)-1: self.lifespan_index += 1
 		else:
 			print 'ERROR in weapon.incrementAttribute. Exiting'; exit()
 
@@ -232,6 +232,9 @@ class Weapon():
 			if self.lifespan_index > 1:
 				rating += 1
 		return rating
+
+	def getWeaponClassName(self):
+		return weapon_class_names[self.getWeaponClass()]
 
 	def getWeaponName(self):
 		return getWeaponAdj(self.refire_index, self.lifespan_index)+' '+\
@@ -289,8 +292,9 @@ class Weapon():
 		return str_array
 
 
-class HitBoxTesterGun():
+class HitBoxTesterGun(Weapon):
 	def __init__(self, shooter, name='default'):
+		Weapon.__init__(self,shooter)
 		self.name='HitBoxTesterGun'
 		self.cooldown=0 #How long until next shot
 		self.bullet_speed=5

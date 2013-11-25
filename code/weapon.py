@@ -233,6 +233,9 @@ class Weapon():
 				rating += 1
 		return rating
 
+	def getWeaponClassName(self):
+		return weapon_class_names[self.getWeaponClass()]
+
 	def getWeaponName(self):
 		return getWeaponAdj(self.refire_index, self.lifespan_index)+' '+\
 			getWeaponNoun(self.type_index, self.damage_index)+' '+\
@@ -277,10 +280,13 @@ class Weapon():
 		#Add bullet to the sprite groups
 		globalvars.tangibles.add(tempbullet)
 
+	def getWeaponType(self):
+		return type_classes[self.type_index]
+
 	def toStringArray(self):
 		str_array = [self.name,
-			'Class: '+weapon_class_names[self.getWeaponClass()],
-			'Type: '+type_classes[self.type_index],
+			'Class: '+self.getWeaponClassName(),
+			'Type: '+self.getWeaponType(),
 			'Refire rate: '+str(self.refire_rate),
 			'Projectile speed: '+str(self.bullet_speed),
 			'Damage: '+str(self.damage),
@@ -289,8 +295,9 @@ class Weapon():
 		return str_array
 
 
-class HitBoxTesterGun():
+class HitBoxTesterGun(Weapon):
 	def __init__(self, shooter, name='default'):
+		Weapon.__init__(self,shooter)
 		self.name='HitBoxTesterGun'
 		self.cooldown=0 #How long until next shot
 		self.bullet_speed=5
