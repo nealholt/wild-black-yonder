@@ -7,6 +7,64 @@ import random as rd
 
 healthBarDefaultWidth = 20
 
+
+num_engine_attributes = 3
+#The following arrays map classes into actual values. The class is the index and the values are, well, the array values:
+
+#Number of hitpoints the ship has
+health_classes = [25, 50, 75, 100, 125, 150, 175]
+#fuel capacity
+#180000 = 5*60*60*10 = 5 minutes of fuel assuming 60 frames per second and 10 units of fuel consumed per frame. More efficient engines will consume less per frame.
+fuelcap_classes = [180000/2, 180000, 180000*2, 180000*3]
+#Cargo space
+cargospace_classes = [10,20,30,40]
+
+#Names of the various ship classes
+engine_class_names = ['Worthless', 'Scrap', 'Cheap', 'Okay', 'Hot', 'Noble', 'King', 'Emperor', 'Tyrant', 'Transcendent']
+
+
+def generateShip(ship_class):
+	'''Returns an engine of the given class.'''
+	#Start by randomly generating a ship.
+	ship = Ship()
+	#TODO LEFT OFF HERE
+	'''
+	#Calculate the class of the engine.
+	actual_class = engine.getEngineClass()
+	#print 'engine is class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
+	#print 'engine name: '+engine.getEngineName()
+	#Now nudge the engine in the direction of the desired engine class.
+	#randomly select an attribute of the engine
+	randatt = rd.randint(0, num_engine_attributes-1)
+	#while the engine is above the selected class...
+	while actual_class > engine_class:
+		#Decrement selected attribute
+		engine.decrementAttribute(randatt)
+		#move to the next engine attribute
+		randatt = (randatt+1)%num_engine_attributes
+		#Calculate the class of the engine.
+		actual_class = engine.getEngineClass()
+		#print 'Engine is now class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
+		#print 'Engine name: '+engine.getEngineName()
+	#randomly select an attribute of the engine
+	randatt = rd.randint(0, num_engine_attributes-1)
+	#while the engine is below the selected class...
+	while actual_class < engine_class:
+		#Increment selected attribute
+		engine.incrementAttribute(randatt)
+		#move to the next engine attribute
+		randatt = (randatt+1)%num_engine_attributes
+		#Calculate the class of the engine.
+		actual_class = engine.getEngineClass()
+		#print 'Engine is now class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
+		#print 'Engine name: '+engine.getEngineName()
+	#print 'Final Engine is class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
+	#print 'Final Engine name: '+engine.getEngineName()+'\n'
+	engine.initialize()
+	return engine'''
+
+
+
 class Ship(PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
 		PhysicalObject.__init__(self, centerx=centerx,\
@@ -38,7 +96,6 @@ class Ship(PhysicalObject):
 
 		self.myHealthBar = None
 		self.healthBarOffset = self.rect.height
-		self.setHealthBar()
 
 		self.is_a = globalvars.SHIP
 		self.isPlayer = False

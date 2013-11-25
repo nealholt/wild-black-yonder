@@ -482,7 +482,8 @@ class WarpPortal(PhysicalObject):
 		'''React to a collision with other_sprite.'''
 		#If other sprite is playership and this portal is the destination...
 		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer\
-		and globalvars.player.destinationNode[-1] == self.destinationNode:
+		and len(globalvars.player.destinationNode) > 0 \
+		and globalvars.player.destinationNode[0] == self.destinationNode:
 			#Make sure the method is not none.
 			if not self.method is None:
 				#Call scenarios.goToInfiniteSpace

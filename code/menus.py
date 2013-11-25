@@ -746,6 +746,7 @@ class Menu:
 			['','EQUIPPED','CARGO',0,0],
 			['',equipped_gun_column[0],cargo_gun_column[0],
 				equipped_gun_comparator[0],cargo_gun_comparator[0]],
+			['','','',0,0],
 			['Class:',equipped_gun_column[1],cargo_gun_column[1],
 				equipped_gun_comparator[1],cargo_gun_comparator[1]],
 			['Type:',equipped_gun_column[2],cargo_gun_column[2],
@@ -761,6 +762,25 @@ class Menu:
 			['Projectiles:',equipped_gun_column[7],cargo_gun_column[7],
 				equipped_gun_comparator[7],cargo_gun_comparator[7]]
 		]
+		#Fix too long names
+		if len(equipped_gun_column[0]) > 20:
+			#Find last blank space
+			space_index = len(equipped_gun_column[0])-2
+			for _ in range(len(equipped_gun_column[0])):
+				if equipped_gun_column[0][space_index] == ' ':
+					break
+				space_index -= 1
+			comparison_array[1][1] = equipped_gun_column[0][:space_index]
+			comparison_array[2][1] = equipped_gun_column[0][space_index:]
+		if len(cargo_gun_column[0]) > 20:
+			#Find last blank space
+			space_index = len(cargo_gun_column[0])-2
+			for _ in range(len(cargo_gun_column[0])):
+				if cargo_gun_column[0][space_index] == ' ':
+					break
+				space_index -= 1
+			comparison_array[1][2] = cargo_gun_column[0][:space_index]
+			comparison_array[2][2] = cargo_gun_column[0][space_index:]
 		for row in comparison_array:
 			equipped_color = colors.white
 			cargo_color = colors.white

@@ -449,22 +449,14 @@ class HealthBar(PhysicalObject):
 		self.new_width = self.rect.width
 		self.red_bar = pygame.Surface([self.rect.width, self.rect.height])
 		self.red_bar.fill(colors.red)
-		#I was having trouble with health bars sitting around lingering in 
-		#space so I added this to see if this cleans it up.
-		self.is_dead = False
 
 	def draw(self, offset):
-		if not self.is_dead:
-			x,y = self.rect.topleft
-			pos = x - offset[0], y - offset[1]
-			globalvars.screen.blit(self.red_bar, pos)
-			image = pygame.Surface([self.new_width, self.rect.height])
-			image.fill(colors.green)
-			globalvars.screen.blit(image, pos)
-
-	def kill(self):
-		self.is_dead = True
-		super(HealthBar, self).kill()
+		x,y = self.rect.topleft
+		pos = x - offset[0], y - offset[1]
+		globalvars.screen.blit(self.red_bar, pos)
+		image = pygame.Surface([self.new_width, self.rect.height])
+		image.fill(colors.green)
+		globalvars.screen.blit(image, pos)
 
 
 class WarpPortal(PhysicalObject):

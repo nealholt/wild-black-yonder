@@ -261,6 +261,8 @@ class ScenarioManager:
 		#If the player has moved to a node in his path, then pop it.
 		if globalvars.player.destinationNode[0] == nodeid:
 			globalvars.player.destinationNode.pop(0)
+		#Reset the arrow to the destination
+		self.resetArrow()
 
 
 	def infiniteSpace(self, seed=0, playerloc=(0.0,0.0), warps=None):
@@ -429,6 +431,8 @@ def wipeOldScenario():
 	globalvars.BGIMAGE = None
 	globalvars.score_keeper = None
 	#Add the player back in.
+	#Set the player's health bar. This must be done right before adding any ship to tangibles
+	globalvars.player.setHealthBar()
 	globalvars.tangibles.add(globalvars.player)
 	globalvars.player.setHealthBar()
 	#Immediately clear the panel
@@ -440,6 +444,8 @@ def wipeOldScenario():
 def makeNewEnemy(x=0, y=0, weaponType='mk1'):
 	enemy_ship = ship.Ship(centerx=x, centery=y, image_name='destroyer')
 	enemy_ship.setWeapon(weaponType)
+	#Set the ship's health bar. This must be done right before adding any ship to tangibles
+	enemy_ship.setHealthBar()
 	globalvars.tangibles.add(enemy_ship)
 	globalvars.whiskerables.add(enemy_ship)
 

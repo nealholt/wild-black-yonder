@@ -431,8 +431,9 @@ def wipeOldScenario():
 	globalvars.BGIMAGE = None
 	globalvars.score_keeper = None
 	#Add the player back in.
-	globalvars.tangibles.add(globalvars.player)
+	#Set the player's health bar. This must be done right before adding any ship to tangibles
 	globalvars.player.setHealthBar()
+	globalvars.tangibles.add(globalvars.player)
 	#Immediately clear the panel
 	globalvars.menu.main_panel = None
 	#Reset the arena
@@ -442,6 +443,8 @@ def wipeOldScenario():
 def makeNewEnemy(x=0, y=0, weaponType='mk1'):
 	enemy_ship = ship.Ship(centerx=x, centery=y, image_name='destroyer')
 	enemy_ship.setWeapon(weaponType)
+	#Set the ship's health bar. This must be done right before adding any ship to tangibles
+	enemy_ship.setHealthBar()
 	globalvars.tangibles.add(enemy_ship)
 	globalvars.whiskerables.add(enemy_ship)
 

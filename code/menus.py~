@@ -746,6 +746,7 @@ class Menu:
 			['','EQUIPPED','CARGO',0,0],
 			['',equipped_gun_column[0],cargo_gun_column[0],
 				equipped_gun_comparator[0],cargo_gun_comparator[0]],
+			['','','',0,0],
 			['Class:',equipped_gun_column[1],cargo_gun_column[1],
 				equipped_gun_comparator[1],cargo_gun_comparator[1]],
 			['Type:',equipped_gun_column[2],cargo_gun_column[2],
@@ -761,6 +762,27 @@ class Menu:
 			['Projectiles:',equipped_gun_column[7],cargo_gun_column[7],
 				equipped_gun_comparator[7],cargo_gun_comparator[7]]
 		]
+		#Fix too long names
+		if len(equipped_gun_column[0]) > 20:
+			#Find last blank space
+			space_index = len(equipped_gun_column[0])-2
+			for _ in range(len(equipped_gun_column[0])):
+				if equipped_gun_column[0][space_index] == ' ':
+					break
+				space_index -= 1
+			comparison_array[1][1] = equipped_gun_column[0][:space_index]
+			comparison_array[2][1] = equipped_gun_column[0][space_index:]
+			print 'equipped fun space index '+str(space_index)
+		if len(cargo_gun_column[0]) > 20:
+			#Find last blank space
+			space_index = len(cargo_gun_column[0])-2
+			for _ in range(len(cargo_gun_column[0])):
+				if cargo_gun_column[0][space_index] == ' ':
+					break
+				space_index -= 1
+			comparison_array[1][2] = cargo_gun_column[0][:space_index]
+			comparison_array[2][2] = cargo_gun_column[0][space_index:]
+			print 'cargo fun space index '+str(space_index)
 		for row in comparison_array:
 			equipped_color = colors.white
 			cargo_color = colors.white
@@ -902,8 +924,8 @@ class Menu:
 						globalvars.player.cargo[index].fuel_consumption]
 		i = 0
 		column1_offset = 5
-		column2_offset = 200
-		column3_offset = 500
+		column2_offset = 210
+		column3_offset = 510
 		comparison_array = [
 			#Last two turn rate decay and fuel consumption values are reversed since lower is better.
 			['','EQUIPPED','CARGO',0,0],
