@@ -121,6 +121,7 @@ class Engine():
 		#In general, 10 will be the maximum and 1 the minimum.
 		self.fuel_consumption = 10
 		self.time_on_top_speed = 1.0
+		self.is_a = 'engine'
 
 	def setAcceleration(self):
 		#Gets up to speed in self.time_on_top_speed seconds
@@ -163,6 +164,9 @@ class Engine():
 			if self.efficiency_index < len(efficiency_classes)-1: self.efficiency_index += 1
 		else:
 			print 'ERROR in engine.incrementAttribute. Exiting'; exit()
+
+	def getEngineClassName(self):
+		return engine_class_names[self.getEngineClass()]
 
 	def getEngineClass(self):
 		return self.top_speed_index + self.acceleration_index + self.turn_index + self.turn_scaling_index + self.efficiency_index

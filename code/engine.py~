@@ -101,7 +101,7 @@ class Engine():
 		''' '''
 		self.top_speed_index = rd.randint(0, len(top_speed_classes)-1)
 		self.efficiency_index = rd.randint(0, len(efficiency_classes)-1)
-		self.turn_index = rd.randint(0, len(turn_classes)-1)
+		self.turn_index = rd.randint(0, len(turn_rate_classes)-1)
 		self.turn_scaling_index = rd.randint(0, len(turn_scaling_classes)-1)
 		self.acceleration_index = rd.randint(0, len(acceleration_classes)-1)
 
@@ -121,6 +121,7 @@ class Engine():
 		#In general, 10 will be the maximum and 1 the minimum.
 		self.fuel_consumption = 10
 		self.time_on_top_speed = 1.0
+		self.is_a = 'engine'
 
 	def setAcceleration(self):
 		#Gets up to speed in self.time_on_top_speed seconds

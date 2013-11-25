@@ -7,9 +7,6 @@ class Player(Ship):
 		Ship.__init__(self,image_name=image_name)
 
 		self.setProfile()
-		#Give player a non-random engine
-		self.engine = engine.Engine()
-		engine.setProfile('mk2', self.engine)
 
 		self.health=300
 		self.maxhealth=300

@@ -37,6 +37,10 @@ class Player(Ship):
 			temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
 			temp.shooter = self
 			self.cargo.append(temp)
+		#Load 3 more randomly generated engines
+		for _ in range(3):
+			temp = engine.generateEngine(rd.randint(0, len(engine.engine_class_names)-1))
+			self.cargo.append(temp)
 
 
 	def parkingBrake(self):

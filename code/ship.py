@@ -78,6 +78,15 @@ class Ship(PhysicalObject):
 		self.mine = None
 
 
+	def unequipEngine(self):
+		self.cargo.append(self.engine)
+		self.engine = None
+		self.maxSpeed = 0.0
+		self.dv = 0.0
+		self.dtheta = 0.0
+		self.speedIncrements = 0.0
+
+
 	def equipWeaponFromCargo(self, cargo_index):
 		#Error checking
 		if cargo_index >= len(self.cargo):
@@ -102,6 +111,21 @@ class Ship(PhysicalObject):
 			print 'ERROR: weapon type not recognized.'; exit()
 
 
+	def equipEngineFromCargo(self, cargo_index):
+		#Error checking
+		if cargo_index >= len(self.cargo):
+			print 'ERROR: cargo_index '+str(cargo_index)+' is outside the cargo array.'
+			exit()
+		if not self.cargo[cargo_index].is_a == 'engine':
+			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not an engine.'
+			exit()
+		#Remove the engine from cargo
+		temp = self.cargo.pop(cargo_index)
+		self.unequipEngine()
+		self.engine = temp
+		self.engineUpdate()
+
+
 	def setHealthBar(self):
 		self.myHealthBar = objInstances.HealthBar(width=healthBarDefaultWidth, height=10)
 		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
@@ -115,6 +139,11 @@ class Ship(PhysicalObject):
 		self.gun = temp
 		#Give enemy a random engine
 		self.engine = engine.generateEngine(rd.randint(0, len(engine.engine_class_names)-1))
+		#Set this object's movement parameters based on the engine.
+		self.engineUpdate()
+
+
+	def engineUpdate(self):
 		#Set this object's movement parameters based on the engine.
 		self.maxSpeed = self.engine.maxSpeed
 		self.dv = self.engine.dv

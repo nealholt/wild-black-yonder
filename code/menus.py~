@@ -49,6 +49,14 @@ def equipPlayerWeapon(cargo_index):
 	player makes to his ship.'''
 	globalvars.player.equipWeaponFromCargo(cargo_index)
 	globalvars.menu.setShipPanel()
+
+
+def equipPlayerEngine(cargo_index):
+	'''This method allows me to keep the equipEngineFromCargo method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.equipEngineFromCargo(cargo_index)
+	globalvars.menu.setShipPanel()
 #TODO END
 
 
@@ -645,7 +653,15 @@ class Menu:
 		subpanel.argument = 0
 		subpanel.addDrawable(temp)
 		self.main_panel.addPanel(subpanel)
-
+		#TODO TESTING
+		subpanel = Panel()
+		temp = drawable.Text(x1=500, y1=600,\
+				string='Engine Compare', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(globalvars.menu.setEngineComparePanel)
+		subpanel.argument = 0
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
 
 
 	def setWeaponViewPanel(self, weapon):
@@ -691,7 +707,7 @@ class Menu:
 		cargo_gun_column = None
 		cargo_gun_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_gun_column = ['There are no guns in your cargo hold.','','','','','','','']
+			cargo_gun_column = ['There are no guns in','your cargo hold.','','','','','','']
 			cargo_gun_comparator = [0.0 for _ in range(8)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
@@ -702,7 +718,7 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != 'gun':
-				cargo_gun_column = ['There are no guns in your cargo hold.','','','','','','','']
+				cargo_gun_column = ['There are no guns in','your cargo hold.','','','','','','']
 				cargo_gun_comparator = [0.0 for _ in range(8)]
 			else:
 				cargo_gun_column = [globalvars.player.cargo[index].name,
@@ -723,8 +739,8 @@ class Menu:
 						globalvars.player.cargo[index].bullet_num]
 		i = 0
 		column1_offset = 5
-		column2_offset = 200
-		column3_offset = 525
+		column2_offset = 175
+		column3_offset = 500
 		#The last two values for refire rate are reversed since smaller refire rate is better.
 		comparison_array = [
 			['','EQUIPPED','CARGO',0,0],
@@ -778,15 +794,16 @@ class Menu:
 		cargo_color = colors.white
 		#Give player option to equip currently selected weapon in cargo
 		i += 1
-		subpanel = Panel()
-		temp = drawable.Text(x1=left+column3_offset,\
-			y1=local_font_size*i+topbuffer+top,\
-			string='Equip',\
-			font_size=local_font_size, color=cargo_color)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(equipPlayerWeapon)
-		subpanel.argument = index
-		self.main_panel.addPanel(subpanel)
+		if globalvars.player.cargo[index].is_a == 'gun':
+			subpanel = Panel()
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string='Equip',\
+				font_size=local_font_size, color=cargo_color)
+			subpanel.addDrawable(temp)
+			subpanel.setMethod(equipPlayerWeapon)
+			subpanel.argument = index
+			self.main_panel.addPanel(subpanel)
 		i += 2
 		#Find previous weapon in cargo to examine.
 		previous = index
@@ -816,6 +833,167 @@ class Menu:
 					font_size=local_font_size, color=colors.white)
 				subpanel.addDrawable(temp)
 				subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
+				subpanel.argument = next
+				self.main_panel.addPanel(subpanel)
+				break
+
+
+	def setEngineComparePanel(self, index):
+		'''Pre: index is a valid index into globalvars.player.cargo
+		and index indexes an object of type engine.
+		Post: displays a panel comparing the currently equipped engine with
+		the indexed engine. Also provides options to view next or previous 
+		engine in the cargo hold.
+		Also gives option to replace currently equipped engine with indexed engine.'''
+		local_font_size = 32
+		self.setStandardMenu()
+		#Equipped gun (if any)
+		equipped_engine_column = None
+		equipped_engine_comparator = None
+		if globalvars.player.engine is None:
+			equipped_engine_column = ['None equipped','','','','','','']
+			equipped_engine_comparator = [0.0 for _ in range(7)]
+		else:
+			equipped_engine_column = [globalvars.player.engine.name,
+						globalvars.player.engine.getEngineClassName(),
+						str(globalvars.player.engine.maxSpeed),
+						str(globalvars.player.engine.dv),
+						str(globalvars.player.engine.dtheta),
+						str(globalvars.player.engine.turnRateDecay),
+						str(globalvars.player.engine.fuel_consumption)]
+			equipped_engine_comparator = [0,
+						globalvars.player.engine.getEngineClass(),
+						globalvars.player.engine.maxSpeed,
+						globalvars.player.engine.dv,
+						globalvars.player.engine.dtheta,
+						globalvars.player.engine.turnRateDecay,
+						globalvars.player.engine.fuel_consumption]
+		#error check the cargo hold
+		cargo_engine_column = None
+		cargo_engine_comparator = None
+		if len(globalvars.player.cargo) == 0:
+			cargo_engine_column = ['There are no engines in','your cargo hold.','','','','','']
+			cargo_engine_comparator = [0.0 for _ in range(7)]
+		else:
+			if index < 0 or index >= len(globalvars.player.cargo):
+				index = 0
+			if globalvars.player.cargo[index].is_a != 'engine':
+				for i in range(len(globalvars.player.cargo)):
+					if globalvars.player.cargo[i].is_a == 'engine':
+						index = i
+						break
+			if globalvars.player.cargo[index].is_a != 'engine':
+				cargo_engine_column = ['There are no engines in','your cargo hold.','','','','','']
+				cargo_engine_comparator = [0.0 for _ in range(7)]
+			else:
+				cargo_engine_column = [globalvars.player.cargo[index].name,
+						globalvars.player.cargo[index].getEngineClassName(),
+						str(globalvars.player.cargo[index].maxSpeed),
+						str(globalvars.player.cargo[index].dv),
+						str(globalvars.player.cargo[index].dtheta),
+						str(globalvars.player.cargo[index].turnRateDecay),
+						str(globalvars.player.cargo[index].fuel_consumption)]
+				cargo_engine_comparator = [0,
+						globalvars.player.cargo[index].getEngineClass(),
+						globalvars.player.cargo[index].maxSpeed,
+						globalvars.player.cargo[index].dv,
+						globalvars.player.cargo[index].dtheta,
+						globalvars.player.cargo[index].turnRateDecay,
+						globalvars.player.cargo[index].fuel_consumption]
+		i = 0
+		column1_offset = 5
+		column2_offset = 200
+		column3_offset = 500
+		comparison_array = [
+			#Last two turn rate decay and fuel consumption values are reversed since lower is better.
+			['','EQUIPPED','CARGO',0,0],
+			['',equipped_engine_column[0],cargo_engine_column[0],
+				equipped_engine_comparator[0],cargo_engine_comparator[0]],
+			['Class:',equipped_engine_column[1],cargo_engine_column[1],
+				equipped_engine_comparator[1],cargo_engine_comparator[1]],
+			['Top speed:',equipped_engine_column[2],cargo_engine_column[2],
+				equipped_engine_comparator[2],cargo_engine_comparator[2]],
+			['Acceleration:',equipped_engine_column[3],cargo_engine_column[3],
+				equipped_engine_comparator[3],cargo_engine_comparator[3]],
+			['Turn rate:',equipped_engine_column[4],cargo_engine_column[4],
+				equipped_engine_comparator[4],cargo_engine_comparator[4]],
+			['Turn rate decay:',equipped_engine_column[5],cargo_engine_column[5],
+				cargo_engine_comparator[5],equipped_engine_comparator[5]],
+			['Fuel Consumption:',equipped_engine_column[6],cargo_engine_column[6],
+				cargo_engine_comparator[6],equipped_engine_comparator[6]]
+		]
+		for row in comparison_array:
+			equipped_color = colors.white
+			cargo_color = colors.white
+			equipped_val = row[3]
+			cargo_val = row[4]
+			if equipped_val != cargo_val:
+				if equipped_val > cargo_val:
+					equipped_color = colors.green
+					cargo_color = colors.red
+				else:
+					equipped_color = colors.red
+					cargo_color = colors.green
+			temp = drawable.Text(x1=left+column1_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[0],\
+				font_size=local_font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
+			temp = drawable.Text(x1=left+column2_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[1],\
+				font_size=local_font_size, color=equipped_color)
+			self.main_panel.addDrawable(temp)
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[2],\
+				font_size=local_font_size, color=cargo_color)
+			self.main_panel.addDrawable(temp)
+			i += 1
+		#Reset color scheme
+		equipped_color = colors.white
+		cargo_color = colors.white
+		#Give player option to equip currently selected engine in cargo
+		i += 1
+		if globalvars.player.cargo[index].is_a == 'engine':
+			subpanel = Panel()
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string='Equip',\
+				font_size=local_font_size, color=cargo_color)
+			subpanel.addDrawable(temp)
+			subpanel.setMethod(equipPlayerEngine)
+			subpanel.argument = index
+			self.main_panel.addPanel(subpanel)
+		i += 2
+		#Find previous engine in cargo to examine.
+		previous = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			previous -= 1
+			if previous < 0: previous = len(globalvars.player.cargo)-1
+			if globalvars.player.cargo[previous].is_a == 'engine':
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column2_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Previous',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(globalvars.menu.setEngineComparePanel)
+				subpanel.argument = previous
+				self.main_panel.addPanel(subpanel)
+				break
+		#Find next engine in cargo to examine.
+		next = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			next = (next+1) % len(globalvars.player.cargo)
+			if globalvars.player.cargo[next].is_a == 'engine':
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column3_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Next',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(globalvars.menu.setEngineComparePanel)
 				subpanel.argument = next
 				self.main_panel.addPanel(subpanel)
 				break
