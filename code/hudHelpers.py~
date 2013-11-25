@@ -91,7 +91,10 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 
 	for _ in xrange(objects[enemy]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(ship.Ship(centerx=x, centery=y, image_name='destroyer'))
+		temp = ship.Ship(centerx=x, centery=y, image_name='destroyer')
+		#Set the ship's health bar. This must be done right before adding any ship to tangibles
+		temp.setHealthBar()
+		physical_objs.append(temp)
 
 	for _ in xrange(objects[crystal]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)

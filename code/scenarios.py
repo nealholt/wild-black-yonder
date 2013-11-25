@@ -445,6 +445,7 @@ def makeNewEnemy(x=0, y=0, weaponType='mk1'):
 	enemy_ship.setWeapon(weaponType)
 	#Set the ship's health bar. This must be done right before adding any ship to tangibles
 	enemy_ship.setHealthBar()
+	enemy_ship.setProfile()
 	globalvars.tangibles.add(enemy_ship)
 	globalvars.whiskerables.add(enemy_ship)
 

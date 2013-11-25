@@ -92,8 +92,6 @@ class Ship(PhysicalObject):
 		#cargo array
 		self.cargo = []
 
-		self.setProfile()
-
 		self.myHealthBar = None
 		self.healthBarOffset = self.rect.height
 

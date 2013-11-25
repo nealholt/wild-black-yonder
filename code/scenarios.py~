@@ -434,7 +434,6 @@ def wipeOldScenario():
 	#Set the player's health bar. This must be done right before adding any ship to tangibles
 	globalvars.player.setHealthBar()
 	globalvars.tangibles.add(globalvars.player)
-	globalvars.player.setHealthBar()
 	#Immediately clear the panel
 	globalvars.menu.main_panel = None
 	#Reset the arena
