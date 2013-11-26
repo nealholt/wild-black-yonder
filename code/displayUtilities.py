@@ -38,6 +38,7 @@ http://www.pygame.org/docs/ref/image.html
 "The returned Surface will contain the same color format, colorkey and alpha transparency as the file it came from. You will often want to call Surface.convert() with no arguments, to create a copy that will draw more quickly on the screen."
 I tested this. It is WAAAAY faster.'''
 image_list = dict()
+image_list['default'] = preLoadImage('images/default'+ext) #A default image used as a placeholder.
 image_list['bigrock'] = preLoadImage('images/asteroidBigRoundTidied'+ext) #large asteroid
 image_list['medrock'] = preLoadImage('images/asteroidWild2'+ext) #medium asteroid
 image_list['smallrock'] = preLoadImage('images/asteroidTempel'+ext) #small asteroid

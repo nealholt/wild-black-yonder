@@ -280,10 +280,13 @@ class Weapon():
 		#Add bullet to the sprite groups
 		globalvars.tangibles.add(tempbullet)
 
+	def getWeaponType(self):
+		return type_classes[self.type_index]
+
 	def toStringArray(self):
 		str_array = [self.name,
-			'Class: '+weapon_class_names[self.getWeaponClass()],
-			'Type: '+type_classes[self.type_index],
+			'Class: '+self.getWeaponClassName(),
+			'Type: '+self.getWeaponType(),
 			'Refire rate: '+str(self.refire_rate),
 			'Projectile speed: '+str(self.bullet_speed),
 			'Damage: '+str(self.damage),

@@ -3,7 +3,9 @@ import colors
 import time
 from geometry import *
 import globalvars
-
+import sys
+sys.path.append('code/cython')
+import cygeometry
 
 #copied from stardog utils.py
 #setup images
@@ -227,7 +229,7 @@ class TimerDisplay(pygame.sprite.Sprite):
 		#elapsed time
 		elapsed = time.time() - self.start_time
 		#Distance to target
-		dtt = distance(globalvars.player.rect.center, self.target)
+		dtt = cygeometry.distance(globalvars.player.rect.center, self.target)
 		#Write the elapsed time to the top of the screen.
 		string = 'Time: '+formatTime(elapsed)+\
 				'. Distance: '+trunc(dtt,0)
@@ -308,7 +310,7 @@ class ArrowToDestination(pygame.sprite.Sprite):
 	def update(self):
 		''' '''
 		#Distance to target
-		self.dtt = distance(globalvars.player.rect.center, self.target)
+		self.dtt = cygeometry.distance(globalvars.player.rect.center, self.target)
 
 	def draw(self, _):
 		self.rect = drawArrowAtTarget(self.target)

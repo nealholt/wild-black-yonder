@@ -165,6 +165,9 @@ class Engine():
 		else:
 			print 'ERROR in engine.incrementAttribute. Exiting'; exit()
 
+	def getEngineClassName(self):
+		return engine_class_names[self.getEngineClass()]
+
 	def getEngineClass(self):
 		return self.top_speed_index + self.acceleration_index + self.turn_index + self.turn_scaling_index + self.efficiency_index
 

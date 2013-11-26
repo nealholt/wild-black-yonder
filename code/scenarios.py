@@ -200,7 +200,7 @@ class ScenarioManager:
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
 		makeNewEnemy(x=x, y=y)
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
-		makeNewEnemy(x=x, y=y, weaponType='missile_mk1') #The third enemy gets a missile.
+		makeNewEnemy(x=x, y=y)
 		#Make the score keeper:
 		time_limit = 30 #time limit in seconds
 		text = ['FURBALL COMPLETED']
@@ -259,7 +259,7 @@ class ScenarioManager:
 		if not opportunity is None:
 			globalvars.menu.setOpportunityPanel(opportunity)
 		#If the player has moved to a node in his path, then pop it.
-		if globalvars.player.destinationNode[0] == nodeid:
+		if len(globalvars.player.destinationNode) > 0 and globalvars.player.destinationNode[0] == nodeid:
 			globalvars.player.destinationNode.pop(0)
 		#Reset the arrow to the destination
 		self.resetArrow()
@@ -440,9 +440,10 @@ def wipeOldScenario():
 	globalvars.arena = 0
 
 
-def makeNewEnemy(x=0, y=0, weaponType='mk1'):
-	enemy_ship = ship.Ship(centerx=x, centery=y, image_name='destroyer')
-	enemy_ship.setWeapon(weaponType)
+def makeNewEnemy(x=0, y=0):
+	enemy_ship = ship.generateShip(rd.randint(0,len(ship.ship_class_names)-1))
+	enemy_ship.loadNewImage('destroyer')
+	enemy_ship.setLocation(x, y)
 	#Set the ship's health bar. This must be done right before adding any ship to tangibles
 	enemy_ship.setHealthBar()
 	enemy_ship.setProfile()

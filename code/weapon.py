@@ -415,6 +415,5 @@ def getWeapon(profile, weaponOwner):
 #	print '\nThere are '+str(len(spread_classes)*len(refire_classes)*len(type_classes)*len(speed_classes)*len(damage_classes)*len(lifespan_classes))+' unique weapons.\n'
 #	for i in range(len(weapon_class_names)):
 #		generateWeapon(i)
-
 #testing()
 #exit()

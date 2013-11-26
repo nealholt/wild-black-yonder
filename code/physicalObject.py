@@ -9,9 +9,6 @@ sys.path.append('code/cython')
 import cygeometry
 
 
-
-
-
 class PhysicalObject(pygame.sprite.Sprite):
 	'''The four collision options are available to specify different collision zones than would 
 	normally be specified by the size of this physical object's image.'''
@@ -52,26 +49,15 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 		self.destination = (0.0, 0.0)
 
-		self.image_name = image_name
+		self.image_name = ''
 		#The location of this object. It is two floats for accuracy, 
 		#because rectangles will be rounded to an integer which can cause 
 		#an inability to move diagonally at slow speeds because the integer 
 		#always rounds down.
 		#The downside of this is that there are now two valid location variables self.loc and self.rect.center, both of which need to be maintained and kept equal to each other.
 		self.loc = (centerx, centery)
-
-		if self.image_name is None:
-			self.image = pygame.Surface([width, height])
-			self.image.fill(self.color)
-			self.base_image = self.image
-		else:
-			self.image = image_list[self.image_name].convert()
-			#Base image is needed because we need a reference to the
-			#original image that is never modified.
-			#self.base_image is used in updateImageAngle.
-			self.base_image = image_list[self.image_name].convert()
-
-		self.rect = self.image.get_rect()
+		self.image = None
+		self.loadNewImage(image_name, width=width, height=height)
 		self.rect.centerx = self.loc[0]
 		self.rect.centery = self.loc[1]
 
@@ -132,6 +118,27 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#1/2 max speed if yellow and otherwise 3/4 max speed.
 		self.danger_red_distance = 10
 		self.danger_yellow_distance = 20
+
+
+	def setLocation(self, centerx, centery):
+		self.loc = (centerx, centery)
+		self.rect.centerx = self.loc[0]
+		self.rect.centery = self.loc[1]
+
+
+	def loadNewImage(self, image_name, width=0, height=0):
+		self.image_name = image_name
+		if self.image_name is None:
+			self.image = pygame.Surface([width, height])
+			self.image.fill(self.color)
+			self.base_image = self.image
+		else:
+			self.image = image_list[self.image_name].convert()
+			#Base image is needed because we need a reference to the
+			#original image that is never modified.
+			#self.base_image is used in updateImageAngle.
+			self.base_image = image_list[self.image_name].convert()
+		self.rect = self.image.get_rect()
 
 
 	def handleCollisionWith(self, other_sprite):

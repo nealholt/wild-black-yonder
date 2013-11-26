@@ -8,67 +8,91 @@ import random as rd
 healthBarDefaultWidth = 20
 
 
-num_engine_attributes = 3
+num_ship_attributes = 3
 #The following arrays map classes into actual values. The class is the index and the values are, well, the array values:
 
 #Number of hitpoints the ship has
 health_classes = [25, 50, 75, 100, 125, 150, 175]
 #fuel capacity
-#180000 = 5*60*60*10 = 5 minutes of fuel assuming 60 frames per second and 10 units of fuel consumed per frame. More efficient engines will consume less per frame.
+#180000 = 5*60*60*10 = 5 minutes of fuel assuming 60 frames per second and 10 units of fuel consumed per frame. More efficient ships will consume less per frame.
 fuelcap_classes = [180000/2, 180000, 180000*2, 180000*3]
 #Cargo space
 cargospace_classes = [10,20,30,40]
 
 #Names of the various ship classes
-engine_class_names = ['Worthless', 'Scrap', 'Cheap', 'Okay', 'Hot', 'Noble', 'King', 'Emperor', 'Tyrant', 'Transcendent']
+ship_class_names = ['Worthless', 'Scrap', 'Cheap', 'Okay', 'Cool', 'Hot', 'Noble', 'King', 'Emperor', 'Tyrant', 'Transcendent']
 
 
 def generateShip(ship_class):
-	'''Returns an engine of the given class.'''
+	'''Returns a ship of the given class.'''
 	#Start by randomly generating a ship.
 	ship = Ship()
-	#TODO LEFT OFF HERE
-	'''
-	#Calculate the class of the engine.
-	actual_class = engine.getEngineClass()
-	#print 'engine is class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
-	#print 'engine name: '+engine.getEngineName()
-	#Now nudge the engine in the direction of the desired engine class.
-	#randomly select an attribute of the engine
-	randatt = rd.randint(0, num_engine_attributes-1)
-	#while the engine is above the selected class...
-	while actual_class > engine_class:
+	#Calculate the class of the ship.
+	actual_class = ship.getShipClass()
+	#print 'ship is class '+ship_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+ship_class_names[ship_class]+' ('+str(ship_class)+')'
+	#print 'ship name: '+ship.getShipName()
+	#Now nudge the ship in the direction of the desired ship class.
+	#randomly select an attribute of the ship
+	randatt = rd.randint(0, num_ship_attributes-1)
+	#while the ship is above the selected class...
+	while actual_class > ship_class:
 		#Decrement selected attribute
-		engine.decrementAttribute(randatt)
-		#move to the next engine attribute
-		randatt = (randatt+1)%num_engine_attributes
-		#Calculate the class of the engine.
-		actual_class = engine.getEngineClass()
-		#print 'Engine is now class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
-		#print 'Engine name: '+engine.getEngineName()
-	#randomly select an attribute of the engine
-	randatt = rd.randint(0, num_engine_attributes-1)
-	#while the engine is below the selected class...
-	while actual_class < engine_class:
+		ship.decrementAttribute(randatt)
+		#move to the next ship attribute
+		randatt = (randatt+1)%num_ship_attributes
+		#Calculate the class of the ship.
+		actual_class = ship.getShipClass()
+		#print 'Ship is now class '+ship_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+ship_class_names[ship_class]+' ('+str(ship_class)+')'
+		#print 'Ship name: '+ship.getShipName()
+	#randomly select an attribute of the ship
+	randatt = rd.randint(0, num_ship_attributes-1)
+	#while the ship is below the selected class...
+	while actual_class < ship_class:
 		#Increment selected attribute
-		engine.incrementAttribute(randatt)
-		#move to the next engine attribute
-		randatt = (randatt+1)%num_engine_attributes
-		#Calculate the class of the engine.
-		actual_class = engine.getEngineClass()
-		#print 'Engine is now class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
-		#print 'Engine name: '+engine.getEngineName()
-	#print 'Final Engine is class '+engine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+engine_class_names[engine_class]+' ('+str(engine_class)+')'
-	#print 'Final Engine name: '+engine.getEngineName()+'\n'
-	engine.initialize()
-	return engine'''
+		ship.incrementAttribute(randatt)
+		#move to the next ship attribute
+		randatt = (randatt+1)%num_ship_attributes
+		#Calculate the class of the ship.
+		actual_class = ship.getShipClass()
+		#print 'Ship is now class '+ship_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+ship_class_names[ship_class]+' ('+str(ship_class)+')'
+		#print 'Ship name: '+ship.getShipName()
+	#print 'Final Ship is class '+ship_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+ship_class_names[ship_class]+' ('+str(ship_class)+')'
+	#print 'Final Ship name: '+ship.getShipName()+'\n'
+	ship.initialize()
+	return ship
 
+
+health_names = ['Skeleton', 'Bare', 'Light', '', 'Heavy', 'Armored', 'Martial']
+def getShipAdj(health_index):
+	return health_names[health_index]
+
+
+low_cargo_names = ['Mayfly','Patrol Boat','Scout','Ranger']
+medium_cargo_names = ['Sloop','Corvette','Frigate','S&R Vessel']
+large_cargo_names = ['Packet','Freighter','Long-Haul','Smuggler']
+very_large_cargo_names = ['Cargo Ship','Freighter','Deliverator','Enterprise']
+def getShipNoun(fuelcap_index, cargospace_index):
+	if cargospace_index == 0:
+		return low_cargo_names[fuelcap_index]
+	elif cargospace_index == 1:
+		return medium_cargo_names[fuelcap_index]
+	elif cargospace_index == 2:
+		return large_cargo_names[fuelcap_index]
+	elif cargospace_index == 3:
+		return very_large_cargo_names[fuelcap_index]
+	else:
+		print 'ERROR in getShipNoun. Exiting'; exit()
 
 
 class Ship(PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
 		PhysicalObject.__init__(self, centerx=centerx,\
 			centery=centery, image_name=image_name)
+
+		self.health_index = rd.randint(0, len(health_classes)-1)
+		self.fuelcap_index = rd.randint(0, len(fuelcap_classes)-1)
+		self.cargospace_index = rd.randint(0, len(cargospace_classes)-1)
+
 		self.engine=None
 		self.health=50
 		self.maxhealth=50
@@ -86,6 +110,7 @@ class Ship(PhysicalObject):
 		#int fuel (just make it a big number and divide it by 100 or 1000 and then display that number without the decimal.)
 		self.fuel = 180000 #5*60*60*10 = 5 minutes of fuel assuming 60 frames per second and 10 units of fuel consumed per frame. More efficient engines will consume less per frame.
 		#Money. This is updated when the ship runs into a gem.
+		self.fuel_capacity = 0
 		self.money = 0
 		#cargo space
 		self.cargoSpace = 30
@@ -110,12 +135,11 @@ class Ship(PhysicalObject):
 		self.min_percent_health = 0.10 #10 percent
 
 
-	def setWeapon(self, weaponId):
-		'''Pre: weaponId is a string such as 'spread_mk3'.
-		Assumes the ship only has one weapon equipped.
-		Post: Changes the player's weapon.
-		This is called by the weapons panel in menus.py.'''
-		self.gun = weapon.getWeapon(weaponId, self)
+	def initialize(self):
+		self.maxhealth = health_classes[self.health_index]
+		self.health = self.maxhealth
+		self.fuel_capacity = fuelcap_classes[self.fuelcap_index]
+		self.cargoSpace = cargospace_classes[self.cargospace_index]
 
 
 	def unequipGun(self):
@@ -402,3 +426,47 @@ class Ship(PhysicalObject):
 				globalvars.score_keeper.points += 1
 		return died
 
+
+	def getShipClass(self):
+		rating = self.health_index
+		if self.fuelcap_index == 1:
+			rating += 1
+		elif self.fuelcap_index > 1:
+			rating += 2
+		if self.cargospace_index == 1:
+			rating += 1
+		elif self.cargospace_index > 1:
+			rating += 2
+		return rating
+
+
+	def getShipName(self):
+		return getShipAdj(self.health_index)+' '+getShipNoun(self.fuelcap_index, self.cargospace_index)
+
+
+	def decrementAttribute(self, attribute_index):
+		if attribute_index == 0:
+			if self.health_index > 0: self.health_index -= 1
+		elif attribute_index == 1:
+			if self.fuelcap_index > 0: self.fuelcap_index -= 1
+		elif attribute_index == 2:
+			if self.cargospace_index > 0: self.cargospace_index -= 1
+		else:
+			print 'ERROR in ship.decrementAttribute. Exiting'; exit()
+
+	def incrementAttribute(self, attribute_index):
+		if attribute_index == 0:
+			if self.health_index < len(health_classes)-1: self.health_index += 1
+		elif attribute_index == 1:
+			if self.fuelcap_index < len(fuelcap_classes)-1: self.fuelcap_index += 1
+		elif attribute_index == 2:
+			if self.cargospace_index < len(cargospace_classes)-1: self.cargospace_index += 1
+		else:
+			print 'ERROR in ship.incrementAttribute. Exiting'; exit()
+
+
+#def testing():
+#	for i in range(len(ship_class_names)):
+#		generateShip(i)
+#testing()
+#exit()
