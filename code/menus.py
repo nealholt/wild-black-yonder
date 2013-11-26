@@ -57,6 +57,14 @@ def equipPlayerEngine(cargo_index):
 	player makes to his ship.'''
 	globalvars.player.equipEngineFromCargo(cargo_index)
 	globalvars.menu.setShipPanel()
+
+
+def equipPlayerShip(cargo_index):
+	'''This method allows me to keep the equipShipFromCargo method in the player object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.equipShipFromCargo(cargo_index)
+	globalvars.menu.setShipPanel()
 #TODO END
 
 
@@ -655,10 +663,19 @@ class Menu:
 		self.main_panel.addPanel(subpanel)
 		#TODO TESTING
 		subpanel = Panel()
-		temp = drawable.Text(x1=500, y1=600,\
+		temp = drawable.Text(x1=500, y1=550,\
 				string='Engine Compare', font_size=font_size,\
 				color=colors.white)
 		subpanel.setMethod(globalvars.menu.setEngineComparePanel)
+		subpanel.argument = 0
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
+		#TODO TESTING
+		subpanel = Panel()
+		temp = drawable.Text(x1=500, y1=600,\
+				string='Ship Compare', font_size=font_size,\
+				color=colors.white)
+		subpanel.setMethod(globalvars.menu.setShipComparePanel)
 		subpanel.argument = 0
 		subpanel.addDrawable(temp)
 		self.main_panel.addPanel(subpanel)
@@ -858,6 +875,169 @@ class Menu:
 				break
 
 
+	def setShipComparePanel(self, index):
+		'''Pre: index is a valid index into globalvars.player.cargo
+		and index indexes an object of type ship.
+		Post: displays a panel comparing the current ship with
+		the indexed ship. Also provides options to view next or previous 
+		ship in the cargo hold.
+		Also gives option to replace current ship with indexed ship.'''
+		local_font_size = 32
+		self.setStandardMenu()
+		#Current ship
+		equipped_ship_column = [globalvars.player.name,
+					globalvars.player.getShipClassName(),
+					str(globalvars.player.maxhealth),
+					str(globalvars.player.fuel_capacity),
+					str(globalvars.player.cargospace)]
+		equipped_ship_comparator = [0,
+					0,
+					globalvars.player.maxhealth,
+					globalvars.player.fuel_capacity,
+					globalvars.player.cargospace]
+		#error check the cargo hold
+		cargo_ship_column = None
+		cargo_ship_comparator = None
+		if len(globalvars.player.cargo) == 0:
+			cargo_ship_column = ['There are no ships in','your cargo hold.','','','']
+			cargo_ship_comparator = [0.0 for _ in range(5)]
+		else:
+			if index < 0 or index >= len(globalvars.player.cargo):
+				index = 0
+			if globalvars.player.cargo[index].is_a != globalvars.SHIP:
+				for i in range(len(globalvars.player.cargo)):
+					if globalvars.player.cargo[i].is_a == globalvars.SHIP:
+						index = i
+						break
+			if globalvars.player.cargo[index].is_a != globalvars.SHIP:
+				cargo_ship_column = ['There are no ships in','your cargo hold.','','','']
+				cargo_ship_comparator = [0.0 for _ in range(5)]
+			else:
+				cargo_ship_column = [globalvars.player.cargo[index].name,
+						globalvars.player.cargo[index].getShipClassName(),
+						str(globalvars.player.cargo[index].maxhealth),
+						str(globalvars.player.cargo[index].fuel_capacity),
+						str(globalvars.player.cargo[index].cargospace)]
+				cargo_ship_comparator = [0,
+						0,
+						globalvars.player.cargo[index].maxhealth,
+						globalvars.player.cargo[index].fuel_capacity,
+						globalvars.player.cargo[index].cargospace]
+		i = 0
+		column1_offset = 5
+		column2_offset = 175
+		column3_offset = 450
+		#The last two values for refire rate are reversed since smaller refire rate is better.
+		comparison_array = [
+			['','CURRENT SHIP','ALTERNATE SHIP',0,0],
+			['',equipped_ship_column[0],cargo_ship_column[0],
+				equipped_ship_comparator[0],cargo_ship_comparator[0]],
+			['','','',0,0],
+			['Class:',equipped_ship_column[1],cargo_ship_column[1],
+				equipped_ship_comparator[1],cargo_ship_comparator[1]],
+			['Hit points:',equipped_ship_column[2],cargo_ship_column[2],
+				equipped_ship_comparator[2],cargo_ship_comparator[2]],
+			['Fuel capacity:',equipped_ship_column[3],cargo_ship_column[3],
+				cargo_ship_comparator[3],equipped_ship_comparator[3]],
+			['Cargo space:',equipped_ship_column[4],cargo_ship_column[4],
+				equipped_ship_comparator[4],cargo_ship_comparator[4]]
+		]
+		#Fix too long names
+		if len(equipped_ship_column[0]) > 20:
+			#Find last blank space
+			space_index = len(equipped_ship_column[0])-2
+			for _ in range(len(equipped_ship_column[0])):
+				if equipped_ship_column[0][space_index] == ' ':
+					break
+				space_index -= 1
+			comparison_array[1][1] = equipped_ship_column[0][:space_index]
+			comparison_array[2][1] = equipped_ship_column[0][space_index:]
+		if len(cargo_ship_column[0]) > 20:
+			#Find last blank space
+			space_index = len(cargo_ship_column[0])-2
+			for _ in range(len(cargo_ship_column[0])):
+				if cargo_ship_column[0][space_index] == ' ':
+					break
+				space_index -= 1
+			comparison_array[1][2] = cargo_ship_column[0][:space_index]
+			comparison_array[2][2] = cargo_ship_column[0][space_index:]
+		for row in comparison_array:
+			equipped_color = colors.white
+			cargo_color = colors.white
+			equipped_val = row[3]
+			cargo_val = row[4]
+			if equipped_val != cargo_val:
+				if equipped_val > cargo_val:
+					equipped_color = colors.green
+					cargo_color = colors.red
+				else:
+					equipped_color = colors.red
+					cargo_color = colors.green
+			temp = drawable.Text(x1=left+column1_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[0],\
+				font_size=local_font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
+			temp = drawable.Text(x1=left+column2_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[1],\
+				font_size=local_font_size, color=equipped_color)
+			self.main_panel.addDrawable(temp)
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[2],\
+				font_size=local_font_size, color=cargo_color)
+			self.main_panel.addDrawable(temp)
+			i += 1
+		#Reset color scheme
+		equipped_color = colors.white
+		cargo_color = colors.white
+		#Give player option to equip currently selected ship in cargo
+		i += 1
+		if globalvars.player.cargo[index].is_a == globalvars.SHIP:
+			subpanel = Panel()
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string='Replace current with this ship',\
+				font_size=local_font_size, color=cargo_color)
+			subpanel.addDrawable(temp)
+			subpanel.setMethod(equipPlayerShip)
+			subpanel.argument = index
+			self.main_panel.addPanel(subpanel)
+		i += 2
+		#Find previous ship in cargo to examine.
+		previous = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			previous -= 1
+			if previous < 0: previous = len(globalvars.player.cargo)-1
+			if globalvars.player.cargo[previous].is_a == globalvars.SHIP:
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column2_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Previous',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(globalvars.menu.setShipComparePanel)
+				subpanel.argument = previous
+				self.main_panel.addPanel(subpanel)
+				break
+		#Find next ship in cargo to examine.
+		next = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			next = (next+1) % len(globalvars.player.cargo)
+			if globalvars.player.cargo[next].is_a == globalvars.SHIP:
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column3_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Next',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(globalvars.menu.setShipComparePanel)
+				subpanel.argument = next
+				self.main_panel.addPanel(subpanel)
+				break
+
+
 	def setEngineComparePanel(self, index):
 		'''Pre: index is a valid index into globalvars.player.cargo
 		and index indexes an object of type engine.
@@ -867,7 +1047,7 @@ class Menu:
 		Also gives option to replace currently equipped engine with indexed engine.'''
 		local_font_size = 32
 		self.setStandardMenu()
-		#Equipped gun (if any)
+		#Equipped engine (if any)
 		equipped_engine_column = None
 		equipped_engine_comparator = None
 		if globalvars.player.engine is None:

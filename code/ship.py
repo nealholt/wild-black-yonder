@@ -93,9 +93,10 @@ class Ship(PhysicalObject):
 		self.fuelcap_index = rd.randint(0, len(fuelcap_classes)-1)
 		self.cargospace_index = rd.randint(0, len(cargospace_classes)-1)
 
+		self.name = ''
 		self.engine=None
-		self.health=50
-		self.maxhealth=50
+		self.health=25
+		self.maxhealth=25
 		#number of gun addon hardpoints
 		self.gunHardpoints = 1
 		self.gun = None
@@ -113,7 +114,7 @@ class Ship(PhysicalObject):
 		self.fuel_capacity = 0
 		self.money = 0
 		#cargo space
-		self.cargoSpace = 30
+		self.cargospace = 30
 		#cargo array
 		self.cargo = []
 
@@ -136,10 +137,23 @@ class Ship(PhysicalObject):
 
 
 	def initialize(self):
+		self.name = self.getShipName()
 		self.maxhealth = health_classes[self.health_index]
 		self.health = self.maxhealth
 		self.fuel_capacity = fuelcap_classes[self.fuelcap_index]
-		self.cargoSpace = cargospace_classes[self.cargospace_index]
+		self.cargospace = cargospace_classes[self.cargospace_index]
+
+
+	def makeSelfCopyOfOther(self, other):
+		'''Pre: other is a ship.
+		Post: gives this ship a copy of the other ship's attributes, but
+		does not alter cargo, weapons, or engines on this ship.'''
+		self.health_index = other.health_index
+		self.fuelcap_index = other.fuelcap_index
+		self.cargospace_index = other.cargospace_index
+		self.initialize()
+		self.loadNewImage(other.image_name)
+		self.setLocation(other.loc[0], other.loc[1])
 
 
 	def unequipGun(self):
@@ -426,6 +440,9 @@ class Ship(PhysicalObject):
 				globalvars.score_keeper.points += 1
 		return died
 
+
+	def getShipClassName(self):
+		return ship_class_names[self.getShipClass()]
 
 	def getShipClass(self):
 		rating = self.health_index

@@ -41,6 +41,40 @@ class Player(Ship):
 		for _ in range(3):
 			temp = engine.generateEngine(rd.randint(0, len(engine.engine_class_names)-1))
 			self.cargo.append(temp)
+		#Load 3 more randomly generated ships
+		for _ in range(3):
+			temp = generateShip(rd.randint(0, len(ship_class_names)-1))
+			self.cargo.append(temp)
+		self.initialize()
+
+
+	def equipShipFromCargo(self, cargo_index):
+		#Error checking
+		if cargo_index >= len(self.cargo):
+			print 'ERROR: cargo_index '+str(cargo_index)+' is outside the cargo array.'
+			exit()
+		if not self.cargo[cargo_index].is_a == globalvars.SHIP:
+			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not a ship.'
+			exit()
+		#Create a new ship identical to the current ship.
+		#todo_testing = 'inventory before '
+		#for c in self.cargo:
+		#	if c.is_a == globalvars.SHIP:
+		#		todo_testing += c.getShipName()+'-'+c.name+', '
+		#print todo_testing
+		copy_of_current = Ship()
+		copy_of_current.makeSelfCopyOfOther(self)
+		#Change the current ship to be exactly like the ship in cargo.
+		self.makeSelfCopyOfOther(self.cargo[cargo_index])
+		#Remove the ship from the cargo hold.
+		self.cargo.pop(cargo_index)
+		#Put the new ship (a copy of the previous ship) in the cargo hold.
+		self.cargo.append(copy_of_current)
+		#todo_testing = 'inventory after '
+		#for c in self.cargo:
+		#	if c.is_a == globalvars.SHIP:
+		#		todo_testing += c.getShipName()+'-'+c.name+', '
+		#print todo_testing
 
 
 	def parkingBrake(self):
