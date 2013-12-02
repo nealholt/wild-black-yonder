@@ -134,8 +134,12 @@ class MissileLauncher():
 
 	def toStringArray(self):
 		str_array = [self.name,
+			'Class: '+self.getMissileClassName(),
+			'Speed: '+str(self.speed),
+			'Damage: '+str(self.damage),
+			'Turn rate: '+str(self.turn_rate),
 			'Refire rate: '+str(self.refire_rate),
-			'Longevity: '+str(self.longevity) ]
+			'Longevity: '+str(self.longevity)]
 		return str_array
 
 	def decrementAttribute(self, attribute_index):

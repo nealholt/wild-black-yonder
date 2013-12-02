@@ -8,6 +8,8 @@ num_missile_attributes = 9
 
 #The number of degrees that can be turned through per second.
 turn_rate_classes = [0.0, 90.0, 180.0, 270.0]
+for i in range(len(turn_rate_classes)):
+	turn_rate_classes[i] = turn_rate_classes[i] / float(globalvars.FPS)
 #Time in seconds until the missile disappears
 longevity_classes = [1.5, 2.0, 2.5, 3.0]
 for i in range(len(longevity_classes)):

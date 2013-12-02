@@ -1156,18 +1156,12 @@ class Menu:
 		for _ in range(len(globalvars.player.cargo)-1):
 			previous -= 1
 			if previous < 0: previous = len(globalvars.player.cargo)-1
-			try:
-				if globalvars.player.cargo[previous].is_a == cargo_type:
-					self.addMenuItem(x1=left+column2_offset,\
-						y1=local_font_size*i+topbuffer+top,\
-						string='Previous', local_font_size=local_font_size,\
-						method=method, argument=previous)
-					break
-			except AttributeError:
-				print len(globalvars.player.cargo)
-				print index
-				print previous
-				exit()
+			if globalvars.player.cargo[previous].is_a == cargo_type:
+				self.addMenuItem(x1=left+column2_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Previous', local_font_size=local_font_size,\
+					method=method, argument=previous)
+				break
 		#Find next cargo_type in cargo to examine.
 		next = index
 		for _ in range(len(globalvars.player.cargo)-1):

@@ -104,7 +104,7 @@ class CapitalShip(physicalObject.PhysicalObject):
 			if other_sprite.dontClipMe == self:
 				return died
 			else:
-				self.health -= 5
+				self.health -= other_sprite.damage
 				#Spawn explosion at point of impact
 				globalvars.intangibles_top.add(objInstances.Explosion(\
 					x=other_sprite.rect.centerx,y=other_sprite.rect.centery))

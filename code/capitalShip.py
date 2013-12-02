@@ -22,9 +22,11 @@ class CapitalShip(physicalObject.PhysicalObject):
 		self.weapons=[]
 		#Load some weapons on the capital ship
 		#Initially 3 basic lasers
-		self.weapons = [weapon.getWeapon('mk1', self),
-				weapon.getWeapon('mk1', self),
-				weapon.getWeapon('mk1', self)]
+		self.weapons = []
+		for _ in range(3):
+			temp = weapon.generateWeapon(2)
+			temp.shooter = self
+			self.weapons.append(temp)
 		#Gun locations for the capital ship
 		self.myTop = self.rect.topleft[1]+self.collisiontopleft[1]
 		self.myLeft = self.rect.topleft[0]+self.collisiontopleft[0]

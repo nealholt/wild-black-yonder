@@ -48,37 +48,28 @@ class Bullet(PhysicalObject):
 
 
 class Missile(PhysicalObject):
-	'''missile - object that seeks nearest enemy target, damage 
-    and explosion on impact. 
-	initial direction is same as firer. initial speed is firer 
-    plus some amount. 
+	'''missile - object that seeks nearest enemy target, damage and explosion on impact. 
+	initial direction is same as firer. initial speed is firer plus some amount. 
 	Will not impact firer.'''
 	def __init__(self, shooter, speed, turn_rate, damage, longevity):
 		PhysicalObject.__init__(self, \
 			centerx=shooter.rect.centerx, \
 			centery=shooter.rect.centery,\
 			width=10, height=10)
-
 		self.turnRateDecay = 0.0
 		self.theta = shooter.theta
 		self.dtheta = turn_rate
 		self.targetSpeed = speed
+		self.speed = self.targetSpeed
+		self.dv = 0.0
 		self.longevity = longevity
-		#The missile assumes the shooter's direction and gets the shooter's 
-		#speed plus its own speed before settling down to its target velocity.
-		#Missile actually starts out faster and slows down.
-		self.speed = self.targetSpeed + shooter.speed
-		self.dv = self.targetSpeed/float(globalvars.FPS*3.0) #missile gets to target speed in 3 seconds
-
+		self.damage = damage
 		#dontClipMe is almost certainly the shooter of this missile.
 		#This is important because bullets usually start out at a 
 		#location that is immediately clipping the shooter but we 
 		#don't want ships to blow themselves up.
 		self.dontClipMe = shooter
-
 		self.is_a = globalvars.BULLET
-		self.damage = damage
-
 		#Find nearest enemy ship and set it as target.
 		self.target = None
 		if shooter.isPlayer:
@@ -88,7 +79,6 @@ class Missile(PhysicalObject):
 				d = cygeometry.distance(w.rect.center, self.rect.center)
 				#print d
 				if d < closest and w.is_a == globalvars.SHIP:
-					#TODO TESTING
 					#print 'nearer target found'
 					#print closest
 					#print d
@@ -98,8 +88,7 @@ class Missile(PhysicalObject):
 			self.target = globalvars.player
 
 	def update(self):
-		#TODO seek target like an npc ship does
-		'''The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
+		'''TODO The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
 		#If the missile has no target, it will just kill itself and effectively not fire. Later, it might be cooler to have the missile just dumbfire and explode after a timeout.
 		if self.target is None or self.longevity < 1:
 			#explode
@@ -109,8 +98,10 @@ class Missile(PhysicalObject):
 		self.longevity -= 1
 		#Update target location
 		self.setDestination(self.target.rect.center)
+		#The following must be called prior to calling turnTowards.
+		self.angle_to_target = self.getAngleToTarget()
 		#Turn towards target
-		self.turnTowards()
+		self.turnTowards(force_turn=True)
 		#modify speed
 		self.approachSpeed()
 		#move
@@ -121,8 +112,8 @@ class Missile(PhysicalObject):
 		died = False
 		#self.dontClipMe is usually the shooter of the bullet who would 
 		#otherwise immediately collide with it.
-		#For now, shoot through health packs with no effect.
-		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.HEALTH:
+		#For now, shoot through bullets with no effect.
+		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.BULLET:
 			#explode
 			globalvars.intangibles_bottom.add(Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
@@ -407,7 +398,7 @@ class Gem(PhysicalObject):
 
 	def handleCollisionWith(self, other_sprite):
 		'''React to a collision with other_sprite.'''
-		if other_sprite.is_a == globalvars.SHIP:
+		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer:
 			other_sprite.money += self.points
 			#give money to the ship.
 			if not globalvars.score_keeper is None:
