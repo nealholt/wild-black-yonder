@@ -514,31 +514,18 @@ class Menu:
 			string=weapon.name,\
 			textbuffer=textbuffer, text_color=colors.blue,\
 			framed=True, frame_thickness=framethickness)
-		#TODO LEFT 
-		subpanel = Panel()
+		#Add option to equip or unequip weapon
 		string = 'Equip'
 		if not equip:
 			string = 'Unequip'
-		#Add option to equip or unequip weapon
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+		self.addMenuItem(x1=(left+x_val+textbuffer),\
 				y1=(top+y_val+font_size+textbuffer),\
-				string=string, font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(method)
-		if not argument is None:
-			subpanel.argument = argument
-		subpanel.addDrawable(temp)
-		self.main_panel.addPanel(subpanel)
+				string=string, method=method, argument=argument)
 		#Add option to view information on weapon
-		subpanel = Panel()
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
+		self.addMenuItem(x1=(left+x_val+textbuffer),\
 				y1=(top+y_val+font_size*2+textbuffer),\
-				string='View stats', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(globalvars.menu.setWeaponViewPanel)
-		subpanel.argument = weapon
-		subpanel.addDrawable(temp)
-		self.main_panel.addPanel(subpanel)
+				string='View stats', method=globalvars.menu.setWeaponViewPanel,\
+				argument=weapon)
 
 
 	def setShipPanel(self):
@@ -604,61 +591,54 @@ class Menu:
 				mine_count += 1
 
 		fontsize = 32
-		string = '0 guns in cargo hold.'
-		method = None #TODO LEFT OFF HERE
-		if gun_count > 0:
-			string = 'Weapon Compare ('+str(gun_count)+') in cargo'
-			method = globalvars.menu.setWeaponComparePanel
-		subpanel = Panel()
-		temp = drawable.Text(x1=500, y1=100,\
-			   string=string,\
-			   font_size=fontsize,\
-			   color=colors.white)
-		subpanel.setMethod(method)
-		subpanel.argument = 0
-		subpanel.addDrawable(temp)
-		self.main_panel.addPanel(subpanel)
+		ystart = 150
+		yinterval = 100
+		xstart = 500
 
+		string = '0 guns in cargo hold.'
+		method = None
+		if gun_count > 0:
+			string = 'Weapon Compare ('+str(gun_count)+' in cargo)'
+			method = globalvars.menu.setWeaponComparePanel
+		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
+			   local_font_size=fontsize, method=method, argument=0)
+		ystart += yinterval
+
+		string = '0 missile launchers in cargo hold.'
+		method = None
 		if missile_count > 0:
-			subpanel = Panel()
-			temp = drawable.Text(x1=500, y1=200,\
-				   string='Missile Compare ('+str(missile_count)+') in cargo',\
-				   font_size=fontsize,\
-				   color=colors.white)
-			subpanel.setMethod(globalvars.menu.setMissileComparePanel)
-			subpanel.argument = 0
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)			
+			string = 'Missile Compare ('+str(missile_count)+' in cargo)'
+			method = globalvars.menu.setMissileComparePanel
+		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
+			   local_font_size=fontsize, method=method, argument=0)
+		ystart += yinterval
+
+		string = '0 mine layers in cargo hold.'
+		method = None
 		if mine_count > 0:
-			subpanel = Panel()
-			temp = drawable.Text(x1=500, y1=300,\
-				   string='Mine Compare ('+str(mine_count)+') in cargo',\
-				   font_size=fontsize,\
-				   color=colors.white)
-			subpanel.setMethod(globalvars.menu.setMineComparePanel)
-			subpanel.argument = 0
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)			
-		if ship_count > 0:
-			subpanel = Panel()
-			temp = drawable.Text(x1=500, y1=500,\
-				   string='Ship Compare ('+str(ship_count)+') available',\
-				   font_size=fontsize,\
-				   color=colors.white)
-			subpanel.setMethod(globalvars.menu.setShipComparePanel)
-			subpanel.argument = 0
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
-		if engine_count > 0:
-			subpanel = Panel()
-			temp = drawable.Text(x1=500, y1=400,\
-				   string='Engine Compare ('+str(engine_count)+') in cargo',\
-				   font_size=fontsize,\
-				   color=colors.white)
-			subpanel.setMethod(globalvars.menu.setEngineComparePanel)
-			subpanel.argument = 0
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
+			string = 'Mine Compare ('+str(mine_count)+' in cargo)'
+			method = globalvars.menu.setMineComparePanel
+		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
+			   local_font_size=fontsize, method=method, argument=0)
+		ystart += yinterval
+
+		string = '0 ships available.'
+		method = None
+		if mine_count > 0:
+			string = 'Ship Compare ('+str(ship_count)+' available)'
+			method = globalvars.menu.setShipComparePanel
+		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
+			   local_font_size=fontsize, method=method, argument=0)
+		ystart += yinterval
+
+		string = '0 engines in cargo hold.'
+		method = None
+		if mine_count > 0:
+			string = 'Engine Compare ('+str(mine_count)+' in cargo)'
+			method = globalvars.menu.setEngineComparePanel
+		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
+			   local_font_size=fontsize, method=method, argument=0)
+		ystart += yinterval
 
 
 	def setWeaponViewPanel(self, weapon):
@@ -919,12 +899,12 @@ class Menu:
 						'']
 			equipped_missile_comparator = [0,
 						globalvars.player.missile.getMissileClass(),
-						0,
 						globalvars.player.missile.refire_rate,
 						globalvars.player.missile.speed,
 						globalvars.player.missile.damage,
 						globalvars.player.missile.longevity,
 						globalvars.player.missile.turn_rate,
+						0,
 						0,
 						0,
 						0]
@@ -959,12 +939,12 @@ class Menu:
 						'']
 				cargo_missile_comparator = [0,
 						globalvars.player.cargo[index].getMissileClass(),
-						0,
 						globalvars.player.cargo[index].refire_rate,
 						globalvars.player.cargo[index].speed,
 						globalvars.player.cargo[index].damage,
 						globalvars.player.cargo[index].longevity,
 						globalvars.player.cargo[index].turn_rate,
+						0,
 						0,
 						0,
 						0]
@@ -1162,15 +1142,11 @@ class Menu:
 	def equipCurrentCargo(self, index, i, cargo_type, local_font_size, column3_offset, cargo_color, method):
 		if len(globalvars.player.cargo) > index\
 		and globalvars.player.cargo[index].is_a == cargo_type:
-			subpanel = Panel()
-			temp = drawable.Text(x1=left+column3_offset,\
+			self.addMenuItem(x1=left+column3_offset,\
 				y1=local_font_size*i+topbuffer+top,\
 				string='Equip',\
-				font_size=local_font_size, color=cargo_color)
-			subpanel.addDrawable(temp)
-			subpanel.setMethod(method)
-			subpanel.argument = index
-			self.main_panel.addPanel(subpanel)
+				local_font_size=local_font_size, text_color=cargo_color,\
+				method=method, argument=index)
 
 
 	def previousAndNextInCargo(self, i, index, cargo_type, local_font_size,\
@@ -1180,40 +1156,34 @@ class Menu:
 		for _ in range(len(globalvars.player.cargo)-1):
 			previous -= 1
 			if previous < 0: previous = len(globalvars.player.cargo)-1
-			if globalvars.player.cargo[previous].is_a == cargo_type:
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column2_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Previous',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(method)
-				subpanel.argument = previous
-				self.main_panel.addPanel(subpanel)
-				break
+			try:
+				if globalvars.player.cargo[previous].is_a == cargo_type:
+					self.addMenuItem(x1=left+column2_offset,\
+						y1=local_font_size*i+topbuffer+top,\
+						string='Previous', local_font_size=local_font_size,\
+						method=method, argument=previous)
+					break
+			except AttributeError:
+				print len(globalvars.player.cargo)
+				print index
+				print previous
+				exit()
 		#Find next cargo_type in cargo to examine.
 		next = index
 		for _ in range(len(globalvars.player.cargo)-1):
 			next = (next+1) % len(globalvars.player.cargo)
 			if globalvars.player.cargo[next].is_a == cargo_type:
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column3_offset,\
+				self.addMenuItem(x1=left+column3_offset,\
 					y1=local_font_size*i+topbuffer+top,\
-					string='Next',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(method)
-				subpanel.argument = next
-				self.main_panel.addPanel(subpanel)
+					string='Next', local_font_size=local_font_size,\
+					method=method, argument=next)
 				break
 
 
 	def setOpportunityPanel(self, opportunity):
 		self.setStandardMenu(tabs=False)
-		text = [
-		'Faction: '+opportunity.actor.name+' is taking action ',
+		text = ['Faction: '+opportunity.actor.name+' is taking action ',
 		'"'+opportunity.action+'"',
-		'on your node.'
-		]
+		'on your node.']
 		self.addTextToMainPanel(text, left+50, topbuffer+top)
 
