@@ -31,12 +31,12 @@ class Player(Ship):
 		#weapon into the player's cargo hold.
 		#Load hitBoxTester
 		self.cargo.append(weapon.HitBoxTesterGun(self))
-		#TODO Add a mine to the cargo hold
-		#temp = mine.generateMine(5)
-		#temp.shooter = self
-		#self.cargo.append(temp)
-
-		#Load 4 more randomly generated missiles
+		#Load 4 randomly generated mines
+		for _ in range(4):
+			temp = mine.generateMine(5)
+			temp.shooter = self
+			self.cargo.append(temp)
+		#Load 4 randomly generated missiles
 		for _ in range(4):
 			temp = missile.generateMissile(rd.randint(0, len(missile.missile_class_names)-1))
 			temp.shooter = self

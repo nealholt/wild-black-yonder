@@ -168,6 +168,22 @@ class Menu:
 		self.main_panel = None #When this is not none, it should be displayed on the screen.
 
 
+	def addMenuItem(self, x1=0, y1=0, string='', local_font_size=24, textbuffer=0, text_color=colors.white, method=None, argument=None, framed=False, width=100, height=100, frame_thickness=2, frame_color=colors.yellow):
+		'''This code is repeated far too often not to just use a method.'''
+		subpanel = Panel()
+		if framed:
+			temp = drawable.Rectangle(x1=x1, y1=y1, width=width, height=height, \
+				color=frame_color, thickness=frame_thickness)
+			subpanel.addDrawable(temp)
+		if string != '':
+			temp = drawable.Text(x1=(x1+textbuffer), y1=(y1+textbuffer), \
+				string=string, font_size=local_font_size, color=text_color)
+			subpanel.addDrawable(temp)
+		subpanel.setMethod(method)
+		subpanel.argument = argument
+		self.main_panel.addPanel(subpanel)
+
+
 	def setStandardMenu(self, tabs=True):
 		'''There was a lot of code duplication so I stuck it in a method all its own.'''
 		self.main_panel = Panel()
@@ -199,96 +215,28 @@ class Menu:
 		framethickness = 2
 		x_val = left
 		#ship
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-			string='Ship', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(globalvars.menu.setShipPanel)
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=x_val, y1=top, string='Ship', textbuffer=textbuffer, method=globalvars.menu.setShipPanel, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 		#galaxy info
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-			string='Galaxy', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(globalvars.menu.setGalaxyPanel)
-		subpanel.argument = False
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=x_val, y1=top, string='Galaxy', textbuffer=textbuffer, method=globalvars.menu.setGalaxyPanel, argument=False, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 		#galaxy travel
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-			string='Far Travel', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(globalvars.menu.setGalaxyPanel)
-		subpanel.argument = True
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=x_val, y1=top, string='Far Travel', textbuffer=textbuffer, method=globalvars.menu.setGalaxyPanel, argument=True, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 		#local info
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-			string='Local Info', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(globalvars.menu.setLocalGalaxyPanel)
-		subpanel.argument = False
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=x_val, y1=top, string='Local Info', textbuffer=textbuffer, method=globalvars.menu.setLocalGalaxyPanel, argument=False, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 		#local travel
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-			string='Travel', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(globalvars.menu.setLocalGalaxyPanel)
-		subpanel.argument = True
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=x_val, y1=top, string='Travel', textbuffer=textbuffer, method=globalvars.menu.setLocalGalaxyPanel, argument=True, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 		#Player profile page
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-			string='Profile', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(globalvars.menu.setPlayerProfilePanel)
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=x_val, y1=top, string='Profile', textbuffer=textbuffer, method=globalvars.menu.setPlayerProfilePanel, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 		#test scenarios
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-			string='Test', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(globalvars.menu.setTestingPanel)
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=x_val, y1=top, string='Test', textbuffer=textbuffer, method=globalvars.menu.setTestingPanel, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 		#factions
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=x_val, y1=(top), width=width, height=localheight, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(x_val+textbuffer), y1=(top+textbuffer), \
-			string='Faction', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(globalvars.menu.setFactionPanel)
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=x_val, y1=top, string='Faction', textbuffer=textbuffer, method=globalvars.menu.setFactionPanel, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 
 
@@ -703,16 +651,21 @@ class Menu:
 				mine_count += 1
 
 		fontsize = 32
+		string = '0 guns in cargo hold.'
+		method = None #TODO LEFT OFF HERE
 		if gun_count > 0:
-			subpanel = Panel()
-			temp = drawable.Text(x1=500, y1=100,\
-				   string='Weapon Compare ('+str(gun_count)+') in cargo',\
-				   font_size=fontsize,\
-				   color=colors.white)
-			subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
-			subpanel.argument = 0
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
+			string = 'Weapon Compare ('+str(gun_count)+') in cargo'
+			method = globalvars.menu.setWeaponComparePanel
+		subpanel = Panel()
+		temp = drawable.Text(x1=500, y1=100,\
+			   string=string,\
+			   font_size=fontsize,\
+			   color=colors.white)
+		subpanel.setMethod(method)
+		subpanel.argument = 0
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
+
 		if missile_count > 0:
 			subpanel = Panel()
 			temp = drawable.Text(x1=500, y1=200,\
@@ -870,7 +823,7 @@ class Menu:
 		cargo_color = colors.white
 		#Give player option to equip currently selected weapon in cargo
 		i += 1
-		self.equipCurrentCargo(index, i, 'gun', column3_offset, cargo_color, equipPlayerWeapon)
+		self.equipCurrentCargo(index, i, 'gun', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
 		i += 2
 		self.previousAndNextInCargo(i, index, 'gun', local_font_size, column2_offset, column3_offset, globalvars.menu.setWeaponComparePanel)
 
@@ -1110,8 +1063,8 @@ class Menu:
 		cargo_color = colors.white
 		#Give player option to equip currently selected missile in cargo
 		i += 1
-		self.equipCurrentCargo(index, i, 'missile', column3_offset, cargo_color, equipPlayerWeapon)
-		i += 2
+		self.equipCurrentCargo(index, i, 'missile', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
+		i += 1
 		self.previousAndNextInCargo(i, index, 'missile', local_font_size, column2_offset, column3_offset, globalvars.menu.setMissileComparePanel)
 
 
@@ -1216,7 +1169,7 @@ class Menu:
 		cargo_color = colors.white
 		#Give player option to equip currently selected engine in cargo
 		i += 1
-		self.equipCurrentCargo(index, i, 'engine', column3_offset, cargo_color, equipPlayerEngine)
+		self.equipCurrentCargo(index, i, 'engine', local_font_size, column3_offset, cargo_color, equipPlayerEngine)
 		i += 2
 		self.previousAndNextInCargo(i, index, 'engine', local_font_size, column2_offset, column3_offset, globalvars.menu.setEngineComparePanel)
 
@@ -1253,7 +1206,7 @@ class Menu:
 		return i
 
 
-	def equipCurrentCargo(self, index, i, cargo_type, column3_offset, cargo_color, method):
+	def equipCurrentCargo(self, index, i, cargo_type, local_font_size, column3_offset, cargo_color, method):
 		if len(globalvars.player.cargo) > index\
 		and globalvars.player.cargo[index].is_a == cargo_type:
 			subpanel = Panel()
