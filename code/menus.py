@@ -748,9 +748,8 @@ class Menu:
 			length_limit=20)
 		comparison_array[1][2] = part1
 		comparison_array[2][2] = part2
-
+		#Draw comparison array on screen
 		i = self.processComparisonArray(comparison_array, i, local_font_size, column1_offset, column2_offset, column3_offset)
-
 		#Reset color scheme
 		equipped_color = colors.white
 		cargo_color = colors.white
@@ -837,9 +836,8 @@ class Menu:
 			length_limit=20)
 		comparison_array[1][2] = part1
 		comparison_array[2][2] = part2
-
+		#Draw comparison array on screen
 		i = self.processComparisonArray(comparison_array, i, local_font_size, column1_offset, column2_offset, column3_offset)
-
 		#Reset color scheme
 		equipped_color = colors.white
 		cargo_color = colors.white
@@ -868,6 +866,107 @@ class Menu:
 		Also gives option to replace current mine with indexed mine.'''
 		local_font_size = 32
 		self.setStandardMenu()
+		#Equipped mine (if any)
+		equipped_mine_column = None
+		equipped_mine_comparator = None
+		if globalvars.player.mine is None:
+			equipped_mine_column = ['None equipped','','','','','','','']
+			equipped_mine_comparator = [0.0 for _ in range(8)]
+		else:
+			equipped_mine_column = [globalvars.player.mine.name,
+						globalvars.player.mine.getMineClassName(),
+						str(globalvars.player.mine.refire_rate),
+						str(globalvars.player.mine.damage),
+						str(globalvars.player.mine.longevity),
+						'',
+						'',
+						'']
+			equipped_mine_comparator = [0,
+						globalvars.player.mine.getMineClass(),
+						globalvars.player.mine.refire_rate,
+						globalvars.player.mine.damage,
+						globalvars.player.mine.longevity,
+						0,
+						0,
+						0]
+		#error check the cargo hold
+		cargo_mine_column = None
+		cargo_mine_comparator = None
+		if len(globalvars.player.cargo) == 0:
+			cargo_mine_column = ['There are no mines in','your cargo hold.','','','','','','']
+			cargo_mine_comparator = [0.0 for _ in range(8)]
+		else:
+			if index < 0 or index >= len(globalvars.player.cargo):
+				index = 0
+			if globalvars.player.cargo[index].is_a != 'mine':
+				for i in range(len(globalvars.player.cargo)):
+					if globalvars.player.cargo[i].is_a == 'mine':
+						index = i
+						break
+			if globalvars.player.cargo[index].is_a != 'mine':
+				cargo_mine_column = ['There are no mines in','your cargo hold.','','','','','','']
+				cargo_mine_comparator = [0.0 for _ in range(8)]
+			else:
+				cargo_mine_column = [globalvars.player.cargo[index].name,
+						globalvars.player.cargo[index].getMineClassName(),
+						str(globalvars.player.cargo[index].refire_rate),
+						str(globalvars.player.cargo[index].damage),
+						str(globalvars.player.cargo[index].longevity),
+						'',
+						'',
+						'']
+				cargo_mine_comparator = [0,
+						globalvars.player.cargo[index].getMineClass(),
+						globalvars.player.cargo[index].refire_rate,
+						globalvars.player.cargo[index].damage,
+						globalvars.player.cargo[index].longevity,
+						0,
+						0,
+						0]
+		i = 0
+		column1_offset = 5
+		column2_offset = 175
+		column3_offset = 500
+		#The last two values for refire rate are reversed since smaller refire rate is better.
+		comparison_array = [
+			['','EQUIPPED','CARGO',0,0],
+			['',equipped_mine_column[0],cargo_mine_column[0],
+				equipped_mine_comparator[0],cargo_mine_comparator[0]],
+			['','','',0,0],
+			['Class:',equipped_mine_column[1],cargo_mine_column[1],
+				equipped_mine_comparator[1],cargo_mine_comparator[1]],
+			['Refire rate:',equipped_mine_column[2],cargo_mine_column[2],
+				cargo_mine_comparator[2],equipped_mine_comparator[2]],
+			['Damage:',equipped_mine_column[3],cargo_mine_column[3],
+				equipped_mine_comparator[3],cargo_mine_comparator[3]],
+			['Longevity:',equipped_mine_column[4],cargo_mine_column[4],
+				equipped_mine_comparator[4],cargo_mine_comparator[4]],
+			['Ammo:',equipped_mine_column[5],cargo_mine_column[5],
+				equipped_mine_comparator[5],cargo_mine_comparator[5]],
+			['Blast:',equipped_mine_column[6],cargo_mine_column[6],
+				equipped_mine_comparator[6],cargo_mine_comparator[6]],
+			['Radius:',equipped_mine_column[7],cargo_mine_column[7],
+				equipped_mine_comparator[7],cargo_mine_comparator[7]]
+		]
+		#Fix too long names
+		part1, part2 = splitTooLongWord(word_to_split=equipped_mine_column[0],\
+			length_limit=20)
+		comparison_array[1][1] = part1
+		comparison_array[2][1] = part2
+		part1, part2 = splitTooLongWord(word_to_split=cargo_mine_column[0],\
+			length_limit=20)
+		comparison_array[1][2] = part1
+		comparison_array[2][2] = part2
+		#Draw comparison array on screen
+		i = self.processComparisonArray(comparison_array, i, local_font_size, column1_offset, column2_offset, column3_offset)
+		#Reset color scheme
+		equipped_color = colors.white
+		cargo_color = colors.white
+		#Give player option to equip currently selected mine in cargo
+		i += 1
+		self.equipCurrentCargo(index, i, 'mine', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
+		i += 1
+		self.previousAndNextInCargo(i, index, 'mine', local_font_size, column2_offset, column3_offset, globalvars.menu.setMineComparePanel)
 
 
 	def setMissileComparePanel(self, index):
@@ -988,9 +1087,8 @@ class Menu:
 			length_limit=20)
 		comparison_array[1][2] = part1
 		comparison_array[2][2] = part2
-
+		#Draw comparison array on screen
 		i = self.processComparisonArray(comparison_array, i, local_font_size, column1_offset, column2_offset, column3_offset)
-
 		#Reset color scheme
 		equipped_color = colors.white
 		cargo_color = colors.white
@@ -1095,9 +1193,8 @@ class Menu:
 			length_limit=20)
 		comparison_array[1][2] = part1
 		comparison_array[2][2] = part2
-
+		#Draw comparison array on screen
 		i = self.processComparisonArray(comparison_array, i, local_font_size, column1_offset, column2_offset, column3_offset)
-
 		#Reset color scheme
 		equipped_color = colors.white
 		cargo_color = colors.white

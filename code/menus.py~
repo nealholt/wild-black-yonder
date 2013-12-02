@@ -1072,6 +1072,7 @@ class Menu:
 			['','EQUIPPED','CARGO',0,0],
 			['',equipped_engine_column[0],cargo_engine_column[0],
 				equipped_engine_comparator[0],cargo_engine_comparator[0]],
+			['','','',0,0],
 			['Class:',equipped_engine_column[1],cargo_engine_column[1],
 				equipped_engine_comparator[1],cargo_engine_comparator[1]],
 			['Top speed:',equipped_engine_column[2],cargo_engine_column[2],
