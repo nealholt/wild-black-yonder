@@ -271,23 +271,12 @@ class Menu:
 
 	def setGasStationPanel(self):
 		self.setStandardMenu()
-		textbuffer = 9
 		text = [
 		'Money: $'+str(globalvars.player.money),
 		'Fuel: '+str(globalvars.player.fuel)]
 		#Then draw the contents of the menu
 		self.addTextToMainPanel(text, left+50, 100+top)
-
-		framethickness = 2
-		subpanel = Panel()
-		temp = drawable.Rectangle(x1=(left+200), y1=(top+200), width=200, height=200, \
-			color=colors.yellow, thickness=framethickness)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=(left+200+textbuffer), y1=(top+200+textbuffer), \
-			string='Buy 1000 Fuel for $10', font_size=font_size, color=colors.white)
-		subpanel.addDrawable(temp)
-		subpanel.setMethod(buyGas)
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=(left+200), y1=(top+200), width=200, height=200, string='Buy 1000 Fuel for $10', textbuffer=9, text_color=colors.white, method=buyGas, framed=True)
 
 
 	def setDestinationUpdateGalaxyTravel(self, destination_node_id):
@@ -424,24 +413,15 @@ class Menu:
 		self.main_panel.addDrawable(temp)
 		for i in range(1, len(globalvars.factions.factions)+1):
 			f = globalvars.factions.factions[i-1]
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*i+topbuffer+top, \
-				string=padStringLength(f.name, stringLength, ' ')+str(f.relationToPlayer),\
-				font_size=font_size, color=colors.white)
-			subpanel = Panel()
-			subpanel.setMethod(globalvars.menu.setFactionSpecificPanel)
-			subpanel.argument = f.id
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
+			self.addMenuItem(x1=left+50, y1=font_size*i+topbuffer+top, string=padStringLength(f.name, stringLength, ' ')+str(f.relationToPlayer), method=globalvars.menu.setFactionSpecificPanel, argument=f.id)
 
 
 	def setFactionSpecificPanel(self, factionid):
 		self.setStandardMenu()
 		f = globalvars.factions.getFactionById(factionid)
-		strings = []
-		strings.append(padStringLength('Name:', stringLength, ' ')+f.name)
-		strings.append(padStringLength('Flag:', stringLength, ' ')+str(f.flag))
-		strings.append(padStringLength('Count of owned nodes:', stringLength, ' ')+str(len(f.nodes)))
+		strings = [padStringLength('Name:', stringLength, ' ')+f.name,
+			padStringLength('Flag:', stringLength, ' ')+str(f.flag),
+			padStringLength('Count of owned nodes:', stringLength, ' ')+str(len(f.nodes))]
 		self.addTextToMainPanel(strings, left+50, topbuffer+top)
 
 
@@ -471,15 +451,7 @@ class Menu:
 		#Write the owner if any
 		if node.owner != -1:
 			owner = globalvars.factions.getFactionById(node.owner)
-			temp = drawable.Text(x1=left+50,\
-				y1=font_size*len(text)+topbuffer+top,\
-				string='Owner: '+owner.name,\
-				font_size=font_size, color=colors.white)
-			subpanel = Panel()
-			subpanel.setMethod(globalvars.menu.setFactionSpecificPanel)
-			subpanel.argument = owner.id
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
+			self.addMenuItem(x1=left+50, y1=font_size*len(text)+topbuffer+top, string='Owner: '+owner.name, method=globalvars.menu.setFactionSpecificPanel, argument=owner.id)
 
 
 	def setRestartPanel(self):
@@ -490,21 +462,12 @@ class Menu:
 			font_size=font_size, color=colors.white)
 		self.main_panel.addDrawable(temp)
 		#Display button allowing player to restart.
-		subpanel = Panel()
-		subpanel.setMethod(globalvars.scenario_manager.restart)
-		temp = drawable.Rectangle(x1=globalvars.WIDTH/2-75, y1=300, width=200, height=50, \
-			color=colors.blue)
-		subpanel.addDrawable(temp)
-		temp = drawable.Text(x1=globalvars.WIDTH/2, y1=340, string='Restart',\
-			font_size=32, color=colors.white)
-		subpanel.addDrawable(temp)
-		self.main_panel.addPanel(subpanel)
+		self.addMenuItem(x1=globalvars.WIDTH/2-75, y1=300, width=200, height=50, string='Restart', local_font_size=32, textbuffer=40, text_color=colors.white, method=globalvars.scenario_manager.restart, argument=None, framed=False, frame_thickness=2, frame_color=colors.blue)
 
 
 	def setHelpPanel(self):
 		self.setStandardMenu()
-		help = [
-		'INSTRUCTIONS:', 
+		help = ['INSTRUCTIONS:', 
 		'Press space bar or c key or click left mouse button to shoot primary weapon.',
 		'Press x key to shoot missile if equipped and not on cooldown.',
 		'Press z key to lay a mine if equipped and not on cooldown.',
@@ -525,8 +488,7 @@ class Menu:
 		'Press "u" profile game.run().',
 		'Press "h" Display help info.',
 		'Press "k" to display the galaxy node info menu.',
-		'Press "o" to display the galaxy node travel menu.'
-		]
+		'Press "o" to display the galaxy node travel menu.']
 		#Then draw the contents of the menu
 		self.addTextToMainPanel(help, left+50, 50+top)
 
@@ -545,23 +507,14 @@ class Menu:
 
 
 	def addWeaponSubpanel(self, x_val, y_val, localwidth, localheight, framethickness, textbuffer, weapon, method, argument=None, equip=False):
-		subpanel = Panel()
-		#Add frame around weapon
-		temp = drawable.Rectangle(x1=(left+x_val),\
-					y1=(top+y_val),\
-					width=localwidth,\
-					height=localheight,\
-					color=colors.yellow,\
-					thickness=framethickness)
-		subpanel.addDrawable(temp)
-		#Add weapon name
-		temp = drawable.Text(x1=(left+x_val+textbuffer),\
-				y1=(top+y_val+textbuffer),\
-				string=weapon.name, font_size=font_size,\
-				color=colors.blue)
-		subpanel.addDrawable(temp)
-		self.main_panel.addPanel(subpanel)
-
+		self.addMenuItem(x1=(left+x_val),\
+			y1=(top+y_val),\
+			width=localwidth,\
+			height=localheight,\
+			string=weapon.name,\
+			textbuffer=textbuffer, text_color=colors.blue,\
+			framed=True, frame_thickness=framethickness)
+		#TODO LEFT 
 		subpanel = Panel()
 		string = 'Equip'
 		if not equip:
@@ -966,12 +919,12 @@ class Menu:
 						'']
 			equipped_missile_comparator = [0,
 						globalvars.player.missile.getMissileClass(),
-						0,
 						globalvars.player.missile.refire_rate,
 						globalvars.player.missile.speed,
 						globalvars.player.missile.damage,
 						globalvars.player.missile.longevity,
 						globalvars.player.missile.turn_rate,
+						0,
 						0,
 						0,
 						0]
@@ -1006,12 +959,12 @@ class Menu:
 						'']
 				cargo_missile_comparator = [0,
 						globalvars.player.cargo[index].getMissileClass(),
-						0,
 						globalvars.player.cargo[index].refire_rate,
 						globalvars.player.cargo[index].speed,
 						globalvars.player.cargo[index].damage,
 						globalvars.player.cargo[index].longevity,
 						globalvars.player.cargo[index].turn_rate,
+						0,
 						0,
 						0,
 						0]
