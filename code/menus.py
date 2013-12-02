@@ -870,48 +870,9 @@ class Menu:
 		cargo_color = colors.white
 		#Give player option to equip currently selected weapon in cargo
 		i += 1
-		if globalvars.player.cargo[index].is_a == 'gun':
-			subpanel = Panel()
-			temp = drawable.Text(x1=left+column3_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string='Equip',\
-				font_size=local_font_size, color=cargo_color)
-			subpanel.addDrawable(temp)
-			subpanel.setMethod(equipPlayerWeapon)
-			subpanel.argument = index
-			self.main_panel.addPanel(subpanel)
+		self.equipCurrentCargo(index, i, 'gun', column3_offset, cargo_color, equipPlayerWeapon)
 		i += 2
-		#Find previous weapon in cargo to examine.
-		previous = index
-		for _ in range(len(globalvars.player.cargo)-1):
-			previous -= 1
-			if previous < 0: previous = len(globalvars.player.cargo)-1
-			if globalvars.player.cargo[previous].is_a == 'gun':
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column2_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Previous',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
-				subpanel.argument = previous
-				self.main_panel.addPanel(subpanel)
-				break
-		#Find next weapon in cargo to examine.
-		next = index
-		for _ in range(len(globalvars.player.cargo)-1):
-			next = (next+1) % len(globalvars.player.cargo)
-			if globalvars.player.cargo[next].is_a == 'gun':
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column3_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Next',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
-				subpanel.argument = next
-				self.main_panel.addPanel(subpanel)
-				break
+		self.previousAndNextInCargo(i, index, 'gun', local_font_size, column2_offset, column3_offset, globalvars.menu.setWeaponComparePanel)
 
 
 	def setShipComparePanel(self, index):
@@ -1009,37 +970,7 @@ class Menu:
 			subpanel.argument = index
 			self.main_panel.addPanel(subpanel)
 		i += 2
-		#Find previous ship in cargo to examine.
-		previous = index
-		for _ in range(len(globalvars.player.cargo)-1):
-			previous -= 1
-			if previous < 0: previous = len(globalvars.player.cargo)-1
-			if globalvars.player.cargo[previous].is_a == globalvars.SHIP:
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column2_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Previous',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(globalvars.menu.setShipComparePanel)
-				subpanel.argument = previous
-				self.main_panel.addPanel(subpanel)
-				break
-		#Find next ship in cargo to examine.
-		next = index
-		for _ in range(len(globalvars.player.cargo)-1):
-			next = (next+1) % len(globalvars.player.cargo)
-			if globalvars.player.cargo[next].is_a == globalvars.SHIP:
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column3_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Next',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(globalvars.menu.setShipComparePanel)
-				subpanel.argument = next
-				self.main_panel.addPanel(subpanel)
-				break
+		self.previousAndNextInCargo(i, index, globalvars.SHIP, local_font_size, column2_offset, column3_offset, globalvars.menu.setShipComparePanel)
 
 
 	def setMineComparePanel(self, index):
@@ -1179,48 +1110,9 @@ class Menu:
 		cargo_color = colors.white
 		#Give player option to equip currently selected missile in cargo
 		i += 1
-		if globalvars.player.cargo[index].is_a == 'missile':
-			subpanel = Panel()
-			temp = drawable.Text(x1=left+column3_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string='Equip',\
-				font_size=local_font_size, color=cargo_color)
-			subpanel.addDrawable(temp)
-			subpanel.setMethod(equipPlayerWeapon)
-			subpanel.argument = index
-			self.main_panel.addPanel(subpanel)
+		self.equipCurrentCargo(index, i, 'missile', column3_offset, cargo_color, equipPlayerWeapon)
 		i += 2
-		#Find previous missile in cargo to examine.
-		previous = index
-		for _ in range(len(globalvars.player.cargo)-1):
-			previous -= 1
-			if previous < 0: previous = len(globalvars.player.cargo)-1
-			if globalvars.player.cargo[previous].is_a == 'missile':
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column2_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Previous',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(globalvars.menu.setMissileComparePanel)
-				subpanel.argument = previous
-				self.main_panel.addPanel(subpanel)
-				break
-		#Find next missile in cargo to examine.
-		next = index
-		for _ in range(len(globalvars.player.cargo)-1):
-			next = (next+1) % len(globalvars.player.cargo)
-			if globalvars.player.cargo[next].is_a == 'missile':
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column3_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Next',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(globalvars.menu.setMissileComparePanel)
-				subpanel.argument = next
-				self.main_panel.addPanel(subpanel)
-				break
+		self.previousAndNextInCargo(i, index, 'missile', local_font_size, column2_offset, column3_offset, globalvars.menu.setMissileComparePanel)
 
 
 	def setEngineComparePanel(self, index):
@@ -1324,48 +1216,9 @@ class Menu:
 		cargo_color = colors.white
 		#Give player option to equip currently selected engine in cargo
 		i += 1
-		if globalvars.player.cargo[index].is_a == 'engine':
-			subpanel = Panel()
-			temp = drawable.Text(x1=left+column3_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string='Equip',\
-				font_size=local_font_size, color=cargo_color)
-			subpanel.addDrawable(temp)
-			subpanel.setMethod(equipPlayerEngine)
-			subpanel.argument = index
-			self.main_panel.addPanel(subpanel)
+		self.equipCurrentCargo(index, i, 'engine', column3_offset, cargo_color, equipPlayerEngine)
 		i += 2
-		#Find previous engine in cargo to examine.
-		previous = index
-		for _ in range(len(globalvars.player.cargo)-1):
-			previous -= 1
-			if previous < 0: previous = len(globalvars.player.cargo)-1
-			if globalvars.player.cargo[previous].is_a == 'engine':
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column2_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Previous',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(globalvars.menu.setEngineComparePanel)
-				subpanel.argument = previous
-				self.main_panel.addPanel(subpanel)
-				break
-		#Find next engine in cargo to examine.
-		next = index
-		for _ in range(len(globalvars.player.cargo)-1):
-			next = (next+1) % len(globalvars.player.cargo)
-			if globalvars.player.cargo[next].is_a == 'engine':
-				subpanel = Panel()
-				temp = drawable.Text(x1=left+column3_offset,\
-					y1=local_font_size*i+topbuffer+top,\
-					string='Next',\
-					font_size=local_font_size, color=colors.white)
-				subpanel.addDrawable(temp)
-				subpanel.setMethod(globalvars.menu.setEngineComparePanel)
-				subpanel.argument = next
-				self.main_panel.addPanel(subpanel)
-				break
+		self.previousAndNextInCargo(i, index, 'engine', local_font_size, column2_offset, column3_offset, globalvars.menu.setEngineComparePanel)
 
 
 	def processComparisonArray(self, comparison_array, i, local_font_size, column1_offset, column2_offset, column3_offset):
@@ -1398,6 +1251,55 @@ class Menu:
 			self.main_panel.addDrawable(temp)
 			i += 1
 		return i
+
+
+	def equipCurrentCargo(self, index, i, cargo_type, column3_offset, cargo_color, method):
+		if len(globalvars.player.cargo) > index\
+		and globalvars.player.cargo[index].is_a == cargo_type:
+			subpanel = Panel()
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string='Equip',\
+				font_size=local_font_size, color=cargo_color)
+			subpanel.addDrawable(temp)
+			subpanel.setMethod(method)
+			subpanel.argument = index
+			self.main_panel.addPanel(subpanel)
+
+
+	def previousAndNextInCargo(self, i, index, cargo_type, local_font_size,\
+	column2_offset, column3_offset, method):
+		#Find previous cargo_type in cargo to examine.
+		previous = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			previous -= 1
+			if previous < 0: previous = len(globalvars.player.cargo)-1
+			if globalvars.player.cargo[previous].is_a == cargo_type:
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column2_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Previous',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(method)
+				subpanel.argument = previous
+				self.main_panel.addPanel(subpanel)
+				break
+		#Find next cargo_type in cargo to examine.
+		next = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			next = (next+1) % len(globalvars.player.cargo)
+			if globalvars.player.cargo[next].is_a == cargo_type:
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column3_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Next',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(method)
+				subpanel.argument = next
+				self.main_panel.addPanel(subpanel)
+				break
 
 
 	def setOpportunityPanel(self, opportunity):
