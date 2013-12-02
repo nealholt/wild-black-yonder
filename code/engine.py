@@ -176,6 +176,17 @@ class Engine():
 			getEngineAdj2(self.turn_index, self.turn_scaling_index)+' '+\
 			getEngineNoun(self.top_speed_index, self.efficiency_index)
 
+	def toStringArray(self):
+		str_array = [self.name,
+			'Class: '+self.getEngineClassName(),
+			'Top speed: '+str(self.maxSpeed)+' pixels per frame.',
+			'Acceleration: '+str(self.dv)+' pixels per frame squared.',
+			'Turn rate: '+str(self.dtheta)+' degrees per frame.',
+			'Turn rate Decay: '+str(self.turnRateDecay)+' (Rate at which turn rate decays as speed moves away from maximum turning speed.)',
+			'Maximum turning speed: '+str(self.maxTurnSpeed)+' (Fraction of max speed at which turn rate is maximal)',
+			'Fuel consumption: '+str(self.fuel_consumption)+' amount of fuel consumed by this engine per frame.']
+		return str_array
+
 
 #def testing():
 #	for i in range(len(engine_class_names)):

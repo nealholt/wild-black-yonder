@@ -48,18 +48,22 @@ class Bullet(PhysicalObject):
 
 
 class Missile(PhysicalObject):
-	'''missile - new object that seeks nearest enemy target, damage and explosion on impact. 
-	initial direction is same as firer. initial speed is firer plus some amount. 
-	will not impact firer.'''
-	def __init__(self, shooter):
-
+	'''missile - object that seeks nearest enemy target, damage 
+    and explosion on impact. 
+	initial direction is same as firer. initial speed is firer 
+    plus some amount. 
+	Will not impact firer.'''
+	def __init__(self, shooter, speed, turn_rate, damage, longevity):
 		PhysicalObject.__init__(self, \
 			centerx=shooter.rect.centerx, \
 			centery=shooter.rect.centery,\
 			width=10, height=10)
 
-		self.theta = 135./float(globalvars.FPS)
-		self.targetSpeed = 250.0/float(globalvars.FPS)
+		self.turnRateDecay = 0.0
+		self.theta = shooter.theta
+		self.dtheta = turn_rate
+		self.targetSpeed = speed
+		self.longevity = longevity
 		#The missile assumes the shooter's direction and gets the shooter's 
 		#speed plus its own speed before settling down to its target velocity.
 		#Missile actually starts out faster and slows down.
@@ -73,7 +77,7 @@ class Missile(PhysicalObject):
 		self.dontClipMe = shooter
 
 		self.is_a = globalvars.BULLET
-		self.damage = 50
+		self.damage = damage
 
 		#Find nearest enemy ship and set it as target.
 		self.target = None
@@ -93,27 +97,24 @@ class Missile(PhysicalObject):
 		else:
 			self.target = globalvars.player
 
-
 	def update(self):
 		#TODO seek target like an npc ship does
 		'''The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
 		#If the missile has no target, it will just kill itself and effectively not fire. Later, it might be cooler to have the missile just dumbfire and explode after a timeout.
-		if self.target is None:
-			print 'Missile has no target. Aborting firing sequence.'
+		if self.target is None or self.longevity < 1:
+			#explode
+			globalvars.intangibles_bottom.add(Explosion(\
+				x=self.rect.centerx,y=self.rect.centery))
 			self.kill()
-
+		self.longevity -= 1
+		#Update target location
 		self.setDestination(self.target.rect.center)
-
 		#Turn towards target
 		self.turnTowards()
-
 		#modify speed
 		self.approachSpeed()
-
 		#move
 		self.move()
-
-
 
 	def handleCollisionWith(self, other_sprite):
 		'''For now missiles die immediately regardless of what they hit.'''
@@ -534,7 +535,7 @@ class Follower(PhysicalObject):
 
 class FinishBullsEye(PhysicalObject):
 	'''Paints a bullseye at the finish line.'''
-        def __init__(self, target):
+	def __init__(self, target):
 		PhysicalObject.__init__(self, \
 			centerx=target[0], \
 			centery=target[1],\

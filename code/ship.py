@@ -2,6 +2,8 @@ from physicalObject import *
 import colors
 import objInstances
 import weapon
+import missile
+import mine
 import engine
 import random as rd
 

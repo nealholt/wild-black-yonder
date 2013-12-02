@@ -331,60 +331,6 @@ class HitBoxTesterGun(Weapon):
 		return [self.name, 'This is to be used for testing purposes only.']
 
 
-class MissileLauncher():
-	def __init__(self, shooter, name='default'):
-		self.name=name
-		self.refire_rate=120 #Fires once every refire_rate frames
-		self.cooldown=0 #How long until next shot
-		self.shooter = shooter
-		self.attack_angle = 10 #if within this angle to target, can shoot at target
-		self.weapon_range = 700
-		self.is_a = 'missile'
-
-	def cool(self):
-		if self.cooldown > 0:
-			self.cooldown -= 1
-
-	def shoot(self):
-		tempmissile = Missile(self.shooter)
-		#Add missile to the sprite groups
-		globalvars.tangibles.add(tempmissile)
-		self.cooldown=self.refire_rate
-
-	def toStringArray(self):
-		str_array = [self.name,
-			'Refire rate: '+str(self.refire_rate),
-			'Range: '+str(self.weapon_range) ]
-		return str_array
-
-
-class MineLayer():
-	def __init__(self, shooter, name='default'):
-		self.name=name
-		self.refire_rate=10 #Fires once every refire_rate frames
-		self.cooldown=0 #How long until next shot
-		self.shooter = shooter
-		self.attack_angle = 10 #if within this angle to target, can shoot at target
-		self.is_a = 'mine'
-
-	def cool(self):
-		if self.cooldown > 0:
-			self.cooldown -= 1
-
-	def shoot(self):
-		tempmine = Mine(self.shooter)
-		#Add mine to the sprite groups
-		globalvars.tangibles.add(tempmine)
-		#Add it to whiskerables so enemy ships will avoid it.
-		globalvars.whiskerables.add(tempmine)
-		self.cooldown=self.refire_rate
-
-	def toStringArray(self):
-		str_array = [self.name,
-			'Refire rate: '+str(self.refire_rate)]
-		return str_array
-
-
 def getWeapon(profile, weaponOwner):
 	weapon = Weapon(weaponOwner)
 	if profile == 'mk1':
@@ -415,6 +361,5 @@ def getWeapon(profile, weaponOwner):
 #	print '\nThere are '+str(len(spread_classes)*len(refire_classes)*len(type_classes)*len(speed_classes)*len(damage_classes)*len(lifespan_classes))+' unique weapons.\n'
 #	for i in range(len(weapon_class_names)):
 #		generateWeapon(i)
-
 #testing()
 #exit()

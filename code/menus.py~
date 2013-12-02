@@ -7,6 +7,25 @@ import sys
 sys.path.append('code/cython')
 import cygeometry
 
+def splitTooLongWord(word_to_split='', length_limit=20):
+	'''If word_to_split is longer than length_limit, split it into two 
+	words of roughly equal size and return them. '''
+	word_length = len(word_to_split)
+	if word_length > length_limit:
+		#Find the blank space closest to the middle of the word
+		mid = word_length/2
+		min_dist = word_length
+		space_index = -1
+		for i in range(word_length):
+			if word_to_split[i] == ' ':
+				dist = abs(i-mid)
+				if dist <= min_dist:
+					min_dist = dist
+					space_index = i
+		return (word_to_split[:space_index], word_to_split[space_index:])
+	return (word_to_split, '')
+
+
 def buyGas(): #TODO This needs moved elsewhere. It should not be here!
 	globalvars.player.fuel += 1000
 	globalvars.player.money -= 10
@@ -40,6 +59,14 @@ def unequipPlayerMine():
 	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
 	player makes to his ship.'''
 	globalvars.player.unequipMine()
+	globalvars.menu.setShipPanel()
+
+
+def unequipPlayerEngine():
+	'''This method allows me to keep the unequipEngine method in the ship object 
+	unpolluted by menu concerns, but to also reset the menu to reflect changes the 
+	player makes to his ship.'''
+	globalvars.player.unequipEngine()
 	globalvars.menu.setShipPanel()
 
 
@@ -615,7 +642,8 @@ class Menu:
 
 	def setShipPanel(self):
 		self.setStandardMenu()
-		temp = drawable.DrawableImage(x1=left+230, y1=300+top, image='shipoutline')
+		temp = drawable.DrawableImage(x1=left+230, y1=300+top,\
+									  image='shipoutline')
 		self.main_panel.addDrawable(temp)
 		textbuffer = 8
 		localtopbuffer = 50
@@ -628,57 +656,103 @@ class Menu:
 			x_val = 200
 			y_val = 80
 			self.addWeaponSubpanel(x_val, y_val, localwidth, localheight,\
-				framethickness, textbuffer, globalvars.player.gun, unequipPlayerGun)
+				framethickness, textbuffer, globalvars.player.gun,\
+				unequipPlayerGun)
 		#Draw the currently equipped missile if any
 		if not globalvars.player.missile is None:
 			x_val = 100
 			y_val = 180
 			self.addWeaponSubpanel(x_val, y_val, localwidth, localheight,\
-				framethickness, textbuffer, globalvars.player.missile, unequipPlayerMissile)
+				framethickness, textbuffer, globalvars.player.missile,\
+				unequipPlayerMissile)
 		#Draw the currently equipped mine if any
 		if not globalvars.player.mine is None:
 			x_val = 100
 			y_val = 380
 			self.addWeaponSubpanel(x_val, y_val, localwidth, localheight,\
-				framethickness, textbuffer, globalvars.player.mine, unequipPlayerMine)
-		#Draw all the weapons in the cargo hold along the right side of the screen.
-		i = 0
-		for j in xrange(len(globalvars.player.cargo)):
-			c = globalvars.player.cargo[j]
-			#This is a clunky way to distinguish weapons from non-weapons, but it will work for now.
-			if hasattr(c, 'shooter'):
-				self.addWeaponSubpanel(leftoffset, localtopbuffer+i*localheight,\
-					localwidth, localheight,\
-					framethickness, textbuffer, c, equipPlayerWeapon,\
-					argument=j, equip=True)
-				i += 1
-		#TODO TESTING
-		subpanel = Panel()
-		temp = drawable.Text(x1=500, y1=500,\
-				string='Weapon Compare', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
-		subpanel.argument = 0
-		subpanel.addDrawable(temp)
-		self.main_panel.addPanel(subpanel)
-		#TODO TESTING
-		subpanel = Panel()
-		temp = drawable.Text(x1=500, y1=550,\
-				string='Engine Compare', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(globalvars.menu.setEngineComparePanel)
-		subpanel.argument = 0
-		subpanel.addDrawable(temp)
-		self.main_panel.addPanel(subpanel)
-		#TODO TESTING
-		subpanel = Panel()
-		temp = drawable.Text(x1=500, y1=600,\
-				string='Ship Compare', font_size=font_size,\
-				color=colors.white)
-		subpanel.setMethod(globalvars.menu.setShipComparePanel)
-		subpanel.argument = 0
-		subpanel.addDrawable(temp)
-		self.main_panel.addPanel(subpanel)
+				framethickness, textbuffer, globalvars.player.mine,\
+				unequipPlayerMine)
+		#Draw the currently equipped engine if any
+		if not globalvars.player.engine is None:
+			x_val = 200
+			y_val = 420
+			self.addWeaponSubpanel(x_val, y_val, localwidth, localheight,\
+				framethickness, textbuffer, globalvars.player.engine,\
+				unequipPlayerEngine)
+
+		#Find out what's in the cargo hold
+		gun_count = 0
+		missile_count = 0
+		mine_count = 0
+		ship_count = 0
+		engine_count = 0
+		for c in globalvars.player.cargo:
+			#I have no idea why this continue line is needed, but I get an
+			#AttributeError: 'NoneType' object has no attribute 'is_a'
+			#when I unequip an engine and then reequip one without this line.
+			if c is None: continue
+			if c.is_a == 'gun':
+				gun_count += 1
+			elif c.is_a == globalvars.SHIP:
+				ship_count += 1
+			elif c.is_a == 'engine':
+				engine_count += 1
+			elif c.is_a == 'missile':
+				missile_count += 1
+			elif c.is_a == 'mine':
+				mine_count += 1
+
+		fontsize = 32
+		if gun_count > 0:
+			subpanel = Panel()
+			temp = drawable.Text(x1=500, y1=100,\
+				   string='Weapon Compare ('+str(gun_count)+') in cargo',\
+				   font_size=fontsize,\
+				   color=colors.white)
+			subpanel.setMethod(globalvars.menu.setWeaponComparePanel)
+			subpanel.argument = 0
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+		if missile_count > 0:
+			subpanel = Panel()
+			temp = drawable.Text(x1=500, y1=200,\
+				   string='Missile Compare ('+str(missile_count)+') in cargo',\
+				   font_size=fontsize,\
+				   color=colors.white)
+			subpanel.setMethod(globalvars.menu.setMissileComparePanel)
+			subpanel.argument = 0
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)			
+		if mine_count > 0:
+			subpanel = Panel()
+			temp = drawable.Text(x1=500, y1=300,\
+				   string='Mine Compare ('+str(mine_count)+') in cargo',\
+				   font_size=fontsize,\
+				   color=colors.white)
+			subpanel.setMethod(globalvars.menu.setMineComparePanel)
+			subpanel.argument = 0
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)			
+		if ship_count > 0:
+			subpanel = Panel()
+			temp = drawable.Text(x1=500, y1=500,\
+				   string='Ship Compare ('+str(ship_count)+') available',\
+				   font_size=fontsize,\
+				   color=colors.white)
+			subpanel.setMethod(globalvars.menu.setShipComparePanel)
+			subpanel.argument = 0
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+		if engine_count > 0:
+			subpanel = Panel()
+			temp = drawable.Text(x1=500, y1=400,\
+				   string='Engine Compare ('+str(engine_count)+') in cargo',\
+				   font_size=fontsize,\
+				   color=colors.white)
+			subpanel.setMethod(globalvars.menu.setEngineComparePanel)
+			subpanel.argument = 0
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
 
 
 	def setWeaponViewPanel(self, weapon):
@@ -780,52 +854,17 @@ class Menu:
 				equipped_gun_comparator[7],cargo_gun_comparator[7]]
 		]
 		#Fix too long names
-		if len(equipped_gun_column[0]) > 20:
-			#Find last blank space
-			space_index = len(equipped_gun_column[0])-2
-			for _ in range(len(equipped_gun_column[0])):
-				if equipped_gun_column[0][space_index] == ' ':
-					break
-				space_index -= 1
-			comparison_array[1][1] = equipped_gun_column[0][:space_index]
-			comparison_array[2][1] = equipped_gun_column[0][space_index:]
-		if len(cargo_gun_column[0]) > 20:
-			#Find last blank space
-			space_index = len(cargo_gun_column[0])-2
-			for _ in range(len(cargo_gun_column[0])):
-				if cargo_gun_column[0][space_index] == ' ':
-					break
-				space_index -= 1
-			comparison_array[1][2] = cargo_gun_column[0][:space_index]
-			comparison_array[2][2] = cargo_gun_column[0][space_index:]
-		for row in comparison_array:
-			equipped_color = colors.white
-			cargo_color = colors.white
-			equipped_val = row[3]
-			cargo_val = row[4]
-			if equipped_val != cargo_val:
-				if equipped_val > cargo_val:
-					equipped_color = colors.green
-					cargo_color = colors.red
-				else:
-					equipped_color = colors.red
-					cargo_color = colors.green
-			temp = drawable.Text(x1=left+column1_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[0],\
-				font_size=local_font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
-			temp = drawable.Text(x1=left+column2_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[1],\
-				font_size=local_font_size, color=equipped_color)
-			self.main_panel.addDrawable(temp)
-			temp = drawable.Text(x1=left+column3_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[2],\
-				font_size=local_font_size, color=cargo_color)
-			self.main_panel.addDrawable(temp)
-			i += 1
+		part1, part2 = splitTooLongWord(word_to_split=equipped_gun_column[0],\
+			length_limit=20)
+		comparison_array[1][1] = part1
+		comparison_array[2][1] = part2
+		part1, part2 = splitTooLongWord(word_to_split=cargo_gun_column[0],\
+			length_limit=20)
+		comparison_array[1][2] = part1
+		comparison_array[2][2] = part2
+
+		i = self.processComparisonArray(comparison_array, i, local_font_size)
+
 		#Reset color scheme
 		equipped_color = colors.white
 		cargo_color = colors.white
@@ -914,7 +953,7 @@ class Menu:
 				cargo_ship_comparator = [0.0 for _ in range(5)]
 			else:
 				cargo_ship_column = [globalvars.player.cargo[index].name,
-						globalvars.player.cargo[index].getShipClassName()
+						globalvars.player.cargo[index].getShipClassName(),
 						str(globalvars.player.cargo[index].maxhealth),
 						str(globalvars.player.cargo[index].fuel_capacity),
 						str(globalvars.player.cargo[index].cargospace)]
@@ -943,52 +982,17 @@ class Menu:
 				equipped_ship_comparator[4],cargo_ship_comparator[4]]
 		]
 		#Fix too long names
-		if len(equipped_ship_column[0]) > 20:
-			#Find last blank space
-			space_index = len(equipped_ship_column[0])-2
-			for _ in range(len(equipped_ship_column[0])):
-				if equipped_ship_column[0][space_index] == ' ':
-					break
-				space_index -= 1
-			comparison_array[1][1] = equipped_ship_column[0][:space_index]
-			comparison_array[2][1] = equipped_ship_column[0][space_index:]
-		if len(cargo_ship_column[0]) > 20:
-			#Find last blank space
-			space_index = len(cargo_ship_column[0])-2
-			for _ in range(len(cargo_ship_column[0])):
-				if cargo_ship_column[0][space_index] == ' ':
-					break
-				space_index -= 1
-			comparison_array[1][2] = cargo_ship_column[0][:space_index]
-			comparison_array[2][2] = cargo_ship_column[0][space_index:]
-		for row in comparison_array:
-			equipped_color = colors.white
-			cargo_color = colors.white
-			equipped_val = row[3]
-			cargo_val = row[4]
-			if equipped_val != cargo_val:
-				if equipped_val > cargo_val:
-					equipped_color = colors.green
-					cargo_color = colors.red
-				else:
-					equipped_color = colors.red
-					cargo_color = colors.green
-			temp = drawable.Text(x1=left+column1_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[0],\
-				font_size=local_font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
-			temp = drawable.Text(x1=left+column2_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[1],\
-				font_size=local_font_size, color=equipped_color)
-			self.main_panel.addDrawable(temp)
-			temp = drawable.Text(x1=left+column3_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[2],\
-				font_size=local_font_size, color=cargo_color)
-			self.main_panel.addDrawable(temp)
-			i += 1
+		part1, part2 = splitTooLongWord(word_to_split=equipped_ship_column[0],\
+			length_limit=20)
+		comparison_array[1][1] = part1
+		comparison_array[2][1] = part2
+		part1, part2 = splitTooLongWord(word_to_split=cargo_ship_column[0],\
+			length_limit=20)
+		comparison_array[1][2] = part1
+		comparison_array[2][2] = part2
+
+		i = self.processComparisonArray(comparison_array, i, local_font_size)
+
 		#Reset color scheme
 		equipped_color = colors.white
 		cargo_color = colors.white
@@ -1033,6 +1037,187 @@ class Menu:
 					font_size=local_font_size, color=colors.white)
 				subpanel.addDrawable(temp)
 				subpanel.setMethod(globalvars.menu.setShipComparePanel)
+				subpanel.argument = next
+				self.main_panel.addPanel(subpanel)
+				break
+
+
+	def setMineComparePanel(self, index):
+		'''Pre: index is a valid index into globalvars.player.cargo
+		and index indexes an object of type mine.
+		Post: displays a panel comparing the current mine with
+		the indexed mine. Also provides options to view next or previous 
+		mine in the cargo hold.
+		Also gives option to replace current mine with indexed mine.'''
+		local_font_size = 32
+		self.setStandardMenu()
+
+
+	def setMissileComparePanel(self, index):
+		'''Pre: index is a valid index into globalvars.player.cargo
+		and index indexes an object of type missile.
+		Post: displays a panel comparing the current missile with
+		the indexed missile. Also provides options to view next or previous 
+		missile in the cargo hold.
+		Also gives option to replace current missile with indexed missile.'''
+		local_font_size = 32
+		self.setStandardMenu()
+		#Equipped missile (if any)
+		equipped_missile_column = None
+		equipped_missile_comparator = None
+		if globalvars.player.missile is None:
+			equipped_missile_column = ['None equipped','','','','','','','','','','']
+			equipped_missile_comparator = [0.0 for _ in range(11)]
+		else:
+			equipped_missile_column = [globalvars.player.missile.name,
+						globalvars.player.missile.getMissileClassName(),
+						str(globalvars.player.missile.refire_rate),
+						str(globalvars.player.missile.speed),
+						str(globalvars.player.missile.damage),
+						str(globalvars.player.missile.longevity),
+						str(globalvars.player.missile.turn_rate),
+						'',
+						'',
+						'',
+						'']
+			equipped_missile_comparator = [0,
+						globalvars.player.missile.getMissileClass(),
+						0,
+						globalvars.player.missile.refire_rate,
+						globalvars.player.missile.speed,
+						globalvars.player.missile.damage,
+						globalvars.player.missile.longevity,
+						globalvars.player.missile.turn_rate,
+						0,
+						0,
+						0]
+		#error check the cargo hold
+		cargo_missile_column = None
+		cargo_missile_comparator = None
+		if len(globalvars.player.cargo) == 0:
+			cargo_missile_column = ['There are no missiles in','your cargo hold.','','','','','','','','','']
+			cargo_missile_comparator = [0.0 for _ in range(11)]
+		else:
+			if index < 0 or index >= len(globalvars.player.cargo):
+				index = 0
+			if globalvars.player.cargo[index].is_a != 'missile':
+				for i in range(len(globalvars.player.cargo)):
+					if globalvars.player.cargo[i].is_a == 'missile':
+						index = i
+						break
+			if globalvars.player.cargo[index].is_a != 'missile':
+				cargo_missile_column = ['There are no missiles in','your cargo hold.','','','','','','','','','']
+				cargo_missile_comparator = [0.0 for _ in range(11)]
+			else:
+				cargo_missile_column = [globalvars.player.cargo[index].name,
+						globalvars.player.cargo[index].getMissileClassName(),
+						str(globalvars.player.cargo[index].refire_rate),
+						str(globalvars.player.cargo[index].speed),
+						str(globalvars.player.cargo[index].damage),
+						str(globalvars.player.cargo[index].longevity),
+						str(globalvars.player.cargo[index].turn_rate),
+						'',
+						'',
+						'',
+						'']
+				cargo_missile_comparator = [0,
+						globalvars.player.cargo[index].getMissileClass(),
+						0,
+						globalvars.player.cargo[index].refire_rate,
+						globalvars.player.cargo[index].speed,
+						globalvars.player.cargo[index].damage,
+						globalvars.player.cargo[index].longevity,
+						globalvars.player.cargo[index].turn_rate,
+						0,
+						0,
+						0]
+		i = 0
+		column1_offset = 5
+		column2_offset = 175
+		column3_offset = 500
+		#The last two values for refire rate are reversed since smaller refire rate is better.
+		comparison_array = [
+			['','EQUIPPED','CARGO',0,0],
+			['',equipped_missile_column[0],cargo_missile_column[0],
+				equipped_missile_comparator[0],cargo_missile_comparator[0]],
+			['','','',0,0],
+			['Class:',equipped_missile_column[1],cargo_missile_column[1],
+				equipped_missile_comparator[1],cargo_missile_comparator[1]],
+			['Refire rate:',equipped_missile_column[2],cargo_missile_column[2],
+				cargo_missile_comparator[2],equipped_missile_comparator[2]],
+			['Velocity:',equipped_missile_column[3],cargo_missile_column[3],
+				equipped_missile_comparator[3],cargo_missile_comparator[3]],
+			['Damage:',equipped_missile_column[4],cargo_missile_column[4],
+				equipped_missile_comparator[4],cargo_missile_comparator[4]],
+			['Longevity:',equipped_missile_column[5],cargo_missile_column[5],
+				equipped_missile_comparator[5],cargo_missile_comparator[5]],
+			['Turn rate:',equipped_missile_column[6],cargo_missile_column[6],
+				equipped_missile_comparator[6],cargo_missile_comparator[6]],
+			['Ammo:',equipped_missile_column[7],cargo_missile_column[7],
+				equipped_missile_comparator[7],cargo_missile_comparator[7]],
+			['Blast:',equipped_missile_column[8],cargo_missile_column[8],
+				equipped_missile_comparator[8],cargo_missile_comparator[8]],
+			['Radius:',equipped_missile_column[9],cargo_missile_column[9],
+				equipped_missile_comparator[9],cargo_missile_comparator[9]],
+			['Seeking:',equipped_missile_column[10],cargo_missile_column[10],
+				equipped_missile_comparator[10],cargo_missile_comparator[10]]
+		]
+		#Fix too long names
+		part1, part2 = splitTooLongWord(word_to_split=equipped_missile_column[0],\
+			length_limit=20)
+		comparison_array[1][1] = part1
+		comparison_array[2][1] = part2
+		part1, part2 = splitTooLongWord(word_to_split=cargo_missile_column[0],\
+			length_limit=20)
+		comparison_array[1][2] = part1
+		comparison_array[2][2] = part2
+
+		i = self.processComparisonArray(comparison_array, i, local_font_size)
+
+		#Reset color scheme
+		equipped_color = colors.white
+		cargo_color = colors.white
+		#Give player option to equip currently selected missile in cargo
+		i += 1
+		if globalvars.player.cargo[index].is_a == 'missile':
+			subpanel = Panel()
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string='Equip',\
+				font_size=local_font_size, color=cargo_color)
+			subpanel.addDrawable(temp)
+			subpanel.setMethod(equipPlayerWeapon)
+			subpanel.argument = index
+			self.main_panel.addPanel(subpanel)
+		i += 2
+		#Find previous missile in cargo to examine.
+		previous = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			previous -= 1
+			if previous < 0: previous = len(globalvars.player.cargo)-1
+			if globalvars.player.cargo[previous].is_a == 'missile':
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column2_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Previous',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(globalvars.menu.setMissileComparePanel)
+				subpanel.argument = previous
+				self.main_panel.addPanel(subpanel)
+				break
+		#Find next missile in cargo to examine.
+		next = index
+		for _ in range(len(globalvars.player.cargo)-1):
+			next = (next+1) % len(globalvars.player.cargo)
+			if globalvars.player.cargo[next].is_a == 'missile':
+				subpanel = Panel()
+				temp = drawable.Text(x1=left+column3_offset,\
+					y1=local_font_size*i+topbuffer+top,\
+					string='Next',\
+					font_size=local_font_size, color=colors.white)
+				subpanel.addDrawable(temp)
+				subpanel.setMethod(globalvars.menu.setMissileComparePanel)
 				subpanel.argument = next
 				self.main_panel.addPanel(subpanel)
 				break
@@ -1122,34 +1307,18 @@ class Menu:
 			['Fuel Consumption:',equipped_engine_column[6],cargo_engine_column[6],
 				cargo_engine_comparator[6],equipped_engine_comparator[6]]
 		]
-		for row in comparison_array:
-			equipped_color = colors.white
-			cargo_color = colors.white
-			equipped_val = row[3]
-			cargo_val = row[4]
-			if equipped_val != cargo_val:
-				if equipped_val > cargo_val:
-					equipped_color = colors.green
-					cargo_color = colors.red
-				else:
-					equipped_color = colors.red
-					cargo_color = colors.green
-			temp = drawable.Text(x1=left+column1_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[0],\
-				font_size=local_font_size, color=colors.white)
-			self.main_panel.addDrawable(temp)
-			temp = drawable.Text(x1=left+column2_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[1],\
-				font_size=local_font_size, color=equipped_color)
-			self.main_panel.addDrawable(temp)
-			temp = drawable.Text(x1=left+column3_offset,\
-				y1=local_font_size*i+topbuffer+top,\
-				string=row[2],\
-				font_size=local_font_size, color=cargo_color)
-			self.main_panel.addDrawable(temp)
-			i += 1
+		#Fix too long names
+		part1, part2 = splitTooLongWord(word_to_split=equipped_engine_column[0],\
+			length_limit=20)
+		comparison_array[1][1] = part1
+		comparison_array[2][1] = part2
+		part1, part2 = splitTooLongWord(word_to_split=cargo_engine_column[0],\
+			length_limit=20)
+		comparison_array[1][2] = part1
+		comparison_array[2][2] = part2
+
+		i = self.processComparisonArray(comparison_array, i, local_font_size)
+
 		#Reset color scheme
 		equipped_color = colors.white
 		cargo_color = colors.white
@@ -1197,6 +1366,38 @@ class Menu:
 				subpanel.argument = next
 				self.main_panel.addPanel(subpanel)
 				break
+
+
+	def processComparisonArray(self, comparison_array, i, local_font_size):
+		for row in comparison_array:
+			equipped_color = colors.white
+			cargo_color = colors.white
+			equipped_val = row[3]
+			cargo_val = row[4]
+			if equipped_val != cargo_val:
+				if equipped_val > cargo_val:
+					equipped_color = colors.green
+					cargo_color = colors.red
+				else:
+					equipped_color = colors.red
+					cargo_color = colors.green
+			temp = drawable.Text(x1=left+column1_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[0],\
+				font_size=local_font_size, color=colors.white)
+			self.main_panel.addDrawable(temp)
+			temp = drawable.Text(x1=left+column2_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[1],\
+				font_size=local_font_size, color=equipped_color)
+			self.main_panel.addDrawable(temp)
+			temp = drawable.Text(x1=left+column3_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string=row[2],\
+				font_size=local_font_size, color=cargo_color)
+			self.main_panel.addDrawable(temp)
+			i += 1
+		return i
 
 
 	def setOpportunityPanel(self, opportunity):

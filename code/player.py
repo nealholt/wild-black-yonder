@@ -29,9 +29,18 @@ class Player(Ship):
 
 		#For testing purposes, load all the weapons except the initially equipped 
 		#weapon into the player's cargo hold.
-		weaponsList = ['missile_mk1', 'mine', 'hit_box_test']
-		for w in weaponsList:
-			self.cargo.append(weapon.getWeapon(w, self))
+		#Load hitBoxTester
+		self.cargo.append(weapon.HitBoxTesterGun(self))
+		#TODO Add a mine to the cargo hold
+		#temp = mine.generateMine(5)
+		#temp.shooter = self
+		#self.cargo.append(temp)
+
+		#Load 4 more randomly generated missiles
+		for _ in range(4):
+			temp = missile.generateMissile(rd.randint(0, len(missile.missile_class_names)-1))
+			temp.shooter = self
+			self.cargo.append(temp)
 		#Load 4 more randomly generated guns
 		for _ in range(4):
 			temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
