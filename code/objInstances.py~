@@ -90,20 +90,21 @@ class Missile(PhysicalObject):
 	def update(self):
 		'''TODO The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
 		#If the missile has no target, it will just kill itself and effectively not fire. Later, it might be cooler to have the missile just dumbfire and explode after a timeout.
-		if self.target is None or self.longevity < 1:
+		if self.longevity < 1:
 			#explode
 			globalvars.intangibles_bottom.add(Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			self.kill()
 		self.longevity -= 1
-		#Update target location
-		self.setDestination(self.target.rect.center)
-		#The following must be called prior to calling turnTowards.
-		self.angle_to_target = self.getAngleToTarget()
-		#Turn towards target
-		self.turnTowards(force_turn=True)
-		#modify speed
-		self.approachSpeed()
+		if not self.target is None:
+			#Update target location
+			self.setDestination(self.target.rect.center)
+			#The following must be called prior to calling turnTowards.
+			self.angle_to_target = self.getAngleToTarget()
+			#Turn towards target
+			self.turnTowards(force_turn=True)
+			#modify speed
+			self.approachSpeed()
 		#move
 		self.move()
 
@@ -163,11 +164,14 @@ class Mine(PhysicalObject):
 
 	def handleCollisionWith(self, other_sprite):
 		'''For now mines die immediately regardless of what they hit.'''
-		globalvars.intangibles_bottom.add(Explosion(\
-			x=self.rect.centerx,y=self.rect.centery))
-		#kill removes the calling sprite from all sprite groups
-		self.kill()
-		return True
+		died = False
+		if other_sprite != self.dontClipMe:
+			globalvars.intangibles_bottom.add(Explosion(\
+				x=self.rect.centerx,y=self.rect.centery))
+			died = True
+			#kill removes the calling sprite from all sprite groups
+			self.kill()
+		return died
 
 
 class Explosion(PhysicalObject):
