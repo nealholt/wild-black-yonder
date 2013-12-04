@@ -106,7 +106,7 @@ class MineLayer():
 			self.cooldown -= 1
 
 	def shoot(self):
-		tempmine = Mine(self.shooter)
+		tempmine = Mine(self.shooter, self.damage, self.longevity)
 		#Add mine to the sprite groups
 		globalvars.tangibles.add(tempmine)
 		#Add it to whiskerables so enemy ships will avoid it.
@@ -115,7 +115,10 @@ class MineLayer():
 
 	def toStringArray(self):
 		str_array = [self.name,
-			'Refire rate: '+str(self.refire_rate)]
+			'Class: '+self.getMineClassName(),
+			'Damage: '+str(self.damage),
+			'Refire rate: '+str(self.refire_rate),
+			'Longevity: '+str(self.longevity)]
 		return str_array
 
 

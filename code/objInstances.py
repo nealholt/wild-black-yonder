@@ -127,7 +127,7 @@ class Missile(PhysicalObject):
 class Mine(PhysicalObject):
 	'''mine - new object does not move. collides with nothing until short timer elapses. 
 	on contact explodes and causes damage. enemy will avoid it.'''
-	def __init__(self, shooter):
+	def __init__(self, shooter, damage, longevity):
 		PhysicalObject.__init__(self,\
 			centerx=shooter.rect.centerx,\
 			centery=shooter.rect.centery,\
@@ -140,24 +140,31 @@ class Mine(PhysicalObject):
 		#This is needed so that the shooter doesn't immediately take damage
 		#from his own mine.
 		self.dontClipMe = shooter
-		self.damage = 50
-		self.is_a = globalvars.BULLET
+		self.damage = damage
+		self.longevity = longevity
 		#A timer. This mine will explode on contact after this many seconds.
-		self.explodeAfter = 4*globalvars.FPS
+		self.explodeAfter = 1*globalvars.FPS
+		self.is_a = globalvars.BULLET
 
 	def update(self):
 		''' '''
+		self.longevity -= 1
 		if self.explodeAfter > 0:
 			self.explodeAfter -= 1
 			#Now make the mine dangerous to everyone, including the person who laid it.
 			if self.explodeAfter == 0:
 				self.dontClipMe = None
+		#The mine expired. Blow it up.
+		if self.longevity < 1:
+			#explode
+			globalvars.intangibles_bottom.add(Explosion(ttl=0.25,\
+				x=self.rect.centerx,y=self.rect.centery))
+			self.kill()
 
 	def handleCollisionWith(self, other_sprite):
 		'''For now mines die immediately regardless of what they hit.'''
 		died = False
-		if self.explodeAfter == 0 or other_sprite.is_a == globalvars.BULLET:
-			#explode
+		if other_sprite != self.dontClipMe:
 			globalvars.intangibles_bottom.add(Explosion(\
 				x=self.rect.centerx,y=self.rect.centery))
 			died = True

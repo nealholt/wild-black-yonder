@@ -31,8 +31,8 @@ def generateMine(mine_class):
 	mine = MineLayer(None)
 	#Calculate the class of the mine.
 	actual_class = mine.getMineClass()
-	print 'mine is class '+mine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+mine_class_names[mine_class]+' ('+str(mine_class)+')'
-	print 'mine name: '+mine.getMineName()
+	#print 'mine is class '+mine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+mine_class_names[mine_class]+' ('+str(mine_class)+')'
+	#print 'mine name: '+mine.getMineName()
 	#Now nudge the mine in the direction of the desired mine class.
 	#randomly select an attribute of the mine
 	randatt = rd.randint(0, num_mine_attributes-1)
@@ -44,8 +44,8 @@ def generateMine(mine_class):
 		randatt = (randatt+1)%num_mine_attributes
 		#Calculate the class of the mine.
 		actual_class = mine.getMineClass()
-		print 'Mine is now class '+mine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+mine_class_names[mine_class]+' ('+str(mine_class)+')'
-		print 'Mine name: '+mine.getMineName()
+		#print 'Mine is now class '+mine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+mine_class_names[mine_class]+' ('+str(mine_class)+')'
+		#print 'Mine name: '+mine.getMineName()
 	#randomly select an attribute of the mine
 	randatt = rd.randint(0, num_mine_attributes-1)
 	#while the mine is below the selected class...
@@ -56,10 +56,10 @@ def generateMine(mine_class):
 		randatt = (randatt+1)%num_mine_attributes
 		#Calculate the class of the mine.
 		actual_class = mine.getMineClass()
-		print 'Mine is now class '+mine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+mine_class_names[mine_class]+' ('+str(mine_class)+')'
-		print 'Mine name: '+mine.getMineName()
-	print 'Final mine is class '+mine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+mine_class_names[mine_class]+' ('+str(mine_class)+')'
-	print 'Final mine name: '+mine.getMineName()+'\n'
+		#print 'Mine is now class '+mine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+mine_class_names[mine_class]+' ('+str(mine_class)+')'
+		#print 'Mine name: '+mine.getMineName()
+	#print 'Final mine is class '+mine_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+mine_class_names[mine_class]+' ('+str(mine_class)+')'
+	#print 'Final mine name: '+mine.getMineName()+'\n'
 	mine.initialize()
 	return mine
 
@@ -115,7 +115,10 @@ class MineLayer():
 
 	def toStringArray(self):
 		str_array = [self.name,
-			'Refire rate: '+str(self.refire_rate)]
+			'Class: '+self.getMineClassName(),
+			'Damage: '+str(self.damage),
+			'Refire rate: '+str(self.refire_rate),
+			'Longevity: '+str(self.longevity)]
 		return str_array
 
 
@@ -209,8 +212,8 @@ class MineLayer():
 		return (rating+8)/2
 
 
-def testing():
-	for i in range(len(mine_class_names)):
-		generateMine(i)
-testing()
-exit()
+#def testing():
+#	for i in range(len(mine_class_names)):
+#		generateMine(i)
+#testing()
+#exit()
