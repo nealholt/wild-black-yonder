@@ -34,7 +34,6 @@ def getObstacles(seed=0,
 		capital_ship_max = 1.1,
 		fuel_min = 0.0,
 		fuel_max = 1.1):
-	'''TODO later I want to get profiles instead of pure random number generation. '''
 	rd.seed(seed) #Fix the seed for the random number generator.
 	numbers = [0 for _ in range(fuel+1)]
 	numbers[enemy] = int(rd.uniform(enemy_min, enemy_max))

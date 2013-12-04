@@ -94,6 +94,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 		temp = ship.Ship(centerx=x, centery=y, image_name='destroyer')
 		#Set the ship's health bar. This must be done right before adding any ship to tangibles
 		temp.setHealthBar()
+		temp.setProfile()
 		physical_objs.append(temp)
 
 	for _ in xrange(objects[crystal]):
