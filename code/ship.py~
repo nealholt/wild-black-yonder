@@ -216,7 +216,7 @@ class Ship(PhysicalObject):
 			exit()
 		#Remove the engine from cargo
 		temp = self.cargo.pop(cargo_index)
-		self.unequipEngine()
+		if not self.engine is None: self.unequipEngine()
 		self.engine = temp
 		self.engineUpdate()
 

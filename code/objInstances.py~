@@ -89,7 +89,6 @@ class Missile(PhysicalObject):
 
 	def update(self):
 		'''TODO The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
-		#If the missile has no target, it will just kill itself and effectively not fire. Later, it might be cooler to have the missile just dumbfire and explode after a timeout.
 		if self.longevity < 1:
 			#explode
 			globalvars.intangibles_bottom.add(Explosion(\

@@ -132,7 +132,7 @@ class NodeManager():
 						nodecount -= 1
 						break
 				if anyTooClose: break
-		print 'Final node count is '+str(nodecount)
+		#print 'Final node count is '+str(nodecount) #TESTING
 		#Re-id the nodes to ensure that a node with id 0 exists.
 		#This must be done before connecting the nodes.
 		for i in xrange(len(sortednodes)):
