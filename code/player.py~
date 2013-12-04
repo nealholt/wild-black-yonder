@@ -101,7 +101,7 @@ class Player(Ship):
 	def buyTradeGood(self, name, price):
 		#Check to make sure we have enough cargo space
 		if self.cargospace < 1:
-			print 'ERROR in player.buyTradeGood' exit()
+			print 'ERROR in player.buyTradeGood'; exit()
 		#Get any of the trade good already in cargo
 		tg = self.getTradeGoods(name)
 		if tg is None:

@@ -89,6 +89,8 @@ class Player(Ship):
 		#	if c.is_a == globalvars.SHIP:
 		#		todo_testing += c.getShipName()+'-'+c.name+', '
 		#print todo_testing
+		#The following is needed because the ships generated in cargo use the default ship image which is actually a small purple circle with a question mark. At least this way, we don't have to fly that around.
+		self.loadNewImage('ship')
 
 
 	def getTradeGoods(self, name):

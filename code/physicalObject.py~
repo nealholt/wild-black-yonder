@@ -128,6 +128,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 	def loadNewImage(self, image_name, width=0, height=0):
 		self.image_name = image_name
+		print self.image_name
 		if self.image_name is None:
 			self.image = pygame.Surface([width, height])
 			self.image.fill(self.color)
@@ -355,7 +356,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#If we need to turn more towards the target or there is an 
 		#object in front of us
 		abs_angle = abs(self.angle_to_target)
-		#if self.is_a == globalvars.BULLET: print '\nabs angle '+str(abs_angle)+'. Error '+str(self.acceptableError) #TODO TESTING.
 		if abs_angle > self.acceptableError:
 			#Get the amount to turn. It may be less than the 
 			#amount this object is capable of turning.
@@ -367,17 +367,14 @@ class PhysicalObject(pygame.sprite.Sprite):
 				elif dontTurnRight and self.angle_to_target > 0:
 					pass
 				else:
-					#if self.is_a == globalvars.BULLET: print 'missile turning '+str(self.angle_to_target) #TODO TESTING.
 					self.turn(self.angle_to_target)
 			#Turn counter clockwise if that's the direction of our 
 			#target and there is no obstacle in that direction or
 			#if there is an obstacle in front of us and to the right.
 			elif self.angle_to_target < 0 and not dontTurnLeft:
-				#if self.is_a == globalvars.BULLET: print 'missile turning counter clockwise' #TODO TESTING.
 				self.turnCounterClockwise()
 			#In all other cases turn clockwise
 			elif not dontTurnRight:
-				#if self.is_a == globalvars.BULLET: print 'missile turning clockwise' #TODO TESTING.
 				self.turnClockwise()
 		return self.maxSpeed
 
