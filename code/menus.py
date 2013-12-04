@@ -6,6 +6,7 @@ from geometry import angleFromPosition, translate
 import sys
 sys.path.append('code/cython')
 import cygeometry
+import random as rd
 
 def splitTooLongWord(word_to_split='', length_limit=20):
 	'''If word_to_split is longer than length_limit, split it into two 
@@ -26,10 +27,20 @@ def splitTooLongWord(word_to_split='', length_limit=20):
 	return (word_to_split, '')
 
 
-def buyGas(): #TODO This needs moved elsewhere. It should not be here!
+def buyGas():
 	globalvars.player.fuel += 1000
 	globalvars.player.money -= 10
 	globalvars.menu.setGasStationPanel()
+
+def buyProduct(triple):
+	product_name, sell_price, seed = triple
+	globalvars.player.buyTradeGood(product_name, sell_price)
+	globalvars.menu.setTradingPanel(seed)
+
+def sellProduct(triple):
+	product_name, sell_price, seed = triple
+	globalvars.player.sellTradeGood(product_name, sell_price)
+	globalvars.menu.setTradingPanel(seed)
 
 def padStringLength(string, length, padding): #TODO Can't this go somewhere else?
 	toReturn = string
@@ -276,7 +287,97 @@ class Menu:
 		'Fuel: '+str(globalvars.player.fuel)]
 		#Then draw the contents of the menu
 		self.addTextToMainPanel(text, left+50, 100+top)
-		self.addMenuItem(x1=(left+200), y1=(top+200), width=200, height=200, string='Buy 1000 Fuel for $10', textbuffer=9, text_color=colors.white, method=buyGas, framed=True)
+		if globalvars.player.money > 10:
+			self.addMenuItem(x1=(left+200), y1=(top+200), width=180, height=40, string='Buy 1000 Fuel for $10', textbuffer=12, method=buyGas, framed=True)
+		else:
+			text = ['You do not have enough money.']
+			self.addTextToMainPanel(text, (left+200), (top+200))
+
+
+	def setTradingPanel(self, seed):
+		self.setStandardMenu()
+		rd.seed(seed) #Fix the seed for the random number generator.
+		local_font_size = 32
+		columns = [5, 250, 350, 450, 490, 580, 680]
+		#Display player's money
+		use_color = colors.white
+		if globalvars.player.money < 1:
+			use_color = colors.red
+		temp = drawable.Text(x1=500,\
+			y1=topbuffer-15,\
+			string='Your money: $'+str(globalvars.player.money),\
+			font_size=local_font_size, color=use_color)
+		self.main_panel.addDrawable(temp)
+		#Display player's cargospace
+		use_color = colors.white
+		if globalvars.player.cargospace < 1:
+			use_color = colors.red
+		temp = drawable.Text(x1=500,\
+			y1=topbuffer+local_font_size-20,\
+			string='Your cargospace: '+str(globalvars.player.cargospace),\
+			font_size=local_font_size, color=use_color)
+		self.main_panel.addDrawable(temp)
+		#List of all current products
+		product_list = ['Niblets', 'Flummox Capacitors', 'Canny Goods',\
+			'Reactor Wax', 'Magnet Grease', 'Fools Iridium']
+		text_array = [['PRODUCT', 'PRICE', '', 'YOURS', '', '', 'PROFIT']]
+		for p in product_list:
+			#Get any of this trade good that the player has.
+			playerhas = globalvars.player.getTradeGoods(p)
+			#Get the sell price
+			sell_price = rd.randint(1,99)
+			#Determine the amount the player has, profit the player could make by selling,
+			#and initialize the sell button.
+			player_amt = 0
+			player_unit_price = ''
+			sell_button = '---'
+			unit_profit, percent_profit = 0.0, 0.0 #Unit profit is currently unused
+			if not playerhas is None and playerhas.amount > 0:
+				player_amt = playerhas.amount
+				player_unit_price = ' x $'+str(int(playerhas.unit_price))
+				sell_button = 'Sell'
+				unit_profit, percent_profit = playerhas.getProfit(sell_price)
+			#Format the percent profit nicely
+			percent_profit = str(percent_profit)
+			#Chop off the decimal and add a percent sign.
+			percent_profit = percent_profit[:percent_profit.index('.')]
+			if len(percent_profit) > 0: percent_profit += '%'
+			#Determine whether or not to display the buy button.
+			buy_button = '$$$'
+			if globalvars.player.cargospace < 1:
+				buy_button = '---'
+			elif globalvars.player.money > sell_price:
+				buy_button = 'Buy'
+			#Populate the row of the text array corresponding to product p
+			text_array.append([p, '$'+str(sell_price), buy_button,\
+				str(player_amt), player_unit_price, sell_button,\
+				percent_profit, sell_price])
+		#Display the text array on the screen.
+		for i in range(len(text_array)):
+			for j in range(len(columns)):
+				if text_array[i][j] == 'Buy':
+					product_name = text_array[i][0]
+					sell_price = text_array[i][-1]
+					self.addMenuItem(x1=left+columns[j],\
+						y1=local_font_size*i+topbuffer+top,\
+						string='Buy', local_font_size=local_font_size,\
+						width=50, height=100, textbuffer=3,\
+						text_color=colors.white, method=buyProduct,\
+						argument=[product_name, sell_price, seed])
+				elif text_array[i][j] == 'Sell':
+					product_name = text_array[i][0]
+					sell_price = text_array[i][-1]
+					self.addMenuItem(x1=left+columns[j],\
+						y1=local_font_size*i+topbuffer+top,\
+						string='Sell', local_font_size=local_font_size,\
+						width=50, height=100, textbuffer=3,\
+						text_color=colors.white, method=sellProduct,\
+						argument=[product_name, sell_price, seed])
+				else:
+					temp = drawable.Text(x1=left+columns[j],\
+						y1=local_font_size*i+topbuffer+top,\
+						string=text_array[i][j], font_size=local_font_size)
+					self.main_panel.addDrawable(temp)
 
 
 	def setDestinationUpdateGalaxyTravel(self, destination_node_id):

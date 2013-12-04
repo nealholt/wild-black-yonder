@@ -515,7 +515,8 @@ class Planet(PhysicalObject):
 		'''React to a collision with other_sprite.'''
 		#If other sprite is playership and this portal is the destination...
 		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer and self.collisionCountDown==0:
-			globalvars.menu.setGasStationPanel()
+			#Use the sum of the coordinates for this planet as this planet's random seed.
+			globalvars.menu.setTradingPanel(self.rect.centerx+self.rect.centery)
 			#Delay next menu setting by 3 seconds.
 			self.collisionCountDown = 3.0 * globalvars.FPS
 		return False

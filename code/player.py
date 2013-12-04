@@ -1,6 +1,7 @@
 from ship import *
 from displayUtilities import TemporaryText
 import random as rd
+import trade_good
 
 class Player(Ship):
 	def __init__(self, image_name):
@@ -26,6 +27,10 @@ class Player(Ship):
 		#Node location of the player.
 		self.nodeid = 0
 		self.destinationNode = [0]
+
+		#Give some trade goods to the player.
+		self.trade_goods = []
+		self.trade_goods.append(trade_good.TradeGood(amount=10, unit_price=50, name='Niblets'))
 
 		#For testing purposes, load all the weapons except the initially equipped 
 		#weapon into the player's cargo hold.
@@ -84,6 +89,41 @@ class Player(Ship):
 		#	if c.is_a == globalvars.SHIP:
 		#		todo_testing += c.getShipName()+'-'+c.name+', '
 		#print todo_testing
+
+
+	def getTradeGoods(self, name):
+		for tg in self.trade_goods:
+			if tg.name == name:
+				return tg
+		return None
+
+
+	def buyTradeGood(self, name, price):
+		#Check to make sure we have enough cargo space
+		if self.cargospace < 1:
+			print 'ERROR in player.buyTradeGood'; exit()
+		#Get any of the trade good already in cargo
+		tg = self.getTradeGoods(name)
+		if tg is None:
+			temp = trade_good.TradeGood(amount=1, unit_price=price, name=name)
+			self.trade_goods.append(temp)
+		else:
+			tg.add(1, price)
+		#Subtract the cost from our money
+		self.money -= price
+		#Reduce the amount of available cargo space
+		self.cargospace -= 1
+
+
+	def sellTradeGood(self, name, price):
+		tg = self.getTradeGoods(name)
+		if tg is None:
+			print 'ERROR in player.sellTradeGood'; exit()
+		else:
+			tg.remove(1)
+		self.money += price
+		#Increase the amount of available cargo space
+		self.cargospace += 1
 
 
 	def parkingBrake(self):

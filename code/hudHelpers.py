@@ -133,9 +133,9 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.GasStation(x, y))
 
-	for _ in xrange(objects[planet]):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(objInstances.Planet(x, y))
+	#for _ in xrange(objects[planet]):
+	x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+	physical_objs.append(objInstances.Planet(x, y))
 
 	#Prevent collisions.
 	#The following copied from collisionHandling()

@@ -64,3 +64,5 @@ factions = None
 
 #Track score and time limit in minigames
 score_keeper = None
+
+scenario_manager = None
