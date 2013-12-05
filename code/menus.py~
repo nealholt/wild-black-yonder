@@ -884,13 +884,17 @@ class Menu:
 					str(globalvars.player.maxhealth),
 					str(globalvars.player.fuel_capacity),
 					str(globalvars.player.cargospace_max),
-					str(int(globalvars.player.collision_damage*100))+'%']
+					str(int(globalvars.player.collision_damage*100))+'%',
+					str(globalvars.player.thorns_damage),
+					str(globalvars.player.breaker_damage)]
 		equipped_ship_comparator = [0,
 					0,
 					globalvars.player.maxhealth,
 					globalvars.player.fuel_capacity,
 					globalvars.player.cargospace_max,
-					globalvars.player.collision_damage]
+					globalvars.player.collision_damage,
+					globalvars.player.thorns_damage,
+					globalvars.player.breaker_damage]
 		#error check the cargo hold
 		cargo_ship_column = None
 		cargo_ship_comparator = None
@@ -914,7 +918,6 @@ class Menu:
 						str(globalvars.player.cargo[index].maxhealth),
 						str(globalvars.player.cargo[index].fuel_capacity),
 						str(globalvars.player.cargo[index].cargospace_max),
-						str(globalvars.player.cargo[index].collision_damage),
 						str(int(globalvars.player.cargo[index].collision_damage*100))+'%']
 				cargo_ship_comparator = [0,
 						0,

@@ -884,19 +884,23 @@ class Menu:
 					str(globalvars.player.maxhealth),
 					str(globalvars.player.fuel_capacity),
 					str(globalvars.player.cargospace_max),
-					str(int(globalvars.player.collision_damage*100))+'%']
+					str(int(globalvars.player.collision_damage*100))+'%',
+					str(globalvars.player.thorns_damage),
+					str(globalvars.player.breaker_damage)]
 		equipped_ship_comparator = [0,
 					0,
 					globalvars.player.maxhealth,
 					globalvars.player.fuel_capacity,
 					globalvars.player.cargospace_max,
-					globalvars.player.collision_damage]
+					globalvars.player.collision_damage,
+					globalvars.player.thorns_damage,
+					globalvars.player.breaker_damage]
 		#error check the cargo hold
 		cargo_ship_column = None
 		cargo_ship_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_ship_column = ['There are no ships in','your cargo hold.','','','','']
-			cargo_ship_comparator = [0.0 for _ in range(6)]
+			cargo_ship_column = ['There are no ships in','your cargo hold.','','','','','','']
+			cargo_ship_comparator = [0.0 for _ in range(8)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
 				index = 0
@@ -906,21 +910,25 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != globalvars.SHIP:
-				cargo_ship_column = ['There are no ships in','your cargo hold.','','','','']
-				cargo_ship_comparator = [0.0 for _ in range(6)]
+				cargo_ship_column = ['There are no ships in','your cargo hold.','','','','','','']
+				cargo_ship_comparator = [0.0 for _ in range(8)]
 			else:
 				cargo_ship_column = [globalvars.player.cargo[index].name,
 						globalvars.player.cargo[index].getShipClassName(),
 						str(globalvars.player.cargo[index].maxhealth),
 						str(globalvars.player.cargo[index].fuel_capacity),
 						str(globalvars.player.cargo[index].cargospace_max),
-						str(int(globalvars.player.cargo[index].collision_damage*100))+'%']
+						str(int(globalvars.player.cargo[index].collision_damage*100))+'%',
+						str(globalvars.player.cargo[index].thorns_damage),
+						str(globalvars.player.cargo[index].breaker_damage)]
 				cargo_ship_comparator = [0,
 						0,
 						globalvars.player.cargo[index].maxhealth,
 						globalvars.player.cargo[index].fuel_capacity,
 						globalvars.player.cargo[index].cargospace_max,
-						globalvars.player.cargo[index].collision_damage]
+						globalvars.player.cargo[index].collision_damage,
+						globalvars.player.cargo[index].thorns_damage,
+						globalvars.player.cargo[index].breaker_damage]
 		i = 0
 		column1_offset = 5
 		column2_offset = 175
@@ -936,12 +944,16 @@ class Menu:
 			['Hit points:',equipped_ship_column[2],cargo_ship_column[2],
 				equipped_ship_comparator[2],cargo_ship_comparator[2]],
 			['Fuel capacity:',equipped_ship_column[3],cargo_ship_column[3],
-				cargo_ship_comparator[3],equipped_ship_comparator[3]],
+				equipped_ship_comparator[3],cargo_ship_comparator[3]],
 			['Cargo space:',equipped_ship_column[4],cargo_ship_column[4],
 				equipped_ship_comparator[4],cargo_ship_comparator[4]],
 			['Damage from','','',0,0],
 			['collisions:',equipped_ship_column[5],cargo_ship_column[5],
-				cargo_ship_comparator[5],equipped_ship_comparator[5]]
+				cargo_ship_comparator[5],equipped_ship_comparator[5]],
+			['Thorns:',equipped_ship_column[6],cargo_ship_column[6],
+				equipped_ship_comparator[6],cargo_ship_comparator[6]],
+			['Rock damage:',equipped_ship_column[7],cargo_ship_column[7],
+				equipped_ship_comparator[7],cargo_ship_comparator[7]]
 		]
 		#Fix too long names
 		part1, part2 = splitTooLongWord(word_to_split=equipped_ship_column[0],\

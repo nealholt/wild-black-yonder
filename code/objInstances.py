@@ -366,16 +366,19 @@ class Asteroid(PhysicalObject):
 		died = False
 		if other_sprite.is_a == globalvars.BULLET:
 			self.health_amt -= other_sprite.damage
-			if self.health_amt < 0:
-				#die. spawn mini asteroids
-				self.kill()
-				died = True
-				splitRock(self.image_name,\
-					centerx=self.rect.centerx,\
-					centery=self.rect.centery)
-				#Award points
-				if not globalvars.score_keeper is None:
-					globalvars.score_keeper.points += 1
+		elif other_sprite.is_a == globalvars.SHIP:
+			self.health_amt -= other_sprite.breaker_damage
+		#Check for rock death
+		if self.health_amt < 0:
+			#die. spawn mini asteroids
+			self.kill()
+			died = True
+			splitRock(self.image_name,\
+				centerx=self.rect.centerx,\
+				centery=self.rect.centery)
+			#Award points
+			if not globalvars.score_keeper is None:
+				globalvars.score_keeper.points += 1
 		return died
 
 

@@ -10,7 +10,7 @@ import random as rd
 healthBarDefaultWidth = 20
 
 
-num_ship_attributes = 4
+num_ship_attributes = 6
 #The following arrays map classes into actual values. The class is the index and the values are, well, the array values:
 
 #Number of hitpoints the ship has
@@ -22,10 +22,13 @@ fuelcap_classes = [180000/2, 180000, 180000*2, 180000*3]
 cargospace_classes = [10,20,30,40]
 #Collision damage reduction. Reduces damage from things other than bullets.
 collision_safe_classes = [1.0, 0.5, 0.0]
-
+#Damage dealt to other ships upon collision
+thorns_classes = [0, 25, 50]
+#Damage dealt to asteroids upon collision
+breaker_classes = [0, 20, 50]
 
 #Names of the various ship classes
-ship_class_names = ['Worthless', 'Junk', 'Scrap', 'Cheap', 'Okay', 'Cool', 'Hot', 'Noble', 'Peerless', 'Kingly', 'Emperor', 'Tyrant', 'God-Emperor','Transcendent']
+ship_class_names = ['Worthless', 'Junk', 'Scrap', 'Cheap', 'Okay', 'Tepid', 'Cool', 'Hot', 'Noble', 'Knightly', 'Worthy', 'Peerless', 'Kingly', 'Emperor', 'Tyrant', 'God-Emperor','Stellar','Transcendent']
 
 
 def generateShip(ship_class):
@@ -69,8 +72,14 @@ def generateShip(ship_class):
 
 health_names = ['Skeleton', 'Bare', 'Light', '', 'Heavy', 'Armored', 'Martial']
 collision_safe_names = ['','','Headbutting']
-def getShipAdj(health_index, collision_safe_index):
-	if collision_safe_index == 2:
+thorns_names = ['','','Thorny']
+breaker_names = ['','','Sledge']
+def getShipAdj(health_index, collision_safe_index, thorns_index, breaker_index):
+	if thorns_index == 2:
+		return thorns_names[thorns_index]
+	elif breaker_index == 2:
+		return breaker_names[breaker_index]
+	elif collision_safe_index == 2:
 		return collision_safe_names[collision_safe_index]
 	else:
 		return health_names[health_index]
@@ -101,13 +110,17 @@ class Ship(PhysicalObject):
 		self.health_index = rd.randint(0, len(health_classes)-1)
 		self.fuelcap_index = rd.randint(0, len(fuelcap_classes)-1)
 		self.cargospace_index = rd.randint(0, len(cargospace_classes)-1)
-		self.collision_safe_index = rd.randint(0, len(collision_safe_classes)-1)
+		self.collision_safe_index = 0 #Initialize as shitty every time.
+		self.thorns_index = 0 #Initialize as shitty every time.
+		self.breaker_index = 0 #Initialize as shitty every time.
 
 		self.name = ''
 		self.engine=None
 		self.health=25
 		self.maxhealth=25
 		self.collision_damage = 1.0 #initialize to 100% damage received.
+		self.thorns_damage = 0
+		self.breaker_damage = 0
 		#number of gun addon hardpoints
 		self.gunHardpoints = 1
 		self.gun = None
@@ -156,6 +169,8 @@ class Ship(PhysicalObject):
 		self.cargospace_max = cargospace_classes[self.cargospace_index]
 		self.cargospace = self.cargospace_max
 		self.collision_damage = collision_safe_classes[self.collision_safe_index]
+		self.thorns_damage = thorns_classes[self.thorns_index]
+		self.breaker_damage = breaker_classes[self.breaker_index]
 
 
 	def makeSelfCopyOfOther(self, other):
@@ -166,6 +181,8 @@ class Ship(PhysicalObject):
 		self.fuelcap_index = other.fuelcap_index
 		self.cargospace_index = other.cargospace_index
 		self.collision_safe_index = other.collision_safe_index
+		self.thorns_index = other.thorns_index
+		self.breaker_index = other.breaker_index
 		self.initialize()
 		self.loadNewImage(other.image_name)
 		#Prevent artificial boosting of health or fuel by switching ships in and out of cargo hold.
@@ -435,7 +452,8 @@ class Ship(PhysicalObject):
 			#less massive object bounces off
 			if other_sprite.getArea() >= self.getArea():
 				self.bounceOff(other_sprite)
-				self.takeDamage(1)
+			#But all ships take damage regardless of size
+			self.takeDamage(int(self.collision_damage*other_sprite.thorns_damage))
 		elif other_sprite.is_a == globalvars.FIXEDBODY:
 			self.bounceOff(other_sprite)
 			return died
@@ -471,18 +489,32 @@ class Ship(PhysicalObject):
 			rating += 1
 		elif self.fuelcap_index > 1:
 			rating += 2
+
 		if self.cargospace_index == 1:
 			rating += 1
 		elif self.cargospace_index > 1:
 			rating += 2
+
 		if self.collision_safe_index == 2:
 			rating += 3
+
+		if self.thorns_index == 1:
+			rating += 1
+		elif self.thorns_index > 1:
+			rating += 2
+
+		if self.breaker_index == 1:
+			rating += 1
+		elif self.breaker_index > 1:
+			rating += 2
+
 		return rating
 
 
 	def getShipName(self):
-		return getShipAdj(self.health_index, self.collision_safe_index)+' '+\
-			getShipNoun(self.fuelcap_index, self.cargospace_index)
+		return getShipAdj(self.health_index, self.collision_safe_index,\
+			self.thorns_index,self.breaker_index)\
+			+' '+getShipNoun(self.fuelcap_index, self.cargospace_index)
 
 
 	def decrementAttribute(self, attribute_index):
@@ -494,6 +526,10 @@ class Ship(PhysicalObject):
 			if self.cargospace_index > 0: self.cargospace_index -= 1
 		elif attribute_index == 3:
 			if self.collision_safe_index > 0: self.collision_safe_index -= 1
+		elif attribute_index == 4:
+			if self.thorns_index > 0: self.thorns_index -= 1
+		elif attribute_index == 5:
+			if self.breaker_index > 0: self.breaker_index -= 1
 		else:
 			print 'ERROR in ship.decrementAttribute. Exiting'; exit()
 
@@ -505,7 +541,11 @@ class Ship(PhysicalObject):
 		elif attribute_index == 2:
 			if self.cargospace_index < len(cargospace_classes)-1: self.cargospace_index += 1
 		elif attribute_index == 3:
-			if self.collision_safe_index < len(collision_safe_classes)-1: self.collision_safe_index += 1
+			if self.collision_safe_index < len(collision_safe_classes)-1: self.collision_safe_index+=1
+		elif attribute_index == 4:
+			if self.thorns_index < len(thorns_classes)-1: self.thorns_index += 1
+		elif attribute_index == 5:
+			if self.breaker_index < len(breaker_classes)-1: self.breaker_index += 1
 		else:
 			print 'ERROR in ship.incrementAttribute. Exiting'; exit()
 
