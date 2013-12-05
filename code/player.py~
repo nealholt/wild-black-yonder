@@ -30,7 +30,7 @@ class Player(Ship):
 
 		#Give some trade goods to the player.
 		self.trade_goods = []
-		self.trade_goods.append(trade_good.TradeGood(amount=10, unit_price=50, name='Niblets'))
+		self.loadTradeGoods('Niblets', 10, 50.0)
 
 		#For testing purposes, load all the weapons except the initially equipped 
 		#weapon into the player's cargo hold.
@@ -71,24 +71,21 @@ class Player(Ship):
 			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not a ship.'
 			exit()
 		#Create a new ship identical to the current ship.
-		#todo_testing = 'inventory before '
-		#for c in self.cargo:
-		#	if c.is_a == globalvars.SHIP:
-		#		todo_testing += c.getShipName()+'-'+c.name+', '
-		#print todo_testing
 		copy_of_current = Ship()
 		copy_of_current.makeSelfCopyOfOther(self)
 		#Change the current ship to be exactly like the ship in cargo.
 		self.makeSelfCopyOfOther(self.cargo[cargo_index])
 		#Remove the ship from the cargo hold.
 		self.cargo.pop(cargo_index)
+		#self still has all its trade goods. make a list of these, remove them, then add them back in so that cargo space will be synced up properly.
+		tradegoods = []
+		for tg in self.trade_goods:
+			tradegoods.append([tg.name, tg.amount, tg.unit_price])
+		self.trade_goods = []
+		for tg in tradegoods:
+			self.loadTradeGoods(tg[0], tg[1], tg[2])
 		#Put the new ship (a copy of the previous ship) in the cargo hold.
 		self.cargo.append(copy_of_current)
-		#todo_testing = 'inventory after '
-		#for c in self.cargo:
-		#	if c.is_a == globalvars.SHIP:
-		#		todo_testing += c.getShipName()+'-'+c.name+', '
-		#print todo_testing
 		#The following is needed because the ships generated in cargo use the default ship image which is actually a small purple circle with a question mark. At least this way, we don't have to fly that around.
 		self.loadNewImage('ship')
 

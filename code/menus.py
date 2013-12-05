@@ -529,12 +529,15 @@ class Menu:
 	def setPlayerProfilePanel(self):
 		self.setStandardMenu()
 		text = [
-		'Money: $'+str(globalvars.player.money),
-		'Health: '+str(globalvars.player.health),
-		'Fuel: '+str(globalvars.player.fuel)]
+		'Money:    $'+str(globalvars.player.money),
+		'Health:   '+str(globalvars.player.health),
+		'Fuel:      '+str(globalvars.player.fuel),
+		'Trade goods capacity:  '+str(globalvars.player.cargospace)+' / '+str(globalvars.player.cargospace_max),
+		'Trade goods: ']
+		for tg in globalvars.player.trade_goods:
+			text.append('      '+str(tg.amount)+' '+tg.name+' at $'+str(tg.unit_price)+' per')
 		#Then draw the contents of the menu
-		self.addTextToMainPanel(text, left+50, topbuffer+top)
-		#TODO LEFT OFF HERE
+		self.addTextToMainPanel(text, left+50, topbuffer+top, local_font_size=32)
 
 
 	def setNodeViewPanel(self, nodeid):

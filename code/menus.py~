@@ -210,11 +210,11 @@ class Menu:
 		if tabs: self.addAllTabs()
 
 
-	def addTextToMainPanel(self, text_array, this_left, this_top):
+	def addTextToMainPanel(self, text_array, this_left, this_top, local_font_size=font_size):
 		for i in range(len(text_array)):
 			temp = drawable.Text(x1=this_left,\
 				y1=font_size*i+this_top, string=text_array[i],\
-				font_size=font_size, color=colors.white)
+				font_size=local_font_size, color=colors.white)
 			self.main_panel.addDrawable(temp)
 
 
@@ -529,11 +529,15 @@ class Menu:
 	def setPlayerProfilePanel(self):
 		self.setStandardMenu()
 		text = [
-		'Money: $'+str(globalvars.player.money),
-		'Health: '+str(globalvars.player.health),
-		'Fuel: '+str(globalvars.player.fuel)]
+		'Money:     $'+str(globalvars.player.money),
+		'Health:    '+str(globalvars.player.health),
+		'Fuel:      '+str(globalvars.player.fuel),
+		'Trade goods capacity: '+str(globalvars.player.cargospace)+' / '+str(globalvars.player.cargospace_max),
+		'Trade goods: ']
+		for tg in globalvars.player.trade_goods:
+			text.append('      '+str(tg.amount)+' '+tg.name+' at $'+str(tg.unit_price)+' per')
 		#Then draw the contents of the menu
-		self.addTextToMainPanel(text, left+50, topbuffer+top)
+		self.addTextToMainPanel(text, left+50, topbuffer+top, local_font_size=32)
 
 
 	def setNodeViewPanel(self, nodeid):
