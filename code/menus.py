@@ -210,11 +210,11 @@ class Menu:
 		if tabs: self.addAllTabs()
 
 
-	def addTextToMainPanel(self, text_array, this_left, this_top):
+	def addTextToMainPanel(self, text_array, this_left, this_top, local_font_size=font_size):
 		for i in range(len(text_array)):
 			temp = drawable.Text(x1=this_left,\
 				y1=font_size*i+this_top, string=text_array[i],\
-				font_size=font_size, color=colors.white)
+				font_size=local_font_size, color=colors.white)
 			self.main_panel.addDrawable(temp)
 
 
@@ -534,6 +534,7 @@ class Menu:
 		'Fuel: '+str(globalvars.player.fuel)]
 		#Then draw the contents of the menu
 		self.addTextToMainPanel(text, left+50, topbuffer+top)
+		#TODO LEFT OFF HERE
 
 
 	def setNodeViewPanel(self, nodeid):
