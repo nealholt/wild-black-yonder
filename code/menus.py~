@@ -28,7 +28,8 @@ def splitTooLongWord(word_to_split='', length_limit=20):
 
 
 def buyGas():
-	globalvars.player.fuel += 1000
+	#Fuel up the player, but don't let the player go over his maximum.
+	globalvars.player.fuel = min(globalvars.player.fuel+1000, globalvars.player.fuel_capacity)
 	globalvars.player.money -= 10
 	globalvars.menu.setGasStationPanel()
 
@@ -284,14 +285,17 @@ class Menu:
 		self.setStandardMenu()
 		text = [
 		'Money: $'+str(globalvars.player.money),
-		'Fuel: '+str(globalvars.player.fuel)]
+		'Fuel: '+str(globalvars.player.fuel/1000)]
 		#Then draw the contents of the menu
 		self.addTextToMainPanel(text, left+50, 100+top)
-		if globalvars.player.money > 10:
-			self.addMenuItem(x1=(left+200), y1=(top+200), width=180, height=40, string='Buy 1000 Fuel for $10', textbuffer=12, method=buyGas, framed=True)
+		if globalvars.player.money > 10 and globalvars.player.fuel < globalvars.player.fuel_capacity:
+			self.addMenuItem(x1=(left+200), y1=(top+200), width=180, height=40, string='Buy 1000 Fuel for $10', textbuffer=12, method=buyGas, framed=True, local_font_size=32)
+		elif globalvars.player.money > 10:
+			text = ['You are full up on fuel.']
+			self.addTextToMainPanel(text, (left+200), (top+200),local_font_size=32)
 		else:
 			text = ['You do not have enough money.']
-			self.addTextToMainPanel(text, (left+200), (top+200))
+			self.addTextToMainPanel(text, (left+200), (top+200),local_font_size=32)
 
 
 	def setTradingPanel(self, seed):
@@ -530,8 +534,8 @@ class Menu:
 		self.setStandardMenu()
 		text = [
 		'Money:    $'+str(globalvars.player.money),
-		'Health:   '+str(globalvars.player.health),
-		'Fuel:      '+str(globalvars.player.fuel),
+		'Health:   '+str(globalvars.player.health)+' / '+str(globalvars.player.maxhealth),
+		'Fuel:      '+str(globalvars.player.fuel/1000)+' / '+str(globalvars.player.fuel_capacity/1000),
 		'Trade goods capacity:  '+str(globalvars.player.cargospace)+' / '+str(globalvars.player.cargospace_max),
 		'Trade goods: ']
 		for tg in globalvars.player.trade_goods:
