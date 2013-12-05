@@ -123,60 +123,75 @@ class MineLayer():
 
 
 	def decrementAttribute(self, attribute_index):
+		'''Return True if the limit was reached for this attribute, otherwise False'''
 		if attribute_index == 0:
 			if self.blast_index > 0: self.blast_index -= 1
+			else: return True
 		elif attribute_index == 1:
 			if self.longevity_index > 0: self.longevity_index -= 1
+			else: return True
 		elif attribute_index == 2:
 			if self.blast_radius_index > 0: self.blast_radius_index -= 1
+			else: return True
 		elif attribute_index == 3:
 			if self.damage_index > 0: self.damage_index -= 1
+			else: return True
 		elif attribute_index == 4:
 			if self.refire_index > 0: self.refire_index -= 1
+			else: return True
 		elif attribute_index == 5:
 			if self.ammo_index > 0: self.ammo_index -= 1
+			else: return True
 		else:
 			print 'ERROR in mine.decrementAttribute. Exiting'; exit()
+		return False
 
 
 	def incrementAttribute(self, attribute_index):
+		'''Return True if the limit was reached for this attribute, otherwise False'''
 		if attribute_index == 0:
 			if self.blast_radius_index < len(radius_classes)-1:
 				self.blast_radius_index += 1
+			else: return True
 		elif attribute_index == 1:
 			if self.longevity_index < len(longevity_classes)-1:
 				self.longevity_index += 1
+			else: return True
 		elif attribute_index == 2:
 			if self.blast_index < len(blast_classes)-1:
 				self.blast_index += 1
+			else: return True
 		elif attribute_index == 3:
 			if self.damage_index < len(damage_classes)-1:
 				self.damage_index += 1
+			else: return True
 		elif attribute_index == 4:
 			if self.refire_index < len(refire_classes)-1:
 				self.refire_index += 1
+			else: return True
 		elif attribute_index == 5:
 			if self.ammo_index < len(ammo_classes)-1:
 				self.ammo_index += 1
+			else: return True
 		else:
 			print 'ERROR in mine.incrementAttribute. Exiting'; exit()
+		return False
 
 
 	def getMineName(self):
 		'''Since this is too many attributes, only give keywords for the extreme high and low values and then have these trump other attributes when naming the mine.'''
 		name = ''
-		if len(longevity_names[self.longevity_index]) > 0:
-			name += longevity_names[self.longevity_index]+' '
-		if len(refire_names[self.refire_index]) > 0:
-			name += refire_names[self.refire_index]+' '
 		if len(blast_radius_names[self.blast_radius_index]) > 0:
 			name += blast_radius_names[self.blast_radius_index]+' '
+		elif len(refire_names[self.refire_index]) > 0:
+			name += refire_names[self.refire_index]+' '
+		elif len(longevity_names[self.longevity_index]) > 0:
+			name += longevity_names[self.longevity_index]+' '
 
-		if len(blast_names[self.blast_index]) > 0:
-			name += blast_names[self.blast_index]+' '
-
-		elif len(damage_names[self.damage_index]) > 0:
+		if len(damage_names[self.damage_index]) > 0:
 			name += damage_names[self.damage_index]+' '
+		elif len(blast_names[self.blast_index]) > 0:
+			name += blast_names[self.blast_index]+' '
 		elif len(ammo_names[self.ammo_index]) > 0:
 			name += ammo_names[self.ammo_index]+' '
 		return name
