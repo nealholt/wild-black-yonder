@@ -156,6 +156,8 @@ class Ship(PhysicalObject):
 		self.fuelcap_index = other.fuelcap_index
 		self.cargospace_index = other.cargospace_index
 		self.initialize()
+		#Prevent artificial boosting of health by switching ships in and out of cargo hold.
+		self.health = min(other.health, self.maxhealth)
 		self.loadNewImage(other.image_name)
 		self.setLocation(other.loc[0], other.loc[1])
 

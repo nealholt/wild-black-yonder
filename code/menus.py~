@@ -1378,6 +1378,12 @@ class Menu:
 
 
 	def setOpportunityPanel(self, opportunity):
+		#Previously I wanted actions that happen to occur at the location 
+		#the player is headed to to be influenced by the player. I imagined
+		#the player getting a pop up menu asking if he/she would like to 
+		#take the mission. However, I think this is too random so this code
+		#is unused.
+		#See also factions.update and scenarios.goToInfiniteSpace
 		self.setStandardMenu(tabs=False)
 		text = ['Faction: '+opportunity.actor.name+' is taking action ',
 		'"'+opportunity.action+'"',

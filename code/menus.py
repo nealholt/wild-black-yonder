@@ -530,7 +530,7 @@ class Menu:
 		self.setStandardMenu()
 		text = [
 		'Money:    $'+str(globalvars.player.money),
-		'Health:   '+str(globalvars.player.health),
+		'Health:   '+str(globalvars.player.health)+' / '+str(globalvars.player.maxhealth),
 		'Fuel:      '+str(globalvars.player.fuel),
 		'Trade goods capacity:  '+str(globalvars.player.cargospace)+' / '+str(globalvars.player.cargospace_max),
 		'Trade goods: ']
