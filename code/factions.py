@@ -161,15 +161,20 @@ class FactionManager():
 		      decrease wealth of node
 		      increase debris of node'''
 		actions = self.getFactionActions()
+		#Previously I wanted actions that happen to occur at the location 
+		#the player is headed to to be influenced by the player. I imagined
+		#the player getting a pop up menu asking if he/she would like to 
+		#take the mission. However, I think this is too random so I'm commenting out 
+		#the code that implemented it for now:
+		#See also menus.setOpportunityPanel and scenarios.goToInfiniteSpace
 		#Find and extract an action, if any, that occurs at the player's destination node.
 		to_return = None
-		for a in actions:
-			if a.node.id == player_dest_nodeid:
-				to_return = actions.remove(a)
-				break
+		#for a in actions:
+		#	if a.node.id == player_dest_nodeid:
+		#		to_return = actions.remove(a)
+		#		break
 		#Perform the actions
 		self.performFactionActions(actions)
 		#Return the action for the player to influence
-		to_return = FactionAction('strength+', 0, self.factions[0]) #TODO TESTING
 		return to_return
 

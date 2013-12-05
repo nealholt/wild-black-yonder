@@ -16,7 +16,6 @@ sys.path.append('code/cython')
 import cygeometry
 
 
-#TODO - Can I simplify code or reduce the number of global variables by storing state in the scenaio manager object?
 class ScenarioManager:
 	"""I created this to reduce the number of files importing scenarios.py which was getting cumbersome and limiting usability because I had to avoid mutual imports. An object referenced by a global variable seems like a much better option even if it doesn't have much state. """
 	def __init__(self):
@@ -259,7 +258,7 @@ class ScenarioManager:
 		if not opportunity is None:
 			globalvars.menu.setOpportunityPanel(opportunity)
 		#If the player has moved to a node in his path, then pop it.
-		if globalvars.player.destinationNode[0] == nodeid:
+		if len(globalvars.player.destinationNode) > 0 and globalvars.player.destinationNode[0] == nodeid:
 			globalvars.player.destinationNode.pop(0)
 		#Reset the arrow to the destination
 		self.resetArrow()

@@ -529,10 +529,10 @@ class Menu:
 	def setPlayerProfilePanel(self):
 		self.setStandardMenu()
 		text = [
-		'Money:     $'+str(globalvars.player.money),
-		'Health:    '+str(globalvars.player.health),
+		'Money:    $'+str(globalvars.player.money),
+		'Health:   '+str(globalvars.player.health),
 		'Fuel:      '+str(globalvars.player.fuel),
-		'Trade goods capacity: '+str(globalvars.player.cargospace)+' / '+str(globalvars.player.cargospace_max),
+		'Trade goods capacity:  '+str(globalvars.player.cargospace)+' / '+str(globalvars.player.cargospace_max),
 		'Trade goods: ']
 		for tg in globalvars.player.trade_goods:
 			text.append('      '+str(tg.amount)+' '+tg.name+' at $'+str(tg.unit_price)+' per')
