@@ -116,7 +116,8 @@ class Ship(PhysicalObject):
 		self.fuel_capacity = 0
 		self.money = 0
 		#cargo space
-		self.cargospace = 30
+		self.cargospace_max = 30
+		self.cargospace = self.cargospace_max
 		#cargo array
 		self.cargo = []
 
@@ -143,7 +144,8 @@ class Ship(PhysicalObject):
 		self.maxhealth = health_classes[self.health_index]
 		self.health = self.maxhealth
 		self.fuel_capacity = fuelcap_classes[self.fuelcap_index]
-		self.cargospace = cargospace_classes[self.cargospace_index]
+		self.cargospace_max = cargospace_classes[self.cargospace_index]
+		self.cargospace = self.cargospace_max
 
 
 	def makeSelfCopyOfOther(self, other):

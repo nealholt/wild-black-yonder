@@ -875,12 +875,12 @@ class Menu:
 					globalvars.player.getShipClassName(),
 					str(globalvars.player.maxhealth),
 					str(globalvars.player.fuel_capacity),
-					str(globalvars.player.cargospace)]
+					str(globalvars.player.cargospace_max)]
 		equipped_ship_comparator = [0,
 					0,
 					globalvars.player.maxhealth,
 					globalvars.player.fuel_capacity,
-					globalvars.player.cargospace]
+					globalvars.player.cargospace_max]
 		#error check the cargo hold
 		cargo_ship_column = None
 		cargo_ship_comparator = None
@@ -903,12 +903,12 @@ class Menu:
 						globalvars.player.cargo[index].getShipClassName(),
 						str(globalvars.player.cargo[index].maxhealth),
 						str(globalvars.player.cargo[index].fuel_capacity),
-						str(globalvars.player.cargo[index].cargospace)]
+						str(globalvars.player.cargo[index].cargospace_max)]
 				cargo_ship_comparator = [0,
 						0,
 						globalvars.player.cargo[index].maxhealth,
 						globalvars.player.cargo[index].fuel_capacity,
-						globalvars.player.cargo[index].cargospace]
+						globalvars.player.cargo[index].cargospace_max]
 		i = 0
 		column1_offset = 5
 		column2_offset = 175

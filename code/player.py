@@ -71,24 +71,21 @@ class Player(Ship):
 			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not a ship.'
 			exit()
 		#Create a new ship identical to the current ship.
-		#todo_testing = 'inventory before '
-		#for c in self.cargo:
-		#	if c.is_a == globalvars.SHIP:
-		#		todo_testing += c.getShipName()+'-'+c.name+', '
-		#print todo_testing
 		copy_of_current = Ship()
 		copy_of_current.makeSelfCopyOfOther(self)
 		#Change the current ship to be exactly like the ship in cargo.
 		self.makeSelfCopyOfOther(self.cargo[cargo_index])
 		#Remove the ship from the cargo hold.
 		self.cargo.pop(cargo_index)
+		#self still has all its trade goods. make a list of these, remove them, then add them back in so that cargo space will be synced up properly.
+		tradegoods = []
+		for tg in self.trade_goods:
+			tradegoods.append([tg.name, tg.amount, tg.unit_price])
+		self.trade_goods = []
+		for tg in tradegoods:
+			self.loadTradeGoods(tg[0], tg[1], tg[2])
 		#Put the new ship (a copy of the previous ship) in the cargo hold.
 		self.cargo.append(copy_of_current)
-		#todo_testing = 'inventory after '
-		#for c in self.cargo:
-		#	if c.is_a == globalvars.SHIP:
-		#		todo_testing += c.getShipName()+'-'+c.name+', '
-		#print todo_testing
 		#The following is needed because the ships generated in cargo use the default ship image which is actually a small purple circle with a question mark. At least this way, we don't have to fly that around.
 		self.loadNewImage('ship')
 
@@ -100,32 +97,49 @@ class Player(Ship):
 		return None
 
 
-	def buyTradeGood(self, name, price):
-		#Check to make sure we have enough cargo space
-		if self.cargospace < 1:
-			print 'ERROR in player.buyTradeGood'; exit()
+	def loadTradeGoods(self, name, amount, unit_price):
+		#Check to make sure we have enough cargo space.
+		#If not, just silently fail to load the cargo.
+		if self.cargospace < amount:
+			amount = self.cargospace
 		#Get any of the trade good already in cargo
 		tg = self.getTradeGoods(name)
 		if tg is None:
-			temp = trade_good.TradeGood(amount=1, unit_price=price, name=name)
+			temp = trade_good.TradeGood(amount=amount, unit_price=unit_price, name=name)
 			self.trade_goods.append(temp)
 		else:
-			tg.add(1, price)
-		#Subtract the cost from our money
-		self.money -= price
+			tg.add(amount, unit_price)
 		#Reduce the amount of available cargo space
-		self.cargospace -= 1
+		self.cargospace -= amount
+
+
+	def unloadTradeGoods(self, name, amount):
+		tg = self.getTradeGoods(name)
+		if tg is None:
+			print 'ERROR in player.unloadTradeGoods'; exit()
+		elif tg.amount >= amount:
+			tg.remove(amount)
+		else:
+			print 'ERROR in player.unloadTradeGoods. Removing more than is ownded.'
+			exit()
+		#Increase the amount of available cargo space
+		self.cargospace += amount
+
+
+	def buyTradeGood(self, name, price):
+		amount = 1
+		#Check to make sure we have enough cargo space
+		if self.cargospace < amount:
+			print 'ERROR in player.buyTradeGood'; exit()
+		self.loadTradeGoods(name, amount, price)
+		#Subtract the cost from our money
+		self.money -= price*amount
 
 
 	def sellTradeGood(self, name, price):
-		tg = self.getTradeGoods(name)
-		if tg is None:
-			print 'ERROR in player.sellTradeGood'; exit()
-		else:
-			tg.remove(1)
-		self.money += price
-		#Increase the amount of available cargo space
-		self.cargospace += 1
+		amount = 1
+		self.unloadTradeGoods(name, amount)
+		self.money += price*amount
 
 
 	def parkingBrake(self):
