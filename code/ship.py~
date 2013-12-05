@@ -159,9 +159,11 @@ class Ship(PhysicalObject):
 		#Prevent artificial boosting of health by switching ships in and out of cargo hold.
 		self.health = min(other.health, self.maxhealth)
 		self.loadNewImage(other.image_name)
-		self.setLocation(other.loc[0], other.loc[1])
-		#Update the health bar
-		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
+		'''self.setLocation(other.loc[0], other.loc[1])
+		self.rect = other.rect
+		self.speed = other.speed
+		self.targetSpeed = other.targetSpeed
+		self.theta = other.theta'''
 
 
 	def unequipGun(self):
