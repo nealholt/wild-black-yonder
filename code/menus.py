@@ -883,18 +883,20 @@ class Menu:
 					globalvars.player.getShipClassName(),
 					str(globalvars.player.maxhealth),
 					str(globalvars.player.fuel_capacity),
-					str(globalvars.player.cargospace_max)]
+					str(globalvars.player.cargospace_max),
+					str(int(globalvars.player.collision_damage*100))+'%']
 		equipped_ship_comparator = [0,
 					0,
 					globalvars.player.maxhealth,
 					globalvars.player.fuel_capacity,
-					globalvars.player.cargospace_max]
+					globalvars.player.cargospace_max,
+					globalvars.player.collision_damage]
 		#error check the cargo hold
 		cargo_ship_column = None
 		cargo_ship_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_ship_column = ['There are no ships in','your cargo hold.','','','']
-			cargo_ship_comparator = [0.0 for _ in range(5)]
+			cargo_ship_column = ['There are no ships in','your cargo hold.','','','','']
+			cargo_ship_comparator = [0.0 for _ in range(6)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
 				index = 0
@@ -904,24 +906,26 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != globalvars.SHIP:
-				cargo_ship_column = ['There are no ships in','your cargo hold.','','','']
-				cargo_ship_comparator = [0.0 for _ in range(5)]
+				cargo_ship_column = ['There are no ships in','your cargo hold.','','','','']
+				cargo_ship_comparator = [0.0 for _ in range(6)]
 			else:
 				cargo_ship_column = [globalvars.player.cargo[index].name,
 						globalvars.player.cargo[index].getShipClassName(),
 						str(globalvars.player.cargo[index].maxhealth),
 						str(globalvars.player.cargo[index].fuel_capacity),
-						str(globalvars.player.cargo[index].cargospace_max)]
+						str(globalvars.player.cargo[index].cargospace_max),
+						str(int(globalvars.player.cargo[index].collision_damage*100))+'%']
 				cargo_ship_comparator = [0,
 						0,
 						globalvars.player.cargo[index].maxhealth,
 						globalvars.player.cargo[index].fuel_capacity,
-						globalvars.player.cargo[index].cargospace_max]
+						globalvars.player.cargo[index].cargospace_max,
+						globalvars.player.cargo[index].collision_damage]
 		i = 0
 		column1_offset = 5
 		column2_offset = 175
 		column3_offset = 450
-		#The last two values for refire rate are reversed since smaller refire rate is better.
+		#The last two values for collision_damage are reversed since smaller collision_damage is better.
 		comparison_array = [
 			['','CURRENT SHIP','ALTERNATE SHIP',0,0],
 			['',equipped_ship_column[0],cargo_ship_column[0],
@@ -934,7 +938,10 @@ class Menu:
 			['Fuel capacity:',equipped_ship_column[3],cargo_ship_column[3],
 				cargo_ship_comparator[3],equipped_ship_comparator[3]],
 			['Cargo space:',equipped_ship_column[4],cargo_ship_column[4],
-				equipped_ship_comparator[4],cargo_ship_comparator[4]]
+				equipped_ship_comparator[4],cargo_ship_comparator[4]],
+			['Damage from','','',0,0],
+			['collisions:',equipped_ship_column[5],cargo_ship_column[5],
+				cargo_ship_comparator[5],equipped_ship_comparator[5]]
 		]
 		#Fix too long names
 		part1, part2 = splitTooLongWord(word_to_split=equipped_ship_column[0],\
