@@ -1,4 +1,4 @@
-asteroids-buff
+wild-black-yonder
 ==============
 
-A 2d python game with basically the same mechanics as Asteroids, but more features.
+A 2d, top down, space-themed python game in which the player accomplishes missions, trades cargo, and seeks the latest and greatest upgrades for his or her ship, all while exploring the depths of space.
