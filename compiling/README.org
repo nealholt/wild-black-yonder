@@ -1,0 +1,27 @@
+This is where I experiment with compiling executables of my game for mac and windows.
+* TODO get any compiled python program running on mac
+https://pypi.python.org/pypi/py2app/
+
+cssupport has been emailed about installing py2app.
+
+TODO LEFT OFF HERE
+
+http://pythonhosted.org/py2app/tutorial.html
+http://stackoverflow.com/questions/5607121/how-do-i-use-py2app
+
+
+
+http://stackoverflow.com/questions/2933/an-executable-python-app
+
+https://www.google.com/search?q=how+to+compile+a+python+program+to+an+executable&aq=f&oq=how+to+compile+a+python+program+to+an+executable&aqs=chrome.0.57j0j64.7797j0&sourceid=chrome&ie=UTF-8
+* get compiled pygame running on mac
+* get multifile compiled running on mac
+* get multifile pygame with images running on mac
+* get all this running on a pc
+py2app is similar in purpose and design to py2exe for Windows.
+
+http://www.logix4u.net/component/content/article/27-tutorials/44-how-to-create-windows-executable-exe-from-python-script
+* get your game compiled running on your mac
+* get your game compiled running on a pc
+
+
