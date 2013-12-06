@@ -51,7 +51,7 @@ class Missile(PhysicalObject):
 	'''missile - object that seeks nearest enemy target, damage and explosion on impact. 
 	initial direction is same as firer. initial speed is firer plus some amount. 
 	Will not impact firer.'''
-	def __init__(self, shooter, speed, turn_rate, damage, longevity):
+	def __init__(self, shooter, speed, turn_rate, damage, longevity, health):
 		PhysicalObject.__init__(self, \
 			centerx=shooter.rect.centerx, \
 			centery=shooter.rect.centery,\
@@ -64,6 +64,7 @@ class Missile(PhysicalObject):
 		self.dv = 0.0
 		self.longevity = longevity
 		self.damage = damage
+		self.health = health
 		#dontClipMe is almost certainly the shooter of this missile.
 		#This is important because bullets usually start out at a 
 		#location that is immediately clipping the shooter but we 
@@ -107,27 +108,33 @@ class Missile(PhysicalObject):
 		#move
 		self.move()
 
+	def die(self):
+		globalvars.intangibles_bottom.add(Explosion(\
+			x=self.rect.centerx,y=self.rect.centery))
+		#kill removes the calling sprite from all sprite groups
+		self.kill()
+
 	def handleCollisionWith(self, other_sprite):
-		'''For now missiles die immediately regardless of what they hit.'''
+		''' '''
 		died = False
+		#Take damage from bullets, but don't necessarilly die.
+		if other_sprite.is_a == globalvars.BULLET:
+			self.health -= other_sprite.damage
+			if self.health < 1:
+				self.die()
+				died = True
 		#self.dontClipMe is usually the shooter of the bullet who would 
 		#otherwise immediately collide with it.
-		#For now, shoot through bullets with no effect.
-		if other_sprite != self.dontClipMe and not other_sprite.is_a == globalvars.BULLET:
-			#explode
-			globalvars.intangibles_bottom.add(Explosion(\
-				x=self.rect.centerx,y=self.rect.centery))
+		elif other_sprite != self.dontClipMe:
+			self.die()
 			died = True
-			#kill removes the calling sprite from all sprite groups
-			self.kill()
 		return died
-
 
 
 class Mine(PhysicalObject):
 	'''mine - new object does not move. collides with nothing until short timer elapses. 
 	on contact explodes and causes damage. enemy will avoid it.'''
-	def __init__(self, shooter, damage, longevity):
+	def __init__(self, shooter, damage, longevity, health):
 		PhysicalObject.__init__(self,\
 			centerx=shooter.rect.centerx,\
 			centery=shooter.rect.centery,\
@@ -142,6 +149,7 @@ class Mine(PhysicalObject):
 		self.dontClipMe = shooter
 		self.damage = damage
 		self.longevity = longevity
+		self.health = health
 		#A timer. This mine will explode on contact after this many seconds.
 		self.explodeAfter = 1*globalvars.FPS
 		self.is_a = globalvars.BULLET
@@ -161,16 +169,28 @@ class Mine(PhysicalObject):
 				x=self.rect.centerx,y=self.rect.centery))
 			self.kill()
 
+	def die(self):
+		globalvars.intangibles_bottom.add(Explosion(\
+			x=self.rect.centerx,y=self.rect.centery))
+		#kill removes the calling sprite from all sprite groups
+		self.kill()
+
 	def handleCollisionWith(self, other_sprite):
-		'''For now mines die immediately regardless of what they hit.'''
+		''' '''
 		died = False
-		if other_sprite != self.dontClipMe:
-			globalvars.intangibles_bottom.add(Explosion(\
-				x=self.rect.centerx,y=self.rect.centery))
+		#Take damage from bullets, but don't necessarilly die.
+		if other_sprite.is_a == globalvars.BULLET:
+			self.health -= other_sprite.damage
+			if self.health < 1:
+				self.die()
+				died = True
+		#self.dontClipMe is usually the shooter of the bullet who would 
+		#otherwise immediately collide with it.
+		elif other_sprite != self.dontClipMe:
+			self.die()
 			died = True
-			#kill removes the calling sprite from all sprite groups
-			self.kill()
 		return died
+
 
 
 class Explosion(PhysicalObject):

@@ -19,10 +19,12 @@ ammo_classes = [1,5,10,25,50]
 blast_classes = ['Area of effect', 'Fragmentation']
 radius_classes = [20,40,60]
 fragment_classes = [5,10,15]
+#Amount of health before the mine is destroyed by bullets
+health_classes = [1,5,100]
 
 
 #Names of the various mine classes
-mine_class_names = ['Worthless', 'Scrap', 'Cheap', 'Okay', 'Cool', 'Hot', 'Noble', 'King', 'Emperor', 'Tyrant', 'Transcendent']
+mine_class_names = ['Worthless', 'Junk', 'Scrap', 'Cheap', 'Okay', 'Tepid', 'Cool', 'Hot', 'Noble', 'Knightly', 'Worthy', 'Peerless', 'Kingly', 'Emperor', 'Tyrant', 'God-Emperor','Stellar','Transcendent']
 
 
 def generateMine(mine_class):
@@ -71,6 +73,7 @@ refire_names = ['Cold','Mirthful','','Wrathful','Furious'] #maybe reduce this do
 ammo_names = ['Tooth','','','','Epiphany'] #Maybe don't incorporate this in the name.
 blast_names = ['','Fragmentation']
 blast_radius_names = ['Bitter','','Ravenous']
+health_names = ['', '', 'Immortal']
 
 
 class MineLayer():
@@ -81,12 +84,14 @@ class MineLayer():
 		self.ammo_index = rd.randint(0, len(ammo_classes)-1)
 		self.blast_index = rd.randint(0, len(blast_classes)-1)
 		self.blast_radius_index = rd.randint(0, len(radius_classes)-1)
+		self.health_index = rd.randint(0, len(health_classes)-1)
 
 		self.name=name
 		self.refire_rate=10 #Fires once every refire_rate frames
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
 		self.attack_angle = 10 #if within this angle to target, can shoot at target
+		self.health = 1
 		self.is_a = 'mine'
 
 
@@ -99,6 +104,7 @@ class MineLayer():
 		#blast_classes[self.blast_index] #['Area of effect', 'Fragmentation']
 		#radius_classes[self.blast_radius_index] #[20,40,60]
 		#fragment_classes[self.blast_radius_index] #[5,10,15]
+		self.health = health_classes[self.health_index]
 
 
 	def cool(self):
@@ -142,6 +148,9 @@ class MineLayer():
 		elif attribute_index == 5:
 			if self.ammo_index > 0: self.ammo_index -= 1
 			else: return True
+		elif attribute_index == 6:
+			if self.health_index > 0: self.health_index -= 1
+			else: return True
 		else:
 			print 'ERROR in mine.decrementAttribute. Exiting'; exit()
 		return False
@@ -173,6 +182,10 @@ class MineLayer():
 			if self.ammo_index < len(ammo_classes)-1:
 				self.ammo_index += 1
 			else: return True
+		elif attribute_index == 6:
+			if self.health_index < len(health_classes)-1:
+				self.health_index += 1
+			else: return True
 		else:
 			print 'ERROR in mine.incrementAttribute. Exiting'; exit()
 		return False
@@ -181,17 +194,19 @@ class MineLayer():
 	def getMineName(self):
 		'''Since this is too many attributes, only give keywords for the extreme high and low values and then have these trump other attributes when naming the mine.'''
 		name = ''
-		if len(longevity_names[self.longevity_index]) > 0:
-			name += longevity_names[self.longevity_index]+' '
-		elif len(refire_names[self.refire_index]) > 0:
-			name += refire_names[self.refire_index]+' '
+		if len(health_names[self.health_index]) > 0:
+			name += health_names[self.health_index]+' '
 		elif len(blast_radius_names[self.blast_radius_index]) > 0:
 			name += blast_radius_names[self.blast_radius_index]+' '
+		elif len(refire_names[self.refire_index]) > 0:
+			name += refire_names[self.refire_index]+' '
+		elif len(longevity_names[self.longevity_index]) > 0:
+			name += longevity_names[self.longevity_index]+' '
 
-		if len(blast_names[self.blast_index]) > 0:
-			name += blast_names[self.blast_index]+' '
-		elif len(damage_names[self.damage_index]) > 0:
+		if len(damage_names[self.damage_index]) > 0:
 			name += damage_names[self.damage_index]+' '
+		elif len(blast_names[self.blast_index]) > 0:
+			name += blast_names[self.blast_index]+' '
 		elif len(ammo_names[self.ammo_index]) > 0:
 			name += ammo_names[self.ammo_index]+' '
 		return name
@@ -202,8 +217,8 @@ class MineLayer():
 
 
 	def getMineClass(self):
-		'''Current range of Mine ratings solely based on the numbers in this method is -8 to 13 inclusive.
-		I changed the return value to map these into the range 0-10 inclusive.'''
+		'''Current range of Mine ratings solely based on the numbers 
+		in this method is -8 to 15 inclusive.'''
 		rating = 0
 		rating += self.longevity_index #0-3
 		
@@ -224,7 +239,9 @@ class MineLayer():
 
 		rating += self.blast_radius_index #0-2
 
-		return (rating+8)/2
+		if self.health_index > 1: rating += 2
+
+		return max(min(rating+6, len(mine_class_names)-1), 0)
 
 
 #def testing():

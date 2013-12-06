@@ -998,14 +998,15 @@ class Menu:
 		equipped_mine_column = None
 		equipped_mine_comparator = None
 		if globalvars.player.mine is None:
-			equipped_mine_column = ['None equipped','','','','','','','']
-			equipped_mine_comparator = [0.0 for _ in range(8)]
+			equipped_mine_column = ['None equipped','','','','','','','','']
+			equipped_mine_comparator = [0.0 for _ in range(9)]
 		else:
 			equipped_mine_column = [globalvars.player.mine.name,
 						globalvars.player.mine.getMineClassName(),
 						str(globalvars.player.mine.refire_rate),
 						str(globalvars.player.mine.damage),
 						str(globalvars.player.mine.longevity),
+						str(globalvars.player.mine.health),
 						'',
 						'',
 						'']
@@ -1014,6 +1015,7 @@ class Menu:
 						globalvars.player.mine.refire_rate,
 						globalvars.player.mine.damage,
 						globalvars.player.mine.longevity,
+						globalvars.player.mine.health,
 						0,
 						0,
 						0]
@@ -1021,8 +1023,8 @@ class Menu:
 		cargo_mine_column = None
 		cargo_mine_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_mine_column = ['There are no mines in','your cargo hold.','','','','','','']
-			cargo_mine_comparator = [0.0 for _ in range(8)]
+			cargo_mine_column = ['There are no mines in','your cargo hold.','','','','','','','']
+			cargo_mine_comparator = [0.0 for _ in range(9)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
 				index = 0
@@ -1032,14 +1034,15 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != 'mine':
-				cargo_mine_column = ['There are no mines in','your cargo hold.','','','','','','']
-				cargo_mine_comparator = [0.0 for _ in range(8)]
+				cargo_mine_column = ['There are no mines in','your cargo hold.', '', '', '', '', '', '','']
+				cargo_mine_comparator = [0.0 for _ in range(9)]
 			else:
 				cargo_mine_column = [globalvars.player.cargo[index].name,
 						globalvars.player.cargo[index].getMineClassName(),
 						str(globalvars.player.cargo[index].refire_rate),
 						str(globalvars.player.cargo[index].damage),
 						str(globalvars.player.cargo[index].longevity),
+						str(globalvars.player.cargo[index].health),
 						'',
 						'',
 						'']
@@ -1048,6 +1051,7 @@ class Menu:
 						globalvars.player.cargo[index].refire_rate,
 						globalvars.player.cargo[index].damage,
 						globalvars.player.cargo[index].longevity,
+						globalvars.player.cargo[index].health,
 						0,
 						0,
 						0]
@@ -1069,12 +1073,14 @@ class Menu:
 				equipped_mine_comparator[3],cargo_mine_comparator[3]],
 			['Longevity:',equipped_mine_column[4],cargo_mine_column[4],
 				equipped_mine_comparator[4],cargo_mine_comparator[4]],
-			['Ammo:',equipped_mine_column[5],cargo_mine_column[5],
+			['Health:',equipped_mine_column[5],cargo_mine_column[5],
 				equipped_mine_comparator[5],cargo_mine_comparator[5]],
-			['Blast:',equipped_mine_column[6],cargo_mine_column[6],
+			['Ammo:',equipped_mine_column[6],cargo_mine_column[6],
 				equipped_mine_comparator[6],cargo_mine_comparator[6]],
-			['Radius:',equipped_mine_column[7],cargo_mine_column[7],
-				equipped_mine_comparator[7],cargo_mine_comparator[7]]
+			['Blast:',equipped_mine_column[7],cargo_mine_column[7],
+				equipped_mine_comparator[7],cargo_mine_comparator[7]],
+			['Radius:',equipped_mine_column[8],cargo_mine_column[8],
+				equipped_mine_comparator[8],cargo_mine_comparator[8]]
 		]
 		#Fix too long names
 		part1, part2 = splitTooLongWord(word_to_split=equipped_mine_column[0],\
@@ -1110,8 +1116,8 @@ class Menu:
 		equipped_missile_column = None
 		equipped_missile_comparator = None
 		if globalvars.player.missile is None:
-			equipped_missile_column = ['None equipped','','','','','','','','','','']
-			equipped_missile_comparator = [0.0 for _ in range(11)]
+			equipped_missile_column = ['None equipped','','','','','','','','','','','']
+			equipped_missile_comparator = [0.0 for _ in range(12)]
 		else:
 			equipped_missile_column = [globalvars.player.missile.name,
 						globalvars.player.missile.getMissileClassName(),
@@ -1120,6 +1126,7 @@ class Menu:
 						str(globalvars.player.missile.damage),
 						str(globalvars.player.missile.longevity),
 						str(globalvars.player.missile.turn_rate),
+						str(globalvars.player.missile.health),
 						'',
 						'',
 						'',
@@ -1131,6 +1138,7 @@ class Menu:
 						globalvars.player.missile.damage,
 						globalvars.player.missile.longevity,
 						globalvars.player.missile.turn_rate,
+						globalvars.player.missile.health,
 						0,
 						0,
 						0,
@@ -1139,8 +1147,8 @@ class Menu:
 		cargo_missile_column = None
 		cargo_missile_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_missile_column = ['There are no missiles in','your cargo hold.','','','','','','','','','']
-			cargo_missile_comparator = [0.0 for _ in range(11)]
+			cargo_missile_column = ['There are no missiles in','your cargo hold.','','','','','','','','','','']
+			cargo_missile_comparator = [0.0 for _ in range(12)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
 				index = 0
@@ -1150,8 +1158,8 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != 'missile':
-				cargo_missile_column = ['There are no missiles in','your cargo hold.','','','','','','','','','']
-				cargo_missile_comparator = [0.0 for _ in range(11)]
+				cargo_missile_column = ['There are no missiles in','your cargo hold.','','','','','','','','','','']
+				cargo_missile_comparator = [0.0 for _ in range(12)]
 			else:
 				cargo_missile_column = [globalvars.player.cargo[index].name,
 						globalvars.player.cargo[index].getMissileClassName(),
@@ -1160,6 +1168,7 @@ class Menu:
 						str(globalvars.player.cargo[index].damage),
 						str(globalvars.player.cargo[index].longevity),
 						str(globalvars.player.cargo[index].turn_rate),
+						str(globalvars.player.cargo[index].health),
 						'',
 						'',
 						'',
@@ -1171,6 +1180,7 @@ class Menu:
 						globalvars.player.cargo[index].damage,
 						globalvars.player.cargo[index].longevity,
 						globalvars.player.cargo[index].turn_rate,
+						globalvars.player.cargo[index].health,
 						0,
 						0,
 						0,
@@ -1197,14 +1207,16 @@ class Menu:
 				equipped_missile_comparator[5],cargo_missile_comparator[5]],
 			['Turn rate:',equipped_missile_column[6],cargo_missile_column[6],
 				equipped_missile_comparator[6],cargo_missile_comparator[6]],
-			['Ammo:',equipped_missile_column[7],cargo_missile_column[7],
+			['Health:',equipped_missile_column[7],cargo_missile_column[7],
 				equipped_missile_comparator[7],cargo_missile_comparator[7]],
-			['Blast:',equipped_missile_column[8],cargo_missile_column[8],
+			['Ammo:',equipped_missile_column[8],cargo_missile_column[8],
 				equipped_missile_comparator[8],cargo_missile_comparator[8]],
-			['Radius:',equipped_missile_column[9],cargo_missile_column[9],
+			['Blast:',equipped_missile_column[9],cargo_missile_column[9],
 				equipped_missile_comparator[9],cargo_missile_comparator[9]],
-			['Seeking:',equipped_missile_column[10],cargo_missile_column[10],
-				equipped_missile_comparator[10],cargo_missile_comparator[10]]
+			['Radius:',equipped_missile_column[10],cargo_missile_column[10],
+				equipped_missile_comparator[10],cargo_missile_comparator[10]],
+			['Seeking:',equipped_missile_column[11],cargo_missile_column[11],
+				equipped_missile_comparator[11],cargo_missile_comparator[11]]
 		]
 		#Fix too long names
 		part1, part2 = splitTooLongWord(word_to_split=equipped_missile_column[0],\
@@ -1221,7 +1233,6 @@ class Menu:
 		equipped_color = colors.white
 		cargo_color = colors.white
 		#Give player option to equip currently selected missile in cargo
-		i += 1
 		self.equipCurrentCargo(index, i, 'missile', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
 		i += 1
 		self.previousAndNextInCargo(i, index, 'missile', local_font_size, column2_offset, column3_offset, globalvars.menu.setMissileComparePanel)

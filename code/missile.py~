@@ -28,10 +28,12 @@ blast_classes = ['Area of effect', 'Fragmentation']
 radius_classes = [20,40,60]
 fragment_classes = [5,10,15]
 seeking_classes = ['dumb','steer','lock','seek']
+#Amount of health before the missile is destroyed by bullets
+health_classes = [1,5,100]
 
 
 #Names of the various missile classes
-missile_class_names = ['Worthless', 'Scrap', 'Cheap', 'Okay', 'Cool', 'Hot', 'Noble', 'King', 'Emperor', 'Tyrant', 'Transcendent']
+missile_class_names = ['Worthless', 'Junk', 'Scrap', 'Cheap', 'Okay', 'Tepid', 'Cool', 'Hot', 'Noble', 'Knightly', 'Worthy', 'Peerless', 'Kingly', 'Emperor', 'Tyrant', 'God-Emperor','Stellar','Transcendent']
 
 
 def generateMissile(missile_class):
@@ -83,6 +85,7 @@ ammo_names = ['Tooth','','','','Epiphany'] #Maybe don't incorporate this in the 
 blast_names = ['','Fragmentation']
 blast_radius_names = ['Bitter','','Ravenous']
 seeking_names = ['','Steerable','Lock-on','Seeking']
+health_names = ['', '', 'Immortal']
 
 
 class MissileLauncher():
@@ -96,7 +99,8 @@ class MissileLauncher():
 		self.blast_index = rd.randint(0, len(blast_classes)-1)
 		self.blast_radius_index = rd.randint(0, len(radius_classes)-1)
 		self.seeking_index = rd.randint(0, len(seeking_classes)-1)
-		
+		self.health_index = rd.randint(0, len(health_classes)-1)
+
 		self.name=name
 		self.refire_rate=120 #Fires once every refire_rate frames
 		self.speed = 0.0
@@ -106,6 +110,7 @@ class MissileLauncher():
 		self.cooldown=0 #How long until next shot
 		self.shooter = shooter
 		self.attack_angle = 10 #if within this angle to target, can shoot at target
+		self.health = 1
 		self.is_a = 'missile'
 
 
@@ -122,6 +127,7 @@ class MissileLauncher():
 		#radius_classes[self.blast_radius_index] #[20,40,60]
 		#fragment_classes[self.blast_radius_index] #[5,10,15]
 		#seeking_classes[self.seeking_index] #['dumb','steer','lock','seek'] 
+		self.health = health_classes[self.health_index]
 
 
 	def cool(self):
@@ -174,6 +180,9 @@ class MissileLauncher():
 		elif attribute_index == 8:
 			if self.seeking_index > 0: self.seeking_index -= 1
 			else: return True
+		elif attribute_index == 9:
+			if self.health_index > 0: self.health_index -= 1
+			else: return True
 		else:
 			print 'ERROR in missile.decrementAttribute. Exiting'; exit()
 		return False
@@ -217,6 +226,10 @@ class MissileLauncher():
 			if self.seeking_index < len(seeking_classes)-1:
 				self.seeking_index += 1
 			else: return True
+		elif attribute_index == 9:
+			if self.health_index < len(health_classes)-1:
+				self.health_index += 1
+			else: return True
 		else:
 			print 'ERROR in missile.incrementAttribute. Exiting'; exit()
 		return False
@@ -228,29 +241,31 @@ class MissileLauncher():
 		if len(seeking_names[self.seeking_index]) > 0:
 			name += seeking_names[self.seeking_index]+' '
 
-		if len(turn_rate_names[self.turn_rate_index]) > 0:
+		if len(health_names[self.health_index]) > 0:
+			name += health_names[self.health_index]+' '
+		elif len(turn_rate_names[self.turn_rate_index]) > 0:
 			name += turn_rate_names[self.turn_rate_index]+' '
-		elif len(longevity_names[self.longevity_index]) > 0:
-			name += longevity_names[self.longevity_index]+' '
 		elif len(refire_names[self.refire_index]) > 0:
 			name += refire_names[self.refire_index]+' '
 		elif len(blast_radius_names[self.blast_radius_index]) > 0:
 			name += blast_radius_names[self.blast_radius_index]+' '
+		elif len(longevity_names[self.longevity_index]) > 0:
+			name += longevity_names[self.longevity_index]+' '
 
 		if len(blast_names[self.blast_index]) > 0:
 			name += blast_names[self.blast_index]+' '
 
-		if len(speed_names[self.speed_index]) > 0:
-			name += speed_names[self.speed_index]+' '
-		elif len(damage_names[self.damage_index]) > 0:
+		if len(damage_names[self.damage_index]) > 0:
 			name += damage_names[self.damage_index]+' '
+		elif len(speed_names[self.speed_index]) > 0:
+			name += speed_names[self.speed_index]+' '
 		elif len(ammo_names[self.ammo_index]) > 0:
 			name += ammo_names[self.ammo_index]+' '
 		return name
 
 	def getMissileClass(self):
-		'''Current range of Missile ratings solely based on the numbers in this method is -10 to 22 inclusive.
-		I changed the return value to map these into the range 0-10 inclusive.'''
+		'''Current range of Missile ratings solely based on the numbers in this method is -10 to 24 inclusive.
+		I changed the return value to map these into the range 0-17 inclusive.'''
 		rating = 0
 		if self.turn_rate_index == 0:
 			rating -= 3
@@ -286,7 +301,9 @@ class MissileLauncher():
 		if self.seeking_index == 3:
 			rating += 2
 
-		return (rating+10)/3
+		if self.health_index > 1: rating += 2
+
+		return (rating+12)/2
 
 
 	def getMissileClassName(self):
