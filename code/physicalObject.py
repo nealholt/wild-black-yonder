@@ -463,13 +463,12 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 		two objects, A and B, collide. let theta be the angle of the line from the 
 		center of A to the center of B. Let A be the smaller of the two. let 
-		theta' be a line perpendicular to theta. If A's direction is less 
-		than 90 degrees from pointing at B then reflect A's direction over 
-		theta'. Reduce both objects' speeds. 
+		theta' be a line perpendicular to theta.
+		If A's direction is less than 90 degrees from pointing at B then 
+		reflect A's direction over theta'. Reduce both objects' speeds. 
 		else move A's direction half way to theta in the direction away from B. 
 		Increase A's speed. Decrease B's speed. (This is the case where A 
-		is hit from behind despite moving in the same direction as B.)
-		'''
+		is hit from behind despite moving in the same direction as B.) '''
 		#If either object uses rectangular, we need to bounce off differently
 		if self.useRectangular or other.useRectangular:
 			#Determine if the collision is in the x direction or the y direction.

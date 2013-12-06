@@ -4,6 +4,8 @@ See the readme in the compiling folder for next steps.
 ** collision mechanic realism
 Spawn fewer npc ships before testing this next thing.
 
+All the following work appears to need to be done in physicalObject.bounceOff
+
 You can detect the "head-on-edness" of collisions. Such collisions should retard your speed. This will prevent pinballing in cluttered areas.
 
 Rear-on collisions should boost speed so that asteroids that come from behind on a stationary ship (especailly in the asteroids scenario) don't rapidly obliterate a ship.
@@ -603,14 +605,32 @@ If you are interested in contributing to the code, graphics, art, AI, plot, etc.
 
 This source is given only under the GPL General Public License.  If you are interested in other licensing, please contact me.
 * git commands and notes
-https://github.com/nealholt/asteroids-buff
+** changing the repository name
+Go to:
+https://github.com/nealholt/wild-black-yonder
+
+Click on Settings on the far right side.
+
+Under "Repository Name" you can change the name.
+
+Then locally do
+git remote set-url origin git@github.com:nealholt/newname.git
+where new name is the new name.
+
+So as to prevent confusion you probably also want to move old name to new name, as in:
+cd ..
+mv oldname newname
+
+Voila. That should be all.
+** all else
+https://github.com/nealholt/wild-black-yonder
 
 
 Get my rsa public key
 > emacs ~/.ssh/id_rsa.pub
 
 Go to the website
-https://github.com/nealholt/asteroids-buff/settings/keys
+https://github.com/nealholt/wild-black-yonder/settings/keys
 Go to Deploy Key.
 Copy the contents of id_rsa.pub into the box and add new key.
 
