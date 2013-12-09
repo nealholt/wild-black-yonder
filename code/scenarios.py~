@@ -246,7 +246,7 @@ class ScenarioManager:
 	def goToInfiniteSpace(self, nodeid, update=True):
 		'''This is a helper method that enables the menu system to function more easily.
 		nodeid of the infinite space and the seed to use to generate the space.'''
-		opportunity = None
+		opportunity = None #See factions.update for what opportunity is all about
 		if update:
 			#Update all the factions
 			opportunity = globalvars.factions.update(nodeid)
@@ -440,14 +440,15 @@ def wipeOldScenario():
 
 
 def makeNewEnemy(x=0, y=0):
-	enemy_ship = ship.generateShip(rd.randint(0,len(ship.ship_class_names)-1))
+	'''enemy_ship = ship.generateShip(rd.randint(0,len(ship.ship_class_names)-1))
 	enemy_ship.loadNewImage('destroyer')
 	enemy_ship.setLocation(x, y)
 	#Set the ship's health bar. This must be done right before adding any ship to tangibles
 	enemy_ship.setHealthBar()
 	enemy_ship.setProfile()
 	globalvars.tangibles.add(enemy_ship)
-	globalvars.whiskerables.add(enemy_ship)
+	globalvars.whiskerables.add(enemy_ship)'''
+	pass
 
 
 def resetDust():

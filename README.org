@@ -1,12 +1,6 @@
 git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
-** have pick-ups explode out of bad guys
-Make stuff in your cargo hold such as engines and weapons take up cargo space.
-When player runs over a pickup, but cargo is full, display "Cargo full!" instead of New ___! and do not put the item in the cargo hold.
-
-Add option to salvage stuff in your cargo hold for money from the comparator view.
-Money gained is based on the class of the object. Some low-level items should give no money. You don't have to get much money from these since cargospace is valuable.
 ** better interaction with factions
 at any faction-owned node, pop up a menu
 add to the menu options to do any of the minigames. lay out with text and numbers exactly the before and after consequences of each minigame whether won or lost and the difficulty of the minigame.
@@ -108,10 +102,16 @@ Have option to buy/sell 1, or max of product
 
 What if we just sell fuel at planets instead of the stupid gas can image?
 ** random health bars floating in space
+If you set far travel up and to the left and then you fly through the warp point twice up and to the left, the health bar will be there.
+
+Don't shoot anything. It will be there with or without flip turned on.
+
 Push this off until you notice any floating in space.
 Find where one of these appears consistently (random num should be used but used with initial seed).
 Then take dramatic measures to figure out when and why it appears.
 For example, if you spawn no enemies, does the health bar still appear?
+
+I think that an enemy is dieing and the health bar is lingering some how.
 ** parameterize minigame difficulty
 Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volume of space (inner concentric circle), speeding up rocks, increasing the number of rocks created when one gets destroyed.
 

@@ -307,7 +307,14 @@ class MissileLauncher():
 
 
 	def getMissileClassName(self):
-		return missile_class_names[self.getMissileClass()]
+		try:
+			return missile_class_names[self.getMissileClass()]
+		except IndexError:
+			print 'File "code/missile.py", line 310, in getMissileClassName'
+			print 'return missile_class_names[self.getMissileClass()]'
+			print 'IndexError: list index out of range'
+			print 'Index is '+str(self.getMissileClass())
+			exit(1)
 
 
 #def testing():

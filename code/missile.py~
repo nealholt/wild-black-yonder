@@ -135,7 +135,7 @@ class MissileLauncher():
 			self.cooldown -= 1
 
 	def shoot(self):
-		tempmissile = Missile(self.shooter, self.speed, self.turn_rate, self.damage, self.longevity)
+		tempmissile = Missile(self.shooter, self.speed, self.turn_rate, self.damage, self.longevity, self.health)
 		#Add missile to the sprite groups
 		globalvars.tangibles.add(tempmissile)
 		self.cooldown=self.refire_rate

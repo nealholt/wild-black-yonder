@@ -507,14 +507,21 @@ class HealthBar(PhysicalObject):
 		self.new_width = self.rect.width
 		self.red_bar = pygame.Surface([self.rect.width, self.rect.height])
 		self.red_bar.fill(colors.red)
+		self.dead = False
 
 	def draw(self, offset):
-		x,y = self.rect.topleft
-		pos = x - offset[0], y - offset[1]
-		globalvars.screen.blit(self.red_bar, pos)
-		image = pygame.Surface([self.new_width, self.rect.height])
-		image.fill(colors.green)
-		globalvars.screen.blit(image, pos)
+		if not self.dead:
+			x,y = self.rect.topleft
+			pos = x - offset[0], y - offset[1]
+			globalvars.screen.blit(self.red_bar, pos)
+			image = pygame.Surface([self.new_width, self.rect.height])
+			image.fill(colors.green)
+			globalvars.screen.blit(image, pos)
+
+	def kill(self):
+		'''Random health bars are not being cleaned up. I don't know why, but I'm trying to fix it.'''
+		self.dead == True
+		PhysicalObject.kill(self)
 
 
 class WarpPortal(PhysicalObject):

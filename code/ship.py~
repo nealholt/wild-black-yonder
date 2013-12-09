@@ -238,7 +238,7 @@ class Ship(PhysicalObject):
 			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not a weapon.'
 			exit()
 		#Remove the weapon from cargo
-		weapon = self.cargo.pop(cargo_index)
+		weapon = self.removeFromCargo(cargo_index)
 		if weapon.is_a == 'gun':
 			if not self.gun is None: self.unequipGun()
 			self.gun = weapon
@@ -261,7 +261,7 @@ class Ship(PhysicalObject):
 			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not an engine.'
 			exit()
 		#Remove the engine from cargo
-		temp = self.cargo.pop(cargo_index)
+		temp = self.removeFromCargo(cargo_index)
 		if not self.engine is None: self.unequipEngine()
 		self.engine = temp
 		self.engineUpdate()
@@ -503,7 +503,7 @@ class Ship(PhysicalObject):
 					temp = objInstances.Pickup(self.engine, \
 						x=self.rect.centerx, y=self.rect.centery)
 				else: #Ship
-					self.health = self.healthmax
+					self.initialize()
 					self.engine = None
 					self.gun = None
 					temp = objInstances.Pickup(self, \

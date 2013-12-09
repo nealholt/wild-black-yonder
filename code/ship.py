@@ -503,7 +503,7 @@ class Ship(PhysicalObject):
 					temp = objInstances.Pickup(self.engine, \
 						x=self.rect.centerx, y=self.rect.centery)
 				else: #Ship
-					self.health = self.healthmax
+					self.initialize()
 					self.engine = None
 					self.gun = None
 					temp = objInstances.Pickup(self, \
