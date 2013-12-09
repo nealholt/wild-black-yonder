@@ -95,14 +95,12 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 	for _ in xrange(objects[enemy]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		temp = ship.Ship(centerx=x, centery=y, image_name='destroyer')
-		#Set the ship's health bar. This must be done right before adding any ship to tangibles
-		temp.setHealthBar()
+		temp.initialize()
 		temp.setProfile()
 		physical_objs.append(temp)
 
 	for _ in xrange(objects[crystal]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		#Make gems stationary in the race for now.
 		physical_objs.append(objInstances.Gem(x=x, y=y, speed_min=0., speed_max=0.))
 
 	for _ in xrange(objects[large_asteroid]):
@@ -167,6 +165,13 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0.):
 		#print temp
 		if temp is None:
 			if TESTING: area_covered += math.pi*p.collisionradius**2
+			#Set the ship's health bar. This must be done right 
+			#before adding any ship to tangibles
+			#It cannot be done earlier in this method because a ship
+			#might collide with an object and not be added, but setHealthBar
+			#puts the health bar in intangibles so the health bar ends up
+			#floating in space with no one to ever remove it.
+			if p.is_a == globalvars.SHIP: p.setHealthBar()
 			globalvars.tangibles.add(p)
 			globalvars.whiskerables.add(p)
 			toreturn.add(p)

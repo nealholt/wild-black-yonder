@@ -127,3 +127,6 @@ class CapitalShip(physicalObject.PhysicalObject):
 				globalvars.score_keeper.points += 100
 		return died
 
+	def setHealthBar(self):
+		pass
+
