@@ -480,7 +480,7 @@ class Ship(PhysicalObject):
 			if not globalvars.score_keeper is None:
 				globalvars.score_keeper.points += 1
 			#Chance to spawn an item
-			if rd.random() > 0.0: #TODO LEFT OFF HERE
+			if rd.random() > 0.5:
 				rand = rd.randint(0,2)
 				if rand == 0: #Gun
 					temp = objInstances.Pickup(self.gun, \

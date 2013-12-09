@@ -28,37 +28,40 @@ class Player(Ship):
 		self.nodeid = 0
 		self.destinationNode = [0]
 
+		self.initialize()
+
 		#For testing purposes, load all the weapons except the initially equipped 
 		#weapon into the player's cargo hold.
+
 		#Load hitBoxTester
-		self.cargo.append(weapon.HitBoxTesterGun(self))
-		#Load 4 randomly generated mines
-		for _ in range(4):
-			temp = mine.generateMine(5)
-			temp.shooter = self
-			self.cargo.append(temp)
-		#Load 4 randomly generated missiles
-		for _ in range(4):
-			temp = missile.generateMissile(rd.randint(0, len(missile.missile_class_names)-1))
-			temp.shooter = self
-			self.cargo.append(temp)
-		'''#Load 4 more randomly generated guns
-		for _ in range(4):
-			temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
-			temp.shooter = self
-			self.cargo.append(temp)
-		#Load 3 more randomly generated engines
-		for _ in range(3):
-			temp = engine.generateEngine(rd.randint(0, len(engine.engine_class_names)-1))
-			self.cargo.append(temp)
-		#Load 3 more randomly generated ships
-		for _ in range(3):
-			temp = generateShip(rd.randint(0, len(ship_class_names)-1))
-			self.cargo.append(temp)'''
-		self.initialize()
+		#self.equipToCargo(weapon.HitBoxTesterGun(self))
+
+		#Load one really good item of each type:
+		temp = mine.generateMine(len(mine.mine_class_names)-1)
+		temp.shooter = self
+		self.equipToCargo(temp)
+		temp = missile.generateMissile(len(missile.missile_class_names)-1)
+		temp.shooter = self
+		self.equipToCargo(temp)
+		temp = weapon.generateWeapon(len(weapon.weapon_class_names)-1)
+		temp.shooter = self
+		self.equipToCargo(temp)
+		temp = engine.generateEngine(len(engine.engine_class_names)-1)
+		self.equipToCargo(temp)
+		temp = generateShip(len(ship_class_names)-1)
+		self.equipToCargo(temp)
 		#Give some trade goods to the player.
 		self.trade_goods = []
 		self.loadTradeGoods('Niblets', 10, 50.0)
+
+
+	def equipToCargo(self, item):
+		if self.cargospace > 0:
+			self.cargo.append(item)
+			self.cargospace -= 1
+			return True
+		else:
+			return False
 
 
 	def equipShipFromCargo(self, cargo_index):

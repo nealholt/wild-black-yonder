@@ -447,6 +447,7 @@ class Pickup(PhysicalObject):
 		PhysicalObject.__init__(self, centerx=x, centery=y, image_name='default')
 		self.item = item #This is the item to be picked up.
 		self.item_is_a = self.item.is_a
+		if self.item_is_a == globalvars.SHIP: self.item_is_a = 'ship'
 		self.is_a = globalvars.GEM
 		#Choose a random direction.
 		self.direction = rd.randint(-179, 180)

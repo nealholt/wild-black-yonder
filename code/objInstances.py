@@ -465,10 +465,13 @@ class Pickup(PhysicalObject):
 		'''React to a collision with other_sprite.'''
 		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer:
 			#give item to the ship.
-			other_sprite.cargo.append(self.item)
+			if other_sprite.equipToCargo(self.item):
+				text = 'New '+str(self.item_is_a)+'!'
+			else:
+				text = 'Cargo is full!'
 			announcement = TemporaryText(
 				x=self.rect.left, y=self.rect.top, 
-				text='New '+str(self.item_is_a)+'!', color=colors.yellow,
+				text=text, color=colors.yellow,
 				ttl=2.0, fontSize=36, useOffset=True)
 			globalvars.intangibles_top.add(announcement)
 			self.kill()

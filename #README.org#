@@ -2,10 +2,7 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** have pick-ups explode out of bad guys
-When bad guys die, give a chance of exploding out a pickup object. Pickup should be a new object instance thing and it should use the question mark image. It should have properties like a gem. Pickup contains one of the things the dead enemy had: weapon, missile, mine, engine, or ship. Upon collision with the player, pickup puts the item in the player's hold and displays the text "New ___!" where the pickup was grabbed where ____ is filled in by the type of the pickup.
-
-Make stuff in your cargo hold such as engines and weapons take up cargo space.
-When player runs over a pickup, but cargo is full, display "Cargo full!" instead of New ___! and do not put the item in the cargo hold.
+Make stuff in your cargo hold such as engines and weapons take up cargo space. When player runs over a pickup, but cargo is full, display 'Cargo full' instead of New ___ and do not put the item in the cargo hold.
 
 Add option to salvage stuff in your cargo hold for money from the comparator view.
 Money gained is based on the class of the object. Some low-level items should give no money. You don't have to get much money from these since cargospace is valuable.
