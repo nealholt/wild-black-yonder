@@ -191,27 +191,41 @@ class Ship(PhysicalObject):
 
 
 	def unequipGun(self):
-		self.cargo.append(self.gun)
+		self.addToCargo(self.gun)
 		self.gun = None
 
 
 	def unequipMissile(self):
-		self.cargo.append(self.missile)
+		self.addToCargo(self.missile)
 		self.missile = None
 
 
 	def unequipMine(self):
-		self.cargo.append(self.mine)
+		self.addToCargo(self.mine)
 		self.mine = None
 
 
 	def unequipEngine(self):
-		self.cargo.append(self.engine)
+		self.addToCargo(self.engine)
 		self.engine = None
 		self.maxSpeed = 0.0
 		self.dv = 0.0
 		self.dtheta = 0.0
 		self.speedIncrements = 0.0
+
+
+	def addToCargo(self, item):
+		if self.cargospace > 0:
+			self.cargo.append(item)
+			self.cargospace -= 1
+			return True
+		else:
+			return False
+
+
+	def removeFromCargo(self, index):
+		self.cargospace += 1
+		return self.cargo.pop(index)
 
 
 	def equipWeaponFromCargo(self, cargo_index):
@@ -224,7 +238,7 @@ class Ship(PhysicalObject):
 			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not a weapon.'
 			exit()
 		#Remove the weapon from cargo
-		weapon = self.cargo.pop(cargo_index)
+		weapon = self.removeFromCargo(cargo_index)
 		if weapon.is_a == 'gun':
 			if not self.gun is None: self.unequipGun()
 			self.gun = weapon
@@ -247,7 +261,7 @@ class Ship(PhysicalObject):
 			print 'ERROR: cargo indexed by '+str(cargo_index)+' is not an engine.'
 			exit()
 		#Remove the engine from cargo
-		temp = self.cargo.pop(cargo_index)
+		temp = self.removeFromCargo(cargo_index)
 		if not self.engine is None: self.unequipEngine()
 		self.engine = temp
 		self.engineUpdate()

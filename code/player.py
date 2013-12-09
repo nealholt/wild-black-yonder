@@ -34,34 +34,25 @@ class Player(Ship):
 		#weapon into the player's cargo hold.
 
 		#Load hitBoxTester
-		#self.equipToCargo(weapon.HitBoxTesterGun(self))
+		#self.addToCargo(weapon.HitBoxTesterGun(self))
 
 		#Load one really good item of each type:
 		temp = mine.generateMine(len(mine.mine_class_names)-1)
 		temp.shooter = self
-		self.equipToCargo(temp)
+		self.addToCargo(temp)
 		temp = missile.generateMissile(len(missile.missile_class_names)-1)
 		temp.shooter = self
-		self.equipToCargo(temp)
+		self.addToCargo(temp)
 		temp = weapon.generateWeapon(len(weapon.weapon_class_names)-1)
 		temp.shooter = self
-		self.equipToCargo(temp)
+		self.addToCargo(temp)
 		temp = engine.generateEngine(len(engine.engine_class_names)-1)
-		self.equipToCargo(temp)
+		self.addToCargo(temp)
 		temp = generateShip(len(ship_class_names)-1)
-		self.equipToCargo(temp)
+		self.addToCargo(temp)
 		#Give some trade goods to the player.
 		self.trade_goods = []
 		self.loadTradeGoods('Niblets', 10, 50.0)
-
-
-	def equipToCargo(self, item):
-		if self.cargospace > 0:
-			self.cargo.append(item)
-			self.cargospace -= 1
-			return True
-		else:
-			return False
 
 
 	def equipShipFromCargo(self, cargo_index):
@@ -79,6 +70,12 @@ class Player(Ship):
 		self.makeSelfCopyOfOther(self.cargo[cargo_index])
 		#Remove the ship from the cargo hold.
 		self.cargo.pop(cargo_index)
+		#Put the new ship (a copy of the previous ship) in the cargo hold.
+		self.cargo.append(copy_of_current)
+		#Update the cargo space
+		self.cargospace -= len(self.cargo)
+		while self.cargospace < 0:
+			self.removeFromCargo(0)
 		#self still has all its trade goods. make a list of these, remove them, then add them back in so that cargo space will be synced up properly.
 		tradegoods = []
 		for tg in self.trade_goods:
@@ -86,8 +83,6 @@ class Player(Ship):
 		self.trade_goods = []
 		for tg in tradegoods:
 			self.loadTradeGoods(tg[0], tg[1], tg[2])
-		#Put the new ship (a copy of the previous ship) in the cargo hold.
-		self.cargo.append(copy_of_current)
 		#The following is needed because the ships generated in cargo use the default ship image which is actually a small purple circle with a question mark. At least this way, we don't have to fly that around.
 		self.loadNewImage('ship')
 		self.updateImageAngle()

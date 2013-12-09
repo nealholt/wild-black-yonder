@@ -51,6 +51,7 @@ class CapitalShip(physicalObject.PhysicalObject):
 		self.useRectangular = True
 
 		self.thorns_damage = 5
+		self.breaker_damage = 10000
 
 
 	def shoot(self, force_shot=False):

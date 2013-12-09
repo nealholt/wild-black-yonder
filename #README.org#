@@ -2,8 +2,6 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** have pick-ups explode out of bad guys
-Make stuff in your cargo hold such as engines and weapons take up cargo space. When player runs over a pickup, but cargo is full, display 'Cargo full' instead of New ___ and do not put the item in the cargo hold.
-
 Add option to salvage stuff in your cargo hold for money from the comparator view.
 Money gained is based on the class of the object. Some low-level items should give no money. You don't have to get much money from these since cargospace is valuable.
 ** better interaction with factions

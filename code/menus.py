@@ -104,8 +104,17 @@ def equipPlayerShip(cargo_index):
 	player makes to his ship.'''
 	globalvars.player.equipShipFromCargo(cargo_index)
 	globalvars.menu.setShipPanel()
+
+
+def salvageCargoItem(index_price_pair):
+	''' '''
+	index, price = index_price_pair
+	globalvars.player.money += price
+	globalvars.player.removeFromCargo(index)
+	globalvars.menu.setShipPanel()
 #TODO END
 
+class_price_multiplier = 5
 
 top = globalvars.MENU_BORDER_PADDING
 left = globalvars.MENU_BORDER_PADDING
@@ -536,7 +545,7 @@ class Menu:
 		'Money:    $'+str(globalvars.player.money),
 		'Health:   '+str(globalvars.player.health)+' / '+str(globalvars.player.maxhealth),
 		'Fuel:      '+str(globalvars.player.fuel/1000)+' / '+str(globalvars.player.fuel_capacity/1000),
-		'Trade goods capacity:  '+str(globalvars.player.cargospace)+' / '+str(globalvars.player.cargospace_max),
+		'Trade goods capacity:  '+str(globalvars.player.cargospace_max - globalvars.player.cargospace)+' / '+str(globalvars.player.cargospace_max),
 		'Trade goods: ']
 		for tg in globalvars.player.trade_goods:
 			text.append('      '+str(tg.amount)+' '+tg.name+' at $'+str(tg.unit_price)+' per')
@@ -865,7 +874,9 @@ class Menu:
 		#Give player option to equip currently selected weapon in cargo
 		i += 1
 		self.equipCurrentCargo(index, i, 'gun', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
-		i += 2
+		i += 1
+		self.salvageCurrentCargo(index, i, 'gun', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getWeaponClass())
+		i += 1
 		self.previousAndNextInCargo(i, index, 'gun', local_font_size, column2_offset, column3_offset, globalvars.menu.setWeaponComparePanel)
 
 
@@ -888,7 +899,7 @@ class Menu:
 					str(globalvars.player.thorns_damage),
 					str(globalvars.player.breaker_damage)]
 		equipped_ship_comparator = [0,
-					0,
+					globalvars.player.getShipClass(),
 					globalvars.player.maxhealth,
 					globalvars.player.fuel_capacity,
 					globalvars.player.cargospace_max,
@@ -922,7 +933,7 @@ class Menu:
 						str(globalvars.player.cargo[index].thorns_damage),
 						str(globalvars.player.cargo[index].breaker_damage)]
 				cargo_ship_comparator = [0,
-						0,
+						globalvars.player.cargo[index].getShipClass(),
 						globalvars.player.cargo[index].maxhealth,
 						globalvars.player.cargo[index].fuel_capacity,
 						globalvars.player.cargo[index].cargospace_max,
@@ -981,7 +992,9 @@ class Menu:
 			subpanel.setMethod(equipPlayerShip)
 			subpanel.argument = index
 			self.main_panel.addPanel(subpanel)
-		i += 2
+		i += 1
+		self.salvageCurrentCargo(index, i, globalvars.SHIP, local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getShipClass())
+		i += 1
 		self.previousAndNextInCargo(i, index, globalvars.SHIP, local_font_size, column2_offset, column3_offset, globalvars.menu.setShipComparePanel)
 
 
@@ -1074,13 +1087,13 @@ class Menu:
 			['Longevity:',equipped_mine_column[4],cargo_mine_column[4],
 				equipped_mine_comparator[4],cargo_mine_comparator[4]],
 			['Health:',equipped_mine_column[5],cargo_mine_column[5],
-				equipped_mine_comparator[5],cargo_mine_comparator[5]],
-			['Ammo:',equipped_mine_column[6],cargo_mine_column[6],
-				equipped_mine_comparator[6],cargo_mine_comparator[6]],
-			['Blast:',equipped_mine_column[7],cargo_mine_column[7],
-				equipped_mine_comparator[7],cargo_mine_comparator[7]],
-			['Radius:',equipped_mine_column[8],cargo_mine_column[8],
-				equipped_mine_comparator[8],cargo_mine_comparator[8]]
+				equipped_mine_comparator[5],cargo_mine_comparator[5]]
+			#['Ammo:',equipped_mine_column[6],cargo_mine_column[6],
+			#	equipped_mine_comparator[6],cargo_mine_comparator[6]],
+			#['Blast:',equipped_mine_column[7],cargo_mine_column[7],
+			#	equipped_mine_comparator[7],cargo_mine_comparator[7]],
+			#['Radius:',equipped_mine_column[8],cargo_mine_column[8],
+			#	equipped_mine_comparator[8],cargo_mine_comparator[8]]
 		]
 		#Fix too long names
 		part1, part2 = splitTooLongWord(word_to_split=equipped_mine_column[0],\
@@ -1099,6 +1112,8 @@ class Menu:
 		#Give player option to equip currently selected mine in cargo
 		i += 1
 		self.equipCurrentCargo(index, i, 'mine', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
+		i += 1
+		self.salvageCurrentCargo(index, i, 'mine', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getMineClass())
 		i += 1
 		self.previousAndNextInCargo(i, index, 'mine', local_font_size, column2_offset, column3_offset, globalvars.menu.setMineComparePanel)
 
@@ -1208,15 +1223,15 @@ class Menu:
 			['Turn rate:',equipped_missile_column[6],cargo_missile_column[6],
 				equipped_missile_comparator[6],cargo_missile_comparator[6]],
 			['Health:',equipped_missile_column[7],cargo_missile_column[7],
-				equipped_missile_comparator[7],cargo_missile_comparator[7]],
-			['Ammo:',equipped_missile_column[8],cargo_missile_column[8],
-				equipped_missile_comparator[8],cargo_missile_comparator[8]],
-			['Blast:',equipped_missile_column[9],cargo_missile_column[9],
-				equipped_missile_comparator[9],cargo_missile_comparator[9]],
-			['Radius:',equipped_missile_column[10],cargo_missile_column[10],
-				equipped_missile_comparator[10],cargo_missile_comparator[10]],
-			['Seeking:',equipped_missile_column[11],cargo_missile_column[11],
-				equipped_missile_comparator[11],cargo_missile_comparator[11]]
+				equipped_missile_comparator[7],cargo_missile_comparator[7]]
+			#['Ammo:',equipped_missile_column[8],cargo_missile_column[8],
+			#	equipped_missile_comparator[8],cargo_missile_comparator[8]],
+			#['Blast:',equipped_missile_column[9],cargo_missile_column[9],
+			#	equipped_missile_comparator[9],cargo_missile_comparator[9]],
+			#['Radius:',equipped_missile_column[10],cargo_missile_column[10],
+			#	equipped_missile_comparator[10],cargo_missile_comparator[10]],
+			#['Seeking:',equipped_missile_column[11],cargo_missile_column[11],
+			#	equipped_missile_comparator[11],cargo_missile_comparator[11]]
 		]
 		#Fix too long names
 		part1, part2 = splitTooLongWord(word_to_split=equipped_missile_column[0],\
@@ -1234,6 +1249,8 @@ class Menu:
 		cargo_color = colors.white
 		#Give player option to equip currently selected missile in cargo
 		self.equipCurrentCargo(index, i, 'missile', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
+		i += 1
+		self.salvageCurrentCargo(index, i, 'missile', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getMissileClass())
 		i += 1
 		self.previousAndNextInCargo(i, index, 'missile', local_font_size, column2_offset, column3_offset, globalvars.menu.setMissileComparePanel)
 
@@ -1340,7 +1357,9 @@ class Menu:
 		#Give player option to equip currently selected engine in cargo
 		i += 1
 		self.equipCurrentCargo(index, i, 'engine', local_font_size, column3_offset, cargo_color, equipPlayerEngine)
-		i += 2
+		i += 1
+		self.salvageCurrentCargo(index, i, 'engine', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getEngineClass())
+		i += 1
 		self.previousAndNextInCargo(i, index, 'engine', local_font_size, column2_offset, column3_offset, globalvars.menu.setEngineComparePanel)
 
 
@@ -1374,6 +1393,17 @@ class Menu:
 			self.main_panel.addDrawable(temp)
 			i += 1
 		return i
+
+
+	def salvageCurrentCargo(self, index, i, cargo_type, local_font_size, column_offset, cargo_color, class_val):
+		if len(globalvars.player.cargo) > index\
+		and globalvars.player.cargo[index].is_a == cargo_type:
+			price = class_val*class_price_multiplier
+			self.addMenuItem(x1=left+column_offset,\
+				y1=local_font_size*i+topbuffer+top,\
+				string='Salvage: +$'+str(price)+' +1 cargo space',\
+				local_font_size=local_font_size, text_color=cargo_color,\
+				method=salvageCargoItem, argument=(index, price))
 
 
 	def equipCurrentCargo(self, index, i, cargo_type, local_font_size, column3_offset, cargo_color, method):
