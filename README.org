@@ -1,20 +1,6 @@
 git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
-** collision mechanic realism
-Spawn fewer npc ships before testing this next thing.
-
-All the following work appears to need to be done in physicalObject.bounceOff
-
-You can detect the "head-on-edness" of collisions. Such collisions should retard your speed. This will prevent pinballing in cluttered areas.
-
-Rear-on collisions should boost speed so that asteroids that come from behind on a stationary ship (especailly in the asteroids scenario) don't rapidly obliterate a ship.
-
-Have a sufficiently head on collision (measure the angle of collision) cut speed in half.
-
-Have a sufficiently rear-on collision add the other collider's speed to self.
-
-Are npc ships giving capital ships a wide berth?
 ** have pick-ups explode out of bad guys
 When bad guys die, give a chance of exploding out a pickup object.
 pickup should be a new object instance thing and it should use the question mark image. It should have properties like a gem.

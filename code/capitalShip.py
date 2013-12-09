@@ -50,6 +50,8 @@ class CapitalShip(physicalObject.PhysicalObject):
 		#Use rectangular (as opposed to circular) collision detection.
 		self.useRectangular = True
 
+		self.thorns_damage = 5
+
 
 	def shoot(self, force_shot=False):
 		#Force shot tells this to shoot even if a target 

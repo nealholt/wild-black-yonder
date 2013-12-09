@@ -485,31 +485,21 @@ class PhysicalObject(pygame.sprite.Sprite):
 			else:
 				#vertical collision
 				self.setAngle(-self.theta)
+		#The following is for collisions with objects that are not rectangular.
 		else:
 			angleToOther = self.getAngleToTarget(target=other)
-			if abs(angleToOther) < 45:
-				#This object should bounce off other in a dramatically
-				#new direction. Specifically, our angle should be 
-				#reflected over the line perpendicular to the line that
-				#passes through the center of this and other.
-				#First pass for code follows. This is good enough for now.
+			if abs(angleToOther) < 90: #Relatively head on collision
+				bounce_off_angle = 90 - angleToOther
 				if angleToOther < 0:
-					self.turnClockwise(110)
+					self.turnClockwise(bounce_off_angle)
 				else:
-					self.turnCounterClockwise(110)
-			elif abs(angleToOther) < 90:
-				#This object should bounce off other in a dramatically
-				#new direction. Specifically, our angle should be 
-				#reflected over the line perpendicular to the line that
-				#passes through the center of this and other.
-				#First pass for code follows. This is good enough for now.
-				if angleToOther < 0:
-					self.turnClockwise(65)
-				else:
-					self.turnCounterClockwise(65)
-			else:
-				#this should sort of be bounced to a higher speed, as 
-				#when an object is hit from behind.
+					self.turnCounterClockwise(bounce_off_angle)
+				#Decrease speed by an amount related to the
+				#headon-ed-ness of the collision
+				self.speed = self.speed / (1.0 + float(bounce_off_angle) / 90.0)
+				self.targetSpeed = self.speed
+			else: #Rear end collision
+				#Increase speed, as when an object is hit from behind.
 				#The angle will also change slightly to be more in the
 				#direction of the object that struck us.
 				#Specifically, change our angle to be halfway between 
@@ -520,9 +510,11 @@ class PhysicalObject(pygame.sprite.Sprite):
 					self.turnCounterClockwise(amountToTurn)
 				else:
 					self.turnClockwise(amountToTurn)
-				#Use max because speed*1.5 might be zero.
-				self.speed = max(self.speed*1.3, 10.0/float(globalvars.FPS))
+				#Increase speed by adding other object's speed
+				self.speed = self.speed+other.speed
+                #Decrease other object's speed
+                other.speed -= self.speed
+                other.targetSpeed = other.speed
 		#Prevent multiple consecutive collisions with the same object
 		while self.speed > 0 and self.inCollision(other):
 			self.move()
-
