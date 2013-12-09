@@ -42,7 +42,7 @@ class Player(Ship):
 			temp = missile.generateMissile(rd.randint(0, len(missile.missile_class_names)-1))
 			temp.shooter = self
 			self.cargo.append(temp)
-		#Load 4 more randomly generated guns
+		'''#Load 4 more randomly generated guns
 		for _ in range(4):
 			temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
 			temp.shooter = self
@@ -54,7 +54,7 @@ class Player(Ship):
 		#Load 3 more randomly generated ships
 		for _ in range(3):
 			temp = generateShip(rd.randint(0, len(ship_class_names)-1))
-			self.cargo.append(temp)
+			self.cargo.append(temp)'''
 		self.initialize()
 		#Give some trade goods to the player.
 		self.trade_goods = []

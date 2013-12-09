@@ -1,0 +1,641 @@
+git add . && git commit -m "" && git push
+** pygame executable
+See the readme in the compiling folder for next steps.
+** have pick-ups explode out of bad guys
+When bad guys die, give a chance of exploding out a pickup object. Pickup should be a new object instance thing and it should use the question mark image. It should have properties like a gem. Pickup contains one of the things the dead enemy had: weapon, missile, mine, engine, or ship. Upon collision with the player, pickup puts the item in the player's hold and displays the text "New ___!" where the pickup was grabbed where ____ is filled in by the type of the pickup.
+
+Make stuff in your cargo hold such as engines and weapons take up cargo space.
+When player runs over a pickup, but cargo is full, display "Cargo full!" instead of New ___! and do not put the item in the cargo hold.
+
+Add option to salvage stuff in your cargo hold for money from the comparator view.
+Money gained is based on the class of the object. Some low-level items should give no money. You don't have to get much money from these since cargospace is valuable.
+** better interaction with factions
+at any faction-owned node, pop up a menu
+add to the menu options to do any of the minigames. lay out with text and numbers exactly the before and after consequences of each minigame whether won or lost and the difficulty of the minigame.
+finally make each minigame link playable.
+next make winning and losing actually have an effect, as follows: winning has the following effects, losing has only the negative consequences of the following:
+
+asteroids - decrease asteroids at this node, make faction like you
+gemwild - decrease wealth at this node, but you get to keep wealth you pick up, make faction dislike you
+race - increase faction tech at this node, make faction like you
+furball - decrease faction tech at this node, make faction dislike you, increase asteroids at this node
+capital ship battle - decrease faction production at this node, make faction dislike you, increase asteroids at this node
+
+Add node attributes production and an array of counts of ships of each class that are present. Actually, production will also need to keep track of the classes being produced at the node.
+
+I love the idea of factions being identifiable by their weapons. Maybe they should not have random classes, or they can have semi random classes, but certain values are always fixed. Some factions emphasize missiles. Some emphasize fast little ships, etc.
+
+Factions store the following attributes:
+  tech level (stored at the node level)
+  money
+  amount of each resource (don't do this yet)
+  nodes owned
+  for each class level, number of ships owned at that class (at each node)
+  number of capital ships (at each node)
+  relationship with player
+  relationship with other factions (do this later)
+  shipyards and their quality at each node
+
+Disable menu use except for pausing and the help menu when playing minigames. Otherwise the player can flee the minigame back to infinite space.
+
+How to handle player death during minigames? Just reset everything for now. Make sure this happens.
+
+Have the minigame not finish immediately upon victory. Have it wait. For example, we want to watch the capital ship explode. Put in a little delay.
+
+You should write a text menu to introduce each minigame as well, instead of text flashing on the screen on a black background.
+That is, replace the announcements in scenarios.py with a little text menu intro.
+
+Modify faction options:
+  increase owned node wealth - increases future income
+  increased owned node production - increase units produced here
+  increased owned node tech - increases quality of units produced here
+  decreased owned node asteroids - enables increase of local wealth, otherwise can't increase local wealth
+  decreased enemy node strength - delete units of equal class in equal amounts with the enemy at neighboring nodes
+  decreased enemy node tech - just what it sounds like. happens for free, costs a turn
+  conquer neighbour node - enemy must have no units at that node for this to be possible.
+
+When a faction conquers a neighbor node, production and tech should be set to zero.
+
+These just happen once per turn (per player warp), randomly for now.
+
+Wait, what will factions spend money on? For now, let them buy extra turns to take.
+
+make a little newspaper for the player with headlines saying what a sampling of the factions are doing. This will be used for testing for now. Just make it another standard panel in the standard menu.
+
+Make ships affiliated with a faction or with None.
+
+It would be great to have a raw count of the number of ships of each class (and capital ships too) owned by each faction so that every kill the player makes can be meaningful.
+Do this.
+
+Faction strength can be decreased by killing the faction's ships at the node so don't make that a consequence of the minigames.
+But also make this anger the faction and sour your relationship with them.
+
+Only have faction ships attack player if faction dislikes player and faction has ships available at the given node.
+Have unaffiliated pirate ships attack player randomly. These can be scaled to get stronger further from the player's starting location and also have a random number of them spawn.
+
+Remove node hostility as a node attribute and make the same parameter depend on the faction's relationship with the player instead. Unless we want node hostility to be probability of spawning pirates. In that case, keep it as is.
+
+At every turn, units and wealth are produced at every node each faction owns
+
+
+PROBABLY PUT OFF THE REST OF THESE UNTIL LATER:
+
+Later make the actions more intelligent (like have each faction focus in one area for a longer amount of time).
+
+Factions may need to store relationships with each other. Later they can negotiate treaties and such and have more sophisticated interactions.
+** factions
+Change faction names to these and add a couple flags:
+Democratic Hive Mind
+Cephalopod Confederacy
+Society of Invertebrate Mutualists
+United Inorganic Life Forms
+Incorporated Mammalian Clans
+
+Set one of these to not start at a random location, but to start at the player's location with high alliance with the player.
+** Diversify products
+You can make planets more frequent by commenting
+for _ in xrange(objects[planet]):
+in hud_helpers.py
+
+attributes: space in cargo hold, range of prices (profit margin), minimum price.
+Low minimum price products can be bought early on by players so they can make a small profit early, but later the player will want to focus on higher profit products.
+Worst product: low profit margin, large space in cargo hold, but lowest minimum price!
+Slightly better: low profit margin, low space in cargo hold, but slightly higher minimum price.
+And on up to the very very high minimum price, low space in cargo hold, high profit products.
+
+color products based on whether or not their price is above or below the mean price so player will know if the product is, in general, a deal or not.
+Player may still need to make a choice if the player is running low on fuel to sell a product at a not good price in order to buy fuel.
+
+Have option to buy/sell 1, or max of product
+
+What if we just sell fuel at planets instead of the stupid gas can image?
+** random health bars floating in space
+Push this off until you notice any floating in space.
+Find where one of these appears consistently (random num should be used but used with initial seed).
+Then take dramatic measures to figure out when and why it appears.
+For example, if you spawn no enemies, does the health bar still appear?
+** parameterize minigame difficulty
+Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volume of space (inner concentric circle), speeding up rocks, increasing the number of rocks created when one gets destroyed.
+
+Gem wild: This game can easily be made more difficult by adding asteroids (that the gems might or might not collide with), adding enemies (that either fight the player or also try to get gems, or adding solar storms.
+
+Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
+
+Player died in a furball and it counted as a "win". Fix this.
+** make different levels of enemies
+And deploy them based on node strength or whatever.
+
+The different npcs can have different levels relatively easily based on the different classes of items I've implemented.
+
+Make different levels of capital ships too!
+
+Scale this for the pirate ships with distance from the player's starting node. Make it a relatively shallow scaling with a cap. Only factions should be able to get higher tech than this cap.
+** save and load from save with pickle
+First add a menu to save, save and quit, or load from save.
+** efficiency
+When the shit gets thick (lots of enemy npc's or even just a few capital ships) using display flip can be more efficient than display update!
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+With flip:
+     1800    5.299    0.003    5.299    0.003 {pygame.display.flip}
+     5400    0.471    0.000    2.923    0.001 code/game.py:395(drawThoseOnScreen)
+Without flip:
+     1800   18.631    0.010   18.631    0.010 {pygame.display.update}
+  2094644    1.847    0.000    3.559    0.000 code/game.py:55(addToDirtyRects)
+
+
+In both cases, this is the next place for improvement:
+     1800    3.791    0.002    5.657    0.003 code/game.py:414(setClosestSprites)
+
+Should I create a temperature variable that detects how many frames are being dropped and responds dynamically. For instance, I could stutter the updating and drawing of intangibles. I could also limit the number of asteroids and ships spawned by the infinite space generator.
+
+First thing is to profile when frames are being dropped as when there are many attacking ships and a capital ship.
+
+Would temporarily switching to flip for the display be more efficient?
+The profiler indicates YES
+
+Should I have a global variable counting the number of spawned npc ships and limiting the total number?
+** sharing
+How are you going to share it with others? Could share with Calder.
+Plan to have a release version.
+What are the immediate additions the game needs?
+Small things with immediate payoff.
+** more interesting factions
+Make a ship yard object:
+  stored at a node, the shipyard produces either little ships or capital ships of a particular tech level (class).
+
+Make a fleet object:
+  Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.
+  Fleets move and update independently each turn.
+
+Then give player more options for interacting with fleets. Try to make these organic. For example, killing ships at the node (make sure the ships are killed by player bullets, not accidental collisions) reduces faction's strength and the player's reputation with that faction, but increases player's reputation with opposing factions. Destroying tiny asteroids clears up the node and increases reputation with the owning faction. Destroying big asteroids that become small asteroids has the opposite effect. Harvesting gems decreases profitability, but releasing gems by shooting gem asteroids has the opposite effect. Player could get a summary of the effects of their actions at each waypoint.
+
+(Some factions might have more profitability from more debris-strewn nodes.)
+** agent behaviors to affect the galaxy
+Basic commands:
+fleet
+  move
+  merge
+  split
+Invest in
+  upgrade
+  units
+  economy
+Diplomacy
+  cease fire
+  declare war
+  ally
+rock paper scissors weapon systems. Have to commit to one for an extended period of time, but can signal others.
+objects to respond to
+  enemy army in territory
+  enemy army on border
+  own army in enemy territory
+territory traits
+  enemy held territory on my border
+  choke point
+  wealthy
+** agents
+Smaller-level agents could also be interesting.
+
+Remember: The point of factions is not to create a risk clone, romance of the 3 kingdoms clone, markov process, or rock paper scissors, the point is to contextualize everything else in the game. 
+So first you must determine what the options are (skirmish, capital ship, gem rush, asteroids, race, exploration, or whatever) and then what effect the factions can have on the occurrence of these options.
+
+How to contextualize minigames? Make it impossible to slog at mining them. 
+Make them rare and valuable, little presents. 
+Encourage exploration. 
+Making cost of travel meaningful might be important. 
+Cost in both fuel AND time since other agents can act while the player moves.
+
+War-like nations could transition between conquer and consolidate phases where conquering is expansionistic and consolidation involves building up economy and more warships to defend the borders.
+
+Cattan-like world building.
+Agents can build one structure at each location. Structures:
+	resource mine - randomly generates resources up to a maximum amount.
+	shop - Sells fuel and ammo. Stocks a limited amount regenerated each turn.
+	research station - randomly generates tech items (like shield boosters) for sale. One can be stocked at a time.
+	converter - converts resources for a price and at a loss.
+	ship yard - converts resources into ships
+Attributes:
+	location
+	owner
+	resources needed to construct
+	$ to construct
+	stock
+** missile more updates
+See missile.initialize for a lot of new missile attributes that can be added in. You will also need to modify class Missile in objInstances.py
+
+missiles should time out after a while and explode
+the explosion itself should do damage to anything it touches. You could create an explosion object that does damage upon collision.
+
+Keep a limited number of missiles on the player's ship and display this number in profile menu. ... or you could just limit missiles based on the refire rate.
+
+Mines should also time out and explode.
+** lasers, kinetics, ions
+Implement lasers, kinetics, and ion as parameterization of the existing items. First make them just based on color. Then add their other traits.
+
+lasers - red. fast fire, low damage, does not interact with other lasers, is destroyed by contact with kinetics
+
+kinetic - green. lower velocity unless boosted, velocity = firer's velocity + amount, reduces firer's velocity, is destroyed by contact with other kinetics but not lasers.
+
+ion - blue. very slow. disables target movement and causes slow rotation for a brief period of time. causes no damage.
+** new ship position
+have the back of the ship on the edge of the screen, seeing much more in the forward direction.
+This would help a lot. Can I do it?
+
+Keep player ship on the edge of a circle that is as large as possible on the screen. The player's ship will always face into the middle of the screen to see the maximum amount in front of the player.
+
+use SCREENRADIUS in global variables.
+** enemy personalities
+physicalObject constructor.
+
+		#The following parameters could be tweaked to improve NPC performance, 
+		#or they could be customized so that different NPCs could have 
+		#different levels of caution.
+
+		#Angle within which npc should consider avoiding an object. If the 
+		#object is in a 90 degree wide cone, for instance, then it will test 
+		#to see if the object is close enough to initiate an avoidance behavior.
+		self.danger_cone = 90
+
+		#If the distance between this object and another is less than this 
+		#number of pixels, then this object will turn away.
+		self.avoidance_threshold = 20
+
+		#If the distance between this object and another is less than this 
+		#number of pixels, then this object will not turn in the direction of 
+		#the object even if this object's target is in that direction.
+		self.suppress_turn_threshold = 40
+
+		#Set the recommended ship speed to 1/4 max speed if another object is on 
+		#a collision course with us and is danger_red_distance distance away, 
+		#1/2 max speed if yellow and otherwise 3/4 max speed.
+		self.danger_red_distance = 10
+		self.danger_yellow_distance = 20
+** lingering dirty rect issues
+How can I make asteroids and gem wild efficient with this new model? since there is a large object obliterating the background every frame? Should I temporarily use flip?
+
+Explosions were fixed, but the problem was with the fact that Flashes ignore their own rectangle when drawing  themselves which is different from most other objects. Instead, it would be nice to incorporate shape drawing into physical objects so keep things more consistent. The healthbars were smearing for the same reason.
+** larger world
+Rewards:
+  Challenge
+  Novelty
+  Progress
+  Discovery
+
+New:
+  Weapons, ships, engines
+  Enemies
+  minigames
+  missions
+  stories
+  images
+
+Difficulty:
+  time/fuel
+  maneuvers/skill
+  tactics
+  strategy
+
+Node attributes of concern to the player:
+  profitability
+  hostility
+  recovery/refuel
+  ownership
+
+Interesting specializations. I think this is key!!!
+  escort
+  transporter
+  scout
+  patroller
+  warship
+    fighter
+    bomber
+    capital ship
+    etc
+  Asteroid clearer
+  Explorer
+  Raider/harasser/pirate
+  racer/messenger
+Define success/failure for each of the above. Then determine the minimial game contents needed to make each specialty meaningful. Preferrably make the specialties interact with each other.
+
+May want to add a time or fuel mechanic. Or both.
+May want to add more nimble random enemies in infinite space.
+
+Keep it very simple, like FTL. Simple identifiable agents, like that game with the bat, keys, and dragons where things can just pick up and put down items.
+
+Tentative object list:
+	station - type, owerner, location, stock
+	agent - faction affiliation, location, owned ships, owned stations
+	ship - located at node. has crew (agents) and addons
+	ship addons - price and effects on a ship
+
+Each node in a system ought to be a location like:
+  low planet orbit
+  deep space
+  asteroid belt
+  near sun
+  etc
+rather than just disjointed locations that don't make any particular sense in relation to each other.
+
+Make 3 different views possible: ship flight view, system view, local shops view (though maybe this last one is an overlay that pops up when player parks in certain place in flight view.)
+Clicking adjacent node in system view shifts player to that location. (Again, it's better to implement this through flight view).
+
+FTL-like game
+
+Distant new worlds difficult to get to.
+Exploration ships versus combat ships. Self-sustaining ships versus those that need support stations.
+Different alien empires.
+Like FTL: lots of distinct simple mechanics. Lots of ways for things to go wrong. Lots of ways to beat an enemy.
+
+Progressive, open world, persistent FTL.
+Incremental development. It should always already be a game.
+A few simple stats for each object: nodes, characters, ships, addons.
+And all actions depend on these stats.
+One galaxy. Save with pickle before worrying about mmo.
+
+What if you made it educational?
+To teach what? algebra? fractions? what else?
+To teach joy of learning and exploring.
+Player could angle weapons by hand.
+Teach vocabulary. Key terms like: slope, tangent, intercept.
+Teach general science knowledge: electrons, neutrons, magnetism, astrophysics.
+
+Lots of resources to maintain and ability to tradeoff between these:
+crew
+fuel
+ammunition
+health of the ship
+money
+** interactive storytelling
+Agency and player-guided stories in Urban Dead?
+Environment modification and communication.
+Track past events to create history and motivation for current actions.
+
+Can I apply such ideas to my game?
+How hard would it be to make my game semi-interactive online, in that people can post text messages and modify the environment, but maybe not have dynamic, direct conflicts?
+
+At the very least I could have simple agents like zombies and players, but I think the more vital question is this: how should the environment be modified?
+
+Brainstorm stuff that can happen that the player can care about:
+  creation / loss of refueling stations - affects ability to travel
+  creation / loss of places to trade stuff
+  gain / loss of new weapons - affects freedom
+  gain / loss of money
+  blockading of warp points - affects ability to travel
+  change in hostility level at locations
+  fleets moving to different locations
+  eventually dramatic changes to the world map. creation / destruction of nodes / links.
+  negative minigames (you don't even have a chance to gain anything, just hope to not lose too much) such as attacks by pirates
+
+I think these are actually plenty, you just need/want a better framework in place to make use of them. The factions are still worth doing and you can/should plow ahead with them.
+
+
+What is the most basic stupid story I could implement:
+  scaled up strength of baddies further from player's starting location.
+  An evil faction controls all the nodes connected to the player except the player's own node and the player must defeat the faction one space at a time until it is entirely wiped out to beat the game.
+  A few other factions maybe scattered in disconnected areas of the world map.
+  Make evens bigger but they take longer. That is, instead of randomly pecking at the enemy's strength in one node and randomly boosting the economy of another, the factions (and player) partake in larger projects that take place over the course of many turns but have an immediate and large impact upon completion.
+** cargo missions
+Factions collect money from owning nodes. Factions have finite resource stockpiles. Factions need resources and money to buy ships and upgrade nodes.
+** hide nodes until they are visited
+only on the global view should you do this.
+Also, eventually have nodes change and make them hidden again.
+** damage feedback
+Make destructible asteroids spray off a bit of debris, preferably just in the direction away from their centers.
+** new minigames
+Ship escort - now NPC ships can dodge stuff pretty well. You could escort one to a destination. You should clear asteroids and such out of its way.
+
+Stopping the behemoth - try to kill a moving capital ship before it reaches its destination. Any asteroids the behemoth collides with are destroyed immediately and the behemoth takes some damage.
+
+Race - not just solo, but race other ships.
+
+Capital ship battle - multiple capital ships and other forces duking it out.
+
+MISSIONS
+ - chase/shoot down slow torpedoes
+ - all out battle with capital ships and fighters
+ - stalk/follow/shadow a ship in its blind spot
+ - evade pursuit
+ - pursue/chase ship through asteroids
+ - You could have a particle storm with collidable particles raining across the screen. The player could hide in the shadows of asteroids. Race against time in a particle storm that waxes and wanes.
+ - Rally point race against npc's like in the xbox game Rage.
+ - Capture the flag.
+ - King of the hill.
+ - Tag like in Driver: San Francisco. You could slow down the "it" player or give everyone else boost.
+ - A Clue-like game with simple info gathering.
+ - Survive / pandemic game to clear nodes. Or some other catastrophe to refresh space.
+ - You could have an evacuation minigame based on the board game survive. There is a collapsing station and obstacles like enemies moving around and you need to rescue the maximum number of individuals from the station to a nearby ship.
+ - Much much later you could implement a missile command minigame.
+** beam weapon
+Create a beam weapon class in weapon.py.
+beam - draws line between player (which tracks player as player moves) and nearest target (this end of the line does not move) and draws little explosions on target. Does damage. long cool down. only activates if target in certain range.
+** ship maneuvers
+maneuvers:
+  strafing
+  boost
+  brief rapid improvement in turning rate
+  immediate reversal of direction
+  short forward teleport
+  short backward teleport
+
+Booster item that immediately puts ship at max speed.
+** cargo brainstorming
+Start off with just 6 random goods (I made these up!):
+Niblets
+Flummox Capacitors
+Canny Goods
+Reactor Wax
+Magnet Grease
+Fools Iridium
+*** luxury goods
+Cheese
+Daytime TV shows
+Curly Fries
+Toothpaste
+*** Life Support
+Sheep
+Gluten-free pasta
+Vat-grown Cattle
+Multivitamins
+First Aid Packs
+Clone Organs
+Soft Blankets
+
+Food
+Medicine
+Shelter
+Seeds
+Water
+Grains
+Cattle
+Spices
+Antivirals
+Good genes
+Organs
+First Aid Kits
+Pre-fab shelters
+*** Construction Material
+Injection-molded plastic bricks
+Glue
+Transparent Force Fields
+Shovels
+
+Iron
+Rare Earth Elements
+Fiber Optics
+Construction Equipment
+Solar Panels
+Architect AIs
+Fusion Reactors
+*** War Supplies
+Combat AIs
+Cryptographic Masks
+Antimatter Casks
+Fractal Armor
+Carbon Fiber Sinew
+Assorted Diamond Components
+Ammunition
+*** Technology Materials
+Supercomputers
+Scientific AIs
+Precision Electromagnets
+Lab equipment
+White lab coats
+*** Illicit Goods
+Digital worms
+Organic Viruses
+Uppers
+Downers
+Mind Control Drugs
+Slaves
+Self-aware AIs
+Singularities
+Alien Artifacts
+** graphical tweaks
+Eventually you could show capital ship damage by simply overlaying damage images over the pristine image of the hull.
+
+muzzle flash from the mouth of some guns
+especially on the capital ship.
+Maybe make a special big capital ship gun with longer range, bigger, slower projectiles.
+** more mechanics
+radar ping (expanding circle or sweeping line. can you do expanding arcs or even searchlight style arcs?
+cloaking ships
+hidden objects
+jamming
+
+You could introduce a time freeze mechanic, updating only the player.
+** check these out
+This page is essentially about hidden experience points of particular types.
+http://www.gamasutra.com/view/feature/3485/game_design_essentials_20_.php?page=19
+Describes a game that effectively gives the explorer-type player a chance to succeed alongside hack-and-slash-type players.
+http://www.gamasutra.com/view/feature/3485/game_design_essentials_20_.php?page=20
+** more images
+http://spoki.tvnet.lv/upload/articles/17/178957/images/_origin_Olympus-Mons-Olimpa-kalns-2.jpg
+
+http://apod.nasa.gov/apod/ap130406.html
+
+http://i.imgur.com/131f0.jpeg
+
+http://www.nasa.gov/images/content/728004main_8474393768_db89182a7e_o-full_full.jpg
+
+http://apod.nasa.gov/apod/image/1304/iss030e078095.jpg
+
+http://apod.nasa.gov/apod/image/1304/sdo_20130411-M6flare-orig_2048.jpg
+
+http://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Magnificent_CME_Erupts_on_the_Sun_-_August_31.jpg/1280px-Magnificent_CME_Erupts_on_the_Sun_-_August_31.jpg
+
+http://imgur.com/a/HMDZR
+
+http://i.imgur.com/ngk5yn3h.jpg
+** Managing the event subsystem
+Control-f for this topic in 
+http://pygame.org/docs/tut/newbieguide.html
+It may be worth reconsidering how you read inputs later on.
+** unm game development club
+gdcunm@gmail.com
+** stardog
+Stardog initially got me started on this project. There might be further things to borrow from it such as screen sizing, how to do sounds, and probably more. See below.
+
+Stardog, by Shanti Pothapragada
+rgbdreamer@gmail.com
+http://code.google.com/p/stardog
+
+
+To run stardog, use:
+python stardog.py
+or
+python stardog.py mode x y
+
+where mode is f for fullscreen, w for windowed, at resolution x,y.  Omit x,y for max resolution. 
+Stardog requires Python 2.6ish and Pygame.  Stardog will run faster if Psyco is installed.
+(This assumes python is in your path variable.)
+
+Controls:
+
+Enter: menu
+Tab: radar
+Del: self-destruct
+wasd/arrows: thrust and turn
+q/e: strafe
+ctrl: shoot
+space: launch missiles
+Mouse: move to turn, left click to shoot, right click to thrust
+
+Keys can be changed in the menu. If you want to use the keyboard, you should probably disable mouse control in the keys menu (otherwise your ship will keep turning towards the mouse).
+
+This is still pre-alpha code.  I'm releasing it with hopes of attracting critism and contributers.
+If you are interested in contributing to the code, graphics, art, AI, plot, etc., please email me.
+
+This source is given only under the GPL General Public License.  If you are interested in other licensing, please contact me.
+* git commands and notes
+** changing the repository name
+Go to:
+https://github.com/nealholt/wild-black-yonder
+
+Click on Settings on the far right side.
+
+Under "Repository Name" you can change the name.
+
+Then locally do
+git remote set-url origin git@github.com:nealholt/newname.git
+where new name is the new name.
+
+So as to prevent confusion you probably also want to move old name to new name, as in:
+cd ..
+mv oldname newname
+
+Voila. That should be all.
+** all else
+https://github.com/nealholt/wild-black-yonder
+
+
+Get my rsa public key
+> emacs ~/.ssh/id_rsa.pub
+
+Go to the website
+https://github.com/nealholt/wild-black-yonder/settings/keys
+Go to Deploy Key.
+Copy the contents of id_rsa.pub into the box and add new key.
+
+Then back on the command line:
+> git config --global user.name "nealholt"
+> git config --global user.email neal.holts@gmail.com
+
+> cd Desktop/python/
+> git clone git@github.com:nealholt/asteroids-buff.git
+> cd asteroids-buff/
+
+Then I copied the contents of backup01/ into asteroids-buff/
+Then I ran this next line which "Next, tell Git to take a snapshot of the contents of all files under the current directory (note the .), with git add:" according to http://git-scm.com/docs/gittutorial
+> git add .
+> git commit -m "I'm committing the oldest version of the game."
+> git push
+
+I then repeated the 3 previous commands while copying each version of the game from the backups folder to the git repo.
+
+> git add . && git commit -m "I'm committing another version of the game from my backups folder."
+> git push
+
+
+To delete a file locally and from the git repo, use:
+> git rm file1.txt

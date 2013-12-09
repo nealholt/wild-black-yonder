@@ -733,7 +733,7 @@ class Menu:
 
 		string = '0 ships available.'
 		method = None
-		if mine_count > 0:
+		if ship_count > 0:
 			string = 'Ship Compare ('+str(ship_count)+' available)'
 			method = globalvars.menu.setShipComparePanel
 		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
@@ -742,8 +742,8 @@ class Menu:
 
 		string = '0 engines in cargo hold.'
 		method = None
-		if mine_count > 0:
-			string = 'Engine Compare ('+str(mine_count)+' in cargo)'
+		if engine_count > 0:
+			string = 'Engine Compare ('+str(engine_count)+' in cargo)'
 			method = globalvars.menu.setEngineComparePanel
 		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
 			   local_font_size=fontsize, method=method, argument=0)

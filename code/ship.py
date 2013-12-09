@@ -479,6 +479,22 @@ class Ship(PhysicalObject):
 			#Award points
 			if not globalvars.score_keeper is None:
 				globalvars.score_keeper.points += 1
+			#Chance to spawn an item
+			if rd.random() > 0.0: #TODO LEFT OFF HERE
+				rand = rd.randint(0,2)
+				if rand == 0: #Gun
+					temp = objInstances.Pickup(self.gun, \
+						x=self.rect.centerx, y=self.rect.centery)
+				elif rand == 1: #Engine
+					temp = objInstances.Pickup(self.engine, \
+						x=self.rect.centerx, y=self.rect.centery)
+				else: #Ship
+					self.health = self.healthmax
+					self.engine = None
+					self.gun = None
+					temp = objInstances.Pickup(self, \
+						x=self.rect.centerx, y=self.rect.centery)
+				globalvars.tangibles.add(temp)
 		return died
 
 

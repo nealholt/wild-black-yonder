@@ -87,6 +87,7 @@ class Player(Ship):
 		self.cargo.append(copy_of_current)
 		#The following is needed because the ships generated in cargo use the default ship image which is actually a small purple circle with a question mark. At least this way, we don't have to fly that around.
 		self.loadNewImage('ship')
+		self.updateImageAngle()
 		#Update the health bar
 		self.myHealthBar.new_width = (self.health/float(self.maxhealth))*healthBarDefaultWidth
 

@@ -458,7 +458,9 @@ class Ship(PhysicalObject):
 			self.bounceOff(other_sprite)
 			return died
 		elif other_sprite.is_a == globalvars.ASTEROID:
-			self.bounceOff(other_sprite)
+			#If I'm about to kill the asteroid then don't bounce off
+			if other_sprite.health_amt > self.breaker_damage:
+				self.bounceOff(other_sprite)
 			self.takeDamage(int(self.collision_damage*2))
 		#This if is not necessary since falling through has the same effect.
 		#elif other_sprite.is_a == globalvars.HEALTH:
@@ -477,6 +479,10 @@ class Ship(PhysicalObject):
 			#Award points
 			if not globalvars.score_keeper is None:
 				globalvars.score_keeper.points += 1
+			#Chance to spawn an item
+			#if rd.random() > 0.5: #TODO LEFT OFF HERE
+			temp = objInstances.Pickup(self.gun, x=self.rect.centerx, y=self.rect.centery)
+			globalvars.tangibles.add(temp)
 		return died
 
 

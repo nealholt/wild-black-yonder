@@ -339,7 +339,6 @@ def splitRock(image_name, centerx=0, centery=0):
 		for _ in range(count):
 			temp = Gem(x=centerx, y=centery)
 			globalvars.tangibles.add(temp)
-			globalvars.whiskerables.add(temp)
 	elif new_image == 'debris':
 		for _ in range(count):
 			temp = Debris(x=centerx, y=centery)
@@ -437,6 +436,40 @@ class Gem(PhysicalObject):
 				x=self.rect.left, y=self.rect.top, 
 				text='+'+str(self.points), color=colors.blue,
 				ttl=3.0, fontSize=36, useOffset=True)
+			globalvars.intangibles_top.add(announcement)
+			self.kill()
+		return False
+
+
+class Pickup(PhysicalObject):
+	'''A random item to pickup from a destroyed enemy.'''
+	def __init__(self, item, x=0, y=0, speed_min=50, speed_max=250):
+		PhysicalObject.__init__(self, centerx=x, centery=y, image_name='default')
+		self.item = item #This is the item to be picked up.
+		self.item_is_a = self.item.is_a
+		if self.item_is_a == globalvars.SHIP: self.item_is_a = 'ship'
+		self.is_a = globalvars.GEM
+		#Choose a random direction.
+		self.direction = rd.randint(-179, 180)
+		#Choose a random speed
+		self.speed = float(rd.randint(speed_min, speed_max))/float(globalvars.FPS)
+
+	def update(self):
+		'''Return true to be removed. Return False othewise.'''
+		#Move
+		self.loc = geometry.translate(self.loc, \
+			self.direction, self.speed)
+		self.rect.center = self.loc[0], self.loc[1]
+
+	def handleCollisionWith(self, other_sprite):
+		'''React to a collision with other_sprite.'''
+		if other_sprite.is_a == globalvars.SHIP and other_sprite.isPlayer:
+			#give item to the ship.
+			other_sprite.cargo.append(self.item)
+			announcement = TemporaryText(
+				x=self.rect.left, y=self.rect.top, 
+				text='New '+str(self.item_is_a)+'!', color=colors.yellow,
+				ttl=2.0, fontSize=36, useOffset=True)
 			globalvars.intangibles_top.add(announcement)
 			self.kill()
 		return False
