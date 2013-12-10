@@ -33,3 +33,10 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+#File Backups
+.py~
+.org~
+.sh~
+.pyx~
+.txt~
