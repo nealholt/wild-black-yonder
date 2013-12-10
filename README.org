@@ -2,9 +2,6 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
-at any faction-owned node, pop up a menu
-add to the menu options to do any of the minigames. lay out with text and numbers exactly the before and after consequences of each minigame whether won or lost and the difficulty of the minigame.
-finally make each minigame link playable.
 next make winning and losing actually have an effect, as follows: winning has the following effects, losing has only the negative consequences of the following:
 
 asteroids - decrease asteroids at this node, make faction like you
