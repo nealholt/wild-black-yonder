@@ -66,12 +66,8 @@ class FactionManager():
 				node = globalvars.galaxy.getNode(nodeid)
 			#Give this node to the current faction
 			f.captureNode(nodeid)
-		#For testing purposes, give a faction nodes near the player's start:
+		#For testing purposes, give a faction the starting node:
 		self.factions[0].captureNode(0)
-		self.factions[0].captureNode(9)
-		self.factions[0].captureNode(13)
-		self.factions[0].captureNode(14)
-		self.factions[0].captureNode(24)
 
 
 	def getFactionById(self, factionid):

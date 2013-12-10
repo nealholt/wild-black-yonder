@@ -1515,8 +1515,41 @@ class Menu:
 				self.addMenuItem(x1=column_offsets[j], y1=default_top, string=text_matrix[k][j], textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, method=method, framed=framed, height=height)
 			i += 1
 			default_top += font_size
+		#TODO LEFT OFF HERE
 		#Display mission options and what will happen if a mission is successful or a failure
 		self.addTextToMainPanel(['Press any key to ignore all missions and ',\
 					'proceed to your destination. There is no ',\
 					'penalty for this.'], left+100, top+500)
+
+
+		'''node.hostility
+		node.strength
+		node.amt_debris
+		node.amt_wealth
+
+		#Then draw the contents of the menu
+		horiz_space = 200
+		vert_space = 70
+		x1, y1 = horiz_space, globalvars.HEIGHT/2
+		radius = 10
+		texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Capital ship']
+		methods = [globalvars.scenario_manager.asteroids, globalvars.scenario_manager.gemWild, globalvars.scenario_manager.race, globalvars.scenario_manager.furball, globalvars.scenario_manager.capitalShipScenario]
+		x2 = horiz_space*2
+		methodLength = len(methods)
+		for i in range(methodLength):
+			j = i-methodLength/2
+			y2 = globalvars.HEIGHT/2+vert_space*j
+
+			subpanel = Panel()
+			#http://www.secnetix.de/olli/Python/lambda_functions.hawk
+			subpanel.setMethod(methods[i])
+			temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
+			subpanel.addDrawable(temp)
+			temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\
+				font_size=font_size, color=colors.white)
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+
+			temp = drawable.Line(x1=x1, y1=y1, x2=x2, y2=y2)
+			self.main_panel.addDrawable(temp)'''
 

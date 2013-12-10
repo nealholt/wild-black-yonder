@@ -264,7 +264,7 @@ class ScenarioManager:
 		self.resetArrow()
 		#If this node is faction-owned, then give the player options of minigame missions
 		if n.owner != -1:
-			globalvars.menu.setFactionMissionPanel(n)
+			globalvars.menu.setFactionMissionPanel(node)
 
 
 	def infiniteSpace(self, seed=0, playerloc=(0.0,0.0), warps=None):
