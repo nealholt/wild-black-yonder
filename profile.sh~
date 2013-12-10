@@ -1,3 +1,0 @@
-
-python profiling/viewProfiling.py profiling/game.run.profile > profiling/game_run.txt
-
