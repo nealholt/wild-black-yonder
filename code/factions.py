@@ -22,6 +22,8 @@ class Faction():
 		self.allies = []
 		self.enemies = []
 		self.nodes = []
+		self.money = 0
+		self.capital_ships = 0
 		#Zero is neutral. Positive is a good relationship. Negative is a bad relationship.
 		self.relationToPlayer = 0
 

@@ -1,6 +1,23 @@
 This is where I experiment with compiling executables of my game for mac and windows.
 * TODO get any compiled python program running on mac
+Try this first:
+https://wiki.python.org/moin/Freeze
+Download freeze here:
+http://svn.python.org/projects/python/trunk/Tools/freeze/
+
+
 http://cx-freeze.readthedocs.org/en/latest/overview.html
+
+You can try to run 
+python setup.py build
+from a moons machine (be sitting in front of it when you run it)
+but it looks like you can only compile an executable that will work on the other machines with the same OS. This is based on 
+http://stackoverflow.com/questions/17276543/how-to-use-cx-freeze-in-linux-to-create-a-package-to-be-used-in-windows
+"cx_Freeze works on Windows, Mac and Linux, but on each platform it only makes an executable that runs on that platform"
+
+They suggest that pyinstaller be used instead:
+http://www.pyinstaller.org/
+
 * get compiled pygame running on mac
 * get multifile compiled running on mac
 * get multifile pygame with images running on mac
@@ -10,5 +27,5 @@ py2app is similar in purpose and design to py2exe for Windows.
 http://www.logix4u.net/component/content/article/27-tutorials/44-how-to-create-windows-executable-exe-from-python-script
 * get your game compiled running on your mac
 * get your game compiled running on a pc
-
-
+* notes
+see email to george with subject: py-2app

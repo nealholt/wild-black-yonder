@@ -2,18 +2,9 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
-next make winning and losing actually have an effect, as follows: winning has the following effects, losing has only the negative consequences of the following:
+Add node attributes production and tech, and an array of counts of ships of each class that are present. Actually, production will also need to keep track of the classes being produced at the node.
 
-asteroids - decrease asteroids at this node, make faction like you
-gemwild - decrease wealth at this node, but you get to keep wealth you pick up, make faction dislike you
-race - increase faction tech at this node, make faction like you
-furball - decrease faction tech at this node, make faction dislike you, increase asteroids at this node
-capital ship battle - decrease faction production at this node, make faction dislike you, increase asteroids at this node
-
-Add node attributes production and an array of counts of ships of each class that are present. Actually, production will also need to keep track of the classes being produced at the node.
-
-I love the idea of factions being identifiable by their weapons. Maybe they should not have random classes, or they can have semi random classes, but certain values are always fixed. Some factions emphasize missiles. Some emphasize fast little ships, etc.
-
+Make it so the following attributes are either stored at the faction or the node as needed:
 Factions store the following attributes:
   tech level (stored at the node level)
   money
@@ -25,16 +16,22 @@ Factions store the following attributes:
   relationship with other factions (do this later)
   shipyards and their quality at each node
 
-Disable menu use except for pausing and the help menu when playing minigames. Otherwise the player can flee the minigame back to infinite space.
+next make winning and losing the minigames actually have an effect.
 
-How to handle player death during minigames? Just reset everything for now. Make sure this happens.
+Remove the test panel from displaying as default. We now have the minigames panel instead.
 
-Have the minigame not finish immediately upon victory. Have it wait. For example, we want to watch the capital ship explode. Put in a little delay.
+Disable menu use except for pausing and the help menu when playing minigames. Otherwise the player can flee the minigame back to infinite space. You might just want a global flag of in_minigame.
+
+How to handle player death during minigames? Just reset everything for now. Make sure this happens correctly by dieing in a minigame.
+
+Have the minigame not finish immediately upon victory. Have it wait. For example, we want to watch the capital ship explode. Put in a little delay. Likewise delay so the user does not miss the outro menu.
+
+Have the outro menu display the results of the mission, ie which attributes were changed.
 
 You should write a text menu to introduce each minigame as well, instead of text flashing on the screen on a black background.
 That is, replace the announcements in scenarios.py with a little text menu intro.
 
-Modify faction options:
+Modify faction action options so they randomly select from among the following to do:
   increase owned node wealth - increases future income
   increased owned node production - increase units produced here
   increased owned node tech - increases quality of units produced here
@@ -47,17 +44,15 @@ When a faction conquers a neighbor node, production and tech should be set to ze
 
 These just happen once per turn (per player warp), randomly for now.
 
-Wait, what will factions spend money on? For now, let them buy extra turns to take.
-
 make a little newspaper for the player with headlines saying what a sampling of the factions are doing. This will be used for testing for now. Just make it another standard panel in the standard menu.
+Just say what event happened and where.
 
-Make ships affiliated with a faction or with None.
+Adda a ship attribute to make ships affiliate with a faction or with None.
 
 It would be great to have a raw count of the number of ships of each class (and capital ships too) owned by each faction so that every kill the player makes can be meaningful.
 Do this.
 
 Faction strength can be decreased by killing the faction's ships at the node so don't make that a consequence of the minigames.
-But also make this anger the faction and sour your relationship with them.
 
 Only have faction ships attack player if faction dislikes player and faction has ships available at the given node.
 Have unaffiliated pirate ships attack player randomly. These can be scaled to get stronger further from the player's starting location and also have a random number of them spawn.
@@ -66,8 +61,11 @@ Remove node hostility as a node attribute and make the same parameter depend on 
 
 At every turn, units and wealth are produced at every node each faction owns
 
+Wait, what will factions spend money on? For now, let them buy extra turns to take.
 
 PROBABLY PUT OFF THE REST OF THESE UNTIL LATER:
+
+I love the idea of factions being identifiable by their weapons. Maybe they should not have random classes, or they can have semi random classes, but certain values are always fixed. Some factions emphasize missiles. Some emphasize fast little ships, etc.
 
 Later make the actions more intelligent (like have each faction focus in one area for a longer amount of time).
 

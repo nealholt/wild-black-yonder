@@ -120,15 +120,6 @@ class Node():
 				return i
 		return -1
 
-	def addStarfighters(self, count, weapon_class, missile_class, mine_class, ship_class, engine_class):
-		index = self.getIndexOfStarfighter(weapon_class, missile_class, mine_class, ship_class, engine_class)
-		#If no matching starfighter is found
-		if index == -1:
-			#Then add starfighters of this type
-			self.faction_fighters.append([count, weapon_class, missile_class, mine_class, ship_class, engine_class])
-		else:
-			#Otherwise increase the count of the existing fighters
-			self.faction_fighters[index][0] += count
 
 
 class NodeManager():
