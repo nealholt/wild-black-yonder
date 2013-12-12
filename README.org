@@ -2,23 +2,12 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
-Add node attributes production and tech, and an array of counts of ships of each class that are present. Actually, production will also need to keep track of the classes being produced at the node.
-
-Make it so the following attributes are either stored at the faction or the node as needed:
-Factions store the following attributes:
-  tech level (stored at the node level)
-  money
-  amount of each resource (don't do this yet)
-  nodes owned
-  for each class level, number of ships owned at that class (at each node)
-  number of capital ships (at each node)
-  relationship with player
-  relationship with other factions (do this later)
-  shipyards and their quality at each node
-
 next make winning and losing the minigames actually have an effect.
-
-Remove the test panel from displaying as default. We now have the minigames panel instead.
+Where? see displayUtilities
+class TimeLimitDisplay
+Need to pass it which minigame was chosen and the consequences and all that.
+Is there an opportunity object? There is FactionAction in factions.py
+Make an action object that indexes attributes, amount to change them, and object to change them in, forexample a faction. Then have all necessary objects have increment and decrement attribute by index!
 
 Disable menu use except for pausing and the help menu when playing minigames. Otherwise the player can flee the minigame back to infinite space. You might just want a global flag of in_minigame.
 
@@ -43,6 +32,8 @@ Modify faction action options so they randomly select from among the following t
 When a faction conquers a neighbor node, production and tech should be set to zero.
 
 These just happen once per turn (per player warp), randomly for now.
+
+Remove the test panel from displaying as default. We now have the minigames panel instead.
 
 make a little newspaper for the player with headlines saying what a sampling of the factions are doing. This will be used for testing for now. Just make it another standard panel in the standard menu.
 Just say what event happened and where.
