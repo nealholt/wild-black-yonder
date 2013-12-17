@@ -539,10 +539,7 @@ class Menu:
 	def setFactionSpecificPanel(self, factionid):
 		self.setStandardMenu()
 		f = globalvars.factions.getFactionById(factionid)
-		strings = [padStringLength('Name:', stringLength, ' ')+f.name,
-			padStringLength('Flag:', stringLength, ' ')+str(f.flag),
-			padStringLength('Count of owned nodes:', stringLength, ' ')+str(len(f.nodes))]
-		self.addTextToMainPanel(strings, left+50, topbuffer+top)
+		self.addTextToMainPanel(f.getTextArray(), left+50, topbuffer+top)
 
 
 	def setPlayerProfilePanel(self):
@@ -562,15 +559,8 @@ class Menu:
 	def setNodeViewPanel(self, nodeid):
 		node = globalvars.galaxy.getNode(nodeid)
 		self.setStandardMenu()
-		text = [
-		'Id: '+str(node.id)+'.',
-		'Description: '+node.description+'.',
-		'Hostility: '+str(node.hostility)+'. Chance to generate opposing ships.',
-		'Enemy strength: '+str(node.strength)+'. Strength of opposing ships (initially just capital ship chance).',
-		'Debris: '+str(node.amt_debris)+'. Chance of asteroids.',
-		'Wealth: '+str(node.amt_wealth)+'. Chance of gems, health, and rich asteroids.'
-		]
 		#Then draw the contents of the menu
+		text = node.getTextArray()
 		self.addTextToMainPanel(text, left+50, topbuffer+top)
 		#Write the owner if any
 		if node.owner != -1:

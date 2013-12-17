@@ -53,12 +53,7 @@ class Faction():
 	def getTextArray(self):
 		return ['Name: '+self.name,
 			'Flag: '+str(self.flag),
-			'Count of owned nodes: '+str(len(self.nodes)),
-			'Money: $'+str(self.money),
-			'Capital Ships: '+str(self.capital_ships),
-			'Relationship with player: '+str(self.relationToPlayer)
-			]
-
+			'Count of owned nodes: '+str(len(self.nodes))]
 
 
 class FactionManager():

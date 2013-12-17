@@ -282,6 +282,7 @@ class Menu:
 			subpanel = Panel()
 			#http://www.secnetix.de/olli/Python/lambda_functions.hawk
 			subpanel.setMethod(methods[i])
+			subpanel.argument = 0 #A token argument is needed for each mission
 			temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
 			subpanel.addDrawable(temp)
 			temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\
@@ -538,10 +539,7 @@ class Menu:
 	def setFactionSpecificPanel(self, factionid):
 		self.setStandardMenu()
 		f = globalvars.factions.getFactionById(factionid)
-		strings = [padStringLength('Name:', stringLength, ' ')+f.name,
-			padStringLength('Flag:', stringLength, ' ')+str(f.flag),
-			padStringLength('Count of owned nodes:', stringLength, ' ')+str(len(f.nodes))]
-		self.addTextToMainPanel(strings, left+50, topbuffer+top)
+		self.addTextToMainPanel(f.getTextArray(), left+50, topbuffer+top)
 
 
 	def setPlayerProfilePanel(self):
@@ -561,16 +559,8 @@ class Menu:
 	def setNodeViewPanel(self, nodeid):
 		node = globalvars.galaxy.getNode(nodeid)
 		self.setStandardMenu()
-		text = [
-		'Id: '+str(node.id)+'.',
-		'Description: '+node.description+'.',
-		'Hostility: '+str(node.hostility)+'. Chance to generate opposing ships.',
-		'Enemy strength: '+str(node.strength)+'. Strength of opposing ships (initially just capital ship chance).',
-		'Debris: '+str(node.amt_debris)+'. Chance of asteroids.',
-		'Wealth: '+str(node.amt_wealth)+'. Chance of gems, health, and rich asteroids.'
-		]
 		#Then draw the contents of the menu
-		self.addTextToMainPanel(text, left+50, topbuffer+top)
+		self.addTextToMainPanel(node.getTextArray(), left+50, topbuffer+top)
 		#Write the owner if any
 		if node.owner != -1:
 			owner = globalvars.factions.getFactionById(node.owner)

@@ -117,23 +117,6 @@ class Node():
 		self.planet_max = self.amt_wealth/2
 
 
-	def getTextArray(self):
-		return [
-		'Id: '+str(self.id)+'.',
-		'Description: '+self.description+'.',
-		'Hostility: '+str(self.hostility)+'. Chance to generate opposing ships.',
-		'Enemy strength: '+str(self.strength)+'. Strength of opposing ships (initially just capital ship chance).',
-		'Debris: '+str(self.amt_debris)+'. Chance of asteroids.',
-		'Wealth: '+str(self.amt_wealth)+'. Chance of gems, health, and rich asteroids.',
-		'Production: '+str(self.production),
-		'Weapon Tech: '+str(self.weapon_tech),
-		'Missile Tech: '+str(self.missile_tech),
-		'Mine Tech: '+str(self.mine_tech),
-		'Ship Tech: '+str(self.ship_tech),
-		'Engine Tech: '+str(self.engine_tech)
-		]
-
-
 	def changeAttribute(self, attribute_index, amount):
 		if attribute_index == globalvars.node_debris_index:
 			self.amt_debris += amount
