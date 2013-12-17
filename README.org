@@ -2,14 +2,37 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
+Make the missions object global so that menu and scenario can both use it.
+
+Change menu to use the global variable.
+
+Modify TimeLimitDisplay to take the mission object as an argument.
+
+Modify the menu method so that it initialized the node and faction attributes of the mission before passing it to the scenario method.
+
+Have the menu method pass the mission to the scenario methods.
+
+Modify the scenario methods to take the mission.
+Modify the scenario methods to pass the mission object to TimeLimitDisplay.
+
+Modify TimeLimitDisplay to execute the consequences of winning or losing the mission.
+Modify TimeLimitDisplay to clean up the faction and node references by setting them to None.
+
+Test to make sure it all works.
+
+
+
 next make winning and losing the minigames actually have an effect.
 Where? see displayUtilities
 class TimeLimitDisplay
 Need to pass it which minigame was chosen and the consequences and all that.
 Is there an opportunity object? There is FactionAction in factions.py
 Make an action object that indexes attributes, amount to change them, and object to change them in, forexample a faction. Then have all necessary objects have increment and decrement attribute by index!
+attribute_index, amount_change, target_object
+I created a mission object for this purpose.
 
 Disable menu use except for pausing and the help menu when playing minigames. Otherwise the player can flee the minigame back to infinite space. You might just want a global flag of in_minigame.
+I created disable_menu in globalvars. I will also need a pause menu, I think.
 
 How to handle player death during minigames? Just reset everything for now. Make sure this happens correctly by dieing in a minigame.
 

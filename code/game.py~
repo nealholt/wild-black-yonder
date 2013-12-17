@@ -23,8 +23,8 @@ globalvars.scenario_manager = scenarios.ScenarioManager()
 import menus
 sys.path.append('code/cython')
 import cygeometry
-import mission
-globalvars.mission_manager = mission.getMissionArray()
+import missions
+globalvars.mission_manager = missions.getMissionArray()
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()

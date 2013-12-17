@@ -284,7 +284,7 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 		#Check to see if the player won the minigame
 		if self.points >= self.points_to_win:
 			self.text.append('You Won!')
-			self.mission.executeConsequences(self.mission.consequences_win)
+			self.mission.executeConsequences(mission.consequences_win)
 			if self.display_points:
 				self.text.append('You acquired '+str(self.points)+' points.')
 			#Reset mission faction and node to None.
@@ -295,7 +295,7 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 		#Check to see if time has run out.
 		elif elapsed >= self.time_limit:
 			self.text.append('You lost.')
-			self.mission.executeConsequences(self.mission.consequences_fail)
+			self.mission.executeConsequences(mission.consequences_fail)
 			#Reset mission faction and node to None.
 			self.mission.faction = None
 			self.mission.node = None

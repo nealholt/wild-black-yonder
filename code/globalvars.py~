@@ -68,8 +68,6 @@ score_keeper = None
 
 scenario_manager = None
 
-mission_manager = None
-
 
 #Store indices of node attributes so you can refer to them more easily.
 node_debris_index = 0

@@ -282,7 +282,6 @@ class Menu:
 			subpanel = Panel()
 			#http://www.secnetix.de/olli/Python/lambda_functions.hawk
 			subpanel.setMethod(methods[i])
-			subpanel.argument = 0 #A token argument is needed for each mission
 			temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
 			subpanel.addDrawable(temp)
 			temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\

@@ -58,7 +58,7 @@ class ScenarioManager:
 		text = ['ASTEROIDS COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=50, time_limit=time_limit, mission=mission)
+			points_to_win=50, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
@@ -107,7 +107,7 @@ class ScenarioManager:
 		text = ['GEM WILD COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=150, time_limit=time_limit, mission=mission)
+			points_to_win=150, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
@@ -166,7 +166,7 @@ class ScenarioManager:
 		text = ['RACE COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=1000000, time_limit=time_limit, mission=mission)
+			points_to_win=1000000, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
@@ -206,7 +206,7 @@ class ScenarioManager:
 		text = ['FURBALL COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=3, time_limit=time_limit, mission=mission)
+			points_to_win=3, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 		#Announce the start of the furball.
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
@@ -232,7 +232,7 @@ class ScenarioManager:
 		text = ['CAPITAL SHIP BATTLE COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=100, time_limit=time_limit, mission=mission)
+			points_to_win=100, time_limit=time_limit)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 		#Announce the goal of this minigame.
 		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 

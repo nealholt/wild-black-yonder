@@ -71,6 +71,28 @@ class Node():
 			self.amt_debris = 15.0
 			self.amt_wealth = 1.5
 
+		self.large_asteroid_max = self.amt_debris / 3.0
+		self.medium_asteroid_min = 0.0
+		self.medium_asteroid_max = self.amt_debris / 2.0
+		self.small_asteroid_min = 0.0
+		self.small_asteroid_max = self.amt_debris
+		self.gold_metal_min = 0.0
+		self.gold_metal_max = self.amt_wealth
+		self.silver_metal_min = 0.0
+		self.silver_metal_max = self.amt_wealth
+		self.health_min = 0.0
+		self.health_max = 1.5
+		self.capital_ship_min = 0.0
+		self.capital_ship_max = self.strength
+		self.fuel_min = 0.0
+		self.fuel_max = self.amt_wealth/2
+		self.planet_min = 0.0
+		self.planet_max = self.amt_wealth/2
+
+		self.initialize()
+
+
+	def initialize(self):
 		self.enemy_min = 0.0
 		self.enemy_max = self.hostility
 		self.crystal_min = 0.0
@@ -93,6 +115,27 @@ class Node():
 		self.fuel_max = self.amt_wealth/2
 		self.planet_min = 0.0
 		self.planet_max = self.amt_wealth/2
+
+
+	def changeAttribute(self, attribute_index, amount):
+		if attribute_index == globalvars.node_debris_index:
+			self.amt_debris += amount
+		elif attribute_index == globalvars.node_wealth_index:
+			self.amt_wealth += amount
+		elif attribute_index == globalvars.node_production_index:
+			self.production += amount
+		elif attribute_index == globalvars.node_weapon_tech_index:
+			self.weapon_tech += amount
+		elif attribute_index == globalvars.node_missile_tech_index:
+			self.missile_tech += amount
+		elif attribute_index == globalvars.node_mine_tech_index:
+			self.mine_tech += amount
+		elif attribute_index == globalvars.node_ship_tech_index:
+			self.ship_tech += amount
+		elif attribute_index == globalvars.node_engine_tech_index:
+			self.engine_tech += amount
+		else:
+			print 'Error: attribute_index, '+str(attribute_index)+' out of bounds in nodeManager.changeAttribute'
 
 
 	def addConnection(self, connectid, location):
