@@ -253,11 +253,11 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 	If time runs out before the amount of points is acquired then the player loses.'''
         def __init__(self, text, time_limit=0, points_to_win=1, fontSize=36, display_points=True, mission=None):
 		pygame.sprite.Sprite.__init__(self)
+		self.is_a = globalvars.TIMELIMITDISPLAY
 		self.text = text
 		self.points_to_win = points_to_win
 		self.display_points = display_points
 		self.mission = mission
-		self.is_a = globalvars.OTHER
 		self.font = pygame.font.Font(None, fontSize)
 		self.points = 0
 		self.time_limit = time_limit #in seconds
@@ -283,20 +283,27 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 		globalvars.screen.blit(text, self.rect.topleft)
 		#Check to see if the player won the minigame
 		if self.points >= self.points_to_win:
-			self.text.append('You Won!')
-			self.mission.executeConsequences(self.mission.consequences_win)
-			if self.display_points:
-				self.text.append('You acquired '+str(self.points)+' points.')
+			self.winMission()
+		#Check to see if time has run out.
+		elif elapsed >= self.time_limit:
+			self.loseMission()
+
+	def loseMission(self, suppress_menu=False):
+			self.text.append('You lost.')
+			self.mission.executeConsequences(self.mission.consequences_fail)
 			#Reset mission faction and node to None.
 			self.mission.faction = None
 			self.mission.node = None
 			globalvars.disable_menu = False
-			#Display completed mission text.
-			globalvars.menu.setEndMinigamePanel(self.text)
-		#Check to see if time has run out.
-		elif elapsed >= self.time_limit:
-			self.text.append('You lost.')
-			self.mission.executeConsequences(self.mission.consequences_fail)
+			if not suppress_menu:
+				#Display completed mission text.
+				globalvars.menu.setEndMinigamePanel(self.text)
+
+	def winMission(self):
+			self.text.append('You Won!')
+			self.mission.executeConsequences(self.mission.consequences_win)
+			if self.display_points:
+				self.text.append('You acquired '+str(self.points)+' points.')
 			#Reset mission faction and node to None.
 			self.mission.faction = None
 			self.mission.node = None

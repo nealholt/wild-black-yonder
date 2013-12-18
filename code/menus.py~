@@ -569,13 +569,22 @@ class Menu:
 
 
 	def setRestartPanel(self):
+		print 'TODO LEFT OFF HERE TESTING'
+		#First find if there is a timeLimitDisplay in intangibles. 
+		#If so, then the player should also lose the mission he was in.
+		mission_text = ''
+		for i in globalvars.intangibles_top:
+			print 'TODO LEFT OFF HERE made it'
+			if i.is_a == globalvars.TIMELIMITDISPLAY:
+				print 'TODO LEFT OFF HERE made it here'
+				mission_text = 'You lost the mission '+i.mission.name
+				i.loseMission(suppress_menu=True)
+				break
 		globalvars.disable_menu = False
-		self.setStandardMenu()
+		self.setStandardMenu(tabs=False)
 		#Then draw the contents of the menu
 		#Display text explaining that player died.
-		temp = drawable.Text(x1=globalvars.WIDTH/2-100, y1=200, string='You have died',\
-			font_size=font_size, color=colors.white)
-		self.main_panel.addDrawable(temp)
+		self.addTextToMainPanel(['You have died.', mission_text], globalvars.WIDTH/2-100, 200)
 		#Display button allowing player to restart.
 		self.addMenuItem(x1=globalvars.WIDTH/2-75, y1=300, width=200, height=50, string='Restart', local_font_size=32, textbufferleft=40, textbuffertop=40, text_color=colors.white, method=globalvars.scenario_manager.restart, argument=None, framed=True, frame_thickness=2, frame_color=colors.blue)
 
@@ -1510,7 +1519,6 @@ class Menu:
 
 
 	def setPausePanel(self):
-		print 'TODO TESTING in menu.py setPausePanel'
 		self.setStandardMenu(tabs=False)
 		help = ['Pause Menu:', 
 		'Standard menu tabs not available during a mission.']

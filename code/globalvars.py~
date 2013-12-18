@@ -70,7 +70,6 @@ scenario_manager = None
 
 mission_manager = None
 
-
 #Store indices of node attributes so you can refer to them more easily.
 node_debris_index = 0
 node_wealth_index = 1
@@ -81,6 +80,6 @@ node_mine_tech_index = 5
 node_ship_tech_index = 6
 node_engine_tech_index = 7
 
-
 #Set to true in order to disable any menu access except for pause.
 disable_menu = False
+

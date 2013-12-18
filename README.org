@@ -2,9 +2,6 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
-Disable menu use except for pausing and the help menu when playing minigames. Otherwise the player can flee the minigame back to infinite space. You might just want a global flag of in_minigame.
-I created disable_menu in globalvars. I will also need a pause menu, I think.
-
 How to handle player death during minigames? Just reset everything for now. Make sure this happens correctly by dieing in a minigame.
 
 Have the minigame not finish immediately upon victory. Have it wait. For example, we want to watch the capital ship explode. Put in a little delay. Likewise delay so the user does not miss the outro menu.
