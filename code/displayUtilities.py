@@ -291,6 +291,7 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 	def loseMission(self, suppress_menu=False):
 			self.text.append('You lost.')
 			self.mission.executeConsequences(self.mission.consequences_fail)
+			self.text.append('Results of the mission: '+self.mission.failure_description)
 			#Reset mission faction and node to None.
 			self.mission.faction = None
 			self.mission.node = None
@@ -304,6 +305,7 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 			self.mission.executeConsequences(self.mission.consequences_win)
 			if self.display_points:
 				self.text.append('You acquired '+str(self.points)+' points.')
+			self.text.append('Results of the mission: '+self.mission.success_description)
 			#Reset mission faction and node to None.
 			self.mission.faction = None
 			self.mission.node = None

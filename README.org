@@ -2,10 +2,6 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
-How to handle player death during minigames? Just reset everything for now. Make sure this happens correctly by dieing in a minigame.
-
-Have the minigame not finish immediately upon victory. Have it wait. For example, we want to watch the capital ship explode. Put in a little delay. Likewise delay so the user does not miss the outro menu.
-
 Have the outro menu display the results of the mission, ie which attributes were changed.
 
 You should write a text menu to introduce each minigame as well, instead of text flashing on the screen on a black background.
