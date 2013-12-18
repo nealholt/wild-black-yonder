@@ -569,14 +569,11 @@ class Menu:
 
 
 	def setRestartPanel(self):
-		print 'TODO LEFT OFF HERE TESTING'
 		#First find if there is a timeLimitDisplay in intangibles. 
 		#If so, then the player should also lose the mission he was in.
 		mission_text = ''
 		for i in globalvars.intangibles_top:
-			print 'TODO LEFT OFF HERE made it'
 			if i.is_a == globalvars.TIMELIMITDISPLAY:
-				print 'TODO LEFT OFF HERE made it here'
 				mission_text = 'You lost the mission '+i.mission.name
 				i.loseMission(suppress_menu=True)
 				break

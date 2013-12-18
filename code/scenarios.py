@@ -54,27 +54,18 @@ class ScenarioManager:
 			#Make the rock
 			temp = objInstances.Asteroid(x=x, y=y, image_name=rock)
 			globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-
 		time_limit = 30 #time limit in seconds
+		points_to_win = 50
 		text = ['ASTEROIDS COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=50, time_limit=time_limit, mission=mission)
+			points_to_win=points_to_win, time_limit=time_limit, mission=mission)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
-
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY,
-			text='Watch out for asteroids while you',
-			timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52,
-			text='blow them up to collect gems.',
-			timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
-
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.fill(globalvars.BGCOLOR)
 		pygame.display.flip()
-
+		#Display the intro to the mission
+		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to collect '+str(points_to_win)+' points.', 'Blow up asteroids and collect gems to earn points.'])
 
 
 	def gemWild(self, mission, seed=0):
@@ -95,7 +86,6 @@ class ScenarioManager:
 		#of the arena
 		temp = objInstances.FixedCircle(x=0, y=0, radius=globalvars.arena, color=colors.black)
 		globalvars.intangibles_bottom.add(temp)
-
 		#Make 50 crystals centered around, but not on the player
 		for _ in range(50):
 			mindist = 200
@@ -103,23 +93,18 @@ class ScenarioManager:
 			x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
 			temp = objInstances.Gem(x=x, y=y)
 			globalvars.tangibles.add(temp); globalvars.whiskerables.add(temp)
-
 		time_limit = 30 #time limit in seconds
+		points_to_win=150
 		text = ['GEM WILD COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
 			points_to_win=150, time_limit=time_limit, mission=mission)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
-
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-			text='Collect as many gems as you can in '+str(time_limit)+' seconds.',
-			timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
-
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.fill(globalvars.BGCOLOR)
 		pygame.display.flip()
-
+		#Display the intro to the mission
+		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to collect '+str(points_to_win)+' points.', 'Collect gems to earn points.'])
 
 
 	def race(self, mission, seed=0):
@@ -134,12 +119,10 @@ class ScenarioManager:
 		globalvars.player.speed = 0.0
 		globalvars.player.targetSpeed = 0.0
 		finish_line = (6000, 0)
-
 		#Display arrow to finish line
 		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(finish_line))
 		#Display finish bullseye
 		globalvars.intangibles_top.add(objInstances.FinishBullsEye(finish_line))
-
 		#determine what sorts of obstacles to put on the race course.
 		numbers = [0 for _ in range(hudHelpers.planet+1)]
 		numbers[hudHelpers.enemy] = 3
@@ -153,39 +136,24 @@ class ScenarioManager:
 		numbers[hudHelpers.capital_ship] = 0
 		numbers[hudHelpers.fuel] = 0
 		numbers[hudHelpers.planet] = 0
-
 		#Populate space in a semi narrow corridor between the player and the finish line
 		course_length = 6000 #pixels
 		course_height = 1000 #pixels
 		#Midway between player and destination
 		midway = (course_length/2, 0)
-
 		hudHelpers.populateSpace(objects=numbers, width=course_length, \
 			height=course_height, center=midway, seed=rd.random())
-
 		time_limit = 30 #time limit in seconds
 		text = ['RACE COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
 			points_to_win=1000000, time_limit=time_limit, mission=mission)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
-
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-			text='Welcome to the race!',
-			timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52, 
-			text='Follow the yellow arrow',
-			timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY+52*2,
-			text='to the finish as fast as possible.',
-			timeOff=0.3, timeOn=0.5, ttl=3, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
-
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.fill(globalvars.BGCOLOR)
 		pygame.display.flip()
+		#Display the intro to the mission
+		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to reach the finish.', 'Follow the yellow arrow and reach the finish bullseye before time runs out in order to win.'])
 
 
 	def furball(self, mission, seed=0):
@@ -210,15 +178,11 @@ class ScenarioManager:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
 			points_to_win=3, time_limit=time_limit, mission=mission)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
-		#Announce the start of the furball.
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-			text='Fight off 3 enemy ships!',
-			timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
-
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 		pygame.display.flip()
+		#Display the intro to the mission
+		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to defeat 3 enemies to win.'])
 
 
 	def capitalShipScenario(self, mission, seed=0):
@@ -237,14 +201,11 @@ class ScenarioManager:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
 			points_to_win=100, time_limit=time_limit, mission=mission)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
-		#Announce the goal of this minigame.
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-			text='Blow up the capital ship!',
-			timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 		pygame.display.flip()
+		#Display the intro to the mission
+		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to defeat the capital ship to win.'])
 
 
 	def goToInfiniteSpace(self, nodeid, update=True):

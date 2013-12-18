@@ -1523,3 +1523,8 @@ class Menu:
 		self.addTextToMainPanel(help, left+50, 50+top)
 
 
+	def setBasicTextPanel(self, text_array):
+		self.setStandardMenu(tabs=False)
+		self.addTextToMainPanel(text_array, left+50, 50+top)
+
+
