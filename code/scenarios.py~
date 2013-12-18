@@ -25,7 +25,6 @@ class ScenarioManager:
 
 	def asteroids(self, mission, seed=0):
 		''' '''
-		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
 		wipeOldScenario(); resetDustOnTop()
 		rocks = ['bigrock','medrock','smallrock','gold','silver']
@@ -78,8 +77,8 @@ class ScenarioManager:
 
 
 	def gemWild(self, mission, seed=0):
-		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
+
 		wipeOldScenario(); resetDustOnTop();
 		#Reset the player's location to 0,0 and his speed to zero
 		globalvars.player.loc = (0.0, 0.0)
@@ -123,8 +122,8 @@ class ScenarioManager:
 
 
 	def race(self, mission, seed=0):
-		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
+
 		'''Race (infinite space) - player is given a destination and the clock 
 		starts ticking. Space is populated pseudo randomly (deterministically) 
 		with obstacles, enemies, gems.'''
@@ -189,7 +188,6 @@ class ScenarioManager:
 
 
 	def furball(self, mission, seed=0):
-		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
 		wipeOldScenario(); resetDust()
 		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
@@ -222,7 +220,6 @@ class ScenarioManager:
 
 
 	def capitalShipScenario(self, mission, seed=0):
-		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
 		wipeOldScenario(); resetDust()
 		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()

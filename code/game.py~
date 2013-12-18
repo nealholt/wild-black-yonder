@@ -205,8 +205,10 @@ def run(countdown=-1):
 					if globalvars.player.isDead():
 						globalvars.menu.setRestartPanel()
 					elif globalvars.disable_menu:
+						print 'TODO TESTING 1'
 						globalvars.menu.setPausePanel()
 					else:
+						print 'TODO TESTING 2'
 						globalvars.menu.setTestingPanel()
 					continue
 				elif event.key == 98: #b key

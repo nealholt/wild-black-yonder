@@ -290,7 +290,6 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 			#Reset mission faction and node to None.
 			self.mission.faction = None
 			self.mission.node = None
-			globalvars.disable_menu = False
 			#Display completed mission text.
 			globalvars.menu.setEndMinigamePanel(self.text)
 		#Check to see if time has run out.
@@ -300,7 +299,6 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 			#Reset mission faction and node to None.
 			self.mission.faction = None
 			self.mission.node = None
-			globalvars.disable_menu = False
 			#Display completed mission text.
 			globalvars.menu.setEndMinigamePanel(self.text)
 

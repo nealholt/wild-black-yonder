@@ -2,35 +2,6 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
-Make the missions object global so that menu and scenario can both use it.
-
-Change menu to use the global variable.
-
-Modify TimeLimitDisplay to take the mission object as an argument.
-
-Modify the menu method so that it initialized the node and faction attributes of the mission before passing it to the scenario method.
-
-Have the menu method pass the mission to the scenario methods.
-
-Modify the scenario methods to take the mission.
-Modify the scenario methods to pass the mission object to TimeLimitDisplay.
-
-Modify TimeLimitDisplay to execute the consequences of winning or losing the mission.
-Modify TimeLimitDisplay to clean up the faction and node references by setting them to None.
-
-Test to make sure it all works.
-
-
-
-next make winning and losing the minigames actually have an effect.
-Where? see displayUtilities
-class TimeLimitDisplay
-Need to pass it which minigame was chosen and the consequences and all that.
-Is there an opportunity object? There is FactionAction in factions.py
-Make an action object that indexes attributes, amount to change them, and object to change them in, forexample a faction. Then have all necessary objects have increment and decrement attribute by index!
-attribute_index, amount_change, target_object
-I created a mission object for this purpose.
-
 Disable menu use except for pausing and the help menu when playing minigames. Otherwise the player can flee the minigame back to infinite space. You might just want a global flag of in_minigame.
 I created disable_menu in globalvars. I will also need a pause menu, I think.
 
@@ -118,14 +89,6 @@ Gem wild: This game can easily be made more difficult by adding asteroids (that 
 Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
 
 Player died in a furball and it counted as a "win". Fix this.
-** make different levels of enemies
-And deploy them based on node strength or whatever.
-
-The different npcs can have different levels relatively easily based on the different classes of items I've implemented.
-
-Make different levels of capital ships too!
-
-Scale this for the pirate ships with distance from the player's starting node. Make it a relatively shallow scaling with a cap. Only factions should be able to get higher tech than this cap.
 ** save and load from save with pickle
 First add a menu to save, save and quit, or load from save.
 ** efficiency
@@ -151,6 +114,13 @@ Would temporarily switching to flip for the display be more efficient?
 The profiler indicates YES
 
 Should I have a global variable counting the number of spawned npc ships and limiting the total number?
+** new ship position
+have the back of the ship on the edge of the screen, seeing much more in the forward direction.
+This would help a lot. Can I do it?
+
+Keep player ship on the edge of a circle that is as large as possible on the screen. The player's ship will always face into the middle of the screen to see the maximum amount in front of the player.
+
+use SCREENRADIUS in global variables.
 ** sharing
 How are you going to share it with others? Could share with Calder.
 Plan to have a release version.
@@ -234,13 +204,6 @@ lasers - red. fast fire, low damage, does not interact with other lasers, is des
 kinetic - green. lower velocity unless boosted, velocity = firer's velocity + amount, reduces firer's velocity, is destroyed by contact with other kinetics but not lasers.
 
 ion - blue. very slow. disables target movement and causes slow rotation for a brief period of time. causes no damage.
-** new ship position
-have the back of the ship on the edge of the screen, seeing much more in the forward direction.
-This would help a lot. Can I do it?
-
-Keep player ship on the edge of a circle that is as large as possible on the screen. The player's ship will always face into the middle of the screen to see the maximum amount in front of the player.
-
-use SCREENRADIUS in global variables.
 ** enemy personalities
 physicalObject constructor.
 

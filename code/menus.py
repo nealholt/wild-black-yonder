@@ -569,6 +569,7 @@ class Menu:
 
 
 	def setRestartPanel(self):
+		globalvars.disable_menu = False
 		self.setStandardMenu()
 		#Then draw the contents of the menu
 		#Display text explaining that player died.
@@ -580,7 +581,7 @@ class Menu:
 
 
 	def setHelpPanel(self):
-		self.setStandardMenu()
+		self.setStandardMenu(tabs=(not globalvars.disable_menu))
 		help = ['INSTRUCTIONS:', 
 		'Press space bar or c key or click left mouse button to shoot primary weapon.',
 		'Press x key to shoot missile if equipped and not on cooldown.',
@@ -1506,4 +1507,13 @@ class Menu:
 		self.addTextToMainPanel(['Press any key to ignore all missions and ',\
 					'proceed to your destination. There is no ',\
 					'penalty for this.'], left+100, top+500)
+
+
+	def setPausePanel(self):
+		self.setStandardMenu(tabs=False)
+		help = ['Pause Menu:', 
+		'Standard menu tabs not available during a mission.']
+		#Then draw the contents of the menu
+		self.addTextToMainPanel(help, left+50, 50+top)
+
 
