@@ -196,12 +196,10 @@ class Mine(PhysicalObject):
 class Explosion(PhysicalObject):
 	'''Just flash some red and orange circles on the screen and throw out some debris.
 	xMinAdj, xMaxAdj, yMinAdj, and yMaxAdj are used to spread explosions around the screen.
-	Time to live is in seconds.
-	delay is the frame delay between subsequent explosions. This is meant to reduce the burden of displaying a lot of explosions.'''
-	def __init__(self, x=0, y=0, xMinAdj=0, xMaxAdj=0, yMinAdj=0, yMaxAdj=0, ttl=0.5, delay=0):
+	Time to live is in seconds.'''
+	def __init__(self, x=0, y=0, xMinAdj=0, xMaxAdj=0, yMinAdj=0, yMaxAdj=0, ttl=0.5):
 		PhysicalObject.__init__(self, centerx=x, centery=y)
-		self.delay = delay
-		self.delay_count = 0
+
 		self.xMinAdj=xMinAdj
 		self.xMaxAdj=xMaxAdj
 		self.yMinAdj=yMinAdj
@@ -214,14 +212,12 @@ class Explosion(PhysicalObject):
 		if self.timeToLive <= 0:
 			self.kill()
 		self.timeToLive -= 1
-		if self.delay_count <= 0:
-			x = rd.randint(self.xMinAdj, self.xMaxAdj) + self.rect.centerx
-			y = rd.randint(self.yMinAdj, self.yMaxAdj) + self.rect.centery
-			globalvars.intangibles_top.add(Flash(x=x, y=y))
-			globalvars.intangibles_bottom.add(Debris(x=x, y=y))
-			self.delay_count = self.delay
-		else:
-			self.delay_count -= 1
+
+		x = rd.randint(self.xMinAdj, self.xMaxAdj) + self.rect.centerx
+		y = rd.randint(self.yMinAdj, self.yMaxAdj) + self.rect.centery
+
+		globalvars.intangibles_top.add(Flash(x=x, y=y))
+		globalvars.intangibles_bottom.add(Debris(x=x, y=y))
 
 	def draw(self, offset):
 		'''Explosion objects aren't drawn. They create other objects to draw.'''

@@ -1,4 +1,10 @@
 git add . && git commit -m "" && git push
+** next
+5. semi rarely have explosions when capital ship is shot and make them last less time, also semi rarely debris flies out. Have debris semi rarely fly out of bullet shots to asteroids.
+1. scenarios.makeNewEnemy and the hud_helper code to make a ship and the ship.setProfile method need unified into a single nice ship creator method.
+6. remove the initial awesome items given to the player. Instead give a simple choice of mediocre items. Make it all more game like.
+2. getFactionActions still needs changed.
+7. make pirate tech level scale with distance from player start.
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions

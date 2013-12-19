@@ -1,13 +1,10 @@
 git add . && git commit -m "" && git push
 
-remove printf statements from cgp
-
-Debug, then:
-4. need to be able to view my ship stats when no other ships are equipped. this applies to weapons too. You should be able to view the compare menu if you at least have one of the item equipper. engines too. Once this is done, you can remove those awful view stats menus.
 5. semi rarely have explosions when capital ship is shot and make them last less time, also semi rarely debris flies out. Have debris semi rarely fly out of bullet shots to asteroids.
 1. scenarios.makeNewEnemy and the hud_helper code to make a ship and the ship.setProfile method need unified into a single nice ship creator method.
 6. remove the initial awesome items given to the player. Instead give a simple choice of mediocre items. Make it all more game like.
 2. getFactionActions still needs changed.
+7. make pirate tech level scale with distance from player start.
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
