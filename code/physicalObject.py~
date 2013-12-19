@@ -518,10 +518,10 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Prevent multiple consecutive collisions with the same object
 		#This can cause infinite loop, which I need to avoid. I'm not sure why it's causing an infinite loop though. TODO
 		limit_loop = 0
-		while self.speed > 0 and self.inCollision(other) and limit_loop < 20:
+		while self.speed > 0 and self.inCollision(other) and limit_loop < 90:
 			self.move()
 			limit_loop += 1
-		if limit_loop == 20:
-			print 'Possible infinite loop bug at the bottom of physicalObject.bounceOff with collision bewteen '+str(self.is_a)+' and '+str(other.is_a)+'. With speeds '+str(self.speed)+' and '+str(other.speed)
+		if limit_loop == 90:
+			print 'Possible infinite loop bug at the bottom of physicalObject.bounceOff with collision bewteen '+str(self.is_a)+' and '+str(other.is_a)+'. With speeds '+str(self.speed)+' and '+str(other.speed)+'. With thetas '+str(self.theta)+' and '+str(other.theta)+'. With locations '+str(self.rect.center)+' and '+str(other.rect.center)
 			exit()
 

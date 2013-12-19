@@ -719,7 +719,7 @@ class Menu:
 
 		string = '0 guns in cargo hold.'
 		method = None
-		if gun_count > 0:
+		if gun_count > 0 or not globalvars.player.gun is None:
 			string = 'Weapon Compare ('+str(gun_count)+' in cargo)'
 			method = globalvars.menu.setWeaponComparePanel
 		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
@@ -728,7 +728,7 @@ class Menu:
 
 		string = '0 missile launchers in cargo hold.'
 		method = None
-		if missile_count > 0:
+		if missile_count > 0 or not globalvars.player.missile is None:
 			string = 'Missile Compare ('+str(missile_count)+' in cargo)'
 			method = globalvars.menu.setMissileComparePanel
 		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
@@ -737,25 +737,23 @@ class Menu:
 
 		string = '0 mine layers in cargo hold.'
 		method = None
-		if mine_count > 0:
+		if mine_count > 0 or not globalvars.player.mine is None:
 			string = 'Mine Compare ('+str(mine_count)+' in cargo)'
 			method = globalvars.menu.setMineComparePanel
 		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
 			   local_font_size=fontsize, method=method, argument=0)
 		ystart += yinterval
 
-		string = '0 ships available.'
-		method = None
-		if ship_count > 0:
-			string = 'Ship Compare ('+str(ship_count)+' available)'
-			method = globalvars.menu.setShipComparePanel
+		#Always display the ship
+		string = 'Ship Compare ('+str(ship_count)+' available)'
+		method = globalvars.menu.setShipComparePanel
 		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
 			   local_font_size=fontsize, method=method, argument=0)
 		ystart += yinterval
 
 		string = '0 engines in cargo hold.'
 		method = None
-		if engine_count > 0:
+		if engine_count > 0 or not globalvars.player.engine is None:
 			string = 'Engine Compare ('+str(engine_count)+' in cargo)'
 			method = globalvars.menu.setEngineComparePanel
 		self.addMenuItem(x1=xstart, y1=ystart, string=string,\
@@ -806,7 +804,7 @@ class Menu:
 		cargo_gun_column = None
 		cargo_gun_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_gun_column = ['There are no guns in','your cargo hold.','','','','','','']
+			cargo_gun_column = ['There are no guns in your cargo hold.','','','','','','','']
 			cargo_gun_comparator = [0.0 for _ in range(8)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
@@ -817,7 +815,7 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != 'gun':
-				cargo_gun_column = ['There are no guns in','your cargo hold.','','','','','','']
+				cargo_gun_column = ['There are no guns in your cargo hold.','','','','','','','']
 				cargo_gun_comparator = [0.0 for _ in range(8)]
 			else:
 				cargo_gun_column = [globalvars.player.cargo[index].name,
@@ -875,12 +873,14 @@ class Menu:
 		#Reset color scheme
 		equipped_color = colors.white
 		cargo_color = colors.white
-		#Give player option to equip currently selected weapon in cargo
+		#Give player option to equip or salvage currently selected weapon in cargo, 
+		#if currently selected is a weapon
 		i += 1
-		self.equipCurrentCargo(index, i, 'gun', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
-		i += 1
-		self.salvageCurrentCargo(index, i, 'gun', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getWeaponClass())
-		i += 1
+		if index < len(globalvars.player.cargo) and globalvars.player.cargo[index].is_a == 'gun':
+			self.equipCurrentCargo(index, i, 'gun', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
+			i += 1
+			self.salvageCurrentCargo(index, i, 'gun', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getWeaponClass())
+			i += 1
 		self.previousAndNextInCargo(i, index, 'gun', local_font_size, column2_offset, column3_offset, globalvars.menu.setWeaponComparePanel)
 
 
@@ -914,7 +914,7 @@ class Menu:
 		cargo_ship_column = None
 		cargo_ship_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_ship_column = ['There are no ships in','your cargo hold.','','','','','','']
+			cargo_ship_column = ['There are no ships in your cargo hold.','','','','','','','']
 			cargo_ship_comparator = [0.0 for _ in range(8)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
@@ -925,7 +925,7 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != globalvars.SHIP:
-				cargo_ship_column = ['There are no ships in','your cargo hold.','','','','','','']
+				cargo_ship_column = ['There are no ships in your cargo hold.','','','','','','','']
 				cargo_ship_comparator = [0.0 for _ in range(8)]
 			else:
 				cargo_ship_column = [globalvars.player.cargo[index].name,
@@ -985,8 +985,9 @@ class Menu:
 		equipped_color = colors.white
 		cargo_color = colors.white
 		#Give player option to equip currently selected ship in cargo
+		#if the currently indexed cargo item is actually a ship.
 		i += 1
-		if globalvars.player.cargo[index].is_a == globalvars.SHIP:
+		if index < len(globalvars.player.cargo) and globalvars.player.cargo[index].is_a == globalvars.SHIP:
 			subpanel = Panel()
 			temp = drawable.Text(x1=left+column3_offset,\
 				y1=local_font_size*i+topbuffer+top,\
@@ -996,8 +997,8 @@ class Menu:
 			subpanel.setMethod(equipPlayerShip)
 			subpanel.argument = index
 			self.main_panel.addPanel(subpanel)
-		i += 1
-		self.salvageCurrentCargo(index, i, globalvars.SHIP, local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getShipClass())
+			i += 1
+			self.salvageCurrentCargo(index, i, globalvars.SHIP, local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getShipClass())
 		i += 1
 		self.previousAndNextInCargo(i, index, globalvars.SHIP, local_font_size, column2_offset, column3_offset, globalvars.menu.setShipComparePanel)
 
@@ -1040,7 +1041,7 @@ class Menu:
 		cargo_mine_column = None
 		cargo_mine_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_mine_column = ['There are no mines in','your cargo hold.','','','','','','','']
+			cargo_mine_column = ['There are no mines in your cargo hold.','','','','','','','','']
 			cargo_mine_comparator = [0.0 for _ in range(9)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
@@ -1051,7 +1052,7 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != 'mine':
-				cargo_mine_column = ['There are no mines in','your cargo hold.', '', '', '', '', '', '','']
+				cargo_mine_column = ['There are no mines in your cargo hold.','', '', '', '', '', '', '','']
 				cargo_mine_comparator = [0.0 for _ in range(9)]
 			else:
 				cargo_mine_column = [globalvars.player.cargo[index].name,
@@ -1114,10 +1115,12 @@ class Menu:
 		equipped_color = colors.white
 		cargo_color = colors.white
 		#Give player option to equip currently selected mine in cargo
-		i += 1
-		self.equipCurrentCargo(index, i, 'mine', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
-		i += 1
-		self.salvageCurrentCargo(index, i, 'mine', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getMineClass())
+		#if the currently indexed cargo item is actually a mine.
+		if index < len(globalvars.player.cargo) and globalvars.player.cargo[index].is_a == 'mine':
+			i += 1
+			self.equipCurrentCargo(index, i, 'mine', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
+			i += 1
+			self.salvageCurrentCargo(index, i, 'mine', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getMineClass())
 		i += 1
 		self.previousAndNextInCargo(i, index, 'mine', local_font_size, column2_offset, column3_offset, globalvars.menu.setMineComparePanel)
 
@@ -1166,7 +1169,7 @@ class Menu:
 		cargo_missile_column = None
 		cargo_missile_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_missile_column = ['There are no missiles in','your cargo hold.','','','','','','','','','','']
+			cargo_missile_column = ['There are no missiles in your cargo hold.','','','','','','','','','','','']
 			cargo_missile_comparator = [0.0 for _ in range(12)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
@@ -1177,7 +1180,7 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != 'missile':
-				cargo_missile_column = ['There are no missiles in','your cargo hold.','','','','','','','','','','']
+				cargo_missile_column = ['There are no missiles in your cargo hold.','','','','','','','','','','','']
 				cargo_missile_comparator = [0.0 for _ in range(12)]
 			else:
 				cargo_missile_column = [globalvars.player.cargo[index].name,
@@ -1252,9 +1255,11 @@ class Menu:
 		equipped_color = colors.white
 		cargo_color = colors.white
 		#Give player option to equip currently selected missile in cargo
-		self.equipCurrentCargo(index, i, 'missile', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
-		i += 1
-		self.salvageCurrentCargo(index, i, 'missile', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getMissileClass())
+		#if the currently indexed cargo item is actually a missile.
+		if index < len(globalvars.player.cargo) and globalvars.player.cargo[index].is_a == 'missile':
+			self.equipCurrentCargo(index, i, 'missile', local_font_size, column3_offset, cargo_color, equipPlayerWeapon)
+			i += 1
+			self.salvageCurrentCargo(index, i, 'missile', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getMissileClass())
 		i += 1
 		self.previousAndNextInCargo(i, index, 'missile', local_font_size, column2_offset, column3_offset, globalvars.menu.setMissileComparePanel)
 
@@ -1293,7 +1298,7 @@ class Menu:
 		cargo_engine_column = None
 		cargo_engine_comparator = None
 		if len(globalvars.player.cargo) == 0:
-			cargo_engine_column = ['There are no engines in','your cargo hold.','','','','','']
+			cargo_engine_column = ['There are no engines in your cargo hold.','','','','','','']
 			cargo_engine_comparator = [0.0 for _ in range(7)]
 		else:
 			if index < 0 or index >= len(globalvars.player.cargo):
@@ -1304,7 +1309,7 @@ class Menu:
 						index = i
 						break
 			if globalvars.player.cargo[index].is_a != 'engine':
-				cargo_engine_column = ['There are no engines in','your cargo hold.','','','','','']
+				cargo_engine_column = ['There are no engines in your cargo hold.','','','','','','']
 				cargo_engine_comparator = [0.0 for _ in range(7)]
 			else:
 				cargo_engine_column = [globalvars.player.cargo[index].name,
@@ -1359,10 +1364,12 @@ class Menu:
 		equipped_color = colors.white
 		cargo_color = colors.white
 		#Give player option to equip currently selected engine in cargo
-		i += 1
-		self.equipCurrentCargo(index, i, 'engine', local_font_size, column3_offset, cargo_color, equipPlayerEngine)
-		i += 1
-		self.salvageCurrentCargo(index, i, 'engine', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getEngineClass())
+		#if the currently indexed cargo item is actually an engine.
+		if index < len(globalvars.player.cargo) and globalvars.player.cargo[index].is_a == 'engine':
+			i += 1
+			self.equipCurrentCargo(index, i, 'engine', local_font_size, column3_offset, cargo_color, equipPlayerEngine)
+			i += 1
+			self.salvageCurrentCargo(index, i, 'engine', local_font_size, column2_offset, cargo_color, globalvars.player.cargo[index].getEngineClass())
 		i += 1
 		self.previousAndNextInCargo(i, index, 'engine', local_font_size, column2_offset, column3_offset, globalvars.menu.setEngineComparePanel)
 
