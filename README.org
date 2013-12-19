@@ -1,4 +1,11 @@
 git add . && git commit -m "" && git push
+
+Debug, then:
+0. fix formatting of node and faction attributes in menus. http://stackoverflow.com/questions/455612/python-limiting-floats-to-two-decimal-points
+1. scenarios.makeNewEnemy and the hud_helper code to make a ship and the ship.setProfile method need unified into a single nice ship creator method.
+2. getFactionActions still needs changed.
+3. grep for TODO LEFT OFF HERE
+4. need to be able to view my ship stats when no other ships are equipped
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
@@ -7,7 +14,7 @@ FactionManager
 getFactionActions
 
 Modify faction action options so they randomly select from among the following to do:
-  increase owned node wealth - increases future income
+  DONE increase owned node wealth - increases future income
   increased owned node production - increase units produced here
   increased owned node tech - increases quality of units produced here
   decreased owned node asteroids - enables increase of local wealth, otherwise can't increase local wealth

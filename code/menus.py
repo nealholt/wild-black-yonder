@@ -1480,10 +1480,10 @@ class Menu:
 		self.addMenuItem(x1=column_offsets[0], y1=default_top, string='Local space:', text_color=colors.white)
 		i += 1
 		default_top = top+30+i*font_size
-		self.addMenuItem(x1=column_offsets[0], y1=default_top, string='Asteroids: '+str(node.amt_debris), textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, framed=True, width=width, height=height, frame_thickness=1, frame_color=colors.white)
-		self.addMenuItem(x1=column_offsets[1], y1=default_top, string='Wealth: '+str(node.amt_wealth), textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, framed=True, width=width, height=height, frame_thickness=1, frame_color=colors.white)
-		self.addMenuItem(x1=column_offsets[2], y1=default_top, string='Technology: ', textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, framed=True, width=width, height=height, frame_thickness=1, frame_color=colors.white)
-		self.addMenuItem(x1=column_offsets[3], y1=default_top, string='Production: ', textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, framed=True, width=width, height=height, frame_thickness=1, frame_color=colors.white)
+		self.addMenuItem(x1=column_offsets[0], y1=default_top, string='Asteroids: '+"{0:.2f}".format(node.amt_debris), textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, framed=True, width=width, height=height, frame_thickness=1, frame_color=colors.white)
+		self.addMenuItem(x1=column_offsets[1], y1=default_top, string='Wealth: '+"{0:.2f}".format(node.amt_wealth), textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, framed=True, width=width, height=height, frame_thickness=1, frame_color=colors.white)
+		self.addMenuItem(x1=column_offsets[2], y1=default_top, string='Technology: ???', textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, framed=True, width=width, height=height, frame_thickness=1, frame_color=colors.white)
+		self.addMenuItem(x1=column_offsets[3], y1=default_top, string='Production: ???', textbufferleft=textbufferleft, textbuffertop=textbuffertop, text_color=colors.white, framed=True, width=width, height=height, frame_thickness=1, frame_color=colors.white)
 		i += 1
 		default_top = top+80+i*font_size
 		#Display Mission header:

@@ -98,13 +98,9 @@ def populateSpace(node, objects=None, width=1000, height=1000, center=(0,0), see
 		temp = ship.generateShip(node.pirate_ship_tech, x=x, y=y, image='destroyer')
 		temp.initialize()
 		temp.gun = ship.weapon.generateWeapon(node.pirate_weapon_tech)
-		temp.gun.shooter = temp
 		temp.missile = ship.missile.generateMissile(node.pirate_missile_tech)
-		temp.missile.shooter = temp
 		temp.mine = ship.mine.generateMine(node.pirate_mine_tech)
-		temp.mine.shooter = temp
 		temp.engine = ship.engine.generateEngine(node.pirate_engine_tech)
-		temp.engineUpdate()
 		physical_objs.append(temp)
 
 	for _ in xrange(objects[crystal]):

@@ -53,7 +53,10 @@ class Mission():
 			attribute_index = attribute_index_low
 			if attribute_index_low != attribute_index_high:
 				attribute_index = rd.randint(attribute_index_low, attribute_index_high)
-			target_object.changeAttribute(attribute_index, amount_change)
+			if target_index == faction_index:
+				target_object.relationToPlayer += amount_change
+			else:
+				target_object.changeAttribute(attribute_index, amount_change)
 
 
 

@@ -16,16 +16,18 @@ MENU_BORDER_PADDING = 50
 MENU_PADDING = 25
 
 #Used by physicalObject to define what each physicalObject is.
-BULLET = 0
-OTHER = 1
-SHIP = 2
-FIXEDBODY = 3
-HEALTH = 4
-ASTEROID = 5
-GEM = 6
-DUST = 7
-ARROW = 8
-TRADEGOOD = 9
+temp = 0
+BULLET = temp; temp+=1
+OTHER = temp; temp+=1
+SHIP = temp; temp+=1
+FIXEDBODY = temp; temp+=1
+HEALTH = temp; temp+=1
+ASTEROID = temp; temp+=1
+GEM = temp; temp+=1
+DUST = temp; temp+=1
+ARROW = temp; temp+=1
+TRADEGOOD = temp; temp+=1
+TIMELIMITDISPLAY = temp; temp+=1
 
 #The least distance to check for a collision. Might need adjusted if we start using really big objects.
 MINSAFEDIST = 1024
@@ -71,14 +73,17 @@ scenario_manager = None
 mission_manager = None
 
 #Store indices of node attributes so you can refer to them more easily.
-node_debris_index = 0
-node_wealth_index = 1
-node_production_index = 2
-node_weapon_tech_index = 3
-node_missile_tech_index = 4
-node_mine_tech_index = 5
-node_ship_tech_index = 6
-node_engine_tech_index = 7
+temp = 0
+node_debris_index = temp; temp+=1
+node_wealth_index = temp; temp+=1
+node_production_index = temp; temp+=1
+#Store indices of faction attributes so you can refer to them more easily.
+temp = 0
+faction_weapon_tech_index = temp; temp+=1
+faction_missile_tech_index = temp; temp+=1
+faction_mine_tech_index = temp; temp+=1
+faction_ship_tech_index = temp; temp+=1
+faction_engine_tech_index = temp; temp+=1
 
 #Set to true in order to disable any menu access except for pause.
 disable_menu = False

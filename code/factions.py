@@ -26,6 +26,12 @@ class Faction():
 		self.capital_ships = 0
 		#Zero is neutral. Positive is a good relationship. Negative is a bad relationship.
 		self.relationToPlayer = 0
+		#Faction tech level
+		self.ship_tech = 0
+		self.engine_tech = 0
+		self.weapon_tech = 0
+		self.missile_tech = 0
+		self.mine_tech = 0
 
 	def captureNode(self, nodeid):
 		'''Do this very carefully.'''
@@ -56,8 +62,29 @@ class Faction():
 			'Count of owned nodes: '+str(len(self.nodes)),
 			'Money: $'+str(self.money),
 			'Capital Ships: '+str(self.capital_ships),
-			'Relationship with player: '+str(self.relationToPlayer)
+			'Relationship with player: '+str(self.relationToPlayer),
+			'Ship technology: '+str(self.ship_tech),
+			'Engine technology: '+str(self.engine_tech),
+			'Weapon technology: '+str(self.weapon_tech),
+			'Missile technology: '+str(self.missile_tech),
+			'Mine technology: '+str(self.mine_tech)
 			]
+
+	def changeAttribute(self, attribute_index, amount):
+		if attribute_index == globalvars.faction_relationship_index:
+			self.relationToPlayer += amount
+		elif attribute_index == globalvars.faction_weapon_tech_index:
+			self.weapon_tech += amount
+		elif attribute_index == globalvars.faction_missile_tech_index:
+			self.missile_tech += amount
+		elif attribute_index == globalvars.faction_mine_tech_index:
+			self.mine_tech += amount
+		elif attribute_index == globalvars.faction_ship_tech_index:
+			self.ship_tech += amount
+		elif attribute_index == globalvars.faction_engine_tech_index:
+			self.engine_tech += amount
+		else:
+			print 'Error: attribute_index, '+str(attribute_index)+' out of bounds in factions.changeAttribute'; exit()
 
 
 
@@ -114,7 +141,7 @@ class FactionManager():
 				if randnode == -1: continue
 				randnode = globalvars.galaxy.getNode(randnode)
 				#if node is unoccupied then add it to list of owned nodes
-				if randnode.owner == -1 or randnode.strength == 0.0:
+				if randnode.owner == -1: # or randnode.strength == 0.0: #TODO
 					actions.append(FactionAction('capture', randnode, f))
 				#else do one of the following
 				else:
@@ -136,9 +163,9 @@ class FactionManager():
 	def performFactionActions(self, action_list):
 		for a in action_list:
 			if a.action == 'production+':
-				a.node.production = min(2.0, a.node.production+0.2)
+				a.node.changeAttribute(globalvars.node_production_index, 1)
 			elif a.action == 'production-':
-				a.node.production = max(0.0, a.node.production-0.2)
+				a.node.changeAttribute(globalvars.node_production_index, -1)
 			elif a.action == 'wealth+':
 				a.node.amt_wealth = min(3.0, a.node.amt_wealth+0.4)
 			elif a.action == 'wealth-':

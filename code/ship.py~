@@ -31,10 +31,10 @@ breaker_classes = [0, 20, 50]
 ship_class_names = ['Worthless', 'Junk', 'Scrap', 'Cheap', 'Okay', 'Tepid', 'Cool', 'Hot', 'Noble', 'Knightly', 'Worthy', 'Peerless', 'Kingly', 'Emperor', 'Tyrant', 'God-Emperor','Stellar','Transcendent']
 
 
-def generateShip(ship_class, x=0.0, y=0.0, image='default'):
+def generateShip(ship_class):
 	'''Returns a ship of the given class.'''
 	#Start by randomly generating a ship.
-	ship = Ship(centerx=x, centery=y, image_name=image)
+	ship = Ship()
 	#Calculate the class of the ship.
 	actual_class = ship.getShipClass()
 	#print 'ship is class '+ship_class_names[actual_class]+' ('+str(actual_class)+') but should be class '+ship_class_names[ship_class]+' ('+str(ship_class)+')'

@@ -87,33 +87,56 @@ class Node():
 		return [
 		'Id: '+str(self.id)+'.',
 		'Description: '+self.description+'.',
-		'Piracy: '+str(self.piracy)+'. Chance to generate opposing ships.',
-		'Pirate Capital Ships: '+str(self.pirate_caps)+'. Chance of hostile capital ships.',
-		'Debris: '+str(self.amt_debris)+'. Chance of asteroids.',
-		'Wealth: '+str(self.amt_wealth)+'. Chance of gems, health, and rich asteroids.'
+		'Piracy: '+"{0:.2f}".format(self.piracy)+'. Chance to generate opposing ships.',
+		'Pirate Capital Ships: '+"{0:.2f}".format(self.pirate_caps)+'. Chance of hostile capital ships.',
+		'Debris: '+"{0:.2f}".format(self.amt_debris)+'. Chance of asteroids.',
+		'Wealth: '+"{0:.2f}".format(self.amt_wealth)+'. Chance of gems, health, and rich asteroids.',
+		'Pirate weapon tech: '+str(self.pirate_weapon_tech),
+		'Pirate missile tech: '+str(self.pirate_missile_tech),
+		'Pirate mine tech: '+str(self.pirate_mine_tech),
+		'Pirate ship tech: '+str(self.pirate_ship_tech),
+		'Pirate engine tech: '+str(self.pirate_engine_tech),
+		'Owner weapon production: '+str(self.weapon_production),
+		'Owner missile production: '+str(self.missile_production),
+		'Owner mine production: '+str(self.mine_production),
+		'Owner ship production: '+str(self.ship_production),
+		'Owner engine production: '+str(self.engine_production)
 		]
 
 
-	#TODO LEFT OFF HERE
 	def changeAttribute(self, attribute_index, amount):
 		if attribute_index == globalvars.node_debris_index:
 			self.amt_debris += amount
 		elif attribute_index == globalvars.node_wealth_index:
 			self.amt_wealth += amount
 		elif attribute_index == globalvars.node_production_index:
-			self.production += amount
-		elif attribute_index == globalvars.node_weapon_tech_index:
-			self.weapon_tech += amount
-		elif attribute_index == globalvars.node_missile_tech_index:
-			self.missile_tech += amount
-		elif attribute_index == globalvars.node_mine_tech_index:
-			self.mine_tech += amount
-		elif attribute_index == globalvars.node_ship_tech_index:
-			self.ship_tech += amount
-		elif attribute_index == globalvars.node_engine_tech_index:
-			self.engine_tech += amount
+			#Select a random production
+			rand_production = rd.randint(0,4)
+			production_to_alter = None
+			if rand_production == 0:
+				production_to_alter = self.ship_production
+			elif rand_production == 1:
+				production_to_alter = self.engine_production
+			elif rand_production == 2:
+				production_to_alter = self.weapon_production
+			elif rand_production == 3:
+				production_to_alter = self.missile_production
+			elif rand_production == 4:
+				production_to_alter = self.mine_production
+			#Get index to alter.
+			#and alter production by amount with a minimum of zero and max of 10
+			if amount > 0:
+				for i in range(len(production_to_alter)):
+					if production_to_alter[i] < 10:
+						production_to_alter[i] = min(10, production_to_alter[i]+amount)
+						break
+			else:
+				for i in range(len(production_to_alter)):
+					if production_to_alter[i] > 0:
+						production_to_alter[i] = max(0, production_to_alter[i]+amount)
+						break
 		else:
-			print 'Error: attribute_index, '+str(attribute_index)+' out of bounds in nodeManager.changeAttribute'
+			print 'Error: attribute_index, '+str(attribute_index)+' out of bounds in nodeManager.changeAttribute'; exit()
 
 
 	def addConnection(self, connectid, location):

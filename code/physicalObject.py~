@@ -522,6 +522,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.move()
 			limit_loop += 1
 		if limit_loop == 20:
-			print 'Possible infinite loop bug at the bottom of physicalObject.bounceOff with collision bewteen '+str(self.is_a)+' and '+str(other.is_a)+'. With speeds '+str(self.speed)+' and '+str(other.speed)+'. With thetas '+str(self.theta)+' and '+str(other.theta)+'. With locations '+str(self.rect.center)+' and '+str(other.rect.center)
+			print 'Possible infinite loop bug at the bottom of physicalObject.bounceOff with collision bewteen '+str(self.is_a)+' and '+str(other.is_a)+'. With speeds '+str(self.speed)+' and '+str(other.speed)
 			exit()
 
