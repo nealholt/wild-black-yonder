@@ -93,7 +93,7 @@ class FactionManager():
 		return None
 
 
-	def getFactionActions(self): #TODO LEFT OFF HERE
+	def getFactionActions(self):
 		actions = [] #Store all faction actions
 		for f in self.factions:
 			#Get a random number corresponding to an action to perform

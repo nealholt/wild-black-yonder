@@ -2,39 +2,12 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
-Add node attributes production and tech, and an 
-array of counts of ships of each class that are present.
-Actually, production will also need to keep track of the classes being produced at the node.
-
-Make it so the following attributes are either stored at the faction or the node as needed:
-Factions store the following attributes:
-  tech level (stored at the node level)
-  money
-  amount of each resource (don't do this yet)
-  nodes owned
-  for each class level, number of ships owned at that class (at each node)
-  number of capital ships (at each node)
-  relationship with player
-  relationship with other factions (do this later)
-  shipyards and their quality at each node
-
-next make winning and losing the minigames actually have an effect.
-
-Remove the test panel from displaying as default. We now have the minigames panel instead.
-
-Disable menu use except for pausing and the help menu when playing minigames. Otherwise the player can flee the minigame back to infinite space. You might just want a global flag of in_minigame.
-
-How to handle player death during minigames? Just reset everything for now. Make sure this happens correctly by dieing in a minigame.
-
-Have the minigame not finish immediately upon victory. Have it wait. For example, we want to watch the capital ship explode. Put in a little delay. Likewise delay so the user does not miss the outro menu.
-
-Have the outro menu display the results of the mission, ie which attributes were changed.
-
-You should write a text menu to introduce each minigame as well, instead of text flashing on the screen on a black background.
-That is, replace the announcements in scenarios.py with a little text menu intro.
+Next go here:
+FactionManager
+getFactionActions
 
 Modify faction action options so they randomly select from among the following to do:
-  increase owned node wealth - increases future income
+  DONE increase owned node wealth - increases future income
   increased owned node production - increase units produced here
   increased owned node tech - increases quality of units produced here
   decreased owned node asteroids - enables increase of local wealth, otherwise can't increase local wealth
@@ -45,6 +18,8 @@ Modify faction action options so they randomly select from among the following t
 When a faction conquers a neighbor node, production and tech should be set to zero.
 
 These just happen once per turn (per player warp), randomly for now.
+
+Remove the test panel from displaying as default. We now have the minigames panel instead.
 
 make a little newspaper for the player with headlines saying what a sampling of the factions are doing. This will be used for testing for now. Just make it another standard panel in the standard menu.
 Just say what event happened and where.
@@ -106,14 +81,6 @@ Gem wild: This game can easily be made more difficult by adding asteroids (that 
 Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
 
 Player died in a furball and it counted as a "win". Fix this.
-** make different levels of enemies
-And deploy them based on node strength or whatever.
-
-The different npcs can have different levels relatively easily based on the different classes of items I've implemented.
-
-Make different levels of capital ships too!
-
-Scale this for the pirate ships with distance from the player's starting node. Make it a relatively shallow scaling with a cap. Only factions should be able to get higher tech than this cap.
 ** save and load from save with pickle
 First add a menu to save, save and quit, or load from save.
 ** efficiency
@@ -139,6 +106,13 @@ Would temporarily switching to flip for the display be more efficient?
 The profiler indicates YES
 
 Should I have a global variable counting the number of spawned npc ships and limiting the total number?
+** new ship position
+have the back of the ship on the edge of the screen, seeing much more in the forward direction.
+This would help a lot. Can I do it?
+
+Keep player ship on the edge of a circle that is as large as possible on the screen. The player's ship will always face into the middle of the screen to see the maximum amount in front of the player.
+
+use SCREENRADIUS in global variables.
 ** sharing
 How are you going to share it with others? Could share with Calder.
 Plan to have a release version.
@@ -222,13 +196,6 @@ lasers - red. fast fire, low damage, does not interact with other lasers, is des
 kinetic - green. lower velocity unless boosted, velocity = firer's velocity + amount, reduces firer's velocity, is destroyed by contact with other kinetics but not lasers.
 
 ion - blue. very slow. disables target movement and causes slow rotation for a brief period of time. causes no damage.
-** new ship position
-have the back of the ship on the edge of the screen, seeing much more in the forward direction.
-This would help a lot. Can I do it?
-
-Keep player ship on the edge of a circle that is as large as possible on the screen. The player's ship will always face into the middle of the screen to see the maximum amount in front of the player.
-
-use SCREENRADIUS in global variables.
 ** enemy personalities
 physicalObject constructor.
 

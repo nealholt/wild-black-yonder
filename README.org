@@ -2,8 +2,9 @@ git add . && git commit -m "" && git push
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
-You should write a text menu to introduce each minigame as well, instead of text flashing on the screen on a black background.
-That is, replace the announcements in scenarios.py with a little text menu intro.
+Next go here:
+FactionManager
+getFactionActions
 
 Modify faction action options so they randomly select from among the following to do:
   increase owned node wealth - increases future income

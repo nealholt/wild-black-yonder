@@ -94,7 +94,6 @@ class Node():
 		]
 
 
-	#TODO LEFT OFF HERE
 	def changeAttribute(self, attribute_index, amount):
 		if attribute_index == globalvars.node_debris_index:
 			self.amt_debris += amount
