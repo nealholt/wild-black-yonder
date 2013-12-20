@@ -149,9 +149,8 @@ def run(countdown=-1):
 			pygame.display.flip()
 			#Check for another key press to remove the panel.
 			for event in pygame.event.get():
-				#Check for event m key, n key, or escape key being 
-				#pressed to remove the menu.
-				if event.type == pygame.KEYDOWN:
+				#Check for event m key pressed to remove the menu.
+				if event.type == pygame.KEYDOWN and event.key == 109:
 					globalvars.menu.main_panel = None
 					redrawWholeBackground()
 					pygame.display.flip()

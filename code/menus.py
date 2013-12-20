@@ -218,6 +218,8 @@ class Menu:
 		self.main_panel.addDrawable(temp)
 		#Add tabs to the menu:
 		if tabs: self.addAllTabs()
+		#Add a note that the m key closes all panels
+		self.addMenuItem(x1=625, y1=640, string='Press "m" to close any panel', local_font_size=24)
 
 
 	def addTextToMainPanel(self, text_array, this_left, this_top, local_font_size=font_size):
@@ -600,8 +602,7 @@ class Menu:
 		'Press left arrow or a key to turn counter-clockwise 30 degrees.',
 		'Press right arrow or d key to turn clockwise 30 degrees.',
 		'Click on the screen to tell the starship to move towards the clicked point.',
-		'Press "m" open the menus. This also pauses the game.',
-		'Press anything to close the current menu.',
+		'Press "m" opens and closes all menus. This also pauses the game.',
 		'Press "b" to slow down and park at destination.',
 		'Press "q" to remove destination set by mouse click and simply fly in current direction.',
 		'Press "t" for hit box test.',

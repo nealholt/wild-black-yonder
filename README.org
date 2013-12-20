@@ -2,8 +2,6 @@ git add . && git commit -m "" && git push
 ** next
 worst engine needs to turn better and be slightly faster. You can increase the high end a little too if you want.
 
-make it so you can do push button screenshots. Create a folder where you save them to.
-
 Just make only the m key close a menu. That way you won't slip and accidentally close them.
 In the standard menu method, make a note in the lower right corner always say that m key closes the menu.
 Update the help to also say that the m key closes things.

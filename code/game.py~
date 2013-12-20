@@ -115,10 +115,6 @@ def run(countdown=-1):
 			if countdown < 0:
 				exit()
 
-		if take_screenshot:
-			pygame.image.save(globalvars.screen,
-				'screenshots/'+str(rd.randint(0,999999999))+'c.jpeg') #TODO LEFT OFF HERE
-
 		#Draw everything on the screen. Do so either using dirty rects or just by
 		#redrawing the whole screen. Dirty rects are usually more efficient.
 		if useDirty:
@@ -129,7 +125,7 @@ def run(countdown=-1):
 
 		if take_screenshot:
 			pygame.image.save(globalvars.screen,
-				'screenshots/'+str(rd.randint(0,999999999))+'d.jpeg') #TODO LEFT OFF HERE
+				'screenshots/'+str(rd.randint(0,999999999))+'.jpeg')
 			take_screenshot = False
 
 		#Used for calculating actual frames per second in
@@ -357,10 +353,6 @@ def run(countdown=-1):
 		offsety = globalvars.player.rect.centery - globalvars.CENTERY
 		offset = offsetx, offsety
 
-		if take_screenshot:
-			pygame.image.save(globalvars.screen,
-				'screenshots/'+str(rd.randint(0,999999999))+'b.jpeg') #TODO LEFT OFF HERE
-
 		if useDirty:
 			#Put on screen rects in dirty rects
 			for x in globalvars.intangibles_bottom:
@@ -379,11 +371,6 @@ def run(countdown=-1):
 	                drawThoseOnScreen(globalvars.intangibles_bottom, offset)
 	                drawThoseOnScreen(globalvars.tangibles, offset)
 	                drawThoseOnScreen(globalvars.intangibles_top, offset)
-
-			if take_screenshot:
-				pygame.image.save(globalvars.screen,
-					'screenshots/'+str(rd.randint(0,999999999))+'a.jpeg') #TODO LEFT OFF HERE
-
 
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
