@@ -1,10 +1,10 @@
 git add . && git commit -m "" && git push
-
-5. semi rarely have explosions when capital ship is shot and make them last less time, also semi rarely debris flies out. Have debris semi rarely fly out of bullet shots to asteroids.
+** next
 1. scenarios.makeNewEnemy and the hud_helper code to make a ship and the ship.setProfile method need unified into a single nice ship creator method.
-6. remove the initial awesome items given to the player. Instead give a simple choice of mediocre items. Make it all more game like.
 2. getFactionActions still needs changed.
-7. make pirate tech level scale with distance from player start.
+7. make pirate tech level scale with distance from player start. Make it all more game-like.
+6. remove the initial awesome items given to the player. Instead give a simple choice of mediocre items. Make it all more game like.
+8. implementing save and load next could be really helpful for debugging.
 ** pygame executable
 See the readme in the compiling folder for next steps.
 ** better interaction with factions
@@ -53,6 +53,8 @@ I love the idea of factions being identifiable by their weapons. Maybe they shou
 Later make the actions more intelligent (like have each faction focus in one area for a longer amount of time).
 
 Factions may need to store relationships with each other. Later they can negotiate treaties and such and have more sophisticated interactions.
+** save and load from save with pickle
+First add a menu to save, save and quit, or load from save.
 ** factions
 Change faction names to these and add a couple flags:
 Democratic Hive Mind
@@ -87,8 +89,6 @@ Gem wild: This game can easily be made more difficult by adding asteroids (that 
 Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
 
 Player died in a furball and it counted as a "win". Fix this.
-** save and load from save with pickle
-First add a menu to save, save and quit, or load from save.
 ** efficiency
 When the shit gets thick (lots of enemy npc's or even just a few capital ships) using display flip can be more efficient than display update!
 

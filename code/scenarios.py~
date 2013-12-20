@@ -201,14 +201,11 @@ class ScenarioManager:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
 			points_to_win=100, time_limit=time_limit, mission=mission)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
-		#Announce the goal of this minigame.
-		announcement = displayUtilities.TemporaryText(x=globalvars.CENTERX, y=globalvars.CENTERY, 
-			text='Blow up the capital ship!',
-			timeOff=0, timeOn=1, ttl=3.5, fontSize=52)
-		globalvars.intangibles_top.add(announcement)
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 		pygame.display.flip()
+		#Display the intro to the mission
+		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to defeat the capital ship to win.'])
 
 
 	def goToInfiniteSpace(self, nodeid, update=True):
@@ -410,7 +407,7 @@ def wipeOldScenario():
 	globalvars.arena = 0
 
 
-def makeNewEnemy(x=0, y=0):
+def makeNewEnemy(x=0, y=0): #TODO LEFT OFF HERE
 	enemy_ship = ship.generateShip(rd.randint(0,len(ship.ship_class_names)-1))
 	enemy_ship.loadNewImage('destroyer')
 	enemy_ship.setLocation(x, y)

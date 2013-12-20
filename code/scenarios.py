@@ -166,11 +166,14 @@ class ScenarioManager:
 		maxdist = 800
 		#Make 3 enemy units:
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
-		makeNewEnemy(x=x, y=y)
+		enemy_ship = hudHelpers.getNewEnemy(x,y,'destroyer',2,2,2,2,2)
+		hudHelpers.addNewEnemyToWorld(enemy_ship)
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
-		makeNewEnemy(x=x, y=y)
+		enemy_ship = hudHelpers.getNewEnemy(x,y,'destroyer',2,2,2,2,2)
+		hudHelpers.addNewEnemyToWorld(enemy_ship)
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
-		makeNewEnemy(x=x, y=y)
+		enemy_ship = hudHelpers.getNewEnemy(x,y,'destroyer',2,2,2,2,2)
+		hudHelpers.addNewEnemyToWorld(enemy_ship)
 		#Make the score keeper:
 		time_limit = 30 #time limit in seconds
 		text = ['FURBALL COMPLETED']
@@ -405,17 +408,6 @@ def wipeOldScenario():
 	globalvars.menu.main_panel = None
 	#Reset the arena
 	globalvars.arena = 0
-
-
-def makeNewEnemy(x=0, y=0):
-	enemy_ship = ship.generateShip(rd.randint(0,len(ship.ship_class_names)-1))
-	enemy_ship.loadNewImage('destroyer')
-	enemy_ship.setLocation(x, y)
-	#Set the ship's health bar. This must be done right before adding any ship to tangibles
-	enemy_ship.setHealthBar()
-	enemy_ship.setProfile()
-	globalvars.tangibles.add(enemy_ship)
-	globalvars.whiskerables.add(enemy_ship)
 
 
 def resetDust():

@@ -273,7 +273,7 @@ class Ship(PhysicalObject):
 		globalvars.intangibles_top.add(self.myHealthBar)
 
 
-	def setProfile(self):
+	def setProfile(self): #TODO LEFT OFF HERE
 		#Give enemy a random weapon
 		#TODO nerf enemy for now
 		temp = weapon.generateWeapon(2)

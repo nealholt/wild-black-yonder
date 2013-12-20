@@ -13,6 +13,24 @@ import sys
 sys.path.append('code/cython')
 import cygeometry
 
+def getNewEnemy(x,y,image_name,ship_tech,engine_tech,gun_tech,missile_tech,mine_tech):
+	temp = ship.generateShip(ship_tech, x=x, y=y, image=image_name)
+	temp.initialize()
+	temp.gun = ship.weapon.generateWeapon(weapon_tech)
+	temp.gun.shooter = temp
+	temp.missile = ship.missile.generateMissile(missile_tech)
+	temp.missile.shooter = temp
+	temp.mine = ship.mine.generateMine(mine_tech)
+	temp.mine.shooter = temp
+	temp.engine = ship.engine.generateEngine(engine_tech)
+	temp.engineUpdate()
+	return temp
+
+def addNewEnemyToWorld(enemy_ship):
+	enemy_ship.setHealthBar()
+	globalvars.tangibles.add(enemy_ship)
+	globalvars.whiskerables.add(enemy_ship)
+
 def getObstacles(seed=0,
 		enemy_min = 0.0,
 		enemy_max = 1.2,
@@ -92,15 +110,15 @@ def populateSpace(node, objects=None, width=1000, height=1000, center=(0,0), see
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(capitalShip.CapitalShip(centerx=x, centery=y, image_name='bigShip'))
 
-	for _ in xrange(objects[enemy]):
+	for _ in xrange(objects[enemy]): #TODO LEFT OFF HERE
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		#Generate a pirate ship with the node's level of tech
-		temp = ship.generateShip(node.pirate_ship_tech, x=x, y=y, image='destroyer')
-		temp.initialize()
-		temp.gun = ship.weapon.generateWeapon(node.pirate_weapon_tech)
-		temp.missile = ship.missile.generateMissile(node.pirate_missile_tech)
-		temp.mine = ship.mine.generateMine(node.pirate_mine_tech)
-		temp.engine = ship.engine.generateEngine(node.pirate_engine_tech)
+		temp = getNewEnemy(x,y,'destroyer',\
+					node.pirate_ship_tech, \
+					node.pirate_engine_tech, \
+					node.pirate_weapon_tech, \
+					node.pirate_missile_tech, \
+					node.pirate_mine_tech)
 		physical_objs.append(temp)
 
 	for _ in xrange(objects[crystal]):
@@ -175,9 +193,11 @@ def populateSpace(node, objects=None, width=1000, height=1000, center=(0,0), see
 			#might collide with an object and not be added, but setHealthBar
 			#puts the health bar in intangibles so the health bar ends up
 			#floating in space with no one to ever remove it.
-			if p.is_a == globalvars.SHIP: p.setHealthBar()
-			globalvars.tangibles.add(p)
-			globalvars.whiskerables.add(p)
+			if p.is_a == globalvars.SHIP:
+				addNewEnemyToWorld(p)
+			else:
+				globalvars.tangibles.add(p)
+				globalvars.whiskerables.add(p)
 			toreturn.add(p)
 		else:
 			if TESTING: num_removed += 1
