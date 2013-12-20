@@ -308,12 +308,7 @@ class NodeManager():
 				if c[0] > n.id:
 					otherend = self.getNode(c[0])
 					self.connections.append([n.x, n.y, otherend.x, otherend.y])
-		#Scale pirate difficulty with distance from node 0 where the player starts.
 		#Go through all nodes and get their distance from node 0 where the player will start
 		#Set the pirate strength of the node based on its distance from the player's start node.
-		#Treat globalvars.WIDTH as roughly the maximum distance from node 0.
-		for n in self.nodes:
-			d = cygeometry.distance(n.loc, self.nodes[0].loc)
-			percent = d / float(globalvars.WIDTH)
-			n.setPiracyStrength(percent/2.0, min(1.0, percent))
+		#setPiracyStrength(self, min_percent, max_percent)
 

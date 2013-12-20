@@ -168,7 +168,6 @@ class FactionManager():
 		for a in action_list:
 			if a.action == 'production+':
 				a.node.changeAttribute(globalvars.node_production_index, 1)
-				#a.node.boostProduction(production_attribute, tech_level, amount)
 			elif a.action == 'production-':
 				a.node.changeAttribute(globalvars.node_production_index, -1)
 			elif a.action == 'wealth+':

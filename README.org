@@ -1,13 +1,55 @@
 git add . && git commit -m "" && git push
 ** next
-1. scenarios.makeNewEnemy and the hud_helper code to make a ship and the ship.setProfile method need unified into a single nice ship creator method.
-2. getFactionActions still needs changed.
-7. make pirate tech level scale with distance from player start. Make it all more game-like.
-6. remove the initial awesome items given to the player. Instead give a simple choice of mediocre items. Make it all more game like.
-8. implementing save and load next could be really helpful for debugging.
-** pygame executable
-See the readme in the compiling folder for next steps.
+worst engine needs to turn better and be slightly faster. You can increase the high end a little too if you want.
+
+make it so you can do push button screenshots. Create a folder where you save them to.
+
+Just make only the m key close a menu. That way you won't slip and accidentally close them.
+In the standard menu method, make a note in the lower right corner always say that m key closes the menu.
+Update the help to also say that the m key closes things.
 ** better interaction with factions
+
+It's time to have smarter faction actions.
+
+Wealth - Debris => Income
+Income => More actions
+Production => More ships
+Tech => Better ships
+Ships => Offense and Defence
+
+Phases (in order):
+  Wealth increase phase
+  Tech increase phase
+  Ship increase phase
+  War / conquering phase
+  Ship increase phase (consolidation)
+Then repeat
+
+Time length of phase as one variable
+
+Initially non-responsive behaviors
+
+The following goals determine when a phase ends. Basically this is where we can adjust faction personalities but also have them dynamically respond to events such as an aggressor:
+Goal for war phase: conquer x nodes owned by n or lose y ships or z time elapses, whichever comes first.
+Goal for tech phase: increase x tech by y levels or lose z nodes or n time elapses, whichever comes first.
+Goal for wealth phase: all non-border nodes gain x wealth per turn or lose z nodes or n time elapses, whichever comes first.
+Goal for ship increase phase: all border nodes build x ships per turn or lose z nodes or n time elapses, whichever comes first.
+
+Defense phase of ship building on a border with node that was lost for x amount of time. This can be re-triggered by an attack or the loss of another node.
+
+Ship building at a particular node that was attacked.
+
+Factions need to store which nodes were attacked.
+
+Faction resources:
+  money
+  turns
+  nodes
+  production at nodes
+  tech
+
+
+
 Next go here:
 FactionManager
 getFactionActions
@@ -20,6 +62,15 @@ Modify faction action options so they randomly select from among the following t
   decreased enemy node strength - delete units of equal class in equal amounts with the enemy at neighboring nodes
   decreased enemy node tech - just what it sounds like. happens for free, costs a turn
   conquer neighbour node - enemy must have no units at that node for this to be possible.
+
+production+-
+tech+-
+debris+-
+wealth+-
+capture
+attack
+
+
 
 When a faction conquers a neighbor node, production and tech should be set to zero.
 
@@ -53,8 +104,59 @@ I love the idea of factions being identifiable by their weapons. Maybe they shou
 Later make the actions more intelligent (like have each faction focus in one area for a longer amount of time).
 
 Factions may need to store relationships with each other. Later they can negotiate treaties and such and have more sophisticated interactions.
+** stuff
+Implement NPCs fighting each other!
+
+
+The money is kind of lame right now because there is very little to spend it on. You can only buy fuel and trade goods.
+
+
+
+Distinguish the factions. Some have strict rules about contraband. Others do not. Some pursue wealth in the form of trade goods. Others pursue wealth in the form of natural goods. Others seek rule and military tech. Others seek to return space to its natural state. Others are pirates simply seeking to take advantage of others.
+Some could also emphasize missiles while others emphasize weapons.
+You could also modify fighter personalities based on the factions.
+
+
+Gary and Lynn might also be good tech-savvy people to tap as play testers.
+
+
+the game feels like it is missing life, but this can be added. Sure there is nasty potential for grind currently, but don't worry too much about that. There are easy ways to solve that. For example, the minigames could spawn from the world's interface. Capital ship battles and furballs are already basically integral to the game but you could be challenged to a duel by an NPC. Other NPCs could challenge you to a race. Or you could earn money in a game-show called gem wild.
+On the flip side, the modification of node attributes could occur based on how many asteroids you destroy in the game world rather than being extracted as a separate element.
+But again, don't worry about this for now, just keeping adding the next best feature and smoothing things out as you go.
+
+Speech bubbles from ships.
+Special weapons that only damage asteroids.
+Factions that make all lethal weaponry illegal and hunt down criminals.
+NPCs that are not hostile to the player, but that instead transport goods or do other tasks like go mine asteroids.
+A mini map to view the local area without looking beyond warp points.
+Backstories to spawned enemies, not large stories, just little ones. For example, if you spawn pirates, don't spawn them in isolation (unless there is a reason they are isolated, for example they are fleeing an ambush from police, in which case, spawn the police too and spawn the lone pirate as damaged, panicky and trying to flee. If you spawn a unit, spawn a backstory with it: where did it come from, where is it going? What are the consequences if it reaches its destination? What are the consequences if it doesn't?
+Constructed stories from the agents themselves. It's just a desire, pursuit of desire, and success or failure.
+
+Later you can make more realistic economies and interactions between the agents.
+
+For now, just smooth out the game elements, reach out to play testers and artists, and keep incrementally adding elements that you think will make it the most fun.
+
+Set a date in early Feb to contact the UNM GDC. You can always just say you are too busy.
+See if you can post your game on the pygame website to get it more press.
+Reach out to runner erik to see if he will be a play tester for you.
+
+You could share with Tomio, Lavonna and others after the holidays.
+
+You could get harvesting ships and special resources to harvest from asteroids. You could add a tractor beam.
+
+http://apod.nasa.gov/apod/image/1311/2013-11_C2P_2048px.jpg
 ** save and load from save with pickle
+implementing save and load next could be really helpful for debugging.
 First add a menu to save, save and quit, or load from save.
+
+Make a start menu with a starscape and text options to:
+load game from save (does nothing).
+Start a new game.
+View the help menu.
+
+Have a help menu that goes back to the starscape intro menu when you click away from it.
+** pygame executable
+See the readme in the compiling folder for next steps.
 ** factions
 Change faction names to these and add a couple flags:
 Democratic Hive Mind
