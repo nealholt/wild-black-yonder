@@ -2,9 +2,15 @@ git add . && git commit -m "" && git push
 ** next
 worst engine needs to turn better and be slightly faster. You can increase the high end a little too if you want.
 
-Just make only the m key close a menu. That way you won't slip and accidentally close them.
-In the standard menu method, make a note in the lower right corner always say that m key closes the menu.
-Update the help to also say that the m key closes things.
+I like the idea of lots of new objects and a minimap.
+  pirate base
+  repair station
+  various tech stations and research labs
+  defensive guns
+  new guns
+  new capital ships
+  new powerups
+  and much more. Image creation is becoming a constraint!
 ** better interaction with factions
 
 It's time to have smarter faction actions.
