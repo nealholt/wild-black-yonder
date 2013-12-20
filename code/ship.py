@@ -273,21 +273,6 @@ class Ship(PhysicalObject):
 		globalvars.intangibles_top.add(self.myHealthBar)
 
 
-	def setProfile(self): #TODO LEFT OFF HERE
-		#Give enemy a random weapon
-		#TODO nerf enemy for now
-		temp = weapon.generateWeapon(2)
-		#temp = weapon.generateWeapon(rd.randint(0, len(weapon.weapon_class_names)-1))
-		temp.shooter = self
-		self.gun = temp
-		#Give enemy a random engine
-		#TODO nerf enemy for now
-		self.engine = engine.generateEngine(2)
-		#self.engine = engine.generateEngine(rd.randint(0, len(engine.engine_class_names)-1))
-		#Set this object's movement parameters based on the engine.
-		self.engineUpdate()
-
-
 	def engineUpdate(self):
 		#Set this object's movement parameters based on the engine.
 		self.maxSpeed = self.engine.maxSpeed
