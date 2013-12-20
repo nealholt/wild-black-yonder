@@ -609,8 +609,7 @@ class Menu:
 		'Press "u" profile game.run().',
 		'Press "h" Display help info.',
 		'Press "k" to display the galaxy node info menu.',
-		'Press "o" to display the galaxy node travel menu.',
-		'Press "p" to save a screenshot to the screenshots folder.']
+		'Press "o" to display the galaxy node travel menu.']
 		#Then draw the contents of the menu
 		self.addTextToMainPanel(help, left+50, 50+top)
 
