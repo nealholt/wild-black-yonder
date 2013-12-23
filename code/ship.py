@@ -10,6 +10,10 @@ import random as rd
 healthBarDefaultWidth = 20
 
 
+KILL_PLAYER_STATE = 0
+GOTO_STATE = 1
+
+
 num_ship_attributes = 6
 #The following arrays map classes into actual values. The class is the index and the values are, well, the array values:
 
@@ -106,6 +110,8 @@ class Ship(PhysicalObject):
 	def __init__(self, centerx=0, centery=0, image_name='default'):
 		PhysicalObject.__init__(self, centerx=centerx,\
 			centery=centery, image_name=image_name)
+
+		self.state = KILL_PLAYER_STATE
 
 		self.health_index = rd.randint(0, len(health_classes)-1)
 		self.fuelcap_index = rd.randint(0, len(fuelcap_classes)-1)
@@ -368,65 +374,83 @@ class Ship(PhysicalObject):
 		return slope, intercept
 
 
-	def update(self):
-		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
-		#Flee the battle field at less than self.min_percent_health health.
-		if float(self.health) / float(self.maxhealth) < self.min_percent_health:
-			#Get the direction in which to flee
-			angle = geometry.angleFromPosition(globalvars.player_target_lead, self.rect.center)
-			#Flee far away!
-			magnitude = 1000000
-			#Get the point to flee towards
-			objective = geometry.translate(self.rect.center, angle, magnitude)
-			self.setDestination(objective)
-		else:
-			#Otherwise just attack the player
-			#for now we assume that every ship is hostile to the player
-			self.setDestination(globalvars.player_target_lead)
+	def flee(self):
+		#Get the direction in which to flee
+		angle = geometry.angleFromPosition(globalvars.player_target_lead, self.rect.center)
+		#Flee far away!
+		magnitude = 1000000
+		#Get the point to flee towards
+		objective = geometry.translate(self.rect.center, angle, magnitude)
+		self.setDestination(objective)
 
+
+	def goTo(self, attacking=False, max_speed=False, force_turn=False):
+		''' '''
 		#Get angle to target
 		self.angle_to_target = self.getAngleToTarget()
 		#Get distance to target
 		d = cygeometry.distance(self.rect.center, self.destination)
-		
-		#If target is far, increase goal speed.
+		#If target is far or max_speed is true, increase goal speed.
 		recommended_targeting_speed = self.maxTurnSpeed
-		force_turn = False
 		if d > self.target_long_range:
 			recommended_targeting_speed = self.maxSpeed
 		elif d > self.target_med_range:
 			recommended_targeting_speed = self.maxSpeed * 3./4.
 		elif d > self.target_short_range:
 			recommended_targeting_speed = self.maxSpeed * 1./2.
-		#Only set speed to zero if target is infront of us.
-		elif abs(self.angle_to_target) < self.target_front_center:
+		#Only set speed to zero if target is infront of us and we are attacking.
+		elif attacking and abs(self.angle_to_target) < self.target_front_center:
 			recommended_targeting_speed = 0.0
 			#Ignore collision avoidance to turn towards the target.
 			force_turn = True
-
-		#If the target is behind us at short range, flee quickly away. Ignore all else.
-		if d < self.target_short_range and abs(self.angle_to_target) > 180 - self.target_front_center:
+		#Turn towards target
+		recommended_turn_speed = self.turnTowards(force_turn=force_turn)
+		#Set goal speed to the minimum of the recommended speeds
+		if max_speed:
 			self.targetSpeed = self.maxSpeed
-			self.turnTowards()
 		else:
-			#Turn towards target
-			recommended_turn_speed = self.turnTowards(force_turn=force_turn)
-			#Set goal speed to the minimum of the recommended speeds
 			self.targetSpeed = min(recommended_targeting_speed, recommended_turn_speed)
-
-		#cooldown all the weapons
-		self.cooldown()
-		#Check for firing solutions
-		self.shoot()
-		#Check for firing solutions for missiles
-		if self.missile.cooldown == 0:
-			self.shoot(force_shot=True, weapon=self.missile)
-			#Double the cooldown to make missiles shoot less often.
-			self.missile.cooldown = self.missile.cooldown*2
 		#modify speed
 		self.approachSpeed()
 		#move
 		self.move()
+
+
+	def update(self):
+		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
+		if self.state == KILL_PLAYER_STATE:
+			self.setDestination(globalvars.player_target_lead)
+
+			#Get angle to target
+			self.angle_to_target = self.getAngleToTarget()
+			#Get distance to target
+			d = cygeometry.distance(self.rect.center, self.destination)
+
+			#low health => retreat
+			if float(self.health) / float(self.maxhealth) < self.min_percent_health:
+				self.flee() #Set a far away destination
+				self.goTo() #Go to the far away destination
+			#enemy behind me => evade
+			elif d < self.target_short_range and \
+			abs(self.angle_to_target) > 180 - self.target_front_center:
+				#If the target is behind us at short range,
+				#flee quickly away. Ignore all else.
+				self.goTo(max_speed=True, force_turn=True)
+			#attacking enemy => attack
+			else:
+				self.goTo(attacking=True)
+				#Check for firing solutions
+				self.shoot()
+				#Check for firing solutions for missiles
+				if self.missile.cooldown == 0:
+					self.shoot(force_shot=True, weapon=self.missile)
+					#Double the cooldown to make missiles shoot less often.
+					self.missile.cooldown = self.missile.cooldown*4
+			#cooldown all the weapons
+			self.cooldown()
+		#going to location => go to
+		elif self.state == GOTO_STATE:
+			self.goTo()
 		#Update my health bar
 		self.updateHealthBar()
 

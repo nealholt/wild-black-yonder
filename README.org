@@ -1,12 +1,14 @@
 git add . && git commit -m "" && git push
-** make earliest ships easier to kill
-** make NPCs occassionally fire missiles again
-increase their delay time though
 ** create an escort mission
 an npc ships wants to go from points a to point b.
 other npc ships want to kill you and it.
 You win if the ship gets to point b.
 you lose if you or the ship dies.
+*** create a ship behavior where the ship just flies to a location
+and dodges obstacles along the way.
+*** create an object that tracks win condition of this mission
+*** display this mission option on the mission menu
+*** create a method in scenario for this mission
 ** create a fleet battle mission
 two NPC fleets battle each other.
 you win if your side is the last fleet standing. Include capital ships!
