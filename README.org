@@ -1,17 +1,85 @@
 git add . && git commit -m "" && git push
-** next
-worst engine needs to turn better and be slightly faster. You can increase the high end a little too if you want.
+** make earliest ships easier to kill
+** make NPCs occassionally fire missiles again
+increase their delay time though
+** create an escort mission
+an npc ships wants to go from points a to point b.
+other npc ships want to kill you and it.
+You win if the ship gets to point b.
+you lose if you or the ship dies.
+** create a fleet battle mission
+two NPC fleets battle each other.
+you win if your side is the last fleet standing. Include capital ships!
+** I think the game needs a goal right away
+just something simple to introduce the mechanics.
+Fly to X.
+Then get some equipment.
+Then kill Y.
+Then buy goods and take them to Z.
 
-I like the idea of lots of new objects and a minimap.
-  pirate base
-  repair station
-  various tech stations and research labs
-  defensive guns
-  new guns
-  new capital ships
-  new powerups
-  and much more. Image creation is becoming a constraint!
+Just something simple to introduce the game and give direction.
 ** better interaction with factions
+List phases then break them down into simple behaviors that can be implemented piecemeal.
+*** Phases
+**** Wealth increase phase
+Increase wealth until a trigger causes a transition.
+Wealth is a function that can be different for each faction but is initially minimal asteroids and maximization of the wealth parameter at a node.
+
+Choose an owned node.
+Increase wealth of chosen node.
+Evaluate transition to new state based on triggers.
+**** Tech increase phase
+Increase the tech of the faction.
+Tech goes up by fractions but is calculated as an integer so it can't be advanced in one turn.
+
+Select a tech.
+Increase the tech.
+Evaluate transition to new state based on triggers.
+**** Ship increase phase
+Choose an owned node.
+Select a tech.
+Increase the production of the corresponding tech item at its current class in the chosen node.
+Evaluate transition to new state based on triggers.
+**** build up to war
+choose a node on your border that you wish to conquer
+choose an owned node bordering the node to conquer
+choose owned nodes border the owned node next to the node to conquer and move ships from these nodes to that node.
+Evaluate transition to new state based on triggers.
+**** War / conquering phase
+Select a border node to conquer.
+Select a node bordering the border node. Preferrably the one with the most forces.
+Calculate results of attack from owned node to goal node.
+Evaluate transition to new state based on triggers.
+**** specific node defense
+Choose an owned node, probably one that has been suffering attacks.
+Move ships from nodes bordering the attacked node to this node.
+Evaluate transition to new state based on triggers.
+**** Consolidation / border defense
+Choose an owned node with preference for border nodes and nodes with low numbers of ships.
+Select an adjacent node and even out the number of ships by moving them between the nodes.
+Evaluate transition to new state based on triggers.
+*** all else
+Diagram the control flow and state.
+
+
+
+default_phase_length = 50 #Number of turns
+#Personality traits of factions influence durations of phases
+#and influences the triggers for transitions to other phases.
+aggression = 1.2 #war and ship building duration multiplier
+patience = 1.5 #wealth and tech development duration multiplier
+bloody_mindedness = 1 #Number of attacks tolerated before switching to war
+
+
+Behaviors:
+  conquering a particular node
+  defending a particular node
+  border defense in general
+
+Make it so you can trigger node updates for debugging without traveling to a new node.
+
+
+
 
 It's time to have smarter faction actions.
 
@@ -109,7 +177,17 @@ Later make the actions more intelligent (like have each faction focus in one are
 
 Factions may need to store relationships with each other. Later they can negotiate treaties and such and have more sophisticated interactions.
 ** stuff
+Speech bubbles from ships.
+Special weapons that only damage asteroids.
+Factions that make all lethal weaponry illegal and hunt down criminals.
+NPCs that are not hostile to the player, but that instead transport goods or do other tasks like go mine asteroids.
+A mini map to view the local area without looking beyond warp points.
+Backstories to spawned enemies, not large stories, just little ones. For example, if you spawn pirates, don't spawn them in isolation (unless there is a reason they are isolated, for example they are fleeing an ambush from police, in which case, spawn the police too and spawn the lone pirate as damaged, panicky and trying to flee. If you spawn a unit, spawn a backstory with it: where did it come from, where is it going? What are the consequences if it reaches its destination? What are the consequences if it doesn't?
+Constructed stories from the agents themselves. It's just a desire, pursuit of desire, and success or failure.
+
+
 Implement NPCs fighting each other!
+Implement non-hostile NPCs going about their business.
 
 
 The money is kind of lame right now because there is very little to spend it on. You can only buy fuel and trade goods.
@@ -128,14 +206,6 @@ the game feels like it is missing life, but this can be added. Sure there is nas
 On the flip side, the modification of node attributes could occur based on how many asteroids you destroy in the game world rather than being extracted as a separate element.
 But again, don't worry about this for now, just keeping adding the next best feature and smoothing things out as you go.
 
-Speech bubbles from ships.
-Special weapons that only damage asteroids.
-Factions that make all lethal weaponry illegal and hunt down criminals.
-NPCs that are not hostile to the player, but that instead transport goods or do other tasks like go mine asteroids.
-A mini map to view the local area without looking beyond warp points.
-Backstories to spawned enemies, not large stories, just little ones. For example, if you spawn pirates, don't spawn them in isolation (unless there is a reason they are isolated, for example they are fleeing an ambush from police, in which case, spawn the police too and spawn the lone pirate as damaged, panicky and trying to flee. If you spawn a unit, spawn a backstory with it: where did it come from, where is it going? What are the consequences if it reaches its destination? What are the consequences if it doesn't?
-Constructed stories from the agents themselves. It's just a desire, pursuit of desire, and success or failure.
-
 Later you can make more realistic economies and interactions between the agents.
 
 For now, just smooth out the game elements, reach out to play testers and artists, and keep incrementally adding elements that you think will make it the most fun.
@@ -149,6 +219,16 @@ You could share with Tomio, Lavonna and others after the holidays.
 You could get harvesting ships and special resources to harvest from asteroids. You could add a tractor beam.
 
 http://apod.nasa.gov/apod/image/1311/2013-11_C2P_2048px.jpg
+** next
+I like the idea of lots of new objects and a minimap.
+  pirate base
+  repair station
+  various tech stations and research labs
+  defensive guns
+  new guns
+  new capital ships
+  new powerups
+  and much more. Image creation is becoming a constraint!
 ** save and load from save with pickle
 implementing save and load next could be really helpful for debugging.
 First add a menu to save, save and quit, or load from save.
@@ -193,8 +273,6 @@ Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volu
 Gem wild: This game can easily be made more difficult by adding asteroids (that the gems might or might not collide with), adding enemies (that either fight the player or also try to get gems, or adding solar storms.
 
 Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
-
-Player died in a furball and it counted as a "win". Fix this.
 ** efficiency
 When the shit gets thick (lots of enemy npc's or even just a few capital ships) using display flip can be more efficient than display update!
 
@@ -294,12 +372,7 @@ Attributes:
 ** missile more updates
 See missile.initialize for a lot of new missile attributes that can be added in. You will also need to modify class Missile in objInstances.py
 
-missiles should time out after a while and explode
-the explosion itself should do damage to anything it touches. You could create an explosion object that does damage upon collision.
-
 Keep a limited number of missiles on the player's ship and display this number in profile menu. ... or you could just limit missiles based on the refire rate.
-
-Mines should also time out and explode.
 ** lasers, kinetics, ions
 Implement lasers, kinetics, and ion as parameterization of the existing items. First make them just based on color. Then add their other traits.
 

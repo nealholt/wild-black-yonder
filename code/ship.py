@@ -14,7 +14,7 @@ num_ship_attributes = 6
 #The following arrays map classes into actual values. The class is the index and the values are, well, the array values:
 
 #Number of hitpoints the ship has
-health_classes = [25, 50, 75, 100, 125, 150, 175]
+health_classes = [2, 8, 25, 50, 75, 100, 125, 150, 175]
 #fuel capacity
 #180000 = 5*60*60*10 = 5 minutes of fuel assuming 60 frames per second and 10 units of fuel consumed per frame. More efficient ships will consume less per frame.
 fuelcap_classes = [180000/2, 180000, 180000*2, 180000*3]
@@ -28,7 +28,7 @@ thorns_classes = [0, 25, 50]
 breaker_classes = [0, 20, 50]
 
 #Names of the various ship classes
-ship_class_names = ['Worthless', 'Junk', 'Scrap', 'Cheap', 'Okay', 'Tepid', 'Cool', 'Hot', 'Noble', 'Knightly', 'Worthy', 'Peerless', 'Kingly', 'Emperor', 'Tyrant', 'God-Emperor','Stellar','Transcendent']
+ship_class_names = ['Worthless', 'Junk', 'Scrap', 'Cheap', 'Okay', 'Tepid', 'Cool', 'Hot', 'Amazing', 'Wonderful', 'Noble', 'Knightly', 'Worthy', 'Peerless', 'Kingly', 'Emperor', 'Tyrant', 'God-Emperor','Stellar','Transcendent']
 
 
 def generateShip(ship_class, x=0.0, y=0.0, image='default'):
@@ -70,7 +70,7 @@ def generateShip(ship_class, x=0.0, y=0.0, image='default'):
 	return ship
 
 
-health_names = ['Skeleton', 'Bare', 'Light', '', 'Heavy', 'Armored', 'Martial']
+health_names = ['Skeleton', 'Bare', 'Light', '', '', '', 'Heavy', 'Armored', 'Martial']
 collision_safe_names = ['','','Headbutting']
 thorns_names = ['','','Thorny']
 breaker_names = ['','','Sledge']
@@ -418,6 +418,11 @@ class Ship(PhysicalObject):
 		self.cooldown()
 		#Check for firing solutions
 		self.shoot()
+		#Check for firing solutions for missiles
+		if self.missile.cooldown == 0:
+			self.shoot(force_shot=True, weapon=self.missile)
+			#Double the cooldown to make missiles shoot less often.
+			self.missile.cooldown = self.missile.cooldown*2
 		#modify speed
 		self.approachSpeed()
 		#move
@@ -502,6 +507,7 @@ class Ship(PhysicalObject):
 
 	def getShipClass(self):
 		rating = self.health_index
+
 		if self.fuelcap_index == 1:
 			rating += 1
 		elif self.fuelcap_index > 1:
