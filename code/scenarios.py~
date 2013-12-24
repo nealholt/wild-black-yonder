@@ -223,10 +223,10 @@ class ScenarioManager:
 		globalvars.player.targetSpeed = 0.0
 		finish_line = (6000, 0)
 		#Protect this little dude on his way to the finish line.
-		npc_friend = hudHelpers.getNewEnemy(20.0,20.0,'ship',5,5,0,0,0)
+		npc_friend = hudHelpers.getNewEnemy(25.0,25.0,'ship',2,2,0,0,0)
 		npc_friend.setDestination(finish_line)
 		npc_friend.state = ship.GOTO_STATE
-		hudHelpers.addNewEnemyToWorld(npc_friend)
+		hudHelpers.addNewEnemyToWorld(npc_friend, add_to_blue=True)
 		#Display arrow to finish line
 		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(npc_friend))
 		#Display finish bullseye
@@ -405,7 +405,7 @@ class ScenarioManager:
 		next_node_id = globalvars.player.destinationNode[0]
 
 		#Find the infinite space generator
-		destNodeLoc = None
+		destWarp = None
 		foundObjWithWarps = False
 		for i in globalvars.intangibles_bottom:
 			if hasattr(i, 'warps'):
@@ -413,11 +413,11 @@ class ScenarioManager:
 				#Get the location of the destination node
 				for w in i.warps:
 					if w.destinationNode == next_node_id:
-						destNodeLoc = w.rect.center
+						destWarp = w
 						break
 				break
 		#Error check
-		if destNodeLoc is None:
+		if destWarp is None:
 			if foundObjWithWarps:
 				print 'ERROR: The infiniteSpaceGenerator object was found in intangibles_bottom, but it has no warp with an id matching nodeid '+str(next_node_id)+'. Exiting.'; exit()
 			else:
@@ -428,8 +428,7 @@ class ScenarioManager:
 				if i.is_a == globalvars.ARROW:
 					globalvars.intangibles_top.remove(i)
 			#Create a new arrow pointing to the destination node and add it to intangibles_top
-			destination = pygame.Rect(destNodeLoc[0],destNodeLoc[1],0,0)
-			globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destination))
+			globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destWarp))
 
 
 	def restart(self):
@@ -452,6 +451,8 @@ def wipeOldScenario():
 	globalvars.intangibles_bottom.empty()
 	globalvars.intangibles_top.empty()
 	globalvars.whiskerables.empty()
+	globalvars.RED_TEAM.empty()
+	globalvars.BLUE_TEAM.empty()
 	globalvars.BGCOLOR = colors.black
 	globalvars.BGIMAGE = None
 	globalvars.score_keeper = None
@@ -459,6 +460,7 @@ def wipeOldScenario():
 	#Set the player's health bar. This must be done right before adding any ship to tangibles
 	globalvars.player.setHealthBar()
 	globalvars.tangibles.add(globalvars.player)
+	globalvars.BLUE_TEAM.add(globalvars.player)
 	#Immediately clear the panel
 	globalvars.menu.main_panel = None
 	#Reset the arena

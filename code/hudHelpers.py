@@ -26,10 +26,16 @@ def getNewEnemy(x,y,image_name,ship_tech,engine_tech,gun_tech,missile_tech,mine_
 	temp.engineUpdate()
 	return temp
 
-def addNewEnemyToWorld(enemy_ship):
-	enemy_ship.setHealthBar()
-	globalvars.tangibles.add(enemy_ship)
-	globalvars.whiskerables.add(enemy_ship)
+def addNewEnemyToWorld(newship, add_to_blue=False):
+	newship.setHealthBar()
+	globalvars.tangibles.add(newship)
+	globalvars.whiskerables.add(newship)
+	if add_to_blue:
+		newship.team = globalvars.BLUETEAM
+		globalvars.BLUE_TEAM.add(newship)
+	else:
+		newship.team = globalvars.REDTEAM
+		globalvars.RED_TEAM.add(newship)
 
 def getObstacles(seed=0,
 		enemy_min = 0.0,

@@ -223,17 +223,17 @@ class ScenarioManager:
 		globalvars.player.targetSpeed = 0.0
 		finish_line = (6000, 0)
 		#Protect this little dude on his way to the finish line.
-		npc_friend = hudHelpers.getNewEnemy(20.0,20.0,'ship',5,5,0,0,0)
+		npc_friend = hudHelpers.getNewEnemy(25.0,25.0,'ship',2,2,0,0,0)
 		npc_friend.setDestination(finish_line)
 		npc_friend.state = ship.GOTO_STATE
-		hudHelpers.addNewEnemyToWorld(npc_friend)
+		hudHelpers.addNewEnemyToWorld(npc_friend, add_to_blue=True)
 		#Display arrow to finish line
 		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(npc_friend))
 		#Display finish bullseye
 		globalvars.intangibles_top.add(objInstances.FinishBullsEye(npc_friend, finish_line))
 		#determine what sorts of obstacles to put on the race course.
 		numbers = [0 for _ in range(hudHelpers.planet+1)]
-		numbers[hudHelpers.enemy] = 0
+		numbers[hudHelpers.enemy] = 4
 		numbers[hudHelpers.crystal] = 5
 		numbers[hudHelpers.large_asteroid] = 20
 		numbers[hudHelpers.medium_asteroid] = 30
@@ -451,6 +451,8 @@ def wipeOldScenario():
 	globalvars.intangibles_bottom.empty()
 	globalvars.intangibles_top.empty()
 	globalvars.whiskerables.empty()
+	globalvars.RED_TEAM.empty()
+	globalvars.BLUE_TEAM.empty()
 	globalvars.BGCOLOR = colors.black
 	globalvars.BGIMAGE = None
 	globalvars.score_keeper = None
@@ -458,6 +460,7 @@ def wipeOldScenario():
 	#Set the player's health bar. This must be done right before adding any ship to tangibles
 	globalvars.player.setHealthBar()
 	globalvars.tangibles.add(globalvars.player)
+	globalvars.BLUE_TEAM.add(globalvars.player)
 	#Immediately clear the panel
 	globalvars.menu.main_panel = None
 	#Reset the arena

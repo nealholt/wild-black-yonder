@@ -516,17 +516,22 @@ class PhysicalObject(pygame.sprite.Sprite):
                 other.speed -= self.speed
                 other.targetSpeed = other.speed
 		#Prevent multiple consecutive collisions with the same object
-		#This can cause infinite loop, which I need to avoid. I'm not sure why it's causing an infinite loop though. TODO
-		limit_loop = 0
+		#This previously caused an infinite loop, but
 		#I think the following condition and speed setting fixes the problem. 
 		#There were cases in which the speed
 		#was infintesimally small, but non-zero.
 		if self.inCollision(other) and self.speed < 1.0:
 			self.speed = 1.0 
-		while self.inCollision(other) and limit_loop < 10000:
+		while self.inCollision(other):
 			self.move()
-			limit_loop += 1
-		if limit_loop == 10000:
-			print 'Possible infinite loop bug at the bottom of physicalObject.bounceOff with collision bewteen '+str(self.is_a)+' and '+str(other.is_a)+'. With speeds '+str(self.speed)+' and '+str(other.speed)+'. With thetas '+str(self.theta)+' and '+str(other.theta)+'. With locations '+str(self.rect.center)+' and '+str(other.rect.center)
-			exit()
+
+
+	def getLeadIndicator(self):
+		'''Return the point in space that enemies should shoot 
+		at to hit the player when the player is moving.'''
+		#return self.rect.center
+		return geometry.translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
+		#Why when self.rect.center is used does this still not work for the capital ship? Specifically there is a problem when I perch over the upper left corner of the capital ship. It creates a kind-of cool blind spot though. Maybe this is not a problem.
+
+
 

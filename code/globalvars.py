@@ -47,9 +47,6 @@ screen = None
 #Player must be created before scenario is called.
 player = None
 
-#The point in space just ahead of the player that all the enemies will aim for.
-player_target_lead = (0.0,0.0)
-
 #If arena is set to anything other than zero, then the player will be forced to stay inside the arena and all other objects will also be pointed roughly in the direction of the center of the arena. This is used for 
 arena = 0
 
@@ -88,4 +85,10 @@ faction_engine_tech_index = temp; temp+=1
 
 #Set to true in order to disable any menu access except for pause.
 disable_menu = False
+
+#There will be two sprite groups into which ships go. Ships in separate groups will be enemies.
+RED_TEAM = None
+BLUE_TEAM = None
+REDTEAM = 0
+BLUETEAM = 1
 

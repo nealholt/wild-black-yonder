@@ -36,6 +36,12 @@ globalvars.whiskerables = pygame.sprite.Group()
 #Player must be created before scenario is called.
 globalvars.player = playerObj.Player('ship')
 
+#Instantiate the teams and put the player on the blue team
+globalvars.RED_TEAM = pygame.sprite.Group()
+globalvars.BLUE_TEAM = pygame.sprite.Group()
+globalvars.BLUE_TEAM.add(globalvars.player)
+globalvars.player.team = globalvars.BLUETEAM
+
 globalvars.galaxy = nodeManager.NodeManager()
 globalvars.galaxy.generateGalaxy(seed=0, nodecount=globalvars.NUMBEROFNODES, minimumNodeDist=4)
 
@@ -149,9 +155,8 @@ def run(countdown=-1):
 			pygame.display.flip()
 			#Check for another key press to remove the panel.
 			for event in pygame.event.get():
-				#Check for event m key, n key, or escape key being 
-				#pressed to remove the menu.
-				if event.type == pygame.KEYDOWN:
+				#Check for event m key pressed to remove the menu.
+				if event.type == pygame.KEYDOWN and event.key == 109:
 					globalvars.menu.main_panel = None
 					redrawWholeBackground()
 					pygame.display.flip()

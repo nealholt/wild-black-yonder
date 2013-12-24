@@ -26,10 +26,14 @@ def getNewEnemy(x,y,image_name,ship_tech,engine_tech,gun_tech,missile_tech,mine_
 	temp.engineUpdate()
 	return temp
 
-def addNewEnemyToWorld(enemy_ship):
-	enemy_ship.setHealthBar()
-	globalvars.tangibles.add(enemy_ship)
-	globalvars.whiskerables.add(enemy_ship)
+def addNewEnemyToWorld(newship, add_to_blue=False):
+	newship.setHealthBar()
+	globalvars.tangibles.add(newship)
+	globalvars.whiskerables.add(newship)
+	if add_to_blue:
+		globalvars.BLUE_TEAM.add(newship)
+	else:
+		globalvars.RED_TEAM.add(newship)
 
 def getObstacles(seed=0,
 		enemy_min = 0.0,
@@ -267,9 +271,9 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			fuel_max=self.node.fuel_max,
 			planet_min=self.node.planet_min,
 			planet_max=self.node.planet_max)
-		self.dict[loc] = populateSpace(self.node, objects=obstacles, 
+		self.dict[loc] = populateSpace(objects=obstacles, 
 			width=self.space_length, height=self.space_length, 
-			center=(px*self.space_length, py*self.space_length), seed=loc)
+			center=(px*self.space_length, py*self.space_length), seed=loc, ship_tech=self.node.pirate_ship_tech, engine_tech=self.node.pirate_engine_tech, weapon_tech=self.node.pirate_weapon_tech, missile_tech=self.node.pirate_missile_tech, mine_tech=self.node.pirate_mine_tech)
 		#print 'testing keys in the dictionary: '+str(self.dict.keys())
 		#print 'end of InfiniteSpaceGenerator'
 
@@ -360,9 +364,14 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 					health_max=self.node.health_max,
 					capital_ship_min=self.node.capital_ship_min,
 					capital_ship_max=self.node.capital_ship_max)
-				self.dict[loc] = populateSpace(self.node, objects=obstacles, 
+				self.dict[loc] = populateSpace(objects=obstacles, 
 					width=self.space_length, height=self.space_length, 
-					center=(x*self.space_length, y*self.space_length), seed=loc)
+					center=(x*self.space_length, y*self.space_length), seed=loc,
+					ship_tech=self.node.pirate_ship_tech,
+					engine_tech=self.node.pirate_engine_tech,
+					weapon_tech=self.node.pirate_weapon_tech,
+					missile_tech=self.node.pirate_missile_tech,
+					mine_tech=self.node.pirate_mine_tech)
 		return False
 
 	def draw(self, _):

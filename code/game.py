@@ -36,6 +36,12 @@ globalvars.whiskerables = pygame.sprite.Group()
 #Player must be created before scenario is called.
 globalvars.player = playerObj.Player('ship')
 
+#Instantiate the teams and put the player on the blue team
+globalvars.RED_TEAM = pygame.sprite.Group()
+globalvars.BLUE_TEAM = pygame.sprite.Group()
+globalvars.BLUE_TEAM.add(globalvars.player)
+globalvars.player.team = globalvars.BLUETEAM
+
 globalvars.galaxy = nodeManager.NodeManager()
 globalvars.galaxy.generateGalaxy(seed=0, nodecount=globalvars.NUMBEROFNODES, minimumNodeDist=4)
 
@@ -332,9 +338,6 @@ def run(countdown=-1):
 							w.rect.center, (x,y))
 					else:
 						w.theta = angleFromPosition(w.rect.center, (x,y))
-
-		#Update player's lead target indicator so enemies shoot at a spot just ahead of the player.
-		globalvars.player_target_lead = globalvars.player.getLeadIndicator()
 
 		#update all sprites:
 

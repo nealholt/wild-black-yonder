@@ -162,14 +162,7 @@ class Player(Ship):
 		self.cooldown() #cooldown all the weapons
 		#Update my health bar
 		self.updateHealthBar()
-
-
-	def getLeadIndicator(self):
-		'''Return the point in space that enemies should shoot 
-		at to hit the player when the player is moving.'''
-		#return self.rect.center
-		return geometry.translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
-		#Why when self.rect.center is used does this still not work for the capital ship? Specifically there is a problem when I perch over the upper left corner of the capital ship. It creates a kind-of cool blind spot though. Maybe this is not a problem.
+		self.setLeadIndicator()
 
 
 	def playerUpdate(self):

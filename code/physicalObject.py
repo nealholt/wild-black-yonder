@@ -18,6 +18,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Sprite class:
 		# http://pygame.org/docs/ref/sprite.html
 		pygame.sprite.Sprite.__init__(self)
+		#Used for firing where a ship will be not where it's currently at. This is not perfectly implemented.
+		self.lead_indicator = (0.0,0.0)
 		#Keep track of whether or not this object's angle changed for efficiency
 		self.angleChanged = False
 		#Whether to offset this object's location based on the camera.
@@ -524,4 +526,14 @@ class PhysicalObject(pygame.sprite.Sprite):
 			self.speed = 1.0 
 		while self.inCollision(other):
 			self.move()
+
+
+	def setLeadIndicator(self):
+		'''Sets the point in space that enemies should shoot 
+		at to hit the player when the player is moving.'''
+		#return self.rect.center
+		self.lead_indicator = geometry.translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
+		#Why when self.rect.center is used does this still not work for the capital ship? Specifically there is a problem when I perch over the upper left corner of the capital ship. It creates a kind-of cool blind spot though. Maybe this is not a problem.
+
+
 

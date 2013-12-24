@@ -1,15 +1,11 @@
 git add . && git commit -m "" && git push
-** create an escort mission
-an npc ships wants to go from points a to point b.
-other npc ships want to kill you and it.
-You win if the ship gets to point b.
-you lose if you or the ship dies.
-*** create a ship behavior where the ship just flies to a location
-and dodges obstacles along the way.
-*** create an object that tracks win condition of this mission
-*** display this mission option on the mission menu
-*** create a method in scenario for this mission
 ** create a fleet battle mission
+An easy way to do battles with 2 teams is to have a global red team object and a global blue team object and have any ships in these objects in the state of attacking go after a randomly selected ship in the other list until that other is destroyed.
+
+Then just by default put the player in team blue and the enemy in team red.
+For the escort mission you can also put the npc in team blue.
+
+
 two NPC fleets battle each other.
 you win if your side is the last fleet standing. Include capital ships!
 ** I think the game needs a goal right away
