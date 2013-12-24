@@ -322,7 +322,7 @@ class ArrowToDestination(pygame.sprite.Sprite):
         def __init__(self, target):
 		pygame.sprite.Sprite.__init__(self)
 		self.is_a = globalvars.ARROW
-		self.target = target #An object with a rect
+		self.target = target #A location
 		self.dtt = 0.0 #Distance to target
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
@@ -334,10 +334,10 @@ class ArrowToDestination(pygame.sprite.Sprite):
 	def update(self):
 		''' '''
 		#Distance to target
-		self.dtt = cygeometry.distance(globalvars.player.rect.center, self.target.rect.center)
+		self.dtt = cygeometry.distance(globalvars.player.rect.center, self.target)
 
 	def draw(self, _):
-		self.rect = drawArrowAtTarget(self.target.rect.center)
+		self.rect = drawArrowAtTarget(self.target)
 
 	def isOnScreen(self, _):
 		#Only display the guiding arrow if player is too far away to see the target

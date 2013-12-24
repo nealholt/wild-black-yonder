@@ -626,12 +626,11 @@ class Follower(PhysicalObject):
 
 class FinishBullsEye(PhysicalObject):
 	'''Paints a bullseye at the finish line.'''
-	def __init__(self, racer, target):
+	def __init__(self, target):
 		PhysicalObject.__init__(self, \
 			centerx=target[0], \
 			centery=target[1],\
 			width=100, height=100)
-		self.racer = racer
 		self.is_a = globalvars.OTHER
 		self.target = target #A location
 		self.dtt = 0.0 #Distance to target
@@ -644,7 +643,7 @@ class FinishBullsEye(PhysicalObject):
 	def update(self):
 		''' '''
 		#Distance to target
-		self.dtt = cygeometry.distance(self.racer.rect.center, self.target)
+		self.dtt = cygeometry.distance(globalvars.player.rect.center, self.target)
 
 	def draw(self, offset):
 		#Draw a bulls eye (multiple overlapping red and white 
@@ -658,7 +657,7 @@ class FinishBullsEye(PhysicalObject):
 
 		if self.finish_reached: return True
 
-		#Check if the racer has reached the destination.
+		#Check if the player has reached the destination.
 		if self.dtt < 40:
 			#If so, end the race.
 			self.finish_reached = True

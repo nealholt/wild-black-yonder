@@ -1,17 +1,4 @@
 git add . && git commit -m "" && git push
-** behaviors
-ship behaviors
-  kill - go to indicated object and shoot at it.
-  follow - go to location of indicated object, but don't shoot
-  go to (use park command?)
-  go to no collision avoidance (missile behavior)
-  flee - too much damage taken. flee battlefield by going to point impossibly far away.
-  evade - player is right behind us. boost speed until this is not the case
-
-update should be an else if of state and then the behavior to take.
-
-
-can the states and their execution codes go to physical object? You can easily move shoot out of it
 ** create an escort mission
 an npc ships wants to go from points a to point b.
 other npc ships want to kill you and it.

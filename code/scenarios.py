@@ -119,10 +119,11 @@ class ScenarioManager:
 		globalvars.player.speed = 0.0
 		globalvars.player.targetSpeed = 0.0
 		finish_line = (6000, 0)
+		bulls_eye = objInstances.FinishBullsEye(globalvars.player, finish_line)
 		#Display arrow to finish line
-		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(finish_line))
+		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(bulls_eye))
 		#Display finish bullseye
-		globalvars.intangibles_top.add(objInstances.FinishBullsEye(finish_line))
+		globalvars.intangibles_top.add(bulls_eye)
 		#determine what sorts of obstacles to put on the race course.
 		numbers = [0 for _ in range(hudHelpers.planet+1)]
 		numbers[hudHelpers.enemy] = 3
@@ -209,6 +210,59 @@ class ScenarioManager:
 		pygame.display.flip()
 		#Display the intro to the mission
 		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to defeat the capital ship to win.'])
+
+
+	def escort(self, mission, seed=0):
+		globalvars.disable_menu = True #Disable the standard menu for now.
+		rd.seed(seed) #Fix the seed for the random number generator.
+		'''Escort (infinite space) - player must escort a friendly NPC ship to the destination'''
+		wipeOldScenario(); resetDust()
+		#Reset the player's location to 0,0 and his speed to zero
+		globalvars.player.loc = (0.0, 0.0)
+		globalvars.player.speed = 0.0
+		globalvars.player.targetSpeed = 0.0
+		finish_line = (6000, 0)
+		#Protect this little dude on his way to the finish line.
+		npc_friend = hudHelpers.getNewEnemy(20.0,20.0,'ship',5,5,0,0,0)
+		npc_friend.setDestination(finish_line)
+		npc_friend.state = ship.GOTO_STATE
+		hudHelpers.addNewEnemyToWorld(npc_friend)
+		#Display arrow to finish line
+		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(npc_friend))
+		#Display finish bullseye
+		globalvars.intangibles_top.add(objInstances.FinishBullsEye(npc_friend, finish_line))
+		#determine what sorts of obstacles to put on the race course.
+		numbers = [0 for _ in range(hudHelpers.planet+1)]
+		numbers[hudHelpers.enemy] = 0
+		numbers[hudHelpers.crystal] = 5
+		numbers[hudHelpers.large_asteroid] = 20
+		numbers[hudHelpers.medium_asteroid] = 30
+		numbers[hudHelpers.small_asteroid] = 40
+		numbers[hudHelpers.gold_metal] = 5
+		numbers[hudHelpers.silver_metal] = 6
+		numbers[hudHelpers.health] = 7
+		numbers[hudHelpers.capital_ship] = 0
+		numbers[hudHelpers.fuel] = 0
+		numbers[hudHelpers.planet] = 0
+		#Populate space in a semi narrow corridor between the player and the finish line
+		course_length = 6000 #pixels
+		course_height = 1000 #pixels
+		#Midway between player and destination
+		midway = (course_length/2, 0)
+		hudHelpers.populateSpace(objects=numbers, width=course_length, \
+			height=course_height, center=midway, seed=rd.random())
+		time_limit = 60 #time limit in seconds
+		text = ['ESCORT MISSION COMPLETED']
+		#TODO LEFT OFF HERE
+		#Display timer and score count with the following:
+		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
+			points_to_win=1000000, time_limit=time_limit, mission=mission)
+		globalvars.intangibles_top.add(globalvars.score_keeper)
+		#Draw the new background and flip the whole screen.
+		globalvars.screen.fill(globalvars.BGCOLOR)
+		pygame.display.flip()
+		#Display the intro to the mission
+		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to escort the friendly NPC to the finish.', 'If you lose your NPC ally, look for the yellow arrow.'])
 
 
 	def goToInfiniteSpace(self, nodeid, update=True):
@@ -351,7 +405,7 @@ class ScenarioManager:
 		next_node_id = globalvars.player.destinationNode[0]
 
 		#Find the infinite space generator
-		destNodeLoc = None
+		destWarp = None
 		foundObjWithWarps = False
 		for i in globalvars.intangibles_bottom:
 			if hasattr(i, 'warps'):
@@ -359,11 +413,11 @@ class ScenarioManager:
 				#Get the location of the destination node
 				for w in i.warps:
 					if w.destinationNode == next_node_id:
-						destNodeLoc = w.rect.center
+						destWarp = w
 						break
 				break
 		#Error check
-		if destNodeLoc is None:
+		if destWarp is None:
 			if foundObjWithWarps:
 				print 'ERROR: The infiniteSpaceGenerator object was found in intangibles_bottom, but it has no warp with an id matching nodeid '+str(next_node_id)+'. Exiting.'; exit()
 			else:
@@ -374,7 +428,7 @@ class ScenarioManager:
 				if i.is_a == globalvars.ARROW:
 					globalvars.intangibles_top.remove(i)
 			#Create a new arrow pointing to the destination node and add it to intangibles_top
-			globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destNodeLoc))
+			globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destWarp))
 
 
 	def restart(self):

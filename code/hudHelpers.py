@@ -81,7 +81,7 @@ health = 7
 capital_ship = 8
 fuel = 9
 planet = 10
-def populateSpace(node, objects=None, width=1000, height=1000, center=(0,0), seed=0.):
+def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., ship_tech=0, engine_tech=0, weapon_tech=0, missile_tech=0, mine_tech=0):
 	'''This is the first draft of a method to randomly populate space with objects.
 	This is currently called by the racing minigame.
 	Pre: objects is an array of natural numbers specifying how
@@ -110,15 +110,15 @@ def populateSpace(node, objects=None, width=1000, height=1000, center=(0,0), see
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(capitalShip.CapitalShip(centerx=x, centery=y, image_name='bigShip'))
 
-	for _ in xrange(objects[enemy]): #TODO LEFT OFF HERE
+	for _ in xrange(objects[enemy]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		#Generate a pirate ship with the node's level of tech
 		temp = getNewEnemy(x,y,'destroyer',\
-					node.pirate_ship_tech, \
-					node.pirate_engine_tech, \
-					node.pirate_weapon_tech, \
-					node.pirate_missile_tech, \
-					node.pirate_mine_tech)
+					ship_tech, \
+					engine_tech, \
+					weapon_tech, \
+					missile_tech, \
+					mine_tech)
 		physical_objs.append(temp)
 
 	for _ in xrange(objects[crystal]):
@@ -267,9 +267,9 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			fuel_max=self.node.fuel_max,
 			planet_min=self.node.planet_min,
 			planet_max=self.node.planet_max)
-		self.dict[loc] = populateSpace(self.node, objects=obstacles, 
+		self.dict[loc] = populateSpace(objects=obstacles, 
 			width=self.space_length, height=self.space_length, 
-			center=(px*self.space_length, py*self.space_length), seed=loc)
+			center=(px*self.space_length, py*self.space_length), seed=loc, ship_tech=self.node.pirate_ship_tech, engine_tech=self.node.pirate_engine_tech, weapon_tech=self.node.pirate_weapon_tech, missile_tech=self.node.pirate_missile_tech, mine_tech=self.node.pirate_mine_tech)
 		#print 'testing keys in the dictionary: '+str(self.dict.keys())
 		#print 'end of InfiniteSpaceGenerator'
 
@@ -360,9 +360,14 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 					health_max=self.node.health_max,
 					capital_ship_min=self.node.capital_ship_min,
 					capital_ship_max=self.node.capital_ship_max)
-				self.dict[loc] = populateSpace(self.node, objects=obstacles, 
+				self.dict[loc] = populateSpace(objects=obstacles, 
 					width=self.space_length, height=self.space_length, 
-					center=(x*self.space_length, y*self.space_length), seed=loc)
+					center=(x*self.space_length, y*self.space_length), seed=loc,
+					ship_tech=self.node.pirate_ship_tech,
+					engine_tech=self.node.pirate_engine_tech,
+					weapon_tech=self.node.pirate_weapon_tech,
+					missile_tech=self.node.pirate_missile_tech,
+					mine_tech=self.node.pirate_mine_tech)
 		return False
 
 	def draw(self, _):

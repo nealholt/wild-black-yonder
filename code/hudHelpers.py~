@@ -16,7 +16,7 @@ import cygeometry
 def getNewEnemy(x,y,image_name,ship_tech,engine_tech,gun_tech,missile_tech,mine_tech):
 	temp = ship.generateShip(ship_tech, x=x, y=y, image=image_name)
 	temp.initialize()
-	temp.gun = ship.weapon.generateWeapon(weapon_tech)
+	temp.gun = ship.weapon.generateWeapon(gun_tech)
 	temp.gun.shooter = temp
 	temp.missile = ship.missile.generateMissile(missile_tech)
 	temp.missile.shooter = temp
@@ -81,7 +81,7 @@ health = 7
 capital_ship = 8
 fuel = 9
 planet = 10
-def populateSpace(node, objects=None, width=1000, height=1000, center=(0,0), seed=0.):
+def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., ship_tech=0, engine_tech=0, weapon_tech=0, missile_tech=0, mine_tech=0):
 	'''This is the first draft of a method to randomly populate space with objects.
 	This is currently called by the racing minigame.
 	Pre: objects is an array of natural numbers specifying how
@@ -110,15 +110,15 @@ def populateSpace(node, objects=None, width=1000, height=1000, center=(0,0), see
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(capitalShip.CapitalShip(centerx=x, centery=y, image_name='bigShip'))
 
-	for _ in xrange(objects[enemy]): #TODO LEFT OFF HERE
+	for _ in xrange(objects[enemy]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		#Generate a pirate ship with the node's level of tech
 		temp = getNewEnemy(x,y,'destroyer',\
-					node.pirate_ship_tech, \
-					node.pirate_engine_tech, \
-					node.pirate_weapon_tech, \
-					node.pirate_missile_tech, \
-					node.pirate_mine_tech)
+					ship_tech, \
+					engine_tech, \
+					weapon_tech, \
+					missile_tech, \
+					mine_tech)
 		physical_objs.append(temp)
 
 	for _ in xrange(objects[crystal]):
