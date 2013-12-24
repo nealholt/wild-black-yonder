@@ -97,7 +97,7 @@ def getMissionArray():
 	temp.addLoseConsequence(globalvars.faction_relationship_index, globalvars.faction_relationship_index, -1, faction_index)
 	missions.append(temp)
 
-	temp = Mission('Battle','Tech -1. Faction -1','Faction -1', globalvars.scenario_manager.epicBattle)
+	temp = Mission('Battle','Tech -1. Faction -1','Faction -1', globalvars.scenario_manager.furball)
 	temp.addWinConsequence(globalvars.faction_relationship_index, globalvars.faction_relationship_index, -1, faction_index)
 	temp.addWinConsequence(globalvars.faction_weapon_tech_index, globalvars.faction_engine_tech_index, -1, faction_index)
 	temp.addLoseConsequence(globalvars.faction_relationship_index, globalvars.faction_relationship_index, -1, faction_index)

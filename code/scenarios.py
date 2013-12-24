@@ -253,7 +253,6 @@ class ScenarioManager:
 			height=course_height, center=midway, seed=rd.random())
 		time_limit = 60 #time limit in seconds
 		text = ['ESCORT MISSION COMPLETED']
-		#TODO LEFT OFF HERE
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
 			points_to_win=1000000, time_limit=time_limit, mission=mission)
@@ -263,6 +262,41 @@ class ScenarioManager:
 		pygame.display.flip()
 		#Display the intro to the mission
 		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to escort the friendly NPC to the finish.', 'If you lose your NPC ally, look for the yellow arrow.'])
+
+
+	def epicBattle(self, mission, seed=0): #TODO LEFT OFF HERE
+		globalvars.disable_menu = True #Disable the standard menu for now.
+		rd.seed(seed) #Fix the seed for the random number generator.
+		wipeOldScenario(); resetDust()
+		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
+		spacing = 50
+		n = 3
+		#Make n+1 enemy units:
+		start = (globalvars.player.rect.centerx-500, globalvars.player.rect.centery)
+		add_to_blue = False
+		for i in range(n+1):
+			enemy_ship = hudHelpers.getNewEnemy(start[0],start[1]+spacing*i,\
+				'destroyer',2,2,2,2,2)
+			hudHelpers.addNewEnemyToWorld(enemy_ship, add_to_blue=add_to_blue)
+		#Make n friendly units:
+		start = (globalvars.player.rect.centerx+500, globalvars.player.rect.centery)
+		add_to_blue = True
+		for i in range(n):
+			friendly_ship = hudHelpers.getNewEnemy(start[0],start[1]+spacing*i,\
+				'ship',2,2,2,2,2)
+			hudHelpers.addNewEnemyToWorld(friendly_ship, add_to_blue=add_to_blue)
+		#Make the score keeper:
+		time_limit = 60 #time limit in seconds
+		text = ['BATTLE COMPLETED']
+		#Display timer and score count with the following:
+		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
+			points_to_win=3, time_limit=time_limit, mission=mission)
+		globalvars.intangibles_top.add(globalvars.score_keeper)
+		#Draw the new background and flip the whole screen.
+		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
+		pygame.display.flip()
+		#Display the intro to the mission
+		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to defeat the enemy team and prevent your team from being defeated.','Your team is to the right. The enemy team is to the left.'])
 
 
 	def goToInfiniteSpace(self, nodeid, update=True):

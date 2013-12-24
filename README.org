@@ -1,13 +1,13 @@
 git add . && git commit -m "" && git push
 ** create a fleet battle mission
-An easy way to do battles with 2 teams is to have a global red team object and a global blue team object and have any ships in these objects in the state of attacking go after a randomly selected ship in the other list until that other is destroyed.
+TODO LEFT OFF HERE in scenarios.epicBattle.
 
-Then just by default put the player in team blue and the enemy in team red.
-For the escort mission you can also put the npc in team blue.
+capital ship needs fixed to work with teams. it can no longer use globalvars.player_target_lead as this no longer exists.
 
-
-two NPC fleets battle each other.
-you win if your side is the last fleet standing. Include capital ships!
+1. just add some ships on opposite sides of space to the two teams.
+2. change the ships to give points depending on their team.
+3. make sure the points work out so the winning is correct.
+4. implement capital ships and add them to the battle.
 ** I think the game needs a goal right away
 just something simple to introduce the mechanics.
 Fly to X.

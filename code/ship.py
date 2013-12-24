@@ -534,7 +534,7 @@ class Ship(PhysicalObject):
 			self.myHealthBar.kill()
 			died = True
 			#Award points
-			if not globalvars.score_keeper is None:
+			if not globalvars.score_keeper is None and self.team == globalvars.REDTEAM:
 				globalvars.score_keeper.points += 1
 			#Chance to spawn an item
 			if rd.random() > 0.5:

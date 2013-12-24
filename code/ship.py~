@@ -447,9 +447,8 @@ class Ship(PhysicalObject):
 			#Initialize target
 			if self.target is None or self.target.health <= 0:
 				if self.setTarget(): return True
-
-			self.setDestination(globalvars.player_target_lead) #TODO LEFT OFF HERE
-
+			#Set target location
+			self.setDestination(self.target.lead_indicator)
 			#Get angle to target
 			self.angle_to_target = self.getAngleToTarget()
 			#Get distance to target
@@ -472,7 +471,7 @@ class Ship(PhysicalObject):
 				self.shoot()
 				#Check for firing solutions for missiles
 				if self.missile.cooldown == 0:
-					self.shoot(force_shot=True, weapon=self.missile)
+					self.shoot(weapon=self.missile)
 					#Double the cooldown to make missiles shoot less often.
 					self.missile.cooldown = self.missile.cooldown*4
 			#cooldown all the weapons
@@ -535,7 +534,7 @@ class Ship(PhysicalObject):
 			self.myHealthBar.kill()
 			died = True
 			#Award points
-			if not globalvars.score_keeper is None:
+			if not globalvars.score_keeper is None and self.team == globalvars.REDTEAM:
 				globalvars.score_keeper.points += 1
 			#Chance to spawn an item
 			if rd.random() > 0.5:
