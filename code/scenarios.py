@@ -15,9 +15,7 @@ import cygeometry
 class ScenarioManager:
 	"""I created this to reduce the number of files importing scenarios.py which was getting cumbersome and limiting usability because I had to avoid mutual imports. An object referenced by a global variable seems like a much better option even if it doesn't have much state. """
 	def __init__(self):
-		#The distances between nodes in the galaxy view is proportional to the distance between warp portals in the regular ship view. The scaling factor is warpPortalScaling.
-		self.warpPortalScaling = 100
-
+		pass
 
 	def asteroids(self, mission, seed=0):
 		''' '''
@@ -310,7 +308,7 @@ class ScenarioManager:
 			opportunity = globalvars.factions.update(nodeid)
 		#Get the node that has the id that this portal will lead to
 		n = globalvars.galaxy.getNode(nodeid)
-		self.infiniteSpace(seed=nodeid, playerloc=n.loc, warps=n.connections)
+		self.infiniteSpace(seed=nodeid, playerloc=n.loc, node=n)
 		#Check for an opportunity. This is when a player is moving to a node that is
 		#the target of an action from a faction.
 		if not opportunity is None:
@@ -325,30 +323,20 @@ class ScenarioManager:
 			globalvars.menu.setFactionMissionPanel(n)
 
 
-	def infiniteSpace(self, seed=0, playerloc=(0.0,0.0), warps=None):
+	def infiniteSpace(self, seed=0, playerloc=(0.0,0.0), node=None):
 		rd.seed(seed) #Fix the seed for the random number generator.
-		wipeOldScenario(); resetDust()	
+		wipeOldScenario(); resetDust()
 		#Reset the player's location to 0,0 and his speed to zero
 		globalvars.player.loc = playerloc
 		globalvars.player.speed = 0.0
 		globalvars.player.targetSpeed = 0.0
 		globalvars.player.nodeid = seed #Player's new node id is set to be the seed argument.
 		#Place warp portals
-		allWarps = []
-		if not warps is None:
-			for w in warps:
-				#Get the slope of the line from playerLoc to this warp
-				angle = angleFromPosition(playerloc, w[1])
-				scaledDistance = cygeometry.distance(playerloc, w[1]) * self.warpPortalScaling
-				#print scaledDistance #TESTING
-				x,y = translate(playerloc, angle, scaledDistance)
-				temp = objInstances.WarpPortal(x=x, y=y, destinationNode=w[0],
-							method=self.goToInfiniteSpace)
-				globalvars.tangibles.add(temp)
-				allWarps.append(temp)
-
+		if not node is None:
+			for w in node.warps:
+				globalvars.tangibles.add(w)
 		#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
-		globalvars.intangibles_bottom.add(hudHelpers.InfiniteSpaceGenerator(seed=seed, warps=allWarps))
+		globalvars.intangibles_bottom.add(hudHelpers.InfiniteSpaceGenerator(seed=seed))
 		#Display player location and speed info with the following:
 		globalvars.intangibles_top.add(displayUtilities.ShipStatsText())
 
@@ -440,17 +428,13 @@ class ScenarioManager:
 		#Get the first node on the path:
 		next_node_id = globalvars.player.destinationNode[0]
 
-		#Find the infinite space generator
+		#Get the current node so we can point towards the next node
+		node = globalvars.galaxy.getNode(globalvars.player.nodeid)
 		destWarp = None
-		foundObjWithWarps = False
-		for i in globalvars.intangibles_bottom:
-			if hasattr(i, 'warps'):
-				foundObjWithWarps = True
-				#Get the location of the destination node
-				for w in i.warps:
-					if w.destinationNode == next_node_id:
-						destWarp = w
-						break
+		#Get the location of the destination node
+		for w in node.warps:
+			if w.destinationNode == next_node_id:
+				destWarp = w
 				break
 		#Error check
 		if destWarp is None:

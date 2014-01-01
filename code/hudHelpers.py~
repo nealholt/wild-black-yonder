@@ -118,7 +118,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 
 	for _ in xrange(objects[capital_ship]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		enemy_ship = hudHelpers.getNewCapitalShip(x,y)
+		enemy_ship = getNewCapitalShip(x,y)
 		physical_objs.append(enemy_ship)
 
 	for _ in xrange(objects[enemy]):

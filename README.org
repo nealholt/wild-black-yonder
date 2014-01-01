@@ -1,33 +1,4 @@
 git add . && git commit -m "" && git push
-** DONE capitalShip.py, hudHelpers.py, scenarios.py
-all modified so that capital ships now have teams.
-Also capital ship creation is now in a method in hudHelpers.py.
-** DONE globalvars.py, objInstances.py
-Added a CAPITALSHIP is_a attribute in global variables and used it in hudHelper and captitalShip.
-objInstances.py modified slightly to account for checking if an object is a ship or capitalship.
-** DONE scenarios.py
-I removed 
-import pygame.sprite
-import math
-import player
-I don't think these were needed.
-** DONE capitalShip.py
-Multiple targeting: I copied setTarget from ship to capitalShip and modified it to suit the capital ship. The method selects the target closest to each gun and saves the corresponding lead_indicator in the target array. I also modified shoot to aim at the new targets. Major changes were made to the way shoot functions.
-** DONE no bounce tunneling. physicalObject.py
-I modified physicalObject.py's lead_indicator initialization to be at the center of the object. I foresaw problems for capitalships otherwise.
-
-I dramatically changed the loop at the end of the bounceOff method that prevents multiple collisions. Tunneling was still occurring during collisions and I think that the changes I made will fix this.
-** DONE ship.py
-Fixed bug in which ship.py called player_target_lead when fleeing, but that variable no longer exists.
-** DONE create a fleet battle mission. scenarios.py
-I added capitalShips to scenarios.epicBattle and set the points to what ought to be the right values. Ready for testing this. I also added code in scenarios.epicBattle that ought to start the friendly ships off facing to the left, but this and many other things will need tested.
-*** DONE 1. just add some ships on opposite sides of space to the two teams
-*** DONE 2. change the ships to give points depending on their team
-*** DONE 3. make sure the points work out so the winning is correct
-*** DONE 4. implement capital ships and add them to the battle
-** DONE menus.py
-Remove the testing tab and corresponding menu.
-Add a minimap menu.
 ** minimap. nodeManager.py
 This will require additional state for nodes: lists of planet (and fuel and warp point) objects and their locations.
 see

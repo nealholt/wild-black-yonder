@@ -93,7 +93,7 @@ class Node():
 			#print scaledDistance #TESTING
 			x,y = translate(self.loc, angle, scaledDistance)
 			temp = objInstances.WarpPortal(x=x, y=y, destinationNode=node_id,
-						method=globalvars.scenario_manager.goToInfiniteSpace)
+						method=self.goToInfiniteSpace)
 			self.warps.append(temp)
 
 

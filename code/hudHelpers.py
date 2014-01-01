@@ -233,9 +233,8 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 	and randomly but deterministically generated ahead of the player. These 
 	objects will also be removed when they get too far from the player.
 	This allows the player to explore in effectively infinite space.'''
-        def __init__(self, seed=0, warps=None):
+        def __init__(self, seed=0):
 		pygame.sprite.Sprite.__init__(self)
-		self.warps = warps
 		#The node that this infinite space generator is generating space for.
 		self.node = globalvars.galaxy.getNode(seed)
 		#Distance above which to depopulate the grid cells.
