@@ -317,10 +317,10 @@ class MissileLauncher():
 			exit(1)
 
 
-#def testing():
-#	for i in range(len(missile_class_names)):
-#		print i
-#		generateMissile(i)
-#		print 'finished'
-#testing()
-#exit()
+def testing():
+	for i in range(len(missile_class_names)):
+		print i
+		generateMissile(i)
+		print 'finished'
+testing()
+exit()

@@ -376,8 +376,9 @@ class Ship(PhysicalObject):
 
 
 	def flee(self):
-		#Get the direction in which to flee
-		angle = geometry.angleFromPosition(globalvars.player_target_lead, self.rect.center)
+		#Get the direction in which to flee.
+        #Flee from previous destination which ought to be an enemy location.
+		angle = geometry.angleFromPosition(self.destination, self.rect.center)
 		#Flee far away!
 		magnitude = 1000000
 		#Get the point to flee towards

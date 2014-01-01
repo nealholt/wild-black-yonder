@@ -20,6 +20,7 @@ temp = 0
 BULLET = temp; temp+=1
 OTHER = temp; temp+=1
 SHIP = temp; temp+=1
+CAPITALSHIP = temp; temp+=1
 FIXEDBODY = temp; temp+=1
 HEALTH = temp; temp+=1
 ASTEROID = temp; temp+=1

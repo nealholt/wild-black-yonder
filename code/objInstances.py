@@ -391,7 +391,7 @@ class Asteroid(PhysicalObject):
 				globalvars.intangibles_top.add(Debris(x=other_sprite.rect.centerx,\
 									y=other_sprite.rect.centery,\
 									minTTL=0.3, maxTTL=0.8, minSpeed=200))
-		elif other_sprite.is_a == globalvars.SHIP:
+		elif other_sprite.is_a == globalvars.SHIP or other_sprite.is_a == globalvars.CAPITALSHIP:
 			self.health_amt -= other_sprite.breaker_damage
 		#Check for rock death
 		if self.health_amt < 0:

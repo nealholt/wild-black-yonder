@@ -219,7 +219,7 @@ def run(countdown=-1):
 					elif globalvars.disable_menu:
 						globalvars.menu.setPausePanel()
 					else:
-						globalvars.menu.setTestingPanel()
+						globalvars.menu.setShipPanel()
 					continue
 				elif event.key == 98: #b key
 					globalvars.player.parkingBrake()

@@ -54,6 +54,13 @@ class Node():
 		self.pirate_mine_tech = rd.randint(0, len(ship.mine.mine_class_names) / 2)
 		self.pirate_ship_tech = rd.randint(0, len(ship.ship_class_names) / 2)
 		self.pirate_engine_tech = rd.randint(0, len(ship.engine.engine_class_names) / 2)
+
+		#Nodes will store the references to the following objects at their location
+        #TODO LEFT OFF HERE
+		self.warps=[]
+		self.planets=[]
+		self.fuel_depots=[]
+
 		#Now initialize the values to be used to populate space based on the above values.
 		self.initialize()
 

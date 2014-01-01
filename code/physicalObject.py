@@ -18,8 +18,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#Sprite class:
 		# http://pygame.org/docs/ref/sprite.html
 		pygame.sprite.Sprite.__init__(self)
-		#Used for firing where a ship will be not where it's currently at. This is not perfectly implemented.
-		self.lead_indicator = (0.0,0.0)
 		#Keep track of whether or not this object's angle changed for efficiency
 		self.angleChanged = False
 		#Whether to offset this object's location based on the camera.
@@ -120,6 +118,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#1/2 max speed if yellow and otherwise 3/4 max speed.
 		self.danger_red_distance = 10
 		self.danger_yellow_distance = 20
+		#Used for firing where a ship will be not where it's currently at. This is not perfectly implemented.
+		self.lead_indicator = self.rect.center
 
 
 	def setLocation(self, centerx, centery):
@@ -174,7 +174,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 
 	def setColor(self, color):
 		self.color = color
-	        self.image.fill(color)
+		self.image.fill(color)
 
 	def setClosest(self, closest_sprite, dist):
 		self.closest_sprite = closest_sprite
@@ -514,18 +514,16 @@ class PhysicalObject(pygame.sprite.Sprite):
 					self.turnClockwise(amountToTurn)
 				#Increase speed by adding other object's speed
 				self.speed = self.speed+other.speed
-                #Decrease other object's speed
-                other.speed -= self.speed
-                other.targetSpeed = other.speed
+				#Decrease other object's speed
+				other.speed -= self.speed
+				other.targetSpeed = other.speed
 		#Prevent multiple consecutive collisions with the same object
-		#This previously caused an infinite loop, but
-		#I think the following condition and speed setting fixes the problem. 
-		#There were cases in which the speed
-		#was infintesimally small, but non-zero.
-		if self.inCollision(other) and self.speed < 1.0:
-			self.speed = 1.0 
+		#Get the angle to move away from other's center.
+		angle_to_move = geometry.angleFromPosition(\
+				other.rect.center, self.rect.center)
 		while self.inCollision(other):
-			self.move()
+			self.loc = geometry.translate(self.loc, angle_to_move, 1.0)
+			self.rect.center = self.loc
 
 
 	def setLeadIndicator(self):
@@ -534,6 +532,3 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#return self.rect.center
 		self.lead_indicator = geometry.translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
 		#Why when self.rect.center is used does this still not work for the capital ship? Specifically there is a problem when I perch over the upper left corner of the capital ship. It creates a kind-of cool blind spot though. Maybe this is not a problem.
-
-
-

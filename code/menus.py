@@ -258,42 +258,18 @@ class Menu:
 		#Player profile page
 		self.addMenuItem(x1=x_val, y1=top, string='Profile', textbufferleft=textbuffer, textbuffertop=textbuffer, method=globalvars.menu.setPlayerProfilePanel, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
-		#test scenarios
-		self.addMenuItem(x1=x_val, y1=top, string='Test', textbufferleft=textbuffer, textbuffertop=textbuffer, method=globalvars.menu.setTestingPanel, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
+		#minimap
+		self.addMenuItem(x1=x_val, y1=top, string='Minimap', textbufferleft=textbuffer, textbuffertop=textbuffer, method=globalvars.menu.setMinimapPanel, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 		#factions
 		self.addMenuItem(x1=x_val, y1=top, string='Faction', textbufferleft=textbuffer, textbuffertop=textbuffer, method=globalvars.menu.setFactionPanel, framed=True, width=width, height=localheight, frame_thickness=framethickness, frame_color=colors.yellow)
 		x_val += width
 
 
-	def setTestingPanel(self):
+	def setMinimapPanel(self):
 		self.setStandardMenu()
 		#Then draw the contents of the menu
-		horiz_space = 200
-		vert_space = 70
-		x1, y1 = horiz_space, globalvars.HEIGHT/2
-		radius = 10
-		texts = ['Asteroids', 'Gem Wild', 'Race', 'Furball', 'Capital ship']
-		methods = [globalvars.scenario_manager.asteroids, globalvars.scenario_manager.gemWild, globalvars.scenario_manager.race, globalvars.scenario_manager.furball, globalvars.scenario_manager.capitalShipScenario]
-		x2 = horiz_space*2
-		methodLength = len(methods)
-		for i in range(methodLength):
-			j = i-methodLength/2
-			y2 = globalvars.HEIGHT/2+vert_space*j
-
-			subpanel = Panel()
-			#http://www.secnetix.de/olli/Python/lambda_functions.hawk
-			subpanel.setMethod(methods[i])
-			subpanel.argument = 0 #A token argument is needed for each mission
-			temp = drawable.Circle(x1=x2, y1=y2, radius=radius, color=colors.yellow)
-			subpanel.addDrawable(temp)
-			temp = drawable.Text(x1=(x2+2*radius), y1=y2, string=texts[i],\
-				font_size=font_size, color=colors.white)
-			subpanel.addDrawable(temp)
-			self.main_panel.addPanel(subpanel)
-
-			temp = drawable.Line(x1=x1, y1=y1, x2=x2, y2=y2)
-			self.main_panel.addDrawable(temp)
+        #TODO LEFT OFF HERE
 
 
 	def setGasStationPanel(self):

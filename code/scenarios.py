@@ -1,15 +1,11 @@
-import pygame.sprite
 import pygame.display
 import objInstances
 import colors
 import random as rd
 from geometry import getCoordsNearLoc, translate, angleFromPosition
 import ship
-import capitalShip
 import displayUtilities
 import globalvars
-import math
-import player
 import hudHelpers
 import sys
 sys.path.append('code/cython')
@@ -195,9 +191,8 @@ class ScenarioManager:
 		wipeOldScenario(); resetDust()
 		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
 		#Make the capital ship
-		enemy_ship = capitalShip.CapitalShip(centerx=0, centery=400, image_name='bigShip')
-		globalvars.tangibles.add(enemy_ship)
-		globalvars.whiskerables.add(enemy_ship)
+		enemy_ship = hudHelpers.getNewCapitalShip(0,400)
+		hudHelpers.addNewCapitalShipToWorld(newship)
 		#Create the score keeper.
 		time_limit = 30 #time limit in seconds
 		text = ['CAPITAL SHIP BATTLE COMPLETED']
@@ -264,33 +259,40 @@ class ScenarioManager:
 		globalvars.menu.setBasicTextPanel(['You have '+str(time_limit)+' seconds to escort the friendly NPC to the finish.', 'If you lose your NPC ally, look for the yellow arrow.'])
 
 
-	def epicBattle(self, mission, seed=0): #TODO LEFT OFF HERE
+	def epicBattle(self, mission, seed=0):
 		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
 		wipeOldScenario(); resetDust()
 		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
 		spacing = 50
 		n = 3
-		#Make n+1 enemy units:
+		#Make n+1 enemy units starting to the left of the player:
 		start = (globalvars.player.rect.centerx-500, globalvars.player.rect.centery)
 		add_to_blue = False
 		for i in range(n+1):
 			enemy_ship = hudHelpers.getNewEnemy(start[0],start[1]+spacing*i,\
 				'destroyer',2,2,2,2,2)
 			hudHelpers.addNewEnemyToWorld(enemy_ship, add_to_blue=add_to_blue)
+		#Add an enemy capital ship
+		enemy_ship = hudHelpers.getNewCapitalShip(start[0],start[1]+spacing*n)
+		hudHelpers.addNewEnemyToWorld(enemy_ship, add_to_blue=add_to_blue)
 		#Make n friendly units:
 		start = (globalvars.player.rect.centerx+500, globalvars.player.rect.centery)
 		add_to_blue = True
 		for i in range(n):
 			friendly_ship = hudHelpers.getNewEnemy(start[0],start[1]+spacing*i,\
 				'ship',2,2,2,2,2)
+			friendly_ship.theta = 179.0 #Face the ship to the left
 			hudHelpers.addNewEnemyToWorld(friendly_ship, add_to_blue=add_to_blue)
+		#Add a friendly capital ship
+		friendly_ship = hudHelpers.getNewCapitalShip(start[0],start[1]+spacing*n)
+		hudHelpers.addNewEnemyToWorld(friendly_ship, add_to_blue=add_to_blue)
 		#Make the score keeper:
-		time_limit = 60 #time limit in seconds
+		time_limit = 120 #time limit in seconds
 		text = ['BATTLE COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=3, time_limit=time_limit, mission=mission)
+			points_to_win=103, time_limit=time_limit, mission=mission)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))

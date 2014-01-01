@@ -37,6 +37,10 @@ def addNewEnemyToWorld(newship, add_to_blue=False):
 		newship.team = globalvars.REDTEAM
 		globalvars.RED_TEAM.add(newship)
 
+def getNewCapitalShip(x,y):
+	temp = capitalShip.CapitalShip(centerx=x, centery=y, image_name='bigShip')
+	return temp
+
 def getObstacles(seed=0,
 		enemy_min = 0.0,
 		enemy_max = 1.2,
@@ -114,7 +118,8 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 
 	for _ in xrange(objects[capital_ship]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(capitalShip.CapitalShip(centerx=x, centery=y, image_name='bigShip'))
+		enemy_ship = getNewCapitalShip(x,y)
+		physical_objs.append(enemy_ship)
 
 	for _ in xrange(objects[enemy]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
@@ -199,7 +204,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 			#might collide with an object and not be added, but setHealthBar
 			#puts the health bar in intangibles so the health bar ends up
 			#floating in space with no one to ever remove it.
-			if p.is_a == globalvars.SHIP:
+			if p.is_a == globalvars.SHIP or p.is_a == globalvars.CAPITALSHIP:
 				addNewEnemyToWorld(p)
 			else:
 				globalvars.tangibles.add(p)
