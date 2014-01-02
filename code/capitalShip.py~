@@ -57,7 +57,7 @@ class CapitalShip(physicalObject.PhysicalObject):
 		self.weapons[1].offset = (self.collisionwidth/-2, 0) #left
 		self.weapons[2].offset = (0, self.collisionheight/2) #bottom
 
-		self.targets = [None for _ in range(len(self.gunlocs))]
+		self.targets = [(0.0, 0.0) for _ in range(len(self.gunlocs))]
 		
 		self.engine=None
 
@@ -84,12 +84,19 @@ class CapitalShip(physicalObject.PhysicalObject):
 		#Capital ship initially has 3 guns. one on top, one in front, and one on bottom.
 		for i in range(len(self.weapons)):
 			#If weapon is cool and nearest target is in range then fire.
-			if not self.targets[i] is None and \
-			self.weapons[i].cooldown == 0 and \
-			cygeometry.distance(self.targets[i].lead_indicator, self.gunlocs[i]) < \
-			self.weapons[i].weapon_range:
-				angle = angleFromPosition(self.gunlocs[i], self.targets[i].lead_indicator)
-				self.weapons[i].shoot(angle)
+			try:
+				if self.weapons[i].cooldown == 0 and \
+				cygeometry.distance(self.targets[i], self.gunlocs[i]) <\
+				self.weapons[i].weapon_range:
+					angle = angleFromPosition(self.gunlocs[i], self.targets[i])
+					self.weapons[i].shoot(angle)
+			except TypeError:
+				print i
+				print self.targets[i] #This is a float but should be a pair of floats. #TODO LEFT OFF HERE
+				print self.gunlocs[i]
+				print self.targets
+				print self.gunlocs
+				exit()
 
 
 	def cooldown(self):

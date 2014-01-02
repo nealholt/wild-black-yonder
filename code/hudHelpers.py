@@ -13,6 +13,34 @@ import sys
 sys.path.append('code/cython')
 import cygeometry
 
+
+def nudgeApart(physical_objs):
+	'''Takes a list of physical objects and modifies their locations so they don't collide.'''
+	TESTING=False
+	#Prevent collisions.
+	#The following copied from collisionHandling()
+	physical_objs = sorted(physical_objs, \
+			key=lambda c: c.rect.bottom,\
+			reverse=True)
+	#Nudge objects that collide apart.
+	#This code is related to the code used in setClosestSprites and collisionHandling
+	for i in xrange(len(physical_objs)):
+		A = physical_objs[i]
+		for j in xrange(i+1, len(physical_objs)):
+			B = physical_objs[j]
+			if A.rect.top > B.rect.bottom:
+				break
+			else:
+				if cygeometry.distance(A.rect.center, B.rect.center) > A.collisionradius+B.collisionradius:
+					pass
+				else:
+					#They collide. Move them apart.
+					if TESTING: collisions += 1
+					magnitude = max(A.collisionradius, B.collisionradius)*2
+					angle = A.getAngleToTarget(target=B)
+					B.translate(angle, magnitude)
+
+
 def getNewEnemy(x,y,image_name,ship_tech,engine_tech,gun_tech,missile_tech,mine_tech):
 	temp = ship.generateShip(ship_tech, x=x, y=y, image=image_name)
 	temp.initialize()
@@ -26,6 +54,7 @@ def getNewEnemy(x,y,image_name,ship_tech,engine_tech,gun_tech,missile_tech,mine_
 	temp.engineUpdate()
 	return temp
 
+
 def addNewEnemyToWorld(newship, add_to_blue=False):
 	newship.setHealthBar()
 	globalvars.tangibles.add(newship)
@@ -37,9 +66,11 @@ def addNewEnemyToWorld(newship, add_to_blue=False):
 		newship.team = globalvars.REDTEAM
 		globalvars.RED_TEAM.add(newship)
 
+
 def getNewCapitalShip(x,y):
 	temp = capitalShip.CapitalShip(centerx=x, centery=y, image_name='bigShip')
 	return temp
+
 
 def getObstacles(seed=0,
 		enemy_min = 0.0,
@@ -91,7 +122,7 @@ health = 7
 capital_ship = 8
 fuel = 9
 planet = 10
-def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., ship_tech=0, engine_tech=0, weapon_tech=0, missile_tech=0, mine_tech=0):
+def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., ship_tech=0, engine_tech=0, weapon_tech=0, missile_tech=0, mine_tech=0, fuel_depots=None, planets=None):
 	'''This is the first draft of a method to randomly populate space with objects.
 	This is currently called by the racing minigame.
 	Pre: objects is an array of natural numbers specifying how
@@ -160,36 +191,20 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.HealthKit(x, y))
 
-	for _ in xrange(objects[fuel]):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(objInstances.GasStation(x, y))
+	if not fuel_depots is None:
+		for f in fuel_depots:
+			physical_objs.append(f)
+
+	if not planets is None:
+		for p in planets:
+			physical_objs.append(p)
 
 	for _ in xrange(objects[planet]):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Planet(x, y))
 
 	#Prevent collisions.
-	#The following copied from collisionHandling()
-	physical_objs = sorted(physical_objs, \
-			key=lambda c: c.rect.bottom,\
-			reverse=True)
-	#Nudge objects that collide apart.
-	#This code is the same as the code used in setClosestSprites and collisionHandling
-	for i in xrange(len(physical_objs)):
-		A = physical_objs[i]
-		for j in xrange(i+1, len(physical_objs)):
-			B = physical_objs[j]
-			if A.rect.top > B.rect.bottom:
-				break
-			else:
-				if cygeometry.distance(A.rect.center, B.rect.center) > A.collisionradius+B.collisionradius:
-					pass
-				else:
-					#They collide. Move them apart.
-					if TESTING: collisions += 1
-					magnitude = max(A.collisionradius, B.collisionradius)*2
-					angle = A.getAngleToTarget(target=B)
-					B.translate(angle, magnitude)
+	nudgeApart(physical_objs)
 
 	#Put everything in tangibles and whiskerables unless they collide with any tangibles.
 	toreturn = pygame.sprite.Group()
@@ -279,7 +294,14 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			planet_max=self.node.planet_max)
 		self.dict[loc] = populateSpace(objects=obstacles, 
 			width=self.space_length, height=self.space_length, 
-			center=(px*self.space_length, py*self.space_length), seed=loc, ship_tech=self.node.pirate_ship_tech, engine_tech=self.node.pirate_engine_tech, weapon_tech=self.node.pirate_weapon_tech, missile_tech=self.node.pirate_missile_tech, mine_tech=self.node.pirate_mine_tech)
+			center=(px*self.space_length, py*self.space_length), seed=loc,
+			ship_tech=self.node.pirate_ship_tech,
+			engine_tech=self.node.pirate_engine_tech,
+			weapon_tech=self.node.pirate_weapon_tech,
+			missile_tech=self.node.pirate_missile_tech,
+			mine_tech=self.node.pirate_mine_tech,
+			fuel_depots=self.node.fuel_depots,
+			planets=self.node.planets)
 		#print 'testing keys in the dictionary: '+str(self.dict.keys())
 		#print 'end of InfiniteSpaceGenerator'
 
@@ -377,7 +399,9 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 					engine_tech=self.node.pirate_engine_tech,
 					weapon_tech=self.node.pirate_weapon_tech,
 					missile_tech=self.node.pirate_missile_tech,
-					mine_tech=self.node.pirate_mine_tech)
+					mine_tech=self.node.pirate_mine_tech,
+					fuel_depots=self.node.fuel_depots,
+					planets=self.node.planets)
 		return False
 
 	def draw(self, _):

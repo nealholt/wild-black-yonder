@@ -504,7 +504,7 @@ class Ship(PhysicalObject):
 		if other_sprite.is_a == globalvars.BULLET:
 			if other_sprite.dontClipMe == self: return died
 			else: self.takeDamage(other_sprite.damage)
-		elif other_sprite.is_a == globalvars.SHIP or other_sprite.is_a == globalvars.CAPITALSHIP:
+		elif other_sprite.is_a == globalvars.SHIP:
 			#Check for bounce off
 			#For now, area stands in for mass and only the
 			#less massive object bounces off
