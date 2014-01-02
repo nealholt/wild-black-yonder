@@ -78,6 +78,18 @@ class Node():
 			x,y = getCoordsNearLoc(self.loc, mindist, radius, radius)
 			self.fuel_depots.append(objInstances.GasStation(x, y))
 
+		#Objects that can appear in space around this node
+		self.obstacles = dict()
+		self.obstacles['enemy'] = 0
+		self.obstacles['crystal'] = 0
+		self.obstacles['large_asteroid'] = 0
+		self.obstacles['medium_asteroid'] = 0
+		self.obstacles['small_asteroid'] = 0
+		self.obstacles['gold_metal'] = 0
+		self.obstacles['silver_metal'] = 0
+		self.obstacles['health'] = 0
+		self.obstacles['capital_ship'] = 0
+
 		#Now initialize the values to be used to populate space based on the above values.
 		self.initialize()
 
@@ -93,7 +105,7 @@ class Node():
 			#print scaledDistance #TESTING
 			x,y = translate(self.loc, angle, scaledDistance)
 			temp = objInstances.WarpPortal(x=x, y=y, destinationNode=node_id,
-						method=self.goToInfiniteSpace)
+						method=globalvars.scenario_manager.goToInfiniteSpace)
 			self.warps.append(temp)
 
 
@@ -244,6 +256,19 @@ class Node():
 		high = int(max_percent * maximum)
 		self.pirate_engine_tech = rd.randint(low,high)
 
+
+	def refreshObstacles(self, seed=0):
+		'''Get a list of obstacles based on the attributes of this node.'''
+		rd.seed(seed) #Fix the seed for the random number generator.
+		self.obstacles['enemy'] = int(rd.uniform(self.enemy_min, self.enemy_max))
+		self.obstacles['crystal'] = int(rd.uniform(self.crystal_min, self.crystal_max))
+		self.obstacles['large_asteroid'] = int(rd.uniform(self.large_asteroid_min, self.large_asteroid_max))
+		self.obstacles['medium_asteroid'] = int(rd.uniform(self.medium_asteroid_min, self.medium_asteroid_max))
+		self.obstacles['small_asteroid'] = int(rd.uniform(self.small_asteroid_min, self.small_asteroid_max))
+		self.obstacles['gold_metal'] = int(rd.uniform(self.gold_metal_min, self.gold_metal_max))
+		self.obstacles['silver_metal'] = int(rd.uniform(self.silver_metal_min, self.silver_metal_max))
+		self.obstacles['health'] = int(rd.uniform(self.health_min, self.health_max))
+		self.obstacles['capital_ship'] = int(rd.uniform(self.capital_ship_min, self.capital_ship_max))
 
 
 

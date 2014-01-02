@@ -119,7 +119,7 @@ class ScenarioManager:
 		#Display finish bullseye
 		globalvars.intangibles_top.add(bulls_eye)
 		#determine what sorts of obstacles to put on the race course.
-		numbers = [0 for _ in range(hudHelpers.planet+1)]
+		numbers = [0 for _ in range(hudHelpers.planet+1)] #TODO LEFT OFF HERE
 		numbers[hudHelpers.enemy] = 3
 		numbers[hudHelpers.crystal] = 5
 		numbers[hudHelpers.large_asteroid] = 20
@@ -522,10 +522,4 @@ def resetDustOnTop():
 				 color=colors.white)
 		globalvars.intangibles_top.add(temp)
 
-
-def profile():
-	'''Profile some of the functions in this file.'''
-	import cProfile
-	cProfile.runctx('for _ in range(10000): hudHelpers.getObstacles(seed=0)', globals(),locals(), 'profiling/getObstacles.profile')
-	cProfile.runctx('for _ in range(1000): 	obstacles = hudHelpers.getObstacles(seed=0); hudHelpers.populateSpace(objects=obstacles, width=1000, height=1000, center=(0,0), seed=0)', globals(),locals(), 'profiling/populateSpace.profile')
 

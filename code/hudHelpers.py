@@ -72,46 +72,7 @@ def getNewCapitalShip(x,y):
 	return temp
 
 
-def getObstacles(seed=0,
-		enemy_min = 0.0,
-		enemy_max = 1.2,
-		crystal_min = 0.0,
-		crystal_max = 1.3,
-		large_asteroid_min = 0.0,
-		large_asteroid_max = 3.0,
-		medium_asteroid_min = 0.0,
-		medium_asteroid_max = 4.0,
-		small_asteroid_min = 0.0,
-		small_asteroid_max = 5.0,
-		gold_metal_min = 0.0,
-		gold_metal_max = 2.0,
-		silver_metal_min = 0.0,
-		silver_metal_max = 2.0,
-		health_min = 0.0,
-		health_max = 1.5,
-		capital_ship_min = 0.0,
-		capital_ship_max = 1.1,
-		fuel_min = 0.0,
-		fuel_max = 1.1,
-		planet_min = 0.0,
-		planet_max = 1.1):
-	rd.seed(seed) #Fix the seed for the random number generator.
-	numbers = [0 for _ in range(planet+1)]
-	numbers[enemy] = int(rd.uniform(enemy_min, enemy_max))
-	numbers[crystal] = int(rd.uniform(crystal_min, crystal_max))
-	numbers[large_asteroid] = int(rd.uniform(large_asteroid_min, large_asteroid_max))
-	numbers[medium_asteroid] = int(rd.uniform(medium_asteroid_min, medium_asteroid_max))
-	numbers[small_asteroid] = int(rd.uniform(small_asteroid_min, small_asteroid_max))
-	numbers[gold_metal] = int(rd.uniform(gold_metal_min, gold_metal_max))
-	numbers[silver_metal] = int(rd.uniform(silver_metal_min, silver_metal_max))
-	numbers[health] = int(rd.uniform(health_min, health_max))
-	numbers[capital_ship] = int(rd.uniform(capital_ship_min, capital_ship_max))
-	numbers[fuel] = int(rd.uniform(fuel_min, fuel_max))
-	numbers[planet] = int(rd.uniform(planet_min, planet_max))
-	return numbers
-
-
-enemy = 0
+enemy = 0 #TODO LEFT OFF HERE
 crystal = 1
 large_asteroid = 2
 medium_asteroid = 3
@@ -147,12 +108,12 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 
 	physical_objs = []
 
-	for _ in xrange(objects[capital_ship]):
+	for _ in xrange(objects['capital_ship']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		enemy_ship = getNewCapitalShip(x,y)
 		physical_objs.append(enemy_ship)
 
-	for _ in xrange(objects[enemy]):
+	for _ in xrange(objects['enemy']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		#Generate a pirate ship with the node's level of tech
 		temp = getNewEnemy(x,y,'destroyer',\
@@ -163,31 +124,31 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 					mine_tech)
 		physical_objs.append(temp)
 
-	for _ in xrange(objects[crystal]):
+	for _ in xrange(objects['crystal']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Gem(x=x, y=y, speed_min=0., speed_max=0.))
 
-	for _ in xrange(objects[large_asteroid]):
+	for _ in xrange(objects['large_asteroid']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='bigrock'))
 
-	for _ in xrange(objects[medium_asteroid]):
+	for _ in xrange(objects['medium_asteroid']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='medrock'))
 
-	for _ in xrange(objects[small_asteroid]):
+	for _ in xrange(objects['small_asteroid']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='smallrock'))
 
-	for _ in xrange(objects[gold_metal]):
+	for _ in xrange(objects['gold_metal']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='gold'))
 
-	for _ in xrange(objects[silver_metal]):
+	for _ in xrange(objects['silver_metal']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='silver'))
 
-	for _ in xrange(objects[health]):
+	for _ in xrange(objects['health']):
 		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.HealthKit(x, y))
 
@@ -198,10 +159,6 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 	if not planets is None:
 		for p in planets:
 			physical_objs.append(p)
-
-	for _ in xrange(objects[planet]):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
-		physical_objs.append(objInstances.Planet(x, y))
 
 	#Prevent collisions.
 	nudgeApart(physical_objs)
@@ -269,31 +226,9 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 		py = py / self.space_length
 		#Generate obstacles in player's location and put them in the dictionary. You might want to modify populateSpace to return its newly created physical objects so they can be tracked here for easy removal later.
 		loc = str(px).zfill(3)+str(py).zfill(3)
-		obstacles = getObstacles(seed=loc,
-			enemy_min=self.node.enemy_min,
-			enemy_max=self.node.enemy_max,
-			crystal_min=self.node.crystal_min,
-			crystal_max=self.node.crystal_max,
-			large_asteroid_min=self.node.large_asteroid_min,
-			large_asteroid_max=self.node.large_asteroid_max,
-			medium_asteroid_min=self.node.medium_asteroid_min,
-			medium_asteroid_max=self.node.medium_asteroid_max,
-			small_asteroid_min=self.node.small_asteroid_min,
-			small_asteroid_max=self.node.small_asteroid_max,
-			gold_metal_min=self.node.gold_metal_min,
-			gold_metal_max=self.node.gold_metal_max,
-			silver_metal_min=self.node.silver_metal_min,
-			silver_metal_max=self.node.silver_metal_max,
-			health_min=self.node.health_min,
-			health_max=self.node.health_max,
-			capital_ship_min=self.node.capital_ship_min,
-			capital_ship_max=self.node.capital_ship_max,
-			fuel_min=self.node.fuel_min,
-			fuel_max=self.node.fuel_max,
-			planet_min=self.node.planet_min,
-			planet_max=self.node.planet_max)
-		self.dict[loc] = populateSpace(objects=obstacles, 
-			width=self.space_length, height=self.space_length, 
+		self.node.refreshObstacles(seed=loc) #TODO LEFT OFF HERE
+		self.dict[loc] = populateSpace(objects=self.node.obstacles,
+			width=self.space_length, height=self.space_length,
 			center=(px*self.space_length, py*self.space_length), seed=loc,
 			ship_tech=self.node.pirate_ship_tech,
 			engine_tech=self.node.pirate_engine_tech,
@@ -373,26 +308,8 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			loc = str(x).zfill(3)+str(y).zfill(3)
 			if not loc in self.dict.keys():
 				#print 'testing the location '+str(loc)+' is empty so we are populating it'
-				obstacles = getObstacles(seed=loc,
-					enemy_min=self.node.enemy_min,
-					enemy_max=self.node.enemy_max,
-					crystal_min=self.node.crystal_min,
-					crystal_max=self.node.crystal_max,
-					large_asteroid_min=self.node.large_asteroid_min,
-					large_asteroid_max=self.node.large_asteroid_max,
-					medium_asteroid_min=self.node.medium_asteroid_min,
-					medium_asteroid_max=self.node.medium_asteroid_max,
-					small_asteroid_min=self.node.small_asteroid_min,
-					small_asteroid_max=self.node.small_asteroid_max,
-					gold_metal_min=self.node.gold_metal_min,
-					gold_metal_max=self.node.gold_metal_max,
-					silver_metal_min=self.node.silver_metal_min,
-					silver_metal_max=self.node.silver_metal_max,
-					health_min=self.node.health_min,
-					health_max=self.node.health_max,
-					capital_ship_min=self.node.capital_ship_min,
-					capital_ship_max=self.node.capital_ship_max)
-				self.dict[loc] = populateSpace(objects=obstacles, 
+				self.node.refreshObstacles(seed=loc) #TODO LEFT OFF HERE
+				self.dict[loc] = populateSpace(objects=self.node.obstacles, 
 					width=self.space_length, height=self.space_length, 
 					center=(x*self.space_length, y*self.space_length), seed=loc,
 					ship_tech=self.node.pirate_ship_tech,

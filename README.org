@@ -22,8 +22,6 @@ along with this hudHelper.py code:
 
 
 Change implementation of planets to have a fixed number appear at any node (like warp points). Have them appear within a large but limited region around the warp gate. Same with fuel depots.
-** capital ship bug
-go down and to the left. Image appears but no ship is present. Odd.
 ** minimap. nodeManager.py
 Display player, warp point, fuel depots, and planet on the minimap.
 

@@ -428,17 +428,13 @@ class ScenarioManager:
 		#Get the first node on the path:
 		next_node_id = globalvars.player.destinationNode[0]
 
-		#Find the infinite space generator
+		#Get the current node so we can point towards the next node
+		node = globalvars.galaxy.getNode(globalvars.player.nodeid)
 		destWarp = None
-		foundObjWithWarps = False
-		for i in globalvars.intangibles_bottom:
-			if hasattr(i, 'warps'): #TODO LEFT OFF HERE
-				foundObjWithWarps = True
-				#Get the location of the destination node
-				for w in i.warps:
-					if w.destinationNode == next_node_id:
-						destWarp = w
-						break
+		#Get the location of the destination node
+		for w in node.warps:
+			if w.destinationNode == next_node_id:
+				destWarp = w
 				break
 		#Error check
 		if destWarp is None:
@@ -526,10 +522,4 @@ def resetDustOnTop():
 				 color=colors.white)
 		globalvars.intangibles_top.add(temp)
 
-
-def profile():
-	'''Profile some of the functions in this file.'''
-	import cProfile
-	cProfile.runctx('for _ in range(10000): hudHelpers.getObstacles(seed=0)', globals(),locals(), 'profiling/getObstacles.profile')
-	cProfile.runctx('for _ in range(1000): 	obstacles = hudHelpers.getObstacles(seed=0); hudHelpers.populateSpace(objects=obstacles, width=1000, height=1000, center=(0,0), seed=0)', globals(),locals(), 'profiling/populateSpace.profile')
 
