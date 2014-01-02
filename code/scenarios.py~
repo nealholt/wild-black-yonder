@@ -2,7 +2,7 @@ import pygame.display
 import objInstances
 import colors
 import random as rd
-from geometry import getCoordsNearLoc, translate, angleFromPosition
+from geometry import getCoordsNearLoc
 import ship
 import displayUtilities
 import globalvars
@@ -119,18 +119,16 @@ class ScenarioManager:
 		#Display finish bullseye
 		globalvars.intangibles_top.add(bulls_eye)
 		#determine what sorts of obstacles to put on the race course.
-		numbers = [0 for _ in range(hudHelpers.planet+1)]
-		numbers[hudHelpers.enemy] = 3
-		numbers[hudHelpers.crystal] = 5
-		numbers[hudHelpers.large_asteroid] = 20
-		numbers[hudHelpers.medium_asteroid] = 30
-		numbers[hudHelpers.small_asteroid] = 40
-		numbers[hudHelpers.gold_metal] = 5
-		numbers[hudHelpers.silver_metal] = 6
-		numbers[hudHelpers.health] = 7
-		numbers[hudHelpers.capital_ship] = 0
-		numbers[hudHelpers.fuel] = 0
-		numbers[hudHelpers.planet] = 0
+		numbers = dict()
+		numbers['enemy'] = 3
+		numbers['crystal'] = 5
+		numbers['large_asteroid'] = 20
+		numbers['medium_asteroid'] = 30
+		numbers['small_asteroid'] = 40
+		numbers['gold_metal'] = 5
+		numbers['silver_metal'] = 6
+		numbers['health'] = 7
+		numbers['capital_ship'] = 0
 		#Populate space in a semi narrow corridor between the player and the finish line
 		course_length = 6000 #pixels
 		course_height = 1000 #pixels
@@ -225,18 +223,16 @@ class ScenarioManager:
 		#Display finish bullseye
 		globalvars.intangibles_top.add(objInstances.FinishBullsEye(npc_friend, finish_line))
 		#determine what sorts of obstacles to put on the race course.
-		numbers = [0 for _ in range(hudHelpers.planet+1)]
-		numbers[hudHelpers.enemy] = 4
-		numbers[hudHelpers.crystal] = 5
-		numbers[hudHelpers.large_asteroid] = 20
-		numbers[hudHelpers.medium_asteroid] = 30
-		numbers[hudHelpers.small_asteroid] = 40
-		numbers[hudHelpers.gold_metal] = 5
-		numbers[hudHelpers.silver_metal] = 6
-		numbers[hudHelpers.health] = 7
-		numbers[hudHelpers.capital_ship] = 0
-		numbers[hudHelpers.fuel] = 0
-		numbers[hudHelpers.planet] = 0
+		numbers = dict()
+		numbers['enemy'] = 3
+		numbers['crystal'] = 5
+		numbers['large_asteroid'] = 20
+		numbers['medium_asteroid'] = 30
+		numbers['small_asteroid'] = 40
+		numbers['gold_metal'] = 5
+		numbers['silver_metal'] = 6
+		numbers['health'] = 7
+		numbers['capital_ship'] = 0
 		#Populate space in a semi narrow corridor between the player and the finish line
 		course_length = 6000 #pixels
 		course_height = 1000 #pixels

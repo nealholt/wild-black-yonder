@@ -16,8 +16,8 @@ def getCoordsNearLoc(loc, mindist, xmax, ymax):
 	adjust = adjustments[ rd.randint(0,len(adjustments)-1) ]
 	while cygeometry.distance((x,y), loc) < mindist:
 		#Push x,y away from loc
-		x = x+adjust[0]*mindist/2
-		y = y+adjust[1]*mindist/2
+		x = x+adjust[0]
+		y = y+adjust[1]
 	return x,y
 
 

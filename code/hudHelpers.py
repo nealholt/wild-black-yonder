@@ -1,9 +1,6 @@
 #This file contains all the classes that are used as heads up displays for various scenarios.
 import pygame
-import colors
-import time
 import globalvars
-import displayUtilities
 import random as rd
 from geometry import getCoordsNearLoc
 import objInstances
@@ -14,9 +11,9 @@ sys.path.append('code/cython')
 import cygeometry
 
 
-def nudgeApart(physical_objs):
+def nudgeApart(physical_objs, TESTING=False):
 	'''Takes a list of physical objects and modifies their locations so they don't collide.'''
-	TESTING=False
+	collisions = 0 #Used for testing
 	#Prevent collisions.
 	#The following copied from collisionHandling()
 	physical_objs = sorted(physical_objs, \
@@ -31,7 +28,8 @@ def nudgeApart(physical_objs):
 			if A.rect.top > B.rect.bottom:
 				break
 			else:
-				if cygeometry.distance(A.rect.center, B.rect.center) > A.collisionradius+B.collisionradius:
+				if cygeometry.distance(A.rect.center, B.rect.center) > \
+				A.collisionradius+B.collisionradius:
 					pass
 				else:
 					#They collide. Move them apart.
@@ -39,6 +37,8 @@ def nudgeApart(physical_objs):
 					magnitude = max(A.collisionradius, B.collisionradius)*2
 					angle = A.getAngleToTarget(target=B)
 					B.translate(angle, magnitude)
+	if TESTING: print 'Initial collisions: '+str(collisions)
+
 
 
 def getNewEnemy(x,y,image_name,ship_tech,engine_tech,gun_tech,missile_tech,mine_tech):
@@ -72,21 +72,11 @@ def getNewCapitalShip(x,y):
 	return temp
 
 
-enemy = 0 #TODO LEFT OFF HERE
-crystal = 1
-large_asteroid = 2
-medium_asteroid = 3
-small_asteroid = 4
-gold_metal = 5
-silver_metal = 6
-health = 7
-capital_ship = 8
-fuel = 9
-planet = 10
+#TODO LEFT OFF HERE
 def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., ship_tech=0, engine_tech=0, weapon_tech=0, missile_tech=0, mine_tech=0, fuel_depots=None, planets=None):
 	'''This is the first draft of a method to randomly populate space with objects.
 	This is currently called by the racing minigame.
-	Pre: objects is an array of natural numbers specifying how
+	Pre: objects is a dictionary containing natural numbers specifying how
 	many of each of a variety of objects should be placed in the space.
 	width is a nat specifying the width of the rectangle of space to be populated.
 	height is a nat specifying the height.
@@ -96,7 +86,6 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 	#Test variables START
 	TESTING = False #True #Turn on and off testing.
 	area_covered = 0
-	collisions = 0
 	num_removed = 0
 	#Test variables END
 
@@ -191,7 +180,6 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 		temp = course_length*2 * course_height*2
 		print 'compared to the total area '+str(temp)
 		print 'fraction of area covered '+str(area_covered / temp)
-		print 'Initial collisions: '+str(collisions)
 		print 'Objects removed: '+str(num_removed)
 		print 'from a total of '+str(sum(objects))+' objects.'
 		print 'Fraction of objects removed: '+str(float(num_removed)/float(sum(objects)))
@@ -218,28 +206,6 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 		#This can make the update more efficient.
 		self.playerx = None
 		self.playery = None
-		#Get the player's location.
-		#Player's location divided by the length of each cell is the square the player is currently in.
-		px,py = globalvars.player.rect.center
-		#print 'Testing: player\'s location'+str((px,py))
-		px = px / self.space_length
-		py = py / self.space_length
-		#Generate obstacles in player's location and put them in the dictionary. You might want to modify populateSpace to return its newly created physical objects so they can be tracked here for easy removal later.
-		loc = str(px).zfill(3)+str(py).zfill(3)
-		self.node.refreshObstacles(seed=loc) #TODO LEFT OFF HERE
-		self.dict[loc] = populateSpace(objects=self.node.obstacles,
-			width=self.space_length, height=self.space_length,
-			center=(px*self.space_length, py*self.space_length), seed=loc,
-			ship_tech=self.node.pirate_ship_tech,
-			engine_tech=self.node.pirate_engine_tech,
-			weapon_tech=self.node.pirate_weapon_tech,
-			missile_tech=self.node.pirate_missile_tech,
-			mine_tech=self.node.pirate_mine_tech,
-			fuel_depots=self.node.fuel_depots,
-			planets=self.node.planets)
-		#print 'testing keys in the dictionary: '+str(self.dict.keys())
-		#print 'end of InfiniteSpaceGenerator'
-
 		#Keep an index into the dictionary's list of keys. At each update, check the next key and if it is too distant from the player, then delete it.
 		self.key_index = 0
 		self.useOffset = False
@@ -308,7 +274,7 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			loc = str(x).zfill(3)+str(y).zfill(3)
 			if not loc in self.dict.keys():
 				#print 'testing the location '+str(loc)+' is empty so we are populating it'
-				self.node.refreshObstacles(seed=loc) #TODO LEFT OFF HERE
+				self.node.refreshObstacles(seed=loc)
 				self.dict[loc] = populateSpace(objects=self.node.obstacles, 
 					width=self.space_length, height=self.space_length, 
 					center=(x*self.space_length, y*self.space_length), seed=loc,

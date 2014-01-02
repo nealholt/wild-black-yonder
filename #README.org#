@@ -1,18 +1,40 @@
 git add . && git commit -m "" && git push
-** create an escort mission
-an npc ships wants to go from points a to point b.
-other npc ships want to kill you and it.
-You win if the ship gets to point b.
-you lose if you or the ship dies.
-*** create a ship behavior where the ship just flies to a location
-and dodges obstacles along the way.
-*** create an object that tracks win condition of this mission
-*** display this mission option on the mission menu
-*** create a method in scenario for this mission
-** create a fleet battle mission
-two NPC fleets battle each other.
-you win if your side is the last fleet standing. Include capital ships!
+** nodeManager.py should store warps, planets, and fuel depots
+Largely done. Can you clean up and make this code more efficient?
+
+
+
+This will require additional state for nodes: lists of planet (and fuel and warp point) objects and their locations.
+see
+#TODO LEFT OFF HERE
+in nodeManager.py
+
+see def infiniteSpace in scenarios.py
+at this point:
+#Place warp portals
+That code should maybe go in each node instead.
+
+along with this hudHelper.py code:
+	for _ in xrange(objects[planet]):
+		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		physical_objs.append(objInstances.Planet(x, y))
+
+
+
+Change implementation of planets to have a fixed number appear at any node (like warp points). Have them appear within a large but limited region around the warp gate. Same with fuel depots.
+** minimap. nodeManager.py
+Display player, warp point, fuel depots, and planet on the minimap.
+
+Enable setting of destination to any of these objects.
+** new NPC behaviors
+*** escort and protect a target
+*** defend area of space
+*** fix goto so the npc doesn't park at the bullseye
 ** I think the game needs a goal right away
+Implement triggers that display new objectives and tell story?
+Have an object that keeps track of story state and determines when the next story element is unlocked?
+Story object could check game state periodically to see if story is being fulfilled.
+
 just something simple to introduce the mechanics.
 Fly to X.
 Then get some equipment.
@@ -221,8 +243,9 @@ You could share with Tomio, Lavonna and others after the holidays.
 You could get harvesting ships and special resources to harvest from asteroids. You could add a tractor beam.
 
 http://apod.nasa.gov/apod/image/1311/2013-11_C2P_2048px.jpg
+** Image list for Marie
 ** next
-I like the idea of lots of new objects and a minimap.
+I like the idea of lots of new objects:
   pirate base
   repair station
   various tech stations and research labs
