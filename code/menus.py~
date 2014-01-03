@@ -271,9 +271,11 @@ class Menu:
 		#get all the locations you want to plot.
 		node = globalvars.galaxy.getNode(globalvars.player.nodeid)
 		#Draw a circle like a radar.
+		radius = height/2-font_size
+		center = (left+width/2, top+height/2)
 		subpanel = Panel()
-		temp = drawable.Circle(x1=left+width/2, y1=top+height/2, \
-			radius=height/2-font_size, color=colors.blue)
+		temp = drawable.Circle(x1=center[0], y1=center[1], \
+			radius=radius, color=colors.blue)
 		subpanel.addDrawable(temp)
 		self.main_panel.addPanel(subpanel)
 		#Plot all the other objects initially as letters.
@@ -295,14 +297,34 @@ class Menu:
 			to_plot.append(['F',angle,dist])
 		#Find the largest distance and then set the scaling so that the distance is at
 		#the edge of the radar and everything else is nearer.
-
+		largest_dist = 0.0
+		for x in to_plot:
+			if x[2] > largest_dist:
+				largest_dist = x[2]
+		#Mark the player's location with a little red dot
+		subpanel = Panel()
+		temp = drawable.Circle(x1=center[0], y1=center[1], \
+			radius=5, color=colors.red)
+		subpanel.addDrawable(temp)
+		self.main_panel.addPanel(subpanel)
 		#Draw all the objects.
+		for x in to_plot:
+			position = translate(center, x[1], (x[2]/largest_dist)*radius)
 
+			subpanel = Panel()
+			temp = drawable.Circle(x1=position[0], y1=position[1], \
+				radius=10, color=colors.yellow)
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
+
+			subpanel = Panel()
+			temp = drawable.Text(x1=position[0]-5,\
+				y1=position[1], string=x[0],\
+				font_size=font_size, color=colors.black)
+			subpanel.addDrawable(temp)
+			self.main_panel.addPanel(subpanel)
 		#Print the legend with how far things are on the bottom left of the screen.
-
-		#position = translate(playerNodeLoc, angle, dist*magnitude)
-		#self.addTextToMainPanel(['W'], this_left, this_top, local_font_size=font_size)
-	        #TODO LEFT OFF HERE
+		self.addTextToMainPanel(['1 radius = '+str(int(largest_dist))+' pixels'], left, height-font_size)
 
 
 	def setGasStationPanel(self):

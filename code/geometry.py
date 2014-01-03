@@ -14,10 +14,11 @@ def getCoordsNearLoc(loc, mindist, xmax, ymax):
 	y = rd.randint(-ymax, ymax)+loc[1]
 	#Select a random direction in which to push away any x,y that is too close to loc
 	adjust = adjustments[ rd.randint(0,len(adjustments)-1) ]
-	while cygeometry.distance((x,y), loc) < mindist:
+	dist = cygeometry.distance((x,y), loc)
+	if dist < mindist:
 		#Push x,y away from loc
-		x = x+adjust[0]*mindist/2
-		y = y+adjust[1]*mindist/2
+		x = x+adjust[0]*(mindist-int(dist))
+		y = y+adjust[1]*(mindist-int(dist))
 	return x,y
 
 
