@@ -7,6 +7,7 @@ import ship
 import displayUtilities
 import globalvars
 import hudHelpers
+import player
 import sys
 sys.path.append('code/cython')
 import cygeometry
@@ -414,37 +415,32 @@ class ScenarioManager:
 
 
 	def resetArrow(self):
+		#Error check
 		if len(globalvars.player.destinationNode) == 0:
-			#Search through intangibles_top and remove any existing arrows
-			for i in globalvars.intangibles_top:
-				if i.is_a == globalvars.ARROW:
-					globalvars.intangibles_top.remove(i)
 			return True
-
 		#Get the first node on the path:
 		next_node_id = globalvars.player.destinationNode[0]
-
 		#Get the current node so we can point towards the next node
 		node = globalvars.galaxy.getNode(globalvars.player.nodeid)
-		destWarp = None
 		#Get the location of the destination node
 		for w in node.warps:
 			if w.destinationNode == next_node_id:
-				destWarp = w
+				#Set the warp as the destination for the arrow to point at
+				self.setArrowTarget(w)
+
+
+	def setArrowTarget(self, target):
+		#Search through intangibles_top and find the arrow then change its target
+		arrow_set = False
+		for i in globalvars.intangibles_top:
+			if i.is_a == globalvars.ARROW:
+				i.target = target
+				arrow_set = True
 				break
-		#Error check
-		if destWarp is None:
-			if foundObjWithWarps:
-				print 'ERROR: The infiniteSpaceGenerator object was found in intangibles_bottom, but it has no warp with an id matching nodeid '+str(next_node_id)+'. Exiting.'; exit()
-			else:
-				print 'Warning: cannot set destination node from here. No infiniteSpaceGenerator object was found in intangibles_bottom.'
-		else:
-			#Search through intangibles_top and remove any existing arrows
-			for i in globalvars.intangibles_top:
-				if i.is_a == globalvars.ARROW:
-					globalvars.intangibles_top.remove(i)
-			#Create a new arrow pointing to the destination node and add it to intangibles_top
-			globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(destWarp))
+		if not arrow_set:
+			#Create a new arrow pointing to the target and add it to intangibles_top
+			globalvars.intangibles_top.add(temp = displayUtilities.ArrowToDestination(target))
+			
 
 
 	def restart(self):
