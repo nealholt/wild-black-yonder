@@ -295,7 +295,6 @@ class Menu:
 			to_plot.append(['F',angle,dist])
 		#Find the largest distance and then set the scaling so that the distance is at
 		#the edge of the radar and everything else is nearer.
-	        #TODO LEFT OFF HERE
 
 		#Draw all the objects.
 
@@ -303,6 +302,7 @@ class Menu:
 
 		#position = translate(playerNodeLoc, angle, dist*magnitude)
 		#self.addTextToMainPanel(['W'], this_left, this_top, local_font_size=font_size)
+	        #TODO LEFT OFF HERE
 
 
 	def setGasStationPanel(self):
