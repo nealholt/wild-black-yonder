@@ -1,11 +1,50 @@
 git add . && git commit -m "" && git push
-** Enable setting of destination to any of the objects in the minimap
-menus.setMinimapPanel
-** new NPC behaviors
-*** escort and protect a target
-*** defend area of space
-*** fix goto so the npc doesn't park at the bullseye
 ** I think the game needs a goal right away
+Along the way for this you will likely implement a fleet object and NPC escort behaviors. A fleet object is a group of ships and their armaments that travels together and can pass through warps.
+
+
+
+Create a story teller object and put it in intangibles. It updates once every second and checks to see if the player accomplished the most recent quest. Have it pop up immediately to tell the player this:
+
+Humanity has taken giant leaps beyond the home solar system. As a pilot for the United Earth Navy, it's your responsibility to take care of all the small steps that go into those giant leaps. Today begins like most of your days, a simple patrol of the borders of human space. Follow the markers along your patrol path.
+
+(give the player a ship that is decently strong and faster than the aliens at least)
+
+Then show a set of 3 markers.
+
+At the third, a menu pops up saying that you are picking up a distress call. You don't have any weapons, but you will do help.
+
+Arrow then leads to the beacon where you find hostile forces.
+
+Pop up menu saying that these are alien forces never seen before. You must warn headquarters. Follow the arrow to headquarters.
+
+When you get to headquarters, you are outfitted with a gun and told that the aliens are attacking and you must defend the station.
+
+Kill off the enemies to get to the next mission marker.
+
+Headquarters is safe for now, but someone must warn Earth. We will give you the honor.
+
+Then waypoints are set to a warp and then through it to a planet on the other side. You are outfitted with a mine layer to help evade pursuit.
+
+Alien ships chase you to the warp.
+
+Once you get through the warp, a marker is set to Earth.
+
+Get to Earth and the mission briefing says:
+
+This is frightening news. We will need resources to combat this threat. Buy X of Y and bring them back to Earth.
+
+After that, create a fleet and escort it to the warp point.
+
+On the other side, engage in a big fleet battle.
+
+Upon victory the navy commends you for your effort and dismisses you. You are forced to buy a weak ship but you are free to explore and use the ship as you wish.
+
+That's all for now. Later you can make this an ongoing long faction battle.
+
+
+
+
 Implement triggers that display new objectives and tell story?
 Have an object that keeps track of story state and determines when the next story element is unlocked?
 Story object could check game state periodically to see if story is being fulfilled.
@@ -17,6 +56,20 @@ Then kill Y.
 Then buy goods and take them to Z.
 
 Just something simple to introduce the game and give direction.
+** new NPC behaviors
+*** escort and protect a target
+NPCs won't attack until you get within range.
+
+Then add a mission where you take down a convoy before it reaches its destination
+*** defend area of space
+Should be easy once you get the previous behavior
+*** fix goto so the npc doesn't park at the bullseye
+** a bit of simplifying
+Make globalvars.galaxy store and update the player's current node.
+
+Get rid of any uses of this:
+globalvars.galaxy.getNode(globalvars.player.nodeid)
+and use the reference galaxy keeps to the current node instead.
 ** better interaction with factions
 List phases then break them down into simple behaviors that can be implemented piecemeal.
 *** Phases
@@ -525,11 +578,9 @@ Brainstorm stuff that can happen that the player can care about:
 
 I think these are actually plenty, you just need/want a better framework in place to make use of them. The factions are still worth doing and you can/should plow ahead with them.
 
-
 What is the most basic stupid story I could implement:
-  scaled up strength of baddies further from player's starting location.
   An evil faction controls all the nodes connected to the player except the player's own node and the player must defeat the faction one space at a time until it is entirely wiped out to beat the game.
-  A few other factions maybe scattered in disconnected areas of the world map.
+  A few other factions may be scattered in disconnected areas of the world map.
   Make evens bigger but they take longer. That is, instead of randomly pecking at the enemy's strength in one node and randomly boosting the economy of another, the factions (and player) partake in larger projects that take place over the course of many turns but have an immediate and large impact upon completion.
 ** cargo missions
 Factions collect money from owning nodes. Factions have finite resource stockpiles. Factions need resources and money to buy ships and upgrade nodes.

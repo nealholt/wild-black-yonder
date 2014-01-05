@@ -25,7 +25,9 @@ sys.path.append('code/cython')
 import cygeometry
 import mission
 globalvars.mission_manager = mission.getMissionArray()
+
 import story_keeper
+globalvars.story_keeper = story_keeper.StoryKeeper()
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
@@ -51,9 +53,6 @@ globalvars.factions = factions.FactionManager()
 #More efficient animations:
 dirty_rects = []
 useDirty = True #Whether to flip or use dirty rectangles
-
-globalvars.story_keeper = story_keeper.StoryKeeper()
-
 
 take_screenshot = False
 

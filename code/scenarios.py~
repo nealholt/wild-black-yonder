@@ -439,7 +439,7 @@ class ScenarioManager:
 				break
 		if not arrow_set:
 			#Create a new arrow pointing to the target and add it to intangibles_top
-			globalvars.intangibles_top.add(temp = displayUtilities.ArrowToDestination(target))
+			globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(target))
 			
 
 

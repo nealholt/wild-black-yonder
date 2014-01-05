@@ -93,3 +93,4 @@ BLUE_TEAM = None
 REDTEAM = 0
 BLUETEAM = 1
 
+story_teller = None

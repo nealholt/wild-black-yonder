@@ -477,6 +477,8 @@ def wipeOldScenario():
 	globalvars.menu.main_panel = None
 	#Reset the arena
 	globalvars.arena = 0
+	#Add back in the storyteller
+	globalvars.tangibles.add(globalvars.story_keeper)
 
 
 def resetDust():
