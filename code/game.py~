@@ -25,9 +25,7 @@ sys.path.append('code/cython')
 import cygeometry
 import mission
 globalvars.mission_manager = mission.getMissionArray()
-
 import story_keeper
-globalvars.story_keeper = story_keeper.StoryKeeper()
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
@@ -46,13 +44,21 @@ globalvars.BLUE_TEAM.add(globalvars.player)
 globalvars.player.team = globalvars.BLUETEAM
 
 globalvars.galaxy = nodeManager.NodeManager()
-globalvars.galaxy.generateGalaxy(seed=0, nodecount=globalvars.NUMBEROFNODES, minimumNodeDist=4)
+globalvars.galaxy.generateGalaxy(seed=4832568, nodecount=globalvars.NUMBEROFNODES, minimumNodeDist=4)
 
 globalvars.factions = factions.FactionManager()
 
 #More efficient animations:
 dirty_rects = []
-useDirty = True #Whether to flip or use dirty rectangles
+DIRTY = 0
+FLIP = 1
+DYNAMIC = 2
+UPDATE_THRESHOLD = 150 #When there are more than UPDATE_THRESHOLD dirty rects, switch to flip.
+update_mechanism = DYNAMIC #Whether to flip, use dirty rectangles, or a dynamic combination of both.
+above_threshold = False #Track whether the size of dirty rects is above the threshold.
+
+globalvars.story_keeper = story_keeper.StoryKeeper()
+
 
 take_screenshot = False
 
@@ -66,26 +72,23 @@ def redrawWholeBackground():
 
 
 def addToDirtyRects(physObject, offset, cover=True):
-	'''Draws over the physical object if it is on the screen.
-	Adds physObject to dirty rects only if physObject is on screen.
-	Returns whether or not physObject is on screen.'''
-	isOn = physObject.isOnScreen(offset)
-	if isOn:
-		pos = physObject.rect.topleft
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		if physObject.useOffset:
-			pos = pos[0]-offset[0], pos[1]-offset[1]
-		my_rect = (pos[0], pos[1], physObject.rect.width, physObject.rect.height)
-		# - Blit a piece of the background over the sprite's current location, erasing it.
-		if cover:
-			if globalvars.BGIMAGE is None:
-				globalvars.screen.fill(globalvars.BGCOLOR, rect=my_rect)
-			else:
-				globalvars.screen.blit(globalvars.BGIMAGE, pos, area=my_rect)
-		# - Append the sprite's current location rectangle to a list called dirty_rects.
-		dirty_rects.append(my_rect)
-	return isOn
+	'''Pre: physObject is on screen.
+	Post: Draws over the physical object.
+	Adds physObject to dirty rects.'''
+	pos = physObject.rect.topleft
+	#Whether to offset this object's location based on the camera.
+	#Text does not useOffset because we want to only position it relative to 0,0
+	if physObject.useOffset:
+		pos = pos[0]-offset[0], pos[1]-offset[1]
+	my_rect = (pos[0], pos[1], physObject.rect.width, physObject.rect.height)
+	# - Blit a piece of the background over the sprite's current location, erasing it.
+	if cover:
+		if globalvars.BGIMAGE is None:
+			globalvars.screen.fill(globalvars.BGCOLOR, rect=my_rect)
+		else:
+			globalvars.screen.blit(globalvars.BGIMAGE, pos, area=my_rect)
+	# - Append the sprite's current location rectangle to a list called dirty_rects.
+	dirty_rects.append(my_rect)
 
 
 def run(countdown=-1):
@@ -116,6 +119,11 @@ def run(countdown=-1):
 
 	running = True
 
+	#Gather some data on efficiency by measuring the relationship between time burned in the ticks method and the number of objects to update on the screen
+	time_lapses = [0 for _ in xrange(1000)]
+	dirty_rect_size = [0 for _ in xrange(1000)]
+	efficiency_index = 0
+
 	#The in-round loop (while player is alive):
 	while running:
 		#Use this for more accurate profiling:
@@ -126,11 +134,18 @@ def run(countdown=-1):
 
 		#Draw everything on the screen. Do so either using dirty rects or just by
 		#redrawing the whole screen. Dirty rects are usually more efficient.
-		if useDirty:
+		if update_mechanism == DIRTY:
 			pygame.display.update(dirty_rects)
 			dirty_rects = []
-		else:
+		elif update_mechanism == FLIP:
 			pygame.display.flip()
+		else:
+			above_threshold = (len(dirty_rects) > UPDATE_THRESHOLD)
+			if above_threshold:
+				pygame.display.flip()
+			else:
+				pygame.display.update(dirty_rects)
+			dirty_rects = []
 
 		if take_screenshot:
 			pygame.image.save(globalvars.screen,
@@ -143,11 +158,13 @@ def run(countdown=-1):
 		start_time = datetime.datetime.now()
 		#frame maintainance:
 		#aim for globalvars.FPS frames per second.
-		clock.tick(globalvars.FPS) 
+		clock.tick(globalvars.FPS)
 		fps = max(1, int(clock.get_fps()))
 
-		if useDirty:
-			#Put on screen rects in dirty rects.
+		#TODO LEFT OFF HERE - TESTING - this can be improved. not all of these are on screen, but we know which ones are!!!
+		if update_mechanism != FLIP:
+			#This is where we cover (ie, draw the background over) rects we drew
+			#on the screen in the previous update.
 			for x in globalvars.intangibles_bottom: addToDirtyRects(x, offset)
 			for x in globalvars.tangibles: addToDirtyRects(x, offset)
 			for x in globalvars.intangibles_top: addToDirtyRects(x, offset)
@@ -252,6 +269,27 @@ def run(countdown=-1):
 					#Run for 1800 frames (or 30 seconds assuming 60 frames per second.
 					cProfile.runctx('run(countdown=1800)', globals(),None,
 						'profiling/game.run.profile')
+					exit()
+				elif event.key == 105: #i key
+					#Record and display efficiency data.
+					#We want time_lapses to be large.
+
+					#Write efficiency data to file.
+					#filehandle = open('profiling/efficiency_data.txt', 'w')
+					#for i in xrange(len(time_lapses)):
+					#	filehandle.write(str(time_lapses[i])+\
+					#		', '+str(dirty_rect_size[i])+'\n')
+					#filehandle.close()
+
+					#Plot the data then exit
+					import matplotlib.pyplot as plt
+					plt.plot(time_lapses, 'ro')
+					plt.plot(dirty_rect_size)
+					plt.show()
+
+					plt.plot(dirty_rect_size)
+					plt.show()
+
 					exit()
 				elif event.key == 47:
 					#forward slash (question mark
@@ -358,16 +396,19 @@ def run(countdown=-1):
 		offsety = globalvars.player.rect.centery - globalvars.CENTERY
 		offset = offsetx, offsety
 
-		if useDirty:
+		if update_mechanism == DIRTY or (update_mechanism == DYNAMIC and not above_threshold):
 			#Put on screen rects in dirty rects
 			for x in globalvars.intangibles_bottom:
-				if addToDirtyRects(x, offset, cover=False):
+				if x.isOnScreen(offset):
+					addToDirtyRects(x, offset, cover=False):
 					x.draw(offset)
 			for x in globalvars.tangibles:
-				if addToDirtyRects(x, offset, cover=False):
+				if x.isOnScreen(offset):
+					addToDirtyRects(x, offset, cover=False):
 					x.draw(offset)
 			for x in globalvars.intangibles_top:
-				if addToDirtyRects(x, offset, cover=False):
+				if x.isOnScreen(offset):
+					addToDirtyRects(x, offset, cover=False):
 					x.draw(offset)
 		else:
 			#Draw the background over the screen.
@@ -380,10 +421,14 @@ def run(countdown=-1):
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		if not globalvars.player.isDead() and globalvars.player.fuel > 0:
-			if useDirty:
+			if update_mechanism == DIRTY:
 				addToDirtyRects(globalvars.player, offset, cover=False)
-			else:
+			elif update_mechanism == FLIP:
 				globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
+			else:
+				addToDirtyRects(globalvars.player, offset, cover=False)
+				if above_threshold:
+					globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 		else:
 			#Make player death kick the player back to a menu where player 
 			#can choose to restart. Display a death screen then. Reset the 
@@ -394,9 +439,14 @@ def run(countdown=-1):
 				globalvars.menu.setRestartPanel()
 
 		#Calculate how long we took in the above loop to estimate the number of frames per second
-		#Alert user if fraps drops below half the desired threshold.
 		time_lapse = datetime.datetime.now() - start_time
-		if float(time_lapse.microseconds)/1000000. > (2.0/globalvars.FPS):
+		#Gather some efficiency data
+		if rd.random() < 0.5: #randomly sample
+			time_lapses[efficiency_index] = time_lapse.microseconds
+			dirty_rect_size[efficiency_index] = len(dirty_rects)
+			efficiency_index = (efficiency_index+1) % len(time_lapses)
+		#Alert user if fraps drops below half the desired threshold.
+		if float(time_lapse.microseconds)/1000000.0 > (2.0/float(globalvars.FPS)):
 			print 'Warning: frames dropping.'
 			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
 			print 'Sizes of Sprite Groups follows:'

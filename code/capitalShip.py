@@ -61,8 +61,8 @@ class CapitalShip(physicalObject.PhysicalObject):
 		
 		self.engine=None
 
-		self.health=50
-		self.maxhealth=50
+		self.health=500
+		self.maxhealth=500
 
 		self.is_a = globalvars.CAPITALSHIP
 		self.isPlayer = False

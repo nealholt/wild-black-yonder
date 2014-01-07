@@ -642,10 +642,9 @@ class Menu:
 		'Press "q" to remove destination set by mouse click and simply fly in current direction.',
 		'Press "t" for hit box test.',
 		'Press "y" profile a variety of methods.',
-		'Press "u" profile game.run().',
+		'Press "u" profile game.run(), then exit.',
+		'Press "i" to display efficiency data, then exit.',
 		'Press "h" Display help info.',
-		'Press "k" to display the galaxy node info menu.',
-		'Press "o" to display the galaxy node travel menu.',
 		'Press "p" to save a screenshot to the screenshots folder.']
 		#Then draw the contents of the menu
 		self.addTextToMainPanel(help, left+50, 50+top)

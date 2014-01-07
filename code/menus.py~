@@ -284,17 +284,17 @@ class Menu:
 		for x in node.warps:
 			angle = angleFromPosition(globalvars.player.rect.center, x.rect.center)
 			dist = cygeometry.distance(globalvars.player.rect.center, x.rect.center)
-			to_plot.append(['W',angle,dist])
+			to_plot.append(['W',angle,dist, x])
 		#Plot planets
 		for x in node.planets:
 			angle = angleFromPosition(globalvars.player.rect.center, x.rect.center)
 			dist = cygeometry.distance(globalvars.player.rect.center, x.rect.center)
-			to_plot.append(['P',angle,dist])
+			to_plot.append(['P',angle,dist, x])
 		#Plot fuel depots
 		for x in node.fuel_depots:
 			angle = angleFromPosition(globalvars.player.rect.center, x.rect.center)
 			dist = cygeometry.distance(globalvars.player.rect.center, x.rect.center)
-			to_plot.append(['F',angle,dist])
+			to_plot.append(['F',angle,dist, x])
 		#Find the largest distance and then set the scaling so that the distance is at
 		#the edge of the radar and everything else is nearer.
 		largest_dist = 0.0
@@ -315,6 +315,8 @@ class Menu:
 			temp = drawable.Circle(x1=position[0], y1=position[1], \
 				radius=10, color=colors.yellow)
 			subpanel.addDrawable(temp)
+			subpanel.setMethod(globalvars.scenario_manager.setArrowTarget)
+			subpanel.argument = x[3]
 			self.main_panel.addPanel(subpanel)
 
 			subpanel = Panel()
@@ -322,6 +324,8 @@ class Menu:
 				y1=position[1], string=x[0],\
 				font_size=font_size, color=colors.black)
 			subpanel.addDrawable(temp)
+			subpanel.setMethod(globalvars.scenario_manager.setArrowTarget)
+			subpanel.argument = x[3]
 			self.main_panel.addPanel(subpanel)
 		#Print the legend with how far things are on the bottom left of the screen.
 		self.addTextToMainPanel(['1 radius = '+str(int(largest_dist))+' pixels'], left, height-font_size)
@@ -638,7 +642,8 @@ class Menu:
 		'Press "q" to remove destination set by mouse click and simply fly in current direction.',
 		'Press "t" for hit box test.',
 		'Press "y" profile a variety of methods.',
-		'Press "u" profile game.run().',
+		'Press "u" profile game.run(), then exit.',
+		'Press "i" to display efficiency data, then exit.',
 		'Press "h" Display help info.',
 		'Press "k" to display the galaxy node info menu.',
 		'Press "o" to display the galaxy node travel menu.',

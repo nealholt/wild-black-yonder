@@ -1,61 +1,39 @@
 git add . && git commit -m "" && git push
-** I think the game needs a goal right away
-Along the way for this you will likely implement a fleet object and NPC escort behaviors. A fleet object is a group of ships and their armaments that travels together and can pass through warps.
+** efficiency
+When the shit gets thick (lots of enemy npc's or even just a few capital ships) using display flip can be more efficient than display update!
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+With flip:
+     1800    5.299    0.003    5.299    0.003 {pygame.display.flip}
+     5400    0.471    0.000    2.923    0.001 code/game.py:395(drawThoseOnScreen)
+Without flip:
+     1800   18.631    0.010   18.631    0.010 {pygame.display.update}
+  2094644    1.847    0.000    3.559    0.000 code/game.py:55(addToDirtyRects)
 
 
+In both cases, this is the next place for improvement:
+     1800    3.791    0.002    5.657    0.003 code/game.py:414(setClosestSprites)
 
-Create a story teller object and put it in intangibles. It updates once every second and checks to see if the player accomplished the most recent quest. Have it pop up immediately to tell the player this:
+Should I create a temperature variable that detects how many frames are being dropped and responds dynamically. For instance, I could stutter the updating and drawing of intangibles. I could also limit the number of asteroids and ships spawned by the infinite space generator.
 
-Humanity has taken giant leaps beyond the home solar system. As a pilot for the United Earth Navy, it's your responsibility to take care of all the small steps that go into those giant leaps. Today begins like most of your days, a simple patrol of the borders of human space. Follow the markers along your patrol path.
+First thing is to profile when frames are being dropped as when there are many attacking ships and a capital ship.
 
-(give the player a ship that is decently strong and faster than the aliens at least)
+Would temporarily switching to flip for the display be more efficient?
+The profiler indicates YES
 
-Then show a set of 3 markers.
+Should I have a global variable counting the number of spawned npc ships and limiting the total number?
+** missile more updates
+See missile.initialize for a lot of new missile attributes that can be added in. You will also need to modify class Missile in objInstances.py
 
-At the third, a menu pops up saying that you are picking up a distress call. You don't have any weapons, but you will do help.
+Keep a limited number of missiles on the player's ship and display this number in profile menu. ... or you could just limit missiles based on the refire rate.
+** lasers, kinetics, ions
+Implement lasers, kinetics, and ion as parameterization of the existing items. First make them just based on color. Then add their other traits.
 
-Arrow then leads to the beacon where you find hostile forces.
+lasers - red. fast fire, low damage, does not interact with other lasers, is destroyed by contact with kinetics
 
-Pop up menu saying that these are alien forces never seen before. You must warn headquarters. Follow the arrow to headquarters.
+kinetic - green. lower velocity unless boosted, velocity = firer's velocity + amount, reduces firer's velocity, is destroyed by contact with other kinetics but not lasers.
 
-When you get to headquarters, you are outfitted with a gun and told that the aliens are attacking and you must defend the station.
-
-Kill off the enemies to get to the next mission marker.
-
-Headquarters is safe for now, but someone must warn Earth. We will give you the honor.
-
-Then waypoints are set to a warp and then through it to a planet on the other side. You are outfitted with a mine layer to help evade pursuit.
-
-Alien ships chase you to the warp.
-
-Once you get through the warp, a marker is set to Earth.
-
-Get to Earth and the mission briefing says:
-
-This is frightening news. We will need resources to combat this threat. Buy X of Y and bring them back to Earth.
-
-After that, create a fleet and escort it to the warp point.
-
-On the other side, engage in a big fleet battle.
-
-Upon victory the navy commends you for your effort and dismisses you. You are forced to buy a weak ship but you are free to explore and use the ship as you wish.
-
-That's all for now. Later you can make this an ongoing long faction battle.
-
-
-
-
-Implement triggers that display new objectives and tell story?
-Have an object that keeps track of story state and determines when the next story element is unlocked?
-Story object could check game state periodically to see if story is being fulfilled.
-
-just something simple to introduce the mechanics.
-Fly to X.
-Then get some equipment.
-Then kill Y.
-Then buy goods and take them to Z.
-
-Just something simple to introduce the game and give direction.
+ion - blue. very slow. disables target movement and causes slow rotation for a brief period of time. causes no damage.
 ** new NPC behaviors
 *** escort and protect a target
 NPCs won't attack until you get within range.
@@ -64,12 +42,34 @@ Then add a mission where you take down a convoy before it reaches its destinatio
 *** defend area of space
 Should be easy once you get the previous behavior
 *** fix goto so the npc doesn't park at the bullseye
-** a bit of simplifying
-Make globalvars.galaxy store and update the player's current node.
+*** fly by combat
+have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
+** parameterize minigame difficulty
+Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volume of space (inner concentric circle), speeding up rocks, increasing the number of rocks created when one gets destroyed.
 
-Get rid of any uses of this:
-globalvars.galaxy.getNode(globalvars.player.nodeid)
-and use the reference galaxy keeps to the current node instead.
+Gem wild: This game can easily be made more difficult by adding asteroids (that the gems might or might not collide with), adding enemies (that either fight the player or also try to get gems, or adding solar storms.
+
+Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
+** add more factions
+Change faction names to these and add a couple flags:
+Democratic Hive Mind
+Cephalopod Confederacy
+Society of Invertebrate Mutualists
+United Inorganic Life Forms
+Incorporated Mammalian Clans
+
+Set one of these to not start at a random location, but to start at the player's location with high alliance with the player.
+** fleet and shipyard objects
+Make a ship yard object:
+  stored at a node, the shipyard produces either little ships or capital ships of a particular tech level (class).
+
+Make a fleet object:
+  Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.
+  Fleets move and update independently each turn.
+
+Then give player more options for interacting with fleets. Try to make these organic. For example, killing ships at the node (make sure the ships are killed by player bullets, not accidental collisions) reduces faction's strength and the player's reputation with that faction, but increases player's reputation with opposing factions. Destroying tiny asteroids clears up the node and increases reputation with the owning faction. Destroying big asteroids that become small asteroids has the opposite effect. Harvesting gems decreases profitability, but releasing gems by shooting gem asteroids has the opposite effect. Player could get a summary of the effects of their actions at each waypoint.
+
+(Some factions might have more profitability from more debris-strewn nodes.)
 ** better interaction with factions
 List phases then break them down into simple behaviors that can be implemented piecemeal.
 *** Phases
@@ -228,6 +228,87 @@ I love the idea of factions being identifiable by their weapons. Maybe they shou
 Later make the actions more intelligent (like have each faction focus in one area for a longer amount of time).
 
 Factions may need to store relationships with each other. Later they can negotiate treaties and such and have more sophisticated interactions.
+** pygame executable
+See the readme in the compiling folder for next steps.
+** save and load from save with pickle
+Is this really that hard? maybe you should try it. It could help with bebugging and testing.
+
+
+implementing save and load next could be really helpful for debugging.
+First add a menu to save, save and quit, or load from save.
+
+Make a start menu with a starscape and text options to:
+load game from save (does nothing).
+Start a new game.
+View the help menu.
+
+Have a help menu that goes back to the starscape intro menu when you click away from it.
+** pygame
+Story teller should come after save game, should come after executables for other people should come after most objects are finalized.
+
+So do things like:
+  new enemy behaviors
+  fleet objects
+  fancier missiles
+  efficiency stuff with respect to display flip (maybe profile everything again afterward)
+  faction interactions
+** I think the game needs a goal right away
+Along the way for this you will likely implement a fleet object and NPC escort behaviors. A fleet object is a group of ships and their armaments that travels together and can pass through warps.
+
+
+
+Create a story teller object and put it in intangibles. It updates once every second and checks to see if the player accomplished the most recent quest. Have it pop up immediately to tell the player this:
+
+Humanity has taken giant leaps beyond the home solar system. As a pilot for the United Earth Navy, it's your responsibility to take care of all the small steps that go into those giant leaps. Today begins like most of your days, a simple patrol of the borders of human space. Follow the markers along your patrol path.
+
+(give the player a ship that is decently strong and faster than the aliens at least)
+
+Then show a set of 3 markers.
+
+At the third, a menu pops up saying that you are picking up a distress call. You don't have any weapons, but you will do help.
+
+Arrow then leads to the beacon where you find hostile forces.
+
+Pop up menu saying that these are alien forces never seen before. You must warn headquarters. Follow the arrow to headquarters.
+
+When you get to headquarters, you are outfitted with a gun and told that the aliens are attacking and you must defend the station.
+
+Kill off the enemies to get to the next mission marker.
+
+Headquarters is safe for now, but someone must warn Earth. We will give you the honor.
+
+Then waypoints are set to a warp and then through it to a planet on the other side. You are outfitted with a mine layer to help evade pursuit.
+
+Alien ships chase you to the warp.
+
+Once you get through the warp, a marker is set to Earth.
+
+Get to Earth and the mission briefing says:
+
+This is frightening news. We will need resources to combat this threat. Buy X of Y and bring them back to Earth.
+
+After that, create a fleet and escort it to the warp point.
+
+On the other side, engage in a big fleet battle.
+
+Upon victory the navy commends you for your effort and dismisses you. You are forced to buy a weak ship but you are free to explore and use the ship as you wish.
+
+That's all for now. Later you can make this an ongoing long faction battle.
+
+
+
+
+Implement triggers that display new objectives and tell story?
+Have an object that keeps track of story state and determines when the next story element is unlocked?
+Story object could check game state periodically to see if story is being fulfilled.
+
+just something simple to introduce the mechanics.
+Fly to X.
+Then get some equipment.
+Then kill Y.
+Then buy goods and take them to Z.
+
+Just something simple to introduce the game and give direction.
 ** stuff
 Speech bubbles from ships.
 Special weapons that only damage asteroids.
@@ -282,27 +363,6 @@ I like the idea of lots of new objects:
   new capital ships
   new powerups
   and much more. Image creation is becoming a constraint!
-** save and load from save with pickle
-implementing save and load next could be really helpful for debugging.
-First add a menu to save, save and quit, or load from save.
-
-Make a start menu with a starscape and text options to:
-load game from save (does nothing).
-Start a new game.
-View the help menu.
-
-Have a help menu that goes back to the starscape intro menu when you click away from it.
-** pygame executable
-See the readme in the compiling folder for next steps.
-** factions
-Change faction names to these and add a couple flags:
-Democratic Hive Mind
-Cephalopod Confederacy
-Society of Invertebrate Mutualists
-United Inorganic Life Forms
-Incorporated Mammalian Clans
-
-Set one of these to not start at a random location, but to start at the player's location with high alliance with the player.
 ** Diversify products
 You can make planets more frequent by commenting
 for _ in xrange(objects[planet]):
@@ -320,35 +380,6 @@ Player may still need to make a choice if the player is running low on fuel to s
 Have option to buy/sell 1, or max of product
 
 What if we just sell fuel at planets instead of the stupid gas can image?
-** parameterize minigame difficulty
-Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volume of space (inner concentric circle), speeding up rocks, increasing the number of rocks created when one gets destroyed.
-
-Gem wild: This game can easily be made more difficult by adding asteroids (that the gems might or might not collide with), adding enemies (that either fight the player or also try to get gems, or adding solar storms.
-
-Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
-** efficiency
-When the shit gets thick (lots of enemy npc's or even just a few capital ships) using display flip can be more efficient than display update!
-
-   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-With flip:
-     1800    5.299    0.003    5.299    0.003 {pygame.display.flip}
-     5400    0.471    0.000    2.923    0.001 code/game.py:395(drawThoseOnScreen)
-Without flip:
-     1800   18.631    0.010   18.631    0.010 {pygame.display.update}
-  2094644    1.847    0.000    3.559    0.000 code/game.py:55(addToDirtyRects)
-
-
-In both cases, this is the next place for improvement:
-     1800    3.791    0.002    5.657    0.003 code/game.py:414(setClosestSprites)
-
-Should I create a temperature variable that detects how many frames are being dropped and responds dynamically. For instance, I could stutter the updating and drawing of intangibles. I could also limit the number of asteroids and ships spawned by the infinite space generator.
-
-First thing is to profile when frames are being dropped as when there are many attacking ships and a capital ship.
-
-Would temporarily switching to flip for the display be more efficient?
-The profiler indicates YES
-
-Should I have a global variable counting the number of spawned npc ships and limiting the total number?
 ** new ship position
 have the back of the ship on the edge of the screen, seeing much more in the forward direction.
 This would help a lot. Can I do it?
@@ -361,17 +392,6 @@ How are you going to share it with others? Could share with Calder.
 Plan to have a release version.
 What are the immediate additions the game needs?
 Small things with immediate payoff.
-** more interesting factions
-Make a ship yard object:
-  stored at a node, the shipyard produces either little ships or capital ships of a particular tech level (class).
-
-Make a fleet object:
-  Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.
-  Fleets move and update independently each turn.
-
-Then give player more options for interacting with fleets. Try to make these organic. For example, killing ships at the node (make sure the ships are killed by player bullets, not accidental collisions) reduces faction's strength and the player's reputation with that faction, but increases player's reputation with opposing factions. Destroying tiny asteroids clears up the node and increases reputation with the owning faction. Destroying big asteroids that become small asteroids has the opposite effect. Harvesting gems decreases profitability, but releasing gems by shooting gem asteroids has the opposite effect. Player could get a summary of the effects of their actions at each waypoint.
-
-(Some factions might have more profitability from more debris-strewn nodes.)
 ** agent behaviors to affect the galaxy
 Basic commands:
 fleet
@@ -422,18 +442,6 @@ Attributes:
 	resources needed to construct
 	$ to construct
 	stock
-** missile more updates
-See missile.initialize for a lot of new missile attributes that can be added in. You will also need to modify class Missile in objInstances.py
-
-Keep a limited number of missiles on the player's ship and display this number in profile menu. ... or you could just limit missiles based on the refire rate.
-** lasers, kinetics, ions
-Implement lasers, kinetics, and ion as parameterization of the existing items. First make them just based on color. Then add their other traits.
-
-lasers - red. fast fire, low damage, does not interact with other lasers, is destroyed by contact with kinetics
-
-kinetic - green. lower velocity unless boosted, velocity = firer's velocity + amount, reduces firer's velocity, is destroyed by contact with other kinetics but not lasers.
-
-ion - blue. very slow. disables target movement and causes slow rotation for a brief period of time. causes no damage.
 ** enemy personalities
 physicalObject constructor.
 
