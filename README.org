@@ -1,27 +1,31 @@
 git add . && git commit -m "" && git push
-** efficiency
-When the shit gets thick (lots of enemy npc's or even just a few capital ships) using display flip can be more efficient than display update!
+** dynamic graphical update
+Updating can be made still more efficient.
+Lots of TODO LEFT OFF HERE in game.py
 
-   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-With flip:
-     1800    5.299    0.003    5.299    0.003 {pygame.display.flip}
-     5400    0.471    0.000    2.923    0.001 code/game.py:395(drawThoseOnScreen)
-Without flip:
-     1800   18.631    0.010   18.631    0.010 {pygame.display.update}
-  2094644    1.847    0.000    3.559    0.000 code/game.py:55(addToDirtyRects)
+Need a fixed profiling scenario, perhaps even computer controlled so that variables are controlled.
+Something like 10 seconds of very little on the screen then 10 seconds of lots of stuff on the screen such as explosions.
 
-
-In both cases, this is the next place for improvement:
-     1800    3.791    0.002    5.657    0.003 code/game.py:414(setClosestSprites)
-
-Should I create a temperature variable that detects how many frames are being dropped and responds dynamically. For instance, I could stutter the updating and drawing of intangibles. I could also limit the number of asteroids and ships spawned by the infinite space generator.
-
-First thing is to profile when frames are being dropped as when there are many attacking ships and a capital ship.
-
-Would temporarily switching to flip for the display be more efficient?
-The profiler indicates YES
-
-Should I have a global variable counting the number of spawned npc ships and limiting the total number?
+Create an object that can be summoned with a button push.
+The object wipes everything from the sprite groups.
+Profiling begins as does fresh efficiency gathering.
+5 seconds of nothing.
+Puts in dust with a fixed seed and gives player ship motion.
+5 seconds of only moving dust.
+puts in rocks at fixed places.
+5 seconds of dust and rocks.
+puts in ships at fixed places.
+5 seconds of ships.
+clears all sprite groups again.
+5 seconds of lots of explosions everywhere.
+prints graphical data straight to file.
+exits.
+** misc
+Ship that can only be destroyed by bouncing asteroids into it.
+Missiles and bullets that affect trajectory (add in a bit more ballistics).
+Special ships that you can't kill. Only have to run from. Dangerous bounty hunters.
+What more interesting interactions can you create using existing building blocks?
+Temporary speed boost, turn rate boost, no clip, invulnerability, spray bullets in all directions.
 ** missile more updates
 See missile.initialize for a lot of new missile attributes that can be added in. You will also need to modify class Missile in objInstances.py
 
