@@ -49,7 +49,6 @@ globalvars.galaxy.generateGalaxy(seed=4832568, nodecount=globalvars.NUMBEROFNODE
 globalvars.factions = factions.FactionManager()
 
 #More efficient animations:
-dirty_rects = []
 DIRTY = 0
 FLIP = 1
 DYNAMIC = 2
@@ -60,9 +59,8 @@ above_threshold = False #Track whether the size of dirty rects is above the thre
 globalvars.story_keeper = story_keeper.StoryKeeper()
 
 
-take_screenshot = False
-
 globalvars.menu = menus.Menu()
+
 
 def redrawWholeBackground():
 	if globalvars.BGIMAGE is None:
@@ -71,7 +69,17 @@ def redrawWholeBackground():
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
 
 
-def addToDirtyRects(physObject, offset, cover=True):
+def coverAll(rectList): #TODO LEFT OFF HERE
+	# - Blit a piece of the background over the sprite's current location, erasing it.
+	if globalvars.BGIMAGE is None:
+		for rect in rectList:
+			globalvars.screen.fill(globalvars.BGCOLOR, rect=rect)
+	else:
+		for rect in rectList:
+			globalvars.screen.blit(globalvars.BGIMAGE, (rect[0], rect[1]), area=rect)
+
+
+def getDirtyRect(physObject, offset): #TODO LEFT OFF HERE - this should be moved into physical object as an object method. Perhaps then some of it could even be reused.
 	'''Pre: physObject is on screen.
 	Post: Draws over the physical object.
 	Adds physObject to dirty rects.'''
@@ -81,20 +89,16 @@ def addToDirtyRects(physObject, offset, cover=True):
 	if physObject.useOffset:
 		pos = pos[0]-offset[0], pos[1]-offset[1]
 	my_rect = (pos[0], pos[1], physObject.rect.width, physObject.rect.height)
-	# - Blit a piece of the background over the sprite's current location, erasing it.
-	if cover:
-		if globalvars.BGIMAGE is None:
-			globalvars.screen.fill(globalvars.BGCOLOR, rect=my_rect)
-		else:
-			globalvars.screen.blit(globalvars.BGIMAGE, pos, area=my_rect)
-	# - Append the sprite's current location rectangle to a list called dirty_rects.
-	dirty_rects.append(my_rect)
+	# - Return the sprite's current location rectangle.
+	return my_rect
 
 
 def run(countdown=-1):
-	'''Runs the game.
-	Countdown is used for profiling.'''
-	global dirty_rects, take_screenshot
+	'''Runs the game.'''
+	take_screenshot = False
+	#For more efficient animations
+	dirty_rects = [] #Places where we are drawing new images
+	dirty_covers = [] #Places where we are covering old images with background
 
 	fps = globalvars.FPS
 	offsetx = 0
@@ -132,19 +136,30 @@ def run(countdown=-1):
 			if countdown < 0:
 				exit()
 
+		#TODO LEFT OFF HERE
 		#Draw everything on the screen. Do so either using dirty rects or just by
 		#redrawing the whole screen. Dirty rects are usually more efficient.
 		if update_mechanism == DIRTY:
 			pygame.display.update(dirty_rects)
-			dirty_rects = []
+			pygame.display.update(dirty_covers)
 		elif update_mechanism == FLIP:
 			pygame.display.flip()
 		else:
-			above_threshold = (len(dirty_rects) > UPDATE_THRESHOLD)
+			above_threshold = (len(dirty_rects)+len(dirty_covers) > UPDATE_THRESHOLD)
 			if above_threshold:
 				pygame.display.flip()
 			else:
 				pygame.display.update(dirty_rects)
+				pygame.display.update(dirty_covers)
+
+		#TODO LEFT OFF HERE
+		#Cover previous dirty rectangles and empty them out.
+		if update_mechanism != FLIP:
+			#Cover the dirty rectangles with background
+			coverAll(dirty_rects)
+			#Copy dirty rects into dirty covers
+			dirty_covers = dirty_rects[:]
+			#Empty dirty rects
 			dirty_rects = []
 
 		if take_screenshot:
@@ -160,14 +175,6 @@ def run(countdown=-1):
 		#aim for globalvars.FPS frames per second.
 		clock.tick(globalvars.FPS)
 		fps = max(1, int(clock.get_fps()))
-
-		#TODO LEFT OFF HERE - TESTING - this can be improved. not all of these are on screen, but we know which ones are!!!
-		if update_mechanism != FLIP:
-			#This is where we cover (ie, draw the background over) rects we drew
-			#on the screen in the previous update.
-			for x in globalvars.intangibles_bottom: addToDirtyRects(x, offset)
-			for x in globalvars.tangibles: addToDirtyRects(x, offset)
-			for x in globalvars.intangibles_top: addToDirtyRects(x, offset)
 
 		#Display the panel
 		if not globalvars.menu.main_panel is None:
@@ -396,37 +403,45 @@ def run(countdown=-1):
 		offsety = globalvars.player.rect.centery - globalvars.CENTERY
 		offset = offsetx, offsety
 
-		if update_mechanism == DIRTY or (update_mechanism == DYNAMIC and not above_threshold):
-			#Put on screen rects in dirty rects
-			for x in globalvars.intangibles_bottom:
-				if x.isOnScreen(offset):
-					addToDirtyRects(x, offset, cover=False):
-					x.draw(offset)
-			for x in globalvars.tangibles:
-				if x.isOnScreen(offset):
-					addToDirtyRects(x, offset, cover=False):
-					x.draw(offset)
-			for x in globalvars.intangibles_top:
-				if x.isOnScreen(offset):
-					addToDirtyRects(x, offset, cover=False):
-					x.draw(offset)
-		else:
+		#TODO LEFT OFF HERE
+		if update_mechanism == FLIP:
 			#Draw the background over the screen.
 	                redrawWholeBackground()
 	                #Draw all the things that are on the screen
-	                drawThoseOnScreen(globalvars.intangibles_bottom, offset)
-	                drawThoseOnScreen(globalvars.tangibles, offset)
-	                drawThoseOnScreen(globalvars.intangibles_top, offset)
+			for x in globalvars.intangibles_bottom:
+				if x.isOnScreen(offset):
+					x.draw(offset)
+			for x in globalvars.tangibles:
+				if x.isOnScreen(offset):
+					x.draw(offset)
+			for x in globalvars.intangibles_top:
+				if x.isOnScreen(offset):
+					x.draw(offset)
+		else:
+			#Put on screen rects in dirty rects
+			for x in globalvars.intangibles_bottom:
+				if x.isOnScreen(offset):
+					dirty_rects.append(getDirtyRect(x, offset))
+					x.draw(offset)
+			for x in globalvars.tangibles:
+				if x.isOnScreen(offset):
+					dirty_rects.append(getDirtyRect(x, offset))
+					x.draw(offset)
+			for x in globalvars.intangibles_top:
+				if x.isOnScreen(offset):
+					dirty_rects.append(getDirtyRect(x, offset))
+					x.draw(offset)
+
 
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		if not globalvars.player.isDead() and globalvars.player.fuel > 0:
 			if update_mechanism == DIRTY:
-				addToDirtyRects(globalvars.player, offset, cover=False)
+				dirty_rects.append(getDirtyRect(globalvars.player, offset))
 			elif update_mechanism == FLIP:
 				globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 			else:
-				addToDirtyRects(globalvars.player, offset, cover=False)
+				dirty_rects.append(getDirtyRect(globalvars.player, offset))
 				if above_threshold:
 					globalvars.player.drawAt((globalvars.CENTERX, globalvars.CENTERY))
 		else:
@@ -457,26 +472,6 @@ def run(countdown=-1):
 			print
 	#end round loop (until gameover)
 #end game loop
-
-
-
-def drawThoseOnScreen(sprite_list, offset):
-        '''Takes a list of pygame sprites and the top left coordinates of the screen 
-        and draws only those sprites that are visible on screen.
-        I tested (see "y key" above) with and without checking whether or not each
-        sprite is on the screen before drawing it and I found checking to be more
-        efficient in multiple scenarios. The gain is less than I expected and
-        a major inefficiency in python seems to be function calls, making me wonder 
-        how important it is to wrap this into the run method, but I'm going to avoid 
-        that for now.'''
-        #draw_count = 0 #TESTING
-        left, top = offset
-        for sp in sprite_list:
-                #If the sprite is on the screen, then draw it.
-                if sp.isOnScreen(offset):
-			sp.draw(offset)
-                        #draw_count += 1 #TESTING
-        #print str(draw_count)+' objects on screen.' #TESTING
 
 
 def setClosestSprites():
