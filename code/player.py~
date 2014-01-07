@@ -37,37 +37,27 @@ class Player(Ship):
 		#Load one really good item of each type:
 		temp = mine.generateMine(len(mine.mine_class_names)-1)
 		temp.shooter = self
-		self.mine = temp
-		#self.addToCargo(temp)
+		self.addToCargo(temp)
 		temp = missile.generateMissile(len(missile.missile_class_names)-1)
 		temp.shooter = self
-		self.missile = temp
-		#self.addToCargo(temp)
+		self.addToCargo(temp)
 		temp = weapon.generateWeapon(len(weapon.weapon_class_names)-1)
 		temp.shooter = self
-		self.gun = temp
-		#self.addToCargo(temp)
+		self.addToCargo(temp)
 		temp = engine.generateEngine(len(engine.engine_class_names)-1)
-		self.engine = temp
-		#self.addToCargo(temp)
-		#temp = generateShip(len(ship_class_names)-1)
-		#self.addToCargo(temp)
-		self.health=500
-		self.maxhealth=500
-		self.collision_damage = 0.0 #initialize to 100% damage received.
-		self.thorns_damage = 50
-		self.breaker_damage = 50
-
+		self.addToCargo(temp)
+		temp = generateShip(len(ship_class_names)-1)
+		self.addToCargo(temp)
 		#Give some trade goods to the player.
 		self.trade_goods = []
 		self.loadTradeGoods('Niblets', 10, 50.0)
 
-		'''#Give player random shitty gun and engine
+		#Give player random shitty gun and engine
 		temp = weapon.generateWeapon(2)
 		temp.shooter = self
 		self.gun = temp
 		#Give enemy a random engine
-		self.engine = engine.generateEngine(2)'''
+		self.engine = engine.generateEngine(2)
 		#Set this object's movement parameters based on the engine.
 		self.engineUpdate()
 
