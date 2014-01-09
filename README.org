@@ -1,4 +1,11 @@
+** [#A] git commands
+git pull
 git add . && git commit -m "" && git push
+** [#A] to run on mac
+It runs with the following command on my mac:
+python2.7-32 playGame.py
+The bad news is that it is slow as fuck.
+It seems to be faster when using -flip.
 ** dynamic graphical update
 Updating can be made still more efficient.
 Lots of TODO LEFT OFF HERE in game.py
@@ -20,11 +27,95 @@ clears all sprite groups again.
 5 seconds of lots of explosions everywhere.
 prints graphical data straight to file.
 exits.
-** misc
+
+Can you also profile it on your mac? What does that look like?
+** STEP ONE: soul searching
+What do you want out of this game?
+What is the best thing you can do to move the game towards what you want? Do I need to look at the graphics library first? Get the code to compile on other machines?
+** what is the game you want?
+I like the idea of contextualizing actions and events that are large and multistep, but not opaque.
+
+Ask yourself what games you like and what you like about them.
+  Urban Dead
+  Privateer 2
+  Freelancer mods
+  Nexus Wars
+  Starcraft
+  Romance of the Three Kingdoms
+  Ogame - good for the scaling!
+
+Your goal is to create a game you enjoy that others will also enjoy.
+Worry about making money off a game later. What could that game be like? A rogue-like with moving tiles and mazes?
+
+There are other ways to make this simple and game like, but I love the open world idea.
+Why do I love the open world idea? Because exploration and learning excite me. This means I should have things to learn and discover out there. Perhaps procedural stories are this.
+** a lived in world - npc traders
+NPC's randomly pick pairs of semi-close nodes.
+Then they pick a planet at each node.
+The NPC then buys goods at one end and sells them at the other end.
+Once the route is not profitable, or drops below a threshold, then the NPC randomly picks a new route.
+Buying makes prices go up and selling makes them go down.
+Prices are periodically randomly reinitialized.
+
+You could have NPC traders and NPC pirates that hunt them. This could make the speech bubbles meaningful.
+
+I love this idea. If I then add shipyards for buying upgrades and repairs then I'm on my way toward a lived-in world with great opportunity for exploration.
+Also this: Long distances between nodes. Make the fuel constraint more of a constraint.
+Trade routes to discover.
+NPCs can also upgrade when they make enough money.
+Player could rescue escape capsules or prey on traders or charge a fee to escort traders.
+Cargo could spin out of destroyed ships.
+Tractor beam could slow down stuff that pops out of destroyed ships.
+You could cap the tech level that is allowed to be used at some nodes so that player can choose how to scale things up and you can make the game more game like without sacrificing freedom.
+When an NPC or pirate dies then they can reset to the low level nodes.
+Conflict between NPCs and pirates that takes place offscreen can be calculated relatively easily with tech level giving probability advantages to one or the other. Also you could code it up so that the NPCs escape battles and go lick their wounds. This can be added to the "lived in" nature of the universe.
+
+DISCOVERY: The player could be forced to discover ALL objects in the game. Player could follow NPC ships to learn the locations of new objects.
+If the player's ship drifts too far from a node center then search and rescue ships can spawn to guide the player back.
+** Pygame for development
+Separate the following notes into
+1. motivation
+2. graphics libraries that interact with python that you want to look into.
+3. notes on how to compile python to an executable
+
+http://www.reddit.com/r/gamedev/comments/16d5ak/is_pygame_or_any_other_python_gamedev_library/
+My last pygame product made $30,000 last year. That was it's third year of being on sale.
+"You're right. I could have, but I'm most comfortable with Python. Pygame is wonderfully cross-platform across PC-Mac-Linux, soon Android. I code on a Mac, literally drag and drop sources into Windows or Linux and the game works. Period.
+You might be able to guess that I'm a no-fucking-hassle kind of guy. :-)"
+
+http://www.reddit.com/r/gamedev/comments/i2ixn/publishing_a_pygame_game/
+"Yes - and I've shipped a project with py2exe."
+"Check out PyInstaller which offers a wide variety of ways to package your project up for easy distribution."
+
+Graphics libraries for python:
+http://cocos2d.org/doc.html - checking out the video here is probably useful.
+http://www.panda3d.org/
+** Little fun changes and additions
+Stealth 
+Sensors - detect enemies before they detect you. 
+Sensor range. Enemies don't know where you are automatically from a million miles away. 
+A League of Legends-like minigame. 
+Or a Nexus Wars-type minigame. 
+
+Weapon resistances and special "elements".
+Shield items?
+
+Turn off friendly fire?
+
+Better scaling up of the classes?
+
+Stationary defenses.
+
+Kamikaze enemies.
+
 Ship that can only be destroyed by bouncing asteroids into it.
+
 Missiles and bullets that affect trajectory (add in a bit more ballistics).
+
 Special ships that you can't kill. Only have to run from. Dangerous bounty hunters.
+
 What more interesting interactions can you create using existing building blocks?
+
 Temporary speed boost, turn rate boost, no clip, invulnerability, spray bullets in all directions.
 ** missile more updates
 See missile.initialize for a lot of new missile attributes that can be added in. You will also need to modify class Missile in objInstances.py
@@ -384,6 +475,18 @@ Player may still need to make a choice if the player is running low on fuel to s
 Have option to buy/sell 1, or max of product
 
 What if we just sell fuel at planets instead of the stupid gas can image?
+** Characters
+Move between nodes, buy ship. Take missions. Faction affiliation. Friendliness with other characters. Bounty on their heads. Like Romance of the Three Kingdoms.
+
+I think you need to think about your agents again. You can make them better than little number adjustors.
+You could have each agent trying to earn money, buy a space station, create an empire, or trying to be a pirate.
+Goals could be pretty simple. Build X. Requires Y. Find who has Y. Send cargo ship to where Y is with an escort, bring it back.
+
+This is harder than you are making it sound.
+
+Still, perhaps you could implement little stories at each node and these stories would advance without the player's input, but if the player visited, he would see things happening in context.
+
+You just need each agent to have goals, means to achieving those goals, and obstacles. Can you make such a system simple and generic?
 ** new ship position
 have the back of the ship on the edge of the screen, seeing much more in the forward direction.
 This would help a lot. Can I do it?
