@@ -21,8 +21,7 @@ import factions
 import scenarios
 globalvars.scenario_manager = scenarios.ScenarioManager()
 import menus
-sys.path.append('code/cython-'+str(sys.platform)) #Import from a system-specific cython folder
-#Because cython files only work on the system they were compiled on.
+sys.path.append('code/cython')
 import cygeometry
 import mission
 globalvars.mission_manager = mission.getMissionArray()
