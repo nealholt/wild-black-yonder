@@ -7,13 +7,10 @@ python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
 ** dynamic graphical update
-Updating can be made still more efficient.
-Lots of TODO LEFT OFF HERE in game.py
-
 Need a fixed profiling scenario, perhaps even computer controlled so that variables are controlled.
 Something like 10 seconds of very little on the screen then 10 seconds of lots of stuff on the screen such as explosions.
 
-Create an object that can be summoned with a button push.
+Create an object that can be summoned with a button push. Created profilingObject.py.
 The object wipes everything from the sprite groups.
 Profiling begins as does fresh efficiency gathering.
 5 seconds of nothing.
@@ -27,6 +24,9 @@ clears all sprite groups again.
 5 seconds of lots of explosions everywhere.
 prints graphical data straight to file.
 exits.
+
+Updating can be made still more efficient.
+Lots of TODO LEFT OFF HERE in game.py
 
 Can you also profile it on your mac? What does that look like?
 ** STEP ONE: soul searching
