@@ -263,6 +263,15 @@ def run(countdown=-1):
 					    str(globalvars.player.image.get_height())+\
 					' vs '+str(globalvars.player.rect.height)
 					test.hitBoxTest(globalvars.player.rect.center)
+				elif event.key == 111: #o key
+					import profilingObject
+					temp = profilingObject.ProfilingObject()
+					globalvars.intangibles_bottom.add(temp)
+					#Begin profiling
+					import cProfile
+					cProfile.runctx('run()', globals(),None,
+						'profiling/game.run.profile')
+					exit()
 				elif event.key == 121: #y key
 					#Profile lots of methods, but not game.run()
 					profileEverything(offset)

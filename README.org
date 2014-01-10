@@ -7,23 +7,8 @@ python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
 ** dynamic graphical update
-Need a fixed profiling scenario, perhaps even computer controlled so that variables are controlled.
-Something like 10 seconds of very little on the screen then 10 seconds of lots of stuff on the screen such as explosions.
-
-Create an object that can be summoned with a button push. Created profilingObject.py.
-The object wipes everything from the sprite groups.
-Profiling begins as does fresh efficiency gathering.
-5 seconds of nothing.
-Puts in dust with a fixed seed and gives player ship motion.
-5 seconds of only moving dust.
-puts in rocks at fixed places.
-5 seconds of dust and rocks.
-puts in ships at fixed places.
-5 seconds of ships.
-clears all sprite groups again.
-5 seconds of lots of explosions everywhere.
-prints graphical data straight to file.
-exits.
+Need a fixed profiling scenario
+Left off in profilingObject.py
 
 Updating can be made still more efficient.
 Lots of TODO LEFT OFF HERE in game.py

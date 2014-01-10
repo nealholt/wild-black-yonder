@@ -21,7 +21,8 @@ import factions
 import scenarios
 globalvars.scenario_manager = scenarios.ScenarioManager()
 import menus
-sys.path.append('code/cython')
+sys.path.append('code/cython-'+str(sys.platform)) #Import from a system-specific cython folder
+#Because cython files only work on the system they were compiled on.
 import cygeometry
 import mission
 globalvars.mission_manager = mission.getMissionArray()
@@ -262,6 +263,14 @@ def run(countdown=-1):
 					    str(globalvars.player.image.get_height())+\
 					' vs '+str(globalvars.player.rect.height)
 					test.hitBoxTest(globalvars.player.rect.center)
+				elif event.key == 111: #o key
+					import profilingObject
+					temp = profilingObject.ProfilingObject()
+					globalvars.intangibles_bottom.add(temp)
+					#Run for 1800 frames (or 30 seconds assuming 60 frames per second.
+					cProfile.runctx('run()', globals(),None,
+						'profiling/game.run.profile')
+					exit()
 				elif event.key == 121: #y key
 					#Profile lots of methods, but not game.run()
 					profileEverything(offset)
