@@ -94,12 +94,15 @@ def getDirtyRect(physObject, offset): #TODO LEFT OFF HERE - this should be moved
 	return my_rect
 
 
-def run(countdown=-1):
+def run(countdown=-1, track_FPS=False, track_efficiency=False):
 	'''Runs the game.'''
 	take_screenshot = False
 	#For more efficient animations
 	dirty_rects = [] #Places where we are drawing new images
 	dirty_covers = [] #Places where we are covering old images with background
+
+	start_time = datetime.datetime.now()
+	tick_length = 0
 
 	offsetx = 0
 	offsety = 0
@@ -124,8 +127,8 @@ def run(countdown=-1):
 	running = True
 
 	#Gather some data on efficiency by measuring the relationship between time burned in the ticks method and the number of objects to update on the screen
-	time_lapses = [0 for _ in xrange(1000)]
-	dirty_rect_size = [0 for _ in xrange(1000)]
+	globalvars.time_lapses = [0 for _ in xrange(1900)]
+	globalvars.dirty_rect_size = [0 for _ in xrange(1900)]
 	efficiency_index = 0
 
 	#The in-round loop (while player is alive):
@@ -167,13 +170,41 @@ def run(countdown=-1):
 				'screenshots/'+str(rd.randint(0,999999999))+'.jpeg')
 			take_screenshot = False
 
-		#Used for calculating actual frames per second in
-		#order to determine when we are dropping frames
-		#so that efficiency improvements can be made.
-		start_time = datetime.datetime.now()
+		if track_FPS:
+			#Calculate how long we took in the above loop to estimate the number of frames per second.
+			#We want time_lapse to be stable.
+			time_lapse = datetime.datetime.now() - start_time
+
+			#Used for calculating actual frames per second in
+			#order to determine when we are dropping frames
+			#so that efficiency improvements can be made.
+			start_time = datetime.datetime.now()
+
+			#Alert user if fraps drops below half the desired threshold.
+			if float(time_lapse.microseconds)/1000000.0 > (2.0/float(globalvars.FPS)):
+				print '\nWarning: frames dropping.'
+				print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
+				print 'Sizes of Sprite Groups follows:'
+				print 'Tangibles: '+str(len(globalvars.tangibles))
+				print 'Intangibles_bottom: '+str(len(globalvars.intangibles_bottom))
+				print 'Intangibles_top: '+str(len(globalvars.intangibles_top))
+				print 'Whiskerables: '+str(len(globalvars.whiskerables))
+
+		if track_efficiency:
+			tick_length = datetime.datetime.now()
+
 		#frame maintainance:
 		#aim for globalvars.FPS frames per second.
 		clock.tick(globalvars.FPS)
+
+		if track_efficiency:
+			#We want this value, tick_length, to be large because that means the processor
+			#is taking long rests because everything else is happening so efficiently.
+			tick_length = datetime.datetime.now() - tick_length
+			#Gather some efficiency data
+			globalvars.time_lapses[efficiency_index] = tick_length.microseconds
+			globalvars.dirty_rect_size[efficiency_index] = len(dirty_rects)+len(dirty_covers)
+			efficiency_index = (efficiency_index+1) % len(globalvars.time_lapses)
 
 		#Display the panel
 		if not globalvars.menu.main_panel is None:
@@ -269,7 +300,7 @@ def run(countdown=-1):
 					globalvars.intangibles_bottom.add(temp)
 					#Begin profiling
 					import cProfile
-					cProfile.runctx('run()', globals(),None,
+					cProfile.runctx('run(track_efficiency=True)', globals(), None,
 						'profiling/game.run.profile')
 					exit()
 				elif event.key == 121: #y key
@@ -291,18 +322,18 @@ def run(countdown=-1):
 
 					#Write efficiency data to file.
 					#filehandle = open('profiling/efficiency_data.txt', 'w')
-					#for i in xrange(len(time_lapses)):
-					#	filehandle.write(str(time_lapses[i])+\
-					#		', '+str(dirty_rect_size[i])+'\n')
+					#for i in xrange(len(globalvars.time_lapses)):
+					#	filehandle.write(str(globalvars.time_lapses[i])+\
+					#		', '+str(globalvars.dirty_rect_size[i])+'\n')
 					#filehandle.close()
 
 					#Plot the data then exit
 					import matplotlib.pyplot as plt
-					plt.plot(time_lapses, 'ro')
-					plt.plot(dirty_rect_size)
+					plt.plot(globalvars.time_lapses, 'ro')
+					plt.plot(globalvars.dirty_rect_size)
 					plt.show()
 
-					plt.plot(dirty_rect_size)
+					plt.plot(globalvars.dirty_rect_size)
 					plt.show()
 
 					exit()
@@ -351,8 +382,6 @@ def run(countdown=-1):
 			#Force shot tells this to shoot even if a target 
 			#is not obviously in view. NPC's will not take such wild shots.
 			globalvars.player.shoot(force_shot=True)
-
-
 
 		#Check all collisions
 		collisionHandling()
@@ -440,7 +469,6 @@ def run(countdown=-1):
 					dirty_rects.append(getDirtyRect(x, offset))
 					x.draw(offset)
 
-
 		#Draw player last so the background isn't drawn overtop of the player.
 		globalvars.player.playerUpdate()
 		if not globalvars.player.isDead() and globalvars.player.fuel > 0:
@@ -460,24 +488,6 @@ def run(countdown=-1):
 			globalvars.deathcountdown -= 1
 			if globalvars.deathcountdown < 0:
 				globalvars.menu.setRestartPanel()
-
-		#Calculate how long we took in the above loop to estimate the number of frames per second
-		time_lapse = datetime.datetime.now() - start_time
-		#Gather some efficiency data
-		if rd.random() < 0.5: #randomly sample
-			time_lapses[efficiency_index] = time_lapse.microseconds
-			dirty_rect_size[efficiency_index] = len(dirty_rects)
-			efficiency_index = (efficiency_index+1) % len(time_lapses)
-		#Alert user if fraps drops below half the desired threshold.
-		if float(time_lapse.microseconds)/1000000.0 > (2.0/float(globalvars.FPS)):
-			print 'Warning: frames dropping.'
-			print 'Goal frames per second is '+str(globalvars.FPS)+'. Current is '+str(1./(float(time_lapse.microseconds)/1000000.))[:2] #Cut off decimal because I don't care.
-			print 'Sizes of Sprite Groups follows:'
-			print 'Tangibles: '+str(len(globalvars.tangibles))
-			print 'Intangibles_bottom: '+str(len(globalvars.intangibles_bottom))
-			print 'Intangibles_top: '+str(len(globalvars.intangibles_top))
-			print 'Whiskerables: '+str(len(globalvars.whiskerables))
-			print
 	#end round loop (until gameover)
 #end game loop
 

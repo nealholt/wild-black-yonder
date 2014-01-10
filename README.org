@@ -6,14 +6,21 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** dynamic graphical update
-Need a fixed profiling scenario
-Left off in profilingObject.py
-
-Updating can be made still more efficient.
+** Updating can be made still more efficient
 Lots of TODO LEFT OFF HERE in game.py
 
-Can you also profile it on your mac? What does that look like?
+1. Move
+def getDirtyRect(physObject, offset)
+into physicalObject as a method there.
+See if this will let you reuse some calculations, but don't worry about it too much.
+
+2. Can you also profile it on your mac? What does that look like? How does it compare to runs on the linux machine?
+
+3. See if the code redundancy near the following can be reduced:
+		#TODO LEFT OFF HERE
+		if update_mechanism == FLIP:
+			#Draw the background over the screen.
+	                redrawWholeBackground()
 ** STEP ONE: soul searching
 What do you want out of this game?
 What is the best thing you can do to move the game towards what you want? Do I need to look at the graphics library first? Get the code to compile on other machines?

@@ -200,8 +200,6 @@ class Player(Ship):
 			self.fuelAlertLevel = 3
 
 		if not self.destination is None:
-			#Get angle to target
-			self.angle_to_target = self.getAngleToTarget()
 			#Turn towards target
 			self.turnTowards()
 

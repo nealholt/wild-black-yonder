@@ -94,8 +94,3 @@ REDTEAM = 0
 BLUETEAM = 1
 
 story_keeper = None
-
-#The following are for gathering efficiency data
-time_lapses = None
-dirty_rect_size = None
-
