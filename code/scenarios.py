@@ -23,7 +23,7 @@ class ScenarioManager:
 		''' '''
 		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
-		wipeOldScenario(); resetDustOnTop()
+		wipeOldScenario(); resetDust(use_top=True)
 		rocks = ['bigrock','medrock','smallrock','gold','silver']
 		#Reset the player's location to 0,0 and his speed to zero
 		globalvars.player.loc = (0.0, 0.0)
@@ -67,7 +67,7 @@ class ScenarioManager:
 	def gemWild(self, mission, seed=0):
 		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
-		wipeOldScenario(); resetDustOnTop();
+		wipeOldScenario(); resetDust(use_top=True)
 		#Reset the player's location to 0,0 and his speed to zero
 		globalvars.player.loc = (0.0, 0.0)
 		globalvars.player.speed = 0.0
@@ -482,7 +482,7 @@ def wipeOldScenario():
 	globalvars.tangibles.add(globalvars.story_keeper)
 
 
-def resetDust():
+def resetDust(use_top=False):
 	#Kill all the old dust.
 	for d in globalvars.intangibles_bottom:
 		if d.is_a == globalvars.DUST:
@@ -492,29 +492,13 @@ def resetDust():
 			d.kill()
 	#Make 50 dust particles scattered around the player.
 	for _ in range(50):
-		size = rd.randint(1,4)
 		x,y = getCoordsNearLoc(globalvars.player.rect.center, 50, 
 				globalvars.WIDTH, globalvars.WIDTH)
-		temp = objInstances.Dust(x=x, y=y, width=size, height=size,\
+		temp = objInstances.Dust(x=x, y=y, width=1, height=1,\
 				 color=colors.white)
-		globalvars.intangibles_bottom.add(temp)
-
-
-def resetDustOnTop():
-	#Kill all the old dust.
-	for d in globalvars.intangibles_bottom:
-		if d.is_a == globalvars.DUST:
-			d.kill()
-	for d in globalvars.intangibles_top:
-		if d.is_a == globalvars.DUST:
-			d.kill()
-	#Make 50 dust particles scattered around the player.
-	for _ in range(50):
-		size = rd.randint(1,4)
-		x,y = getCoordsNearLoc(globalvars.player.rect.center, 50, 
-				globalvars.WIDTH, globalvars.WIDTH)
-		temp = objInstances.Dust(x=x, y=y, width=size, height=size,\
-				 color=colors.white)
-		globalvars.intangibles_top.add(temp)
+		if use_top:
+			globalvars.intangibles_top.add(temp)
+		else:
+			globalvars.intangibles_bottom.add(temp)
 
 
