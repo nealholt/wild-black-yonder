@@ -15,6 +15,8 @@ into physicalObject as a method there.
 See if this will let you reuse some calculations, but don't worry about it too much.
 
 2. Can you also profile it on your mac? What does that look like? How does it compare to runs on the linux machine?
+I already did this. All the graphical updates are shittier, but flip is by far the least shitty.
+DON'T DO ANY MORE WITH THIS.
 
 3. See if the code redundancy near the following can be reduced:
 		#TODO LEFT OFF HERE

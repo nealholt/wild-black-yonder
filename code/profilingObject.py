@@ -5,6 +5,8 @@ import pygame
 import hudHelpers
 from geometry import getCoordsNearLoc
 import objInstances
+import sys
+
 
 class ProfilingObject(physicalObject.PhysicalObject):
 	''' '''
@@ -94,17 +96,18 @@ class ProfilingObject(physicalObject.PhysicalObject):
 				self.phase += 1
 			elif self.phase == 4:
 				#prints graphical data straight to file.
-				import matplotlib.pyplot as plt
-				plt.plot(globalvars.dirty_rect_size)
-				plt.xlabel('Frames')
-				plt.ylabel('Number of dirty rects')
-				plt.savefig('profiling/dirty_rect_size.jpeg') #plt.show()
-				plt.clf()
-				plt.plot(globalvars.time_lapses, 'ro')
-				plt.xlabel('Frames')
-				plt.ylabel('Tick length')
-				plt.savefig('profiling/tick_lengths.jpeg') #plt.show()
-				plt.clf()
+				if sys.platform != 'darwin': #This is not working on my mac for some reason
+					import matplotlib.pyplot as plt
+					plt.plot(globalvars.dirty_rect_size)
+					plt.xlabel('Frames')
+					plt.ylabel('Number of dirty rects')
+					plt.savefig('profiling/dirty_rect_size.jpeg') #plt.show()
+					plt.clf()
+					plt.plot(globalvars.time_lapses, 'ro')
+					plt.xlabel('Frames')
+					plt.ylabel('Tick length')
+					plt.savefig('profiling/tick_lengths.jpeg') #plt.show()
+					plt.clf()
 				exit()
 		if self.phase == 4:
 			x,y = getCoordsNearLoc(globalvars.player.rect.center, 50, 
