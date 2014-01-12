@@ -533,3 +533,15 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#return self.rect.center
 		self.lead_indicator = geometry.translate(self.rect.center, self.theta, self.speed*50.0) #The amount to translate depends on player speed, distance from enemy, and bullet speed. There might be a better way to do this.
 		#Why when self.rect.center is used does this still not work for the capital ship? Specifically there is a problem when I perch over the upper left corner of the capital ship. It creates a kind-of cool blind spot though. Maybe this is not a problem.
+
+
+	def getDirtyRect(self, offset):
+		'''Pre: self is on screen.
+		Post: Returns the dirty rect for this object.'''
+		pos = self.rect.topleft
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		if self.useOffset:
+			pos = pos[0]-offset[0], pos[1]-offset[1]
+		# - Return the sprite's current location rectangle.
+		return (pos[0], pos[1], self.rect.width, self.rect.height)

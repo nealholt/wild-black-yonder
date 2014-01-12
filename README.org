@@ -6,43 +6,8 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** Updating can be made still more efficient
-Lots of TODO LEFT OFF HERE in game.py
-
-1. Move
-def getDirtyRect(physObject, offset)
-into physicalObject as a method there.
-See if this will let you reuse some calculations, but don't worry about it too much.
-
-2. Can you also profile it on your mac? What does that look like? How does it compare to runs on the linux machine?
-I already did this. All the graphical updates are shittier, but flip is by far the least shitty.
-DON'T DO ANY MORE WITH THIS.
-
-3. See if the code redundancy near the following can be reduced:
-		#TODO LEFT OFF HERE
-		if update_mechanism == FLIP:
-			#Draw the background over the screen.
-	                redrawWholeBackground()
-** STEP ONE: soul searching
-What do you want out of this game?
-What is the best thing you can do to move the game towards what you want? Do I need to look at the graphics library first? Get the code to compile on other machines?
-** what is the game you want?
-I like the idea of contextualizing actions and events that are large and multistep, but not opaque.
-
-Ask yourself what games you like and what you like about them.
-  Urban Dead
-  Privateer 2
-  Freelancer mods
-  Nexus Wars
-  Starcraft
-  Romance of the Three Kingdoms
-  Ogame - good for the scaling!
-
-Your goal is to create a game you enjoy that others will also enjoy.
-Worry about making money off a game later. What could that game be like? A rogue-like with moving tiles and mazes?
-
-There are other ways to make this simple and game like, but I love the open world idea.
-Why do I love the open world idea? Because exploration and learning excite me. This means I should have things to learn and discover out there. Perhaps procedural stories are this.
+** npc behavior: fly by combat
+have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
 ** a lived in world - npc traders
 NPC's randomly pick pairs of semi-close nodes.
 Then they pick a planet at each node.
@@ -66,6 +31,26 @@ Conflict between NPCs and pirates that takes place offscreen can be calculated r
 
 DISCOVERY: The player could be forced to discover ALL objects in the game. Player could follow NPC ships to learn the locations of new objects.
 If the player's ship drifts too far from a node center then search and rescue ships can spawn to guide the player back.
+** STEP ONE: soul searching
+What do you want out of this game?
+What is the best thing you can do to move the game towards what you want? Do I need to look at the graphics library first? Get the code to compile on other machines?
+** what is the game you want?
+I like the idea of contextualizing actions and events that are large and multistep, but not opaque.
+
+Ask yourself what games you like and what you like about them.
+  Urban Dead
+  Privateer 2
+  Freelancer mods
+  Nexus Wars
+  Starcraft
+  Romance of the Three Kingdoms
+  Ogame - good for the scaling!
+
+Your goal is to create a game you enjoy that others will also enjoy.
+Worry about making money off a game later. What could that game be like? A rogue-like with moving tiles and mazes?
+
+There are other ways to make this simple and game like, but I love the open world idea.
+Why do I love the open world idea? Because exploration and learning excite me. This means I should have things to learn and discover out there. Perhaps procedural stories are this.
 ** Pygame for development
 Separate the following notes into
 1. motivation
@@ -130,9 +115,6 @@ NPCs won't attack until you get within range.
 Then add a mission where you take down a convoy before it reaches its destination
 *** defend area of space
 Should be easy once you get the previous behavior
-*** fix goto so the npc doesn't park at the bullseye
-*** fly by combat
-have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
 ** parameterize minigame difficulty
 Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volume of space (inner concentric circle), speeding up rocks, increasing the number of rocks created when one gets destroyed.
 
@@ -399,7 +381,6 @@ Then buy goods and take them to Z.
 
 Just something simple to introduce the game and give direction.
 ** stuff
-Speech bubbles from ships.
 Special weapons that only damage asteroids.
 Factions that make all lethal weaponry illegal and hunt down criminals.
 NPCs that are not hostile to the player, but that instead transport goods or do other tasks like go mine asteroids.

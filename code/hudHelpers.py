@@ -1,15 +1,15 @@
 #This file contains all the classes that are used as heads up displays for various scenarios.
 import pygame
-import globalvars
-import random as rd
-from geometry import getCoordsNearLoc
-import objInstances
-import ship
-import capitalShip
+import geometry
 import sys
 sys.path.append('code/cython-'+str(sys.platform)) #Import from a system-specific cython folder
 #Because cython files only work on the system they were compiled on.
 import cygeometry
+import globalvars
+import random as rd
+import objInstances
+import ship
+import capitalShip
 
 
 def nudgeApart(physical_objs, TESTING=False):
@@ -99,12 +99,12 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 	physical_objs = []
 
 	for _ in xrange(objects['capital_ship']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		enemy_ship = getNewCapitalShip(x,y)
 		physical_objs.append(enemy_ship)
 
 	for _ in xrange(objects['enemy']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		#Generate a pirate ship with the node's level of tech
 		temp = getNewEnemy(x,y,'destroyer',\
 					ship_tech, \
@@ -115,31 +115,31 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 		physical_objs.append(temp)
 
 	for _ in xrange(objects['crystal']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Gem(x=x, y=y, speed_min=0., speed_max=0.))
 
 	for _ in xrange(objects['large_asteroid']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='bigrock'))
 
 	for _ in xrange(objects['medium_asteroid']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='medrock'))
 
 	for _ in xrange(objects['small_asteroid']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='smallrock'))
 
 	for _ in xrange(objects['gold_metal']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='gold'))
 
 	for _ in xrange(objects['silver_metal']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.Asteroid(x=x, y=y, speed_min=0., speed_max=0., image_name='silver'))
 
 	for _ in xrange(objects['health']):
-		x,y = getCoordsNearLoc(center, 0, course_length, course_height)
+		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		physical_objs.append(objInstances.HealthKit(x, y))
 
 	if not fuel_depots is None:
@@ -294,3 +294,5 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 	def isOnScreen(self, _):
 		return True
 
+	def getDirtyRect(self, _):
+		return (0,0,0,0)

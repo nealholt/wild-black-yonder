@@ -182,6 +182,17 @@ class TemporaryText(pygame.sprite.Sprite):
 			self.rect.top > top + globalvars.HEIGHT or \
 			self.rect.left > left + globalvars.WIDTH )
 
+	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
+		'''Pre: self is on screen.
+		Post: Returns the dirty rect for this object.'''
+		pos = self.rect.topleft
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		if self.useOffset:
+			pos = pos[0]-offset[0], pos[1]-offset[1]
+		# - Return the sprite's current location rectangle.
+		return (pos[0], pos[1], self.rect.width, self.rect.height)
+
 
 class ShipStatsText(pygame.sprite.Sprite):
 	'''Display ship stats at the top of the screen. '''
@@ -210,6 +221,8 @@ class ShipStatsText(pygame.sprite.Sprite):
 
 	def isOnScreen(self, _): return True
 
+	def getDirtyRect(self, _):
+		return (0,0,0,0)
 
 
 class TimerDisplay(pygame.sprite.Sprite):
@@ -242,6 +255,9 @@ class TimerDisplay(pygame.sprite.Sprite):
 		globalvars.screen.blit(text, self.rect.topleft)
 
 	def isOnScreen(self, _): return True
+
+	def getDirtyRect(self, _):
+		return (0,0,0,0)
 
 
 
@@ -316,6 +332,8 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 
 	def isOnScreen(self, _): return True
 
+	def getDirtyRect(self, _):
+		return (0,0,0,0)
 
 
 class ArrowToDestination(pygame.sprite.Sprite):
@@ -344,3 +362,13 @@ class ArrowToDestination(pygame.sprite.Sprite):
 		#Only display the guiding arrow if player is too far away to see the target
 		return self.dtt > globalvars.SCREENRADIUS
 
+	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
+		'''Pre: self is on screen.
+		Post: Returns the dirty rect for this object.'''
+		pos = self.rect.topleft
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		if self.useOffset:
+			pos = pos[0]-offset[0], pos[1]-offset[1]
+		# - Return the sprite's current location rectangle.
+		return (pos[0], pos[1], self.rect.width, self.rect.height)

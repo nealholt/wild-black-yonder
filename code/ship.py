@@ -386,7 +386,7 @@ class Ship(PhysicalObject):
 		self.setDestination(objective)
 
 
-	def goTo(self, attacking=False, max_speed=False, force_turn=False):
+	def goToAndPark(self, attacking=False, max_speed=False, force_turn=False):
 		''' '''
 		#Get angle to target
 		self.angle_to_target = self.getAngleToTarget()
@@ -412,6 +412,32 @@ class Ship(PhysicalObject):
 			self.targetSpeed = self.maxSpeed
 		else:
 			self.targetSpeed = min(recommended_targeting_speed, recommended_turn_speed)
+		#modify speed
+		self.approachSpeed()
+		#move
+		self.move()
+
+
+	def goTo(self, max_speed=False, force_turn=False):
+		''' '''
+		#Get angle to target
+		self.angle_to_target = self.getAngleToTarget()
+		#Turn towards target
+		recommended_turn_speed = self.turnTowards(force_turn=force_turn)
+		abs_angle = abs(self.angle_to_target)
+        #Get distance to target
+		d = cygeometry.distance(self.rect.center, self.destination)
+		if abs_angle > 100:
+			recommended_targeting_speed = self.maxTurnSpeed
+		elif d < self.target_long_range and abs_angle > 40:
+			recommended_targeting_speed = self.maxTurnSpeed
+		elif d < self.target_med_range and abs_angle > 20:
+			recommended_targeting_speed = self.maxTurnSpeed
+		#Set goal speed to the minimum of the recommended speeds
+		if max_speed:
+			self.targetSpeed = self.maxSpeed
+		else:
+			self.targetSpeed = recommended_turn_speed
 		#modify speed
 		self.approachSpeed()
 		#move
@@ -467,7 +493,7 @@ class Ship(PhysicalObject):
 				self.goTo(max_speed=True, force_turn=True)
 			#attacking enemy => attack
 			else:
-				self.goTo(attacking=True)
+				self.goToAndPark(attacking=True)
 				#Check for firing solutions
 				self.shoot()
 				#Check for firing solutions for missiles
