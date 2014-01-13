@@ -227,7 +227,7 @@ class ScenarioManager:
 		globalvars.intangibles_top.add(objInstances.FinishBullsEye(npc_friend, finish_line))
 		#determine what sorts of obstacles to put on the race course.
 		numbers = dict()
-		numbers['enemy'] = 3
+		numbers['enemy'] = 0
 		numbers['crystal'] = 5
 		numbers['large_asteroid'] = 20
 		numbers['medium_asteroid'] = 30

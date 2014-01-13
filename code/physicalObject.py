@@ -115,19 +115,8 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#the object even if this object's target is in that direction.
 		self.suppress_turn_threshold = 40
 
-		#If the target is further away than this then recommended target engagement speed is max speed.
-		self.target_long_range = 600
-		#If the target is further away than this then recommended target engagement speed is 3/4 max speed.
-		self.target_med_range = 400
-		#If the target is further away than this then recommended target engagement speed is 1/2 max speed.
-		self.target_short_range = 200
-
-		#Set the recommended ship speed to 1/4 max speed if self.closest_sprite is on 
-		#a collision course with us and is danger_red_distance distance away, 
-		#1/2 max speed if yellow and otherwise 3/4 max speed.
-		self.danger_red_distance = 20
-		self.danger_yellow_distance = 40
-		#Used for firing where a ship will be not where it's currently at. This is not perfectly implemented.
+		#Used for firing where a ship will be not where it's currently at.
+		#This is not perfectly implemented.
 		self.lead_indicator = self.rect.center
 
 		#Ratio of distance to closest sprite over abs(angle to closest sprite) that 
@@ -138,7 +127,17 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#should be no more than this ratio of our maximum speed.
 		#So in this case, 3 is the parameter. However, in reality, this depends on our 
 		#acceleration and the object's size, but this will suffice for now.
-		self.speed_safety_factor = 3.0
+		self.speed_safety_factor = 3.0 #Higher value == more conservative == slower near objects
+
+		#What ratio of distance to target over abs(angle to target) the npc considers 
+		#acceptable before the npc needs to reduce speed to improve turning.
+		#Set the default ratio as anything over 25/1
+		#if dist / angle is less than this value then the ship will slow to maxTurnSpeed, 
+		#otherwise ship will approach at maxSpeed.
+		#dist / angle is small for an npc when target is behind the npc and larger when the 
+		#target is infront of the npc.
+		#Making this value larger encourages NPCs to slow down to angle towards their target more often.
+		self.distance_angle_ratio = 25.0
 
 
 	def setLocation(self, centerx, centery):
@@ -389,13 +388,9 @@ class PhysicalObject(pygame.sprite.Sprite):
 			else:
 				dtheta = min(self.angle_to_target, capable_dtheta)
 		#Now determine the best speed
-		#Get distance to target
-		d = cygeometry.distance(self.rect.center, self.destination)
-		if abs_angle > 100:
-			speed = self.maxTurnSpeed
-		elif d < self.target_long_range and abs_angle > 40:
-			speed = self.maxTurnSpeed
-		elif d < self.target_med_range and abs_angle > 20:
+		#Get distance to target. Cap the distance at one screen width.
+		d = min(globalvars.WIDTH, cygeometry.distance(self.rect.center, self.destination))
+		if d / max(abs_angle, 1.0) < self.distance_angle_ratio:
 			speed = self.maxTurnSpeed
 		return (speed, dtheta)
 

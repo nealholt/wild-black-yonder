@@ -171,7 +171,6 @@ class Ship(PhysicalObject):
 		#If the target is further away than this then recommended target engagement speed is 3/4 max speed.
 		self.target_med_range = 400
 		#If the target is further away than this then recommended target engagement speed is 1/2 max speed.
-		#If the target is closer than this, then set to maxTurnSpeed
 		self.target_short_range = 200
 
 

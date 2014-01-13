@@ -12,39 +12,9 @@ It seems to be faster when using -flip.
 
 physicalObject.getRecommendedVector has magic numbers and other ugliness that you want to get rid of.
 
+game.setClosestSprites() has multiple todos in it.
+
 Make some of the parameters more meaningful:
-
-Ratio of distance to closest sprite over abs(angle to closest sprite) that corresponds to how self's speed should be set, assuming the ratio is less than one.
-Max angle at which we even pay attention to such a sprite is 90 degrees.
-100/20 degrees seems like a good threshold ratio.
-So how about when distance/(abs(angle)*3) is less than one, then our target speed should be no more than this ratio of our maximum speed.
-So in this case, 3 is the parameter. However, in reality, this depends on our acceleration and the object's size, but this will suffice for now.
-
-   angle from an enemy to self below which an npc will panic and temporarily flee.
-Default +- 20 degrees.
-Was self.target_front_center
-rename to self.in_crosshairs
-
-   health fraction below which an npc will permanently flee.
-Default 10%
-Was and is self.min_percent_health. Don't change, just comment.
-
-   What the npc considers optimal distance to target.
-Previously there are 3 different values 
-self.target_long_range
-Any range over this and the npc just wants to get to target as fast as possible.
-Below this range, slow to 1/2 max speed.
-self.target_med_range
-Below this range, slow to max turn speed.
-self.target_short_range
-Below this range, slow to a stop.
-
-   What ratio of distance to target over abs(angle to target) the npc considers acceptable before the npc needs to reduce speed to improve turning. Put bounds on this ratio as a start.
-Cap the distance at one screen width.
-900/90 or greater = 10/1 = need to turn.
-Set the default ratio as anything over 10/1
-This is not currently implemented as a variable, but is roughly encoded in the goto method. Put it in a variable called:
-self.distance_angle_ratio = 10.0
 
 		#Angle within which npc should consider avoiding an object. If the 
 		#object is within + or - 90 degrees, for instance, then self will test 
@@ -61,13 +31,36 @@ self.distance_angle_ratio = 10.0
 		#number of pixels, then this object will not turn in the direction of 
 		#the object even if this object's target is in that direction.
 		self.suppress_turn_threshold = 40
+** npc personality parameters
+*** physicalObject
+self.speed_safety_factor = 3.0 #Higher value == more conservative == slower near objects
+#Only used with self.closest_sprite
 
-#The following are not well implemented. They are far too small, only triggered if distance is already less than self.avoidance_threshold, and do not take into account angle to the closest object. Change them.
-		#Set the recommended ship speed to 1/4 max speed if self.closest_sprite is on 
-		#a collision course with us and is danger_red_distance distance away, 
-		#1/2 max speed if yellow and otherwise 3/4 max speed.
-		self.danger_red_distance = 10
-		self.danger_yellow_distance = 20
+#What ratio of distance to target over abs(angle to target) the npc considers acceptable before the npc needs to reduce speed to improve turning.
+#Set the default ratio as anything over 25/1
+#if dist / angle is less than this value then the ship will slow to maxTurnSpeed, otherwise ship will approach at maxSpeed.
+#dist / angle is small for an npc when target is behind the npc and larger when the target is infront of the npc.
+#Making this value larger encourages NPCs to slow down to angle towards their target more often.
+self.distance_angle_ratio = 25.0
+*** ship
+#If ship's target is within +-self.target_front_center in front then slow to a stop and shoot.
+self.target_front_center = 30
+
+#If ship's target is within +-self.target_rear_center in front then slow to a stop and shoot. The 180 minus turns this into a rear-facing cone.
+self.target_rear_center = 180 - 30
+
+#health fraction below which an npc will permanently flee the battlefield.
+self.min_percent_health = 0.10
+
+#If the target is further away than this then recommended target engagement speed is max speed.
+self.target_long_range = 600
+
+#If the target is further away than this then recommended target engagement speed is 3/4 max speed.
+self.target_med_range = 400
+
+#If the target is further away than this then recommended target engagement speed is 1/2 max speed.
+#If the target is closer than this, then set to maxTurnSpeed
+self.target_short_range = 200
 ** Pygame for development
 Separate the following notes into
 1. motivation
