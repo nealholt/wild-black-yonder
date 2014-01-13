@@ -418,6 +418,21 @@ class Ship(PhysicalObject):
 		self.angle_to_target = self.getAngleToTarget()
 		#Turn towards target
 		self.targetSpeed = self.turnTowards()
+		'''recommended_turn_speed = self.turnTowards(force_turn=force_turn)
+		abs_angle = abs(self.angle_to_target)
+		#Get distance to target
+		d = cygeometry.distance(self.rect.center, self.destination)
+		if abs_angle > 100:
+			recommended_targeting_speed = self.maxTurnSpeed
+		elif d < self.target_long_range and abs_angle > 40:
+			recommended_targeting_speed = self.maxTurnSpeed
+		elif d < self.target_med_range and abs_angle > 20:
+			recommended_targeting_speed = self.maxTurnSpeed
+		#Set goal speed to the minimum of the recommended speeds
+		if max_speed:
+			self.targetSpeed = self.maxSpeed
+		else:
+			self.targetSpeed = recommended_turn_speed'''
 		#modify speed
 		self.approachSpeed()
 		#move

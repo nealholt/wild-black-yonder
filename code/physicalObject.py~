@@ -403,7 +403,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		Finally turn and move in the recommended manner."""
 		#Get vector recommended by collisionAvoidance
 		speed, dtheta, dontTurnLeft, dontTurnRight = self.collisionAvoidance()
-		#print 'speed: '+str(speed)+'\ndtheta:'+str(dtheta)+'\nleft:'+str(dontTurnLeft)+'\nright:'+str(dontTurnRight) #TESTING
+		print 'speed: '+str(speed)+'\ndtheta:'+str(dtheta)+'\nleft:'+str(dontTurnLeft)+'\nright:'+str(dontTurnRight) #TODO TESTING
 		#If collisionAvoidance does not fully specify a vector then ask
 		#getRecommendedVector for a vector.
 		if speed is None or dtheta is None:
