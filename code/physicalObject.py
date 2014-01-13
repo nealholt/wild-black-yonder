@@ -182,6 +182,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.closest_sprite = closest_sprite
 		self.dist_to_closest = dist
 
+
 	def calculateDTheta(self):
 		'''This is used for xwing vs tie fighter-style
 		maneuvering in which turn rate is reduced at 
@@ -305,15 +306,98 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if angle_to_target > 180: angle_to_target -= 360
 		return angle_to_target
 
-	def turnTowards(self, force_turn=False):
+
+	def collisionAvoidance(self):
+		'''returns recommended turning angle and speed, or None, in which case no change is mandated by collision avoidance. Also returns whether or not turning in a particular direction is suppressed.'''
+		#Collision avoidance: Avoid Collisions!
+		#The following can only be used to suppress
+		#turning if they are true. If false, they have no effect.
+		speed = None
+		dtheta = None
+		dontTurnLeft = False
+		dontTurnRight = False
+		#If there is a closest sprite, amend turning to avoid it.
+		if self.closest_sprite is None:
+			#Set no conditions on turning and no recommended speed
+			#or turning angle
+			return [speed, dtheta, dontTurnLeft, dontTurnRight]
+		else:
+			angle = self.getAngleToTarget(target=self.closest_sprite)
+			#If the closest sprite is at any angle closer 
+			#than danger_cone degrees, consider altering this 
+			#physical object's turn to avoid the other sprite.
+			abs_angle = abs(angle)
+			if abs_angle < self.danger_cone:
+				#self.dist_to_closest is the distance from this sprite's
+				#center to self.closest_sprite's center. We need to factor 
+				#in the radius for these sprites.
+				actual_distance = self.dist_to_closest - \
+					self.collisionradius-self.closest_sprite.collisionradius
+				if actual_distance < self.avoidance_threshold:
+					#Too close. It's vital that we turn away from the object.
+					dtheta = self.calculateDTheta()
+					if angle > 0:
+						dtheta = -dtheta
+					#Figure out optimal speed
+					if actual_distance < self.danger_yellow_distance:
+						speed = self.maxTurnSpeed
+					else:
+						speed = self.maxSpeed
+				#elif actual_distance + abs_angle < 70:
+				elif actual_distance < self.suppress_turn_threshold:
+					#It's not too close yet, but don't get any closer.
+					if angle < 0:
+						dontTurnLeft = True
+					else:
+						dontTurnRight = True
+			#Reset closest sprite.
+			self.closest_sprite = None
+			self.dist_to_closest = globalvars.MINSAFEDIST
+		return [speed, dtheta, dontTurnLeft, dontTurnRight]
+
+
+	def getRecommendedVector(self):
 		"""This was copied out of scripts.py in stardog and 
-		modified slightly. Collision avoidance is all my 
-		own, however.
-		force_turn causes the object to turn off collision avoidance.
+		modified slightly.
 		PRE: The following code MUST MUST MUST be set in order to make 
 		self.angle_to_target current before calling this method:
 		self.angle_to_target = self.getAngleToTarget()
-		POST: Returns recommended speed for optimal turning. """
+		POST: Returns recommended speed and direction for approaching target. """
+		dtheta = 0.0
+		speed = self.targetSpeed
+		#If we need to turn more towards the target...
+		abs_angle = abs(self.angle_to_target)
+		if abs_angle > self.acceptableError:
+			#Get the amount to turn. It may be less than the 
+			#amount this object is capable of turning.
+			capable_dtheta = self.calculateDTheta()
+			#Turn counter clockwise if that's the direction of our target
+			if self.angle_to_target < 0:
+				dtheta = max(self.angle_to_target, -capable_dtheta)
+			#In all other cases turn clockwise
+			else:
+				dtheta = min(self.angle_to_target, capable_dtheta)
+		#Now determine the best speed
+        #Get distance to target
+		d = cygeometry.distance(self.rect.center, self.destination)
+		if abs_angle > 100:
+			speed = self.maxTurnSpeed
+		elif d < self.target_long_range and abs_angle > 40:
+			speed = self.maxTurnSpeed
+		elif d < self.target_med_range and abs_angle > 20:
+			speed = self.maxTurnSpeed
+		return (speed, dtheta)
+
+
+	def turnTowards(self, force_turn=False):
+		"""Get recommended vector for collision avoidance.
+		If nothing needs particularly avoided, get recommended vector
+		to reach target.
+		Finally turn and move in the recommended manner."""
+		#TODO LEFT OFF HERE
+
+
+
 		#Collision avoidance: Avoid Collisions!
 		#The following can only be used to suppress
 		#turning if they are true. If false, they have no effect.

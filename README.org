@@ -8,9 +8,22 @@ The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
 ** separate turnTowards functionality
 PhysicalObject's turnTowards seems to be doing too much work. It also does this obstacle avoidance. Shouldn't that be separate?
+
+Instead of turnTowards, write a method that returns recommended turning angle to target and recommended speed.
+
+Write a collision avoidance method that also returns recommended turning angle and speed, or None, in which case no change is mandated by collision avoidance.
+
+phys obj
+player
+ship
+objInstances
+
+turnTowards
 ** npc behavior modifications. set up for personality
 1. figure out where to put each of these in the "personality file". I think a todo on this list is fine.
 2. For each one, see if we want to fix it in any way and do so in the code. This may trigger the creation of a whole new project and that's ok.
+
+physicalObject.getRecommendedVector has magic numbers and other ugliness that you want to get rid of.
 
 Make some of the parameters more meaningful:
 

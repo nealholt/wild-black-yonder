@@ -614,13 +614,11 @@ class Follower(PhysicalObject):
 	def update(self):
 		#Turn towards target
 		self.turnTowards()
-
 		#slow down if near target
 		if not self.park():
 			#Approach target speed
 			self.targetSpeed = self.maxSpeed
 			self.approachSpeed()
-
 		self.move()
 
 
