@@ -6,8 +6,6 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** separate turnTowards functionality
-ship.goTo is ignoring its arguments. You need to change this. Also, you need to generally read through the code and figure out what can be cleaned and improved. The appropriate files are open.
 ** npc behavior modifications. set up for personality
 1. figure out where to put each of these in the "personality file". I think a todo on this list is fine.
 2. For each one, see if we want to fix it in any way and do so in the code. This may trigger the creation of a whole new project and that's ok.
@@ -70,12 +68,6 @@ self.distance_angle_ratio = 10.0
 		#1/2 max speed if yellow and otherwise 3/4 max speed.
 		self.danger_red_distance = 10
 		self.danger_yellow_distance = 20
-** npc behavior: fly by combat
-have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
-
-If npc is close to played and player's angle to the enemy ship is low then initiate a fly by. That is. Accelerate and turn away from player.
-
-The goTo methods else ifs may be fairly easy to improve, I think. Can't they be made more efficient? Can they be improved?
 ** Pygame for development
 Separate the following notes into
 1. motivation
@@ -94,6 +86,14 @@ http://www.reddit.com/r/gamedev/comments/i2ixn/publishing_a_pygame_game/
 Graphics libraries for python:
 http://cocos2d.org/doc.html - checking out the video here is probably useful.
 http://www.panda3d.org/
+** pygame executable
+See the readme in the compiling folder for next steps.
+** npc behavior: fly by combat
+have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
+
+If npc is close to played and player's angle to the enemy ship is low then initiate a fly by. That is. Accelerate and turn away from player.
+
+The goTo methods else ifs may be fairly easy to improve, I think. Can't they be made more efficient? Can they be improved?
 ** a lived in world - npc traders
 NPC's randomly pick pairs of semi-close nodes.
 Then they pick a planet at each node.
@@ -367,8 +367,6 @@ I love the idea of factions being identifiable by their weapons. Maybe they shou
 Later make the actions more intelligent (like have each faction focus in one area for a longer amount of time).
 
 Factions may need to store relationships with each other. Later they can negotiate treaties and such and have more sophisticated interactions.
-** pygame executable
-See the readme in the compiling folder for next steps.
 ** save and load from save with pickle
 Is this really that hard? maybe you should try it. It could help with bebugging and testing.
 

@@ -7,6 +7,7 @@ import sys
 sys.path.append('code/cython-'+str(sys.platform)) #Import from a system-specific cython folder
 #Because cython files only work on the system they were compiled on.
 import cygeometry
+import physicalObject
 
 
 def trunc(f, n):
@@ -70,13 +71,13 @@ def writeTextToScreen(string='', fontSize=12, color=colors.white, pos=(0,0)):
 	return textpos
 
 
-class TemporaryText(pygame.sprite.Sprite):
+class TemporaryText(physicalObject.PhysicalObject):
 	'''Specify the position of the text, contents, whether or not the
 	text should flash and how fast it should do so in seconds, and the 
 	time for the text to live in seconds.
 	Font size and color can also be specified'''
         def __init__(self, x=0, y=0, text='', timeOn=1, timeOff=0, ttl=0, fontSize=12, color=colors.white, useOffset=False):
-		pygame.sprite.Sprite.__init__(self)
+		physicalObject.PhysicalObject.__init__(self)
 		self.is_a = globalvars.OTHER
 		font = pygame.font.Font(None, fontSize)
 		self.text = font.render(text, 1, color)
@@ -118,42 +119,20 @@ class TemporaryText(pygame.sprite.Sprite):
 		if self.useOffset:
 			return self.showing
 		else:
-			'''TODO this is a duplicate of the method in physical object.
-			Returns true if this sprite is on screen.
-			rect.right < left #Then not on screen
-			rect.bottom < top #Then not on screen
-			rect.top > top + globalvars.HEIGHT #Then not on screen
-			rect.left > left + globalvars.WIDTH #Then not on screen'''
-			left, top = offset
-			return not( self.rect.right < left or \
-			self.rect.bottom < top or \
-			self.rect.top > top + globalvars.HEIGHT or \
-			self.rect.left > left + globalvars.WIDTH )
-
-	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
-		'''Pre: self is on screen.
-		Post: Returns the dirty rect for this object.'''
-		pos = self.rect.topleft
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		if self.useOffset:
-			pos = pos[0]-offset[0], pos[1]-offset[1]
-		# - Return the sprite's current location rectangle.
-		return (pos[0], pos[1], self.rect.width, self.rect.height)
+			#Call parent's method
+			physicalObject.PhysicalObject.isOnScreen(self, offset)
 
 
-class ShipStatsText(pygame.sprite.Sprite):
+class ShipStatsText(physicalObject.PhysicalObject):
 	'''Display ship stats at the top of the screen. '''
         def __init__(self, x=0, y=0, text=None, fontSize=36, color=colors.white):
-		pygame.sprite.Sprite.__init__(self)
+		physicalObject.PhysicalObject.__init__(self, color=color)
 		self.is_a = globalvars.OTHER
-		self.color = color
 		self.font = pygame.font.Font(None, fontSize)
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
 		self.useOffset = False
-		#Create the rect and draw once to properly initialize it.
-		self.rect = None
+		#Create draw once to properly initialize the rectangle.
 		self.draw((0,0))
 
 	def draw(self, _):
@@ -169,22 +148,11 @@ class ShipStatsText(pygame.sprite.Sprite):
 
 	def isOnScreen(self, _): return True
 
-	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
-		'''Pre: self is on screen.
-		Post: Returns the dirty rect for this object.'''
-		pos = self.rect.topleft
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		if self.useOffset:
-			pos = pos[0]-offset[0], pos[1]-offset[1]
-		# - Return the sprite's current location rectangle.
-		return (pos[0], pos[1], self.rect.width, self.rect.height)
 
-
-class TimerDisplay(pygame.sprite.Sprite):
+class TimerDisplay(physicalObject.PhysicalObject):
 	'''Counts down time remaining in race.'''
         def __init__(self, target, fontSize=36):
-		pygame.sprite.Sprite.__init__(self)
+		physicalObject.PhysicalObject.__init__(self)
 		self.is_a = globalvars.OTHER
 		self.font = pygame.font.Font(None, fontSize)
 		self.target = target #A location
@@ -193,8 +161,7 @@ class TimerDisplay(pygame.sprite.Sprite):
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
 		self.useOffset = False
-		#Create the rect and draw once to properly initialize it.
-		self.rect = None
+		#Draw once to properly initialize the rectangle.
 		self.draw((0,0))
 
 	def draw(self, _):
@@ -212,20 +179,8 @@ class TimerDisplay(pygame.sprite.Sprite):
 
 	def isOnScreen(self, _): return True
 
-	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
-		'''Pre: self is on screen.
-		Post: Returns the dirty rect for this object.'''
-		pos = self.rect.topleft
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		if self.useOffset:
-			pos = pos[0]-offset[0], pos[1]-offset[1]
-		# - Return the sprite's current location rectangle.
-		return (pos[0], pos[1], self.rect.width, self.rect.height)
 
-
-
-class TimeLimitDisplay(pygame.sprite.Sprite):
+class TimeLimitDisplay(physicalObject.PhysicalObject):
 	'''Initially to be used for the gem wild scenario in 
 	which the player has a limited amount of time to 
 	grab as many gems as possible.
@@ -233,7 +188,7 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 	points_to_win is the number of points at which the scenario is considered won.
 	If time runs out before the amount of points is acquired then the player loses.'''
         def __init__(self, text, time_limit=0, points_to_win=1, fontSize=36, display_points=True, mission=None):
-		pygame.sprite.Sprite.__init__(self)
+		physicalObject.PhysicalObject.__init__(self)
 		self.is_a = globalvars.TIMELIMITDISPLAY
 		self.text = text
 		self.points_to_win = points_to_win
@@ -247,8 +202,7 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
 		self.useOffset = False
-		#Create the rect and draw once to properly initialize it.
-		self.rect = None
+		#Draw once to properly initialize the rectangle.
 		self.draw((0,0))
 
 	def draw(self, _):
@@ -296,30 +250,18 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 
 	def isOnScreen(self, _): return True
 
-	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
-		'''Pre: self is on screen.
-		Post: Returns the dirty rect for this object.'''
-		pos = self.rect.topleft
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		if self.useOffset:
-			pos = pos[0]-offset[0], pos[1]-offset[1]
-		# - Return the sprite's current location rectangle.
-		return (pos[0], pos[1], self.rect.width, self.rect.height)
 
-
-class ArrowToDestination(pygame.sprite.Sprite):
+class ArrowToDestination(physicalObject.PhysicalObject):
 	'''Paints a yellow arrow pointing to the given target.'''
         def __init__(self, target):
-		pygame.sprite.Sprite.__init__(self)
+		physicalObject.PhysicalObject.__init__(self)
 		self.is_a = globalvars.ARROW
 		self.target = target #An object with a rect
 		self.dtt = 0.0 #Distance to target
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
 		self.useOffset = False
-		#Create the rect and draw once to properly initialize it.
-		self.rect = None
+		#Draw once to properly initialize the rectangle.
 		self.draw((0,0))
 
 	def update(self):
@@ -334,13 +276,3 @@ class ArrowToDestination(pygame.sprite.Sprite):
 		#Only display the guiding arrow if player is too far away to see the target
 		return self.dtt > globalvars.SCREENRADIUS
 
-	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
-		'''Pre: self is on screen.
-		Post: Returns the dirty rect for this object.'''
-		pos = self.rect.topleft
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		if self.useOffset:
-			pos = pos[0]-offset[0], pos[1]-offset[1]
-		# - Return the sprite's current location rectangle.
-		return (pos[0], pos[1], self.rect.width, self.rect.height)

@@ -7,58 +7,7 @@ import sys
 sys.path.append('code/cython-'+str(sys.platform)) #Import from a system-specific cython folder
 #Because cython files only work on the system they were compiled on.
 import cygeometry
-
-#copied from stardog utils.py
-#setup images
-#if there is extended image support, load .gifs, otherwise load .bmps.
-#.bmps do not support transparency, so there might be black clipping.
-ext = ".bmp"
-if pygame.image.get_extended(): ext = ".gif"
-
-def preLoadImage(filename, transparency=True):
-	'''copied from stardog utils.py. Heavily modified.
-	transparency tells the method whether or not to set a transparent color.'''
-	#try:
-	image = pygame.image.load(filename).convert()
-	if transparency:
-		#colorkey tells pygame what color to make transparent.
-		#We assume that the upper left most pixel's color is the color to make transparent.
-		colorkey = image.get_at((0,0))
-		image.set_colorkey(colorkey)
-	#except pygame.error as e:
-	#	image = pygame.image.load("images/default" + ext).convert()
-	#	if transparency:
-	#		image.set_colorkey(colors.white)
-	return image
-
-
-#Keep a list of preloaded images
-'''In theory, preloading the images and then getting copies of them when needed with the convert() method will be faster and more efficient than loading the image anew each time.
-According to 
-http://www.pygame.org/docs/ref/image.html
-"The returned Surface will contain the same color format, colorkey and alpha transparency as the file it came from. You will often want to call Surface.convert() with no arguments, to create a copy that will draw more quickly on the screen."
-I tested this. It is WAAAAY faster.'''
-image_list = dict()
-image_list['default'] = preLoadImage('images/default'+ext) #A default image used as a placeholder.
-image_list['bigrock'] = preLoadImage('images/asteroidBigRoundTidied'+ext) #large asteroid
-image_list['medrock'] = preLoadImage('images/asteroidWild2'+ext) #medium asteroid
-image_list['smallrock'] = preLoadImage('images/asteroidTempel'+ext) #small asteroid
-image_list['gold'] = preLoadImage('images/Sikhote_small'+ext) #gold asteroid
-image_list['silver'] = preLoadImage('images/bournonite_30percent'+ext) #silver asteroid
-image_list['ship'] = preLoadImage('images/ship'+ext) #smallest ship
-image_list['destroyer'] = preLoadImage('images/destroyer'+ext) #small ship
-image_list['health'] = preLoadImage('images/health'+ext) #health kit
-image_list['gem'] = preLoadImage('images/TyDfN_tiny'+ext) #gem
-image_list['bgjupiter'] = preLoadImage('images/ioOverJupiter'+ext, transparency=False) #background jupiter
-image_list['bggalaxies'] = preLoadImage('images/galaxyLenses'+ext, transparency=False) #background galaxies
-image_list['bigShip'] = preLoadImage('images/bigShip'+ext) #capital ship
-image_list['warp'] = preLoadImage('images/warpPortal'+ext) #warp portal
-image_list['shipoutline'] = preLoadImage('images/space-ship-sm'+ext) #ship outline
-image_list['gas'] = preLoadImage('images/fuel_can'+ext) #gas can
-image_list['flag00'] = preLoadImage('images/flag00'+ext, transparency=False) #faction flag
-image_list['flag01'] = preLoadImage('images/flag01'+ext, transparency=False) #faction flag
-image_list['flag02'] = preLoadImage('images/flag02'+ext, transparency=False) #faction flag
-image_list['planet'] = preLoadImage('images/titan-lakes-full-131023'+ext) #planet for resource trading
+import physicalObject
 
 
 def trunc(f, n):
@@ -122,13 +71,13 @@ def writeTextToScreen(string='', fontSize=12, color=colors.white, pos=(0,0)):
 	return textpos
 
 
-class TemporaryText(pygame.sprite.Sprite):
+class TemporaryText(physicalObject.PhysicalObject):
 	'''Specify the position of the text, contents, whether or not the
 	text should flash and how fast it should do so in seconds, and the 
 	time for the text to live in seconds.
 	Font size and color can also be specified'''
         def __init__(self, x=0, y=0, text='', timeOn=1, timeOff=0, ttl=0, fontSize=12, color=colors.white, useOffset=False):
-		pygame.sprite.Sprite.__init__(self)
+		physicalObject.PhysicalObject.__init__(self)
 		self.is_a = globalvars.OTHER
 		font = pygame.font.Font(None, fontSize)
 		self.text = font.render(text, 1, color)
@@ -170,42 +119,20 @@ class TemporaryText(pygame.sprite.Sprite):
 		if self.useOffset:
 			return self.showing
 		else:
-			'''TODO this is a duplicate of the method in physical object.
-			Returns true if this sprite is on screen.
-			rect.right < left #Then not on screen
-			rect.bottom < top #Then not on screen
-			rect.top > top + globalvars.HEIGHT #Then not on screen
-			rect.left > left + globalvars.WIDTH #Then not on screen'''
-			left, top = offset
-			return not( self.rect.right < left or \
-			self.rect.bottom < top or \
-			self.rect.top > top + globalvars.HEIGHT or \
-			self.rect.left > left + globalvars.WIDTH )
-
-	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
-		'''Pre: self is on screen.
-		Post: Returns the dirty rect for this object.'''
-		pos = self.rect.topleft
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		if self.useOffset:
-			pos = pos[0]-offset[0], pos[1]-offset[1]
-		# - Return the sprite's current location rectangle.
-		return (pos[0], pos[1], self.rect.width, self.rect.height)
+			#Call parent's method
+			physicalObject.PhysicalObject.isOnScreen(self, offset)
 
 
-class ShipStatsText(pygame.sprite.Sprite):
+class ShipStatsText(physicalObject.PhysicalObject):
 	'''Display ship stats at the top of the screen. '''
         def __init__(self, x=0, y=0, text=None, fontSize=36, color=colors.white):
-		pygame.sprite.Sprite.__init__(self)
+		physicalObject.PhysicalObject.__init__(self, color=color)
 		self.is_a = globalvars.OTHER
-		self.color = color
 		self.font = pygame.font.Font(None, fontSize)
 		#Whether to offset this object's location based on the camera.
 		#Text does not useOffset because we want to only position it relative to 0,0
 		self.useOffset = False
-		#Create the rect and draw once to properly initialize it.
-		self.rect = None
+		#Create draw once to properly initialize the rectangle.
 		self.draw((0,0))
 
 	def draw(self, _):
@@ -220,17 +147,6 @@ class ShipStatsText(pygame.sprite.Sprite):
 		globalvars.screen.blit(text, self.rect.topleft)
 
 	def isOnScreen(self, _): return True
-
-	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
-		'''Pre: self is on screen.
-		Post: Returns the dirty rect for this object.'''
-		pos = self.rect.topleft
-		#Whether to offset this object's location based on the camera.
-		#Text does not useOffset because we want to only position it relative to 0,0
-		if self.useOffset:
-			pos = pos[0]-offset[0], pos[1]-offset[1]
-		# - Return the sprite's current location rectangle.
-		return (pos[0], pos[1], self.rect.width, self.rect.height)
 
 
 class TimerDisplay(pygame.sprite.Sprite):

@@ -1,6 +1,6 @@
 import pygame
 import math
-from displayUtilities import image_list
+from imageList import *
 import geometry
 import colors
 import globalvars
@@ -129,6 +129,16 @@ class PhysicalObject(pygame.sprite.Sprite):
 		self.danger_yellow_distance = 40
 		#Used for firing where a ship will be not where it's currently at. This is not perfectly implemented.
 		self.lead_indicator = self.rect.center
+
+		#Ratio of distance to closest sprite over abs(angle to closest sprite) that 
+		#corresponds to how self's speed should be set, assuming the ratio is less than one.
+		#Max angle at which we even pay attention to such a sprite is 90 degrees.
+		#100/20 degrees seems like a good threshold ratio.
+		#So how about when distance/(abs(angle)*3) is less than one, then our target speed 
+		#should be no more than this ratio of our maximum speed.
+		#So in this case, 3 is the parameter. However, in reality, this depends on our 
+		#acceleration and the object's size, but this will suffice for now.
+		self.speed_safety_factor = 3.0
 
 
 	def setLocation(self, centerx, centery):
@@ -335,23 +345,19 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#physical object's turn to avoid the other sprite.
 			abs_angle = abs(angle)
 			if abs_angle < self.danger_cone:
-				#self.dist_to_closest is the distance from this sprite's
-				#center to self.closest_sprite's center. We need to factor 
-				#in the radius for these sprites.
-				actual_distance = self.dist_to_closest - \
-					self.collisionradius-self.closest_sprite.collisionradius
-				if actual_distance < self.avoidance_threshold:
+				if self.dist_to_closest < self.avoidance_threshold:
 					#Too close. It's vital that we turn away from the object.
 					dtheta = self.calculateDTheta()
 					if angle > 0:
 						dtheta = -dtheta
 					#Figure out optimal speed
-					if actual_distance < self.danger_yellow_distance:
-						speed = self.maxTurnSpeed
-					else:
-						speed = self.maxSpeed
+					fraction = (self.dist_to_closest / (abs_angle*self.speed_safety_factor))
+					print 'actual distance '+str(self.dist_to_closest) #TODO LEFT OFF HERE
+					print 'fraction '+str(fraction)
+					speed = self.maxSpeed * fraction
+						
 				#elif actual_distance + abs_angle < 70:
-				elif actual_distance < self.suppress_turn_threshold:
+				elif self.dist_to_closest < self.suppress_turn_threshold:
 					#It's not too close yet, but don't get any closer.
 					if angle < 0:
 						dontTurnLeft = True
