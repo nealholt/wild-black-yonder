@@ -7,18 +7,7 @@ python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
 ** separate turnTowards functionality
-PhysicalObject's turnTowards seems to be doing too much work. It also does this obstacle avoidance. Shouldn't that be separate?
-
-Instead of turnTowards, write a method that returns recommended turning angle to target and recommended speed.
-
-Write a collision avoidance method that also returns recommended turning angle and speed, or None, in which case no change is mandated by collision avoidance.
-
-phys obj
-player
-ship
-objInstances
-
-turnTowards
+ship.goTo is ignoring its arguments. You need to change this. Also, you need to generally read through the code and figure out what can be cleaned and improved. The appropriate files are open.
 ** npc behavior modifications. set up for personality
 1. figure out where to put each of these in the "personality file". I think a todo on this list is fine.
 2. For each one, see if we want to fix it in any way and do so in the code. This may trigger the creation of a whole new project and that's ok.
@@ -393,6 +382,9 @@ Start a new game.
 View the help menu.
 
 Have a help menu that goes back to the starscape intro menu when you click away from it.
+** special npc ships like a healer
+** king of the hill minigame
+with spawning enemies? Could also spawn capital ships and be used as a mechanism to conquer a node.
 ** pygame
 Story teller should come after save game, should come after executables for other people should come after most objects are finalized.
 

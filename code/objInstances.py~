@@ -89,7 +89,7 @@ class Missile(PhysicalObject):
 			self.target = globalvars.player
 
 	def update(self):
-		''' '''
+		'''TODO The following code is mostly duplicated in the ship's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
 		if self.longevity < 1:
 			#explode
 			globalvars.intangibles_bottom.add(Explosion(\
@@ -100,6 +100,12 @@ class Missile(PhysicalObject):
 			#Update target location
 			self.setDestination(self.target.rect.center)
 			self.performMove()
+			'''#The following must be called prior to calling turnTowards.
+			self.angle_to_target = self.getAngleToTarget()
+			#Turn towards target
+			self.turnTowards(force_turn=True)
+			#modify speed
+			self.approachSpeed()'''
 		else:
 			#move
 			self.move()

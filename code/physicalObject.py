@@ -396,11 +396,14 @@ class PhysicalObject(pygame.sprite.Sprite):
 		return (speed, dtheta)
 
 
-	def turnTowards(self, force_turn=False):
+	def performMove(self, update_angle=True, max_speed=False, force_turn=False):
 		"""Get recommended vector for collision avoidance.
 		If nothing needs particularly avoided, get recommended vector
 		to reach target.
 		Finally turn and move in the recommended manner."""
+		if update_angle:
+			#Get angle to target
+			self.angle_to_target = self.getAngleToTarget()
 		#Get vector recommended by collisionAvoidance
 		speed, dtheta, dontTurnLeft, dontTurnRight = self.collisionAvoidance()
 		#print 'speed: '+str(speed)+'\ndtheta:'+str(dtheta)+'\nleft:'+str(dontTurnLeft)+'\nright:'+str(dontTurnRight) #TESTING
@@ -409,13 +412,16 @@ class PhysicalObject(pygame.sprite.Sprite):
 		if speed is None or dtheta is None:
 			speed, dtheta = self.getRecommendedVector()
 		#Finally turn the specified amount and direction and return the speed.
-		if dtheta < 0 and dontTurnLeft:
-			pass
-		elif dtheta > 0 and dontTurnRight:
-			pass
-		else:
+		if force_turn or not((dtheta < 0 and dontTurnLeft) or (dtheta > 0 and dontTurnRight)):
 			self.turn(dtheta)
-		return speed
+		if max_speed:
+			self.targetSpeed = self.maxSpeed
+		else:
+			self.targetSpeed = speed
+		#modify speed
+		self.approachSpeed()
+		#move
+		self.move()
 
 
 	def move(self):

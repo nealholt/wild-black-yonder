@@ -199,12 +199,21 @@ class Player(Ship):
 			globalvars.intangibles_top.add(announcement)
 			self.fuelAlertLevel = 3
 
-		if not self.destination is None:
-			self.performMove()
+		'''if not self.destination is None:
+			#Get angle to target
+			self.angle_to_target = self.getAngleToTarget()
+			#Turn towards target
+			self.turnTowards()
+
 			if self.parkAtDestination:
 				self.park()
+			else:
+				#Approach target speed
+				self.approachSpeed()
 		else:
 			#Approach target speed
-			self.approachSpeed()
-			self.move()
+			self.approachSpeed()'''
+		#Approach target speed
+		self.approachSpeed()
+		self.move()
 
