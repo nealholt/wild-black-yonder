@@ -1,7 +1,7 @@
 import pygame
 from colors import *
 import globalvars
-from imageList import *
+from displayUtilities import image_list
 
 class Drawable:
 	def __init__(self, x1=0, y1=0, color=white):

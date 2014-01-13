@@ -1,6 +1,6 @@
 import pygame
 import math
-from displayUtilities import image_list
+from imageList import *
 import geometry
 import colors
 import globalvars

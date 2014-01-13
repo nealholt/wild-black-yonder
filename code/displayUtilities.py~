@@ -348,8 +348,16 @@ class TimeLimitDisplay(pygame.sprite.Sprite):
 
 	def isOnScreen(self, _): return True
 
-	def getDirtyRect(self, _):
-		return (0,0,0,0)
+	def getDirtyRect(self, offset): #This is completely duplicated in physical object and that's bad. #TODO
+		'''Pre: self is on screen.
+		Post: Returns the dirty rect for this object.'''
+		pos = self.rect.topleft
+		#Whether to offset this object's location based on the camera.
+		#Text does not useOffset because we want to only position it relative to 0,0
+		if self.useOffset:
+			pos = pos[0]-offset[0], pos[1]-offset[1]
+		# - Return the sprite's current location rectangle.
+		return (pos[0], pos[1], self.rect.width, self.rect.height)
 
 
 class ArrowToDestination(pygame.sprite.Sprite):

@@ -12,6 +12,7 @@ import sys
 sys.path.append('code/cython-'+str(sys.platform)) #Import from a system-specific cython folder
 #Because cython files only work on the system they were compiled on.
 import cygeometry
+from imageList import *
 
 
 class ScenarioManager:
@@ -155,7 +156,7 @@ class ScenarioManager:
 		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
 		wipeOldScenario(); resetDust()
-		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
+		globalvars.BGIMAGE = image_list['bggalaxies'].convert()
 		#Make a few enemies near the player
 		mindist = 200
 		maxdist = 800
@@ -187,7 +188,7 @@ class ScenarioManager:
 		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
 		wipeOldScenario(); resetDust()
-		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
+		globalvars.BGIMAGE = image_list['bggalaxies'].convert()
 		#Make the capital ship
 		enemy_ship = hudHelpers.getNewCapitalShip(0,400)
 		hudHelpers.addNewCapitalShipToWorld(newship)
@@ -259,7 +260,7 @@ class ScenarioManager:
 		globalvars.disable_menu = True #Disable the standard menu for now.
 		rd.seed(seed) #Fix the seed for the random number generator.
 		wipeOldScenario(); resetDust()
-		globalvars.BGIMAGE = displayUtilities.image_list['bggalaxies'].convert()
+		globalvars.BGIMAGE = image_list['bggalaxies'].convert()
 		spacing = 50
 		n = 3
 		#Make n+1 enemy units starting to the left of the player:
