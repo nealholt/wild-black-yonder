@@ -352,7 +352,7 @@ class Ship(PhysicalObject):
 			#the obstacle is in front of this ship.
 			if dist < dtt and dist > 0 and\
 			abs(self.getAngleToTarget(target=w.rect.center)) < 90:
-				#   If a line extending straight out from this ship
+				#If a line extending straight out from this ship
 				#intersects a circle around the obstacle, then our 
 				#sight is blocked.
 				m,b = self.getStraightAhead()

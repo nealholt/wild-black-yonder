@@ -101,12 +101,13 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#different levels of caution.
 
 		#Angle within which npc should consider avoiding an object. If the 
-		#object is in a 90 degree wide cone, for instance, then it will test 
+		#object is within + or - 90 degrees, for instance, then self will test 
 		#to see if the object is close enough to initiate an avoidance behavior.
+		#Only self.closest_sprite is evaluated for the danger cone.
 		self.danger_cone = 90
 
-		#If the distance between this object and another is less than this 
-		#number of pixels, then this object will turn away.
+		#If the distance between this object and self.closest_sprite is less than this 
+		#number of pixels, then self will turn away.
 		self.avoidance_threshold = 20
 
 		#If the distance between this object and another is less than this 
@@ -114,7 +115,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#the object even if this object's target is in that direction.
 		self.suppress_turn_threshold = 40
 
-		#Set the recommended ship speed to 1/4 max speed if another object is on 
+		#Set the recommended ship speed to 1/4 max speed if self.closest_sprite is on 
 		#a collision course with us and is danger_red_distance distance away, 
 		#1/2 max speed if yellow and otherwise 3/4 max speed.
 		self.danger_red_distance = 10

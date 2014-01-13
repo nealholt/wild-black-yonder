@@ -6,8 +6,92 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
+** separate turnTowards functionality
+PhysicalObject's turnTowards seems to be doing too much work. It also does this obstacle avoidance. Shouldn't that be separate?
+** npc behavior modifications. set up for personality
+1. figure out where to put each of these in the "personality file". I think a todo on this list is fine.
+2. For each one, see if we want to fix it in any way and do so in the code. This may trigger the creation of a whole new project and that's ok.
+
+Make some of the parameters more meaningful:
+
+Ratio of distance to closest sprite over abs(angle to closest sprite) that corresponds to how self's speed should be set, assuming the ratio is less than one.
+Max angle at which we even pay attention to such a sprite is 90 degrees.
+100/20 degrees seems like a good threshold ratio.
+So how about when distance/(abs(angle)*3) is less than one, then our target speed should be no more than this ratio of our maximum speed.
+So in this case, 3 is the parameter. However, in reality, this depends on our acceleration and the object's size, but this will suffice for now.
+
+   angle from an enemy to self below which an npc will panic and temporarily flee.
+Default +- 20 degrees.
+Was self.target_front_center
+rename to self.in_crosshairs
+
+   health fraction below which an npc will permanently flee.
+Default 10%
+Was and is self.min_percent_health. Don't change, just comment.
+
+   What the npc considers optimal distance to target.
+Previously there are 3 different values 
+self.target_long_range
+Any range over this and the npc just wants to get to target as fast as possible.
+Below this range, slow to 1/2 max speed.
+self.target_med_range
+Below this range, slow to max turn speed.
+self.target_short_range
+Below this range, slow to a stop.
+
+   What ratio of distance to target over abs(angle to target) the npc considers acceptable before the npc needs to reduce speed to improve turning. Put bounds on this ratio as a start.
+Cap the distance at one screen width.
+900/90 or greater = 10/1 = need to turn.
+Set the default ratio as anything over 10/1
+This is not currently implemented as a variable, but is roughly encoded in the goto method. Put it in a variable called:
+self.distance_angle_ratio = 10.0
+
+		#Angle within which npc should consider avoiding an object. If the 
+		#object is within + or - 90 degrees, for instance, then self will test 
+		#to see if the object is close enough to initiate an avoidance behavior.
+		#Only self.closest_sprite is evaluated for the danger cone.
+		self.danger_cone = 90
+
+#File all of this in one place with NPC personalities in this document for future use.
+		#If the distance between this object and self.closest_sprite is less than this 
+		#number of pixels, then self will turn away.
+		self.avoidance_threshold = 20
+
+		#If the distance between this object and another is less than this 
+		#number of pixels, then this object will not turn in the direction of 
+		#the object even if this object's target is in that direction.
+		self.suppress_turn_threshold = 40
+
+#The following are not well implemented. They are far too small, only triggered if distance is already less than self.avoidance_threshold, and do not take into account angle to the closest object. Change them.
+		#Set the recommended ship speed to 1/4 max speed if self.closest_sprite is on 
+		#a collision course with us and is danger_red_distance distance away, 
+		#1/2 max speed if yellow and otherwise 3/4 max speed.
+		self.danger_red_distance = 10
+		self.danger_yellow_distance = 20
 ** npc behavior: fly by combat
 have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
+
+If npc is close to played and player's angle to the enemy ship is low then initiate a fly by. That is. Accelerate and turn away from player.
+
+The goTo methods else ifs may be fairly easy to improve, I think. Can't they be made more efficient? Can they be improved?
+** Pygame for development
+Separate the following notes into
+1. motivation
+2. graphics libraries that interact with python that you want to look into.
+3. notes on how to compile python to an executable
+
+http://www.reddit.com/r/gamedev/comments/16d5ak/is_pygame_or_any_other_python_gamedev_library/
+My last pygame product made $30,000 last year. That was it's third year of being on sale.
+"You're right. I could have, but I'm most comfortable with Python. Pygame is wonderfully cross-platform across PC-Mac-Linux, soon Android. I code on a Mac, literally drag and drop sources into Windows or Linux and the game works. Period.
+You might be able to guess that I'm a no-fucking-hassle kind of guy. :-)"
+
+http://www.reddit.com/r/gamedev/comments/i2ixn/publishing_a_pygame_game/
+"Yes - and I've shipped a project with py2exe."
+"Check out PyInstaller which offers a wide variety of ways to package your project up for easy distribution."
+
+Graphics libraries for python:
+http://cocos2d.org/doc.html - checking out the video here is probably useful.
+http://www.panda3d.org/
 ** a lived in world - npc traders
 NPC's randomly pick pairs of semi-close nodes.
 Then they pick a planet at each node.
@@ -51,24 +135,6 @@ Worry about making money off a game later. What could that game be like? A rogue
 
 There are other ways to make this simple and game like, but I love the open world idea.
 Why do I love the open world idea? Because exploration and learning excite me. This means I should have things to learn and discover out there. Perhaps procedural stories are this.
-** Pygame for development
-Separate the following notes into
-1. motivation
-2. graphics libraries that interact with python that you want to look into.
-3. notes on how to compile python to an executable
-
-http://www.reddit.com/r/gamedev/comments/16d5ak/is_pygame_or_any_other_python_gamedev_library/
-My last pygame product made $30,000 last year. That was it's third year of being on sale.
-"You're right. I could have, but I'm most comfortable with Python. Pygame is wonderfully cross-platform across PC-Mac-Linux, soon Android. I code on a Mac, literally drag and drop sources into Windows or Linux and the game works. Period.
-You might be able to guess that I'm a no-fucking-hassle kind of guy. :-)"
-
-http://www.reddit.com/r/gamedev/comments/i2ixn/publishing_a_pygame_game/
-"Yes - and I've shipped a project with py2exe."
-"Check out PyInstaller which offers a wide variety of ways to package your project up for easy distribution."
-
-Graphics libraries for python:
-http://cocos2d.org/doc.html - checking out the video here is probably useful.
-http://www.panda3d.org/
 ** Little fun changes and additions
 Stealth 
 Sensors - detect enemies before they detect you. 
