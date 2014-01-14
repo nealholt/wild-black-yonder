@@ -512,7 +512,7 @@ class Ship(PhysicalObject):
 		self.setLeadIndicator()
 		#Potentially make a speech bubble
 		self.speech_countdown -= 1
-		if self.speech_countdown < 0: #TODO LEFT OFF HERE
+		if self.speech_countdown < 0:
 			temp = displayUtilities.SpeechBubble(speaker=self, text='Hello!', ttl=2*globalvars.FPS, width=30, height=12, fontSize=18, color=colors.black, bgcolor=colors.white)
 			globalvars.intangibles_top.add(temp)
 			self.speech_countdown = 60*globalvars.FPS

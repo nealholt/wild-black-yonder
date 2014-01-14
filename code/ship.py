@@ -177,7 +177,7 @@ class Ship(PhysicalObject):
 		#If the target is closer than this, then set to maxTurnSpeed
 		self.target_short_range = 200
 
-		#Frames between speech bubbles #TODO LEFT OFF HERE
+		#Frames between speech bubbles
 		self.speech_countdown = 5*globalvars.FPS
 
 

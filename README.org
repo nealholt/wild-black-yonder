@@ -35,6 +35,18 @@ Conflict between NPCs and pirates that takes place offscreen can be calculated r
 
 DISCOVERY: The player could be forced to discover ALL objects in the game. Player could follow NPC ships to learn the locations of new objects.
 If the player's ship drifts too far from a node center then search and rescue ships can spawn to guide the player back.
+** other people's code
+Maybe read more of other people's code. See what they do.
+
+http://pygame.org/project-Void+Infinity-2195-.html
+http://pygame.org/project-MICshooter-2342-.html
+http://pygame.org/project-wabbel-2370-.html
+http://pygame.org/project-Nebula+Wars-2559-.html
+http://pygame.org/project-Spaceace-2595-.html
+http://pygame.org/project-Python+Defender+2-2728-.html
+http://pygame.org/project-Miner-2871-.html
+http://pygame.org/project-Run%21-2608-.html
+http://pygame.org/project-Asteroids+2-2137-.html
 ** Graphics libraries for python
 I have installed this on my mac. Check out next steps!
 http://www.panda3d.org/
