@@ -342,12 +342,14 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#physical object's turn to avoid the other sprite.
 			abs_angle = abs(angle)
 			if abs_angle < self.danger_cone and self.dist_to_closest < self.suppress_turn_threshold:
-				#Angle to target, size of target, and self speed should all factor
-				#into a decision here.
+				#Angle to target, size of target, self acceleration,
+				#and turn rate decay
+				#should all factor into a decision here.
 				#Figure out optimal speed and amount to turn
 				fraction = min(1.0, 
-					self.dist_to_closest / ((self.closest_sprite.collisionradius+abs_angle)*self.speed_safety_factor)
+					(self.dv*self.dist_to_closest) / (self.closest_sprite.collisionradius*abs_angle*self.turnRateDecay*self.speed_safety_factor)
 					)
+				#TODO LEFT OFF HERE
 				#Too close. It's vital that we turn away from the object.
 				dtheta = self.calculateDTheta()
 				if angle > 0: dtheta = -dtheta

@@ -536,11 +536,11 @@ def setClosestSpritesAlt():
 		#Reset closest sprite and the distance to that sprite. Sprites 
 		#further than this distance will be ignored.
 		closest_sprite = None
-		danger_factor = 0
-		least_dist = 10000000.0
+		danger_factor = -10000000.0
+		dist_to_sprite = 10000000.0
 		#TODO LEFT OFF HERE
 		#Look forward through the sprite list.
-		#once the y-coordinates are more different than least_dist then we can stop
+		#once the y-coordinates are more different than minsafedistance then we can stop
 		#looking through the list because it is sorted by y values of the sprites.
 		#Update sprite that has ...
 		#  high radius - big and hard to avoid
@@ -551,28 +551,51 @@ def setClosestSpritesAlt():
 		if i+1 < len(sprite_list):
 			for j in xrange(i+1, len(sprite_list)):
 				B = sprite_list[j]
+				#Get angle to other sprite's center
+				angle = abs(A.getAngleToTarget(target=B.rect.center))
+				#If angle to other sprite is over 90 degrees, then ignore it
+				if angle >= 90: continue
+				#Get distance to other sprite
 				dist = cygeometry.distance(A.rect.center, B.rect.center) - \
 					(B.collisionradius + A.collisionradius)
-				angle = A.getAngleToTarget(target=B.rect.center)
-				temp = B.collisionradius - (angle+dist)
-				if temp > danger_factor: danger_factor = temp
-				if dist < least_dist: least_dist = dist
-				elif least_dist < B.rect.topleft[1] - A.rect.topleft[1]:
+				#Calculate the danger factor for this sprite
+				temp = B.collisionradius - (angle*dist) #TODO LEFT OFF HERE
+				#If this sprite represents the biggest danger so far, then update
+				if temp > danger_factor:
+					danger_factor = temp
+					closest_sprite = B
+					dist_to_sprite = dist
+				#If distance is the smallest we've seen so far, then update least dist.
+				#if the difference between the y values is already larger than
+				#minsafedistance then stop this loop
+				if globalvars.MINSAFEDIST < B.rect.topleft[1] - A.rect.topleft[1]:
 					break
 		#Then do the same looking backward through the sprite list.
 		if i-1 > 0:
-			for j in xrange(0, i-1, -1):
+			for j in xrange(i-1, 0, -1):
 				B = sprite_list[j]
+				#Get angle to other sprite's center
+				angle = abs(A.getAngleToTarget(target=B.rect.center))
+				#If angle to other sprite is over 90 degrees, then ignore it
+				if angle >= 90: continue
+				#Get distance to other sprite
 				dist = cygeometry.distance(A.rect.center, B.rect.center) - \
 					(B.collisionradius + A.collisionradius)
-				angle = A.getAngleToTarget(target=B.rect.center)
-				temp = B.collisionradius - (angle+dist)
-				if temp > danger_factor: danger_factor = temp
-				if dist < least_dist: least_dist = dist
-				elif least_dist < B.rect.topleft[1] - A.rect.topleft[1]:
+				#Calculate the danger factor for this sprite
+				temp = B.collisionradius - (angle*dist) #TODO LEFT OFF HERE
+				#If this sprite represents the biggest danger so far, then update
+				if temp > danger_factor:
+					danger_factor = temp
+					closest_sprite = B
+					dist_to_sprite = dist
+				#If distance is the smallest we've seen so far, then update least dist.
+				#if the difference between the y values is already larger than
+				#minsafedistance then stop this loop.
+				#In this loop we reverse the subtraction order because we sorted ascending.
+				if globalvars.MINSAFEDIST < A.rect.topleft[1] - B.rect.topleft[1]:
 					break
 		#Set sprite A's closest sprite and the distance to that sprite.
-		A.setClosest(closest_sprite, least_dist)
+		A.setClosest(closest_sprite, dist_to_sprite)
 
 
 def collisionHandling():

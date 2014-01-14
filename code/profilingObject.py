@@ -116,7 +116,7 @@ class ProfilingObject(physicalObject.PhysicalObject):
 
 
 
-class CollisionAvoidanceTester(physicalObject.PhysicalObject): #TODO LEFT OFF HERE
+class CollisionAvoidanceTester(physicalObject.PhysicalObject):
 	''' '''
 	def __init__(self):
 		physicalObject.PhysicalObject.__init__(self, 0, 0)
@@ -140,7 +140,7 @@ class CollisionAvoidanceTester(physicalObject.PhysicalObject): #TODO LEFT OFF HE
 			print 'Closest is now: '+str(self.most_recent_closest)
 		if self.countdown < 0:
 			#reset countdown
-			self.countdown = globalvars.FPS*20
+			self.countdown = globalvars.FPS*15
 
 			#clears all sprite groups again.
 			wipeOldScenario()
