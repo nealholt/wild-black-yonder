@@ -6,28 +6,8 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** setClosestSprites can be improved
-Create a test object for setClosestSprites similar to the one for profiling.
-Also you will want to profile setClosestSprites.
-
-game.setClosestSprites() has multiple todos in it and could in general be much more efficient.
-Profile it first.
-1. you could sort the whiskerables and stop looking through the list once you reached a point beyond the closest sprite. (You would have to search in both directions away from the current ship.
-2. Also you could incorporate angle to target so that sprites in front of the ship took precendence over sprites off to the side. This would reduce the prevalence of npc's colliding with objects before they have a chance to slow down.
-** npc behavior: fly by combat
-have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
-
-I've now created two attackMoves
-	self.conservativeAttackMove()
-	#self.attackMove(d)
-
-The problem is that collision avoidance still sucks.
-
-
-What if you think of ships as self-contained robots?
-Inputs: List of enemies, list of allies, closest sprite
-Output: target speed, dtheta, whether or not to shoot
 ** missiles are not cleaning themselves off the screen. Fix!
+Also missiles are targeting the player. Is it because I just added the player to whiskerables so the player always ends up as the nearest target?
 ** a lived in world - npc traders
 NPC's randomly pick pairs of semi-close nodes.
 Then they pick a planet at each node.
@@ -129,6 +109,16 @@ self.target_short_range = 200
 #Initiate fly by if less than self.target_short_range to target and target's
 #angle to self is less than +-self.flyby_angle
 self.flyby_angle = 15
+** npc behavior: fly by combat
+have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
+
+I've now created two attackMoves
+	self.conservativeAttackMove()
+	#self.attackMove(d)
+
+What if you think of ships as self-contained robots?
+Inputs: List of enemies, list of allies, closest sprite
+Output: target speed, dtheta, whether or not to shoot
 ** Little fun changes and additions
 Stealth 
 Sensors - detect enemies before they detect you. 
