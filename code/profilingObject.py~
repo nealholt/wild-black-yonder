@@ -140,7 +140,7 @@ class CollisionAvoidanceTester(physicalObject.PhysicalObject): #TODO LEFT OFF HE
 			print 'Closest is now: '+str(self.most_recent_closest)
 		if self.countdown < 0:
 			#reset countdown
-			self.countdown = globalvars.FPS*20
+			self.countdown = globalvars.FPS*30
 
 			#clears all sprite groups again.
 			wipeOldScenario()

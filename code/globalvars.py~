@@ -31,7 +31,7 @@ TRADEGOOD = temp; temp+=1
 TIMELIMITDISPLAY = temp; temp+=1
 
 #The least distance to check for a collision. Might need adjusted if we start using really big objects.
-MINSAFEDIST = 1024 #TODO LEFT OFF HERE MIGHT NOT BE USING THIS ANYMORE
+MINSAFEDIST = 1024 #TODO MIGHT NOT BE USING THIS ANYMORE
 
 BGCOLOR = (0,0,0) #Black. I would have imported colors but I want globalvars to import absolutely nothing so there are no loops in the graph of my imports.
 BGIMAGE = None

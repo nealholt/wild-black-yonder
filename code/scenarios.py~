@@ -160,16 +160,11 @@ class ScenarioManager:
 		#Make a few enemies near the player
 		mindist = 200
 		maxdist = 800
-		#Make 3 enemy units:
-		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
-		enemy_ship = hudHelpers.getNewEnemy(x,y,'destroyer',2,2,2,2,2)
-		hudHelpers.addNewEnemyToWorld(enemy_ship)
-		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
-		enemy_ship = hudHelpers.getNewEnemy(x,y,'destroyer',2,2,2,2,2)
-		hudHelpers.addNewEnemyToWorld(enemy_ship)
-		x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
-		enemy_ship = hudHelpers.getNewEnemy(x,y,'destroyer',2,2,2,2,2)
-		hudHelpers.addNewEnemyToWorld(enemy_ship)
+		#Make enemy units:
+		for _ in xrange(3):
+			x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
+			enemy_ship = hudHelpers.getNewEnemy(x,y,'destroyer',2,2,2,2,2)
+			hudHelpers.addNewEnemyToWorld(enemy_ship)
 		#Make the score keeper:
 		time_limit = 30 #time limit in seconds
 		text = ['FURBALL COMPLETED']
@@ -227,7 +222,7 @@ class ScenarioManager:
 		globalvars.intangibles_top.add(objInstances.FinishBullsEye(npc_friend, finish_line))
 		#determine what sorts of obstacles to put on the race course.
 		numbers = dict()
-		numbers['enemy'] = 0
+		numbers['enemy'] = 3
 		numbers['crystal'] = 5
 		numbers['large_asteroid'] = 20
 		numbers['medium_asteroid'] = 30
@@ -474,13 +469,14 @@ def wipeOldScenario():
 	#Set the player's health bar. This must be done right before adding any ship to tangibles
 	globalvars.player.setHealthBar()
 	globalvars.tangibles.add(globalvars.player)
+	globalvars.whiskerables.add(globalvars.player)
 	globalvars.BLUE_TEAM.add(globalvars.player)
 	#Immediately clear the panel
 	globalvars.menu.main_panel = None
 	#Reset the arena
 	globalvars.arena = 0
 	#Add back in the storyteller
-	globalvars.tangibles.add(globalvars.story_keeper)
+	globalvars.intangibles_bottom.add(globalvars.story_keeper)
 
 
 def resetDust(use_top=False):

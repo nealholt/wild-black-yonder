@@ -104,16 +104,14 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#object is within + or - 90 degrees, for instance, then self will test 
 		#to see if the object is close enough to initiate an avoidance behavior.
 		#Only self.closest_sprite is evaluated for the danger cone.
+		#If an object is within self.danger_cone/2 and within self.suppress_turn_threshold, then
+		#turn away from it.
 		self.danger_cone = 90
-
-		#If the distance between this object and self.closest_sprite is less than this 
-		#number of pixels, then self will turn away.
-		self.avoidance_threshold = 20
 
 		#If the distance between this object and another is less than this 
 		#number of pixels, then this object will not turn in the direction of 
 		#the object even if this object's target is in that direction.
-		self.suppress_turn_threshold = 40
+		self.suppress_turn_threshold = 80
 
 		#Used for firing where a ship will be not where it's currently at.
 		#This is not perfectly implemented.
@@ -127,7 +125,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#should be no more than this ratio of our maximum speed.
 		#So in this case, 3 is the parameter. However, in reality, this depends on our 
 		#acceleration and the object's size, but this will suffice for now.
-		self.speed_safety_factor = 3.0 #Higher value == more conservative == slower near objects
+		self.speed_safety_factor = 1.0 #Higher value == more conservative == slower near objects
 
 		#What ratio of distance to target over abs(angle to target) the npc considers 
 		#acceptable before the npc needs to reduce speed to improve turning.
@@ -343,23 +341,26 @@ class PhysicalObject(pygame.sprite.Sprite):
 			#than danger_cone degrees, consider altering this 
 			#physical object's turn to avoid the other sprite.
 			abs_angle = abs(angle)
-			if abs_angle < self.danger_cone:
-				if self.dist_to_closest < self.avoidance_threshold:
-					#Too close. It's vital that we turn away from the object.
-					dtheta = self.calculateDTheta()
-					if angle > 0:
-						dtheta = -dtheta
-					#Figure out optimal speed
-					fraction = (self.dist_to_closest / (abs_angle*self.speed_safety_factor))
-					speed = self.maxSpeed * fraction
-						
-				#elif actual_distance + abs_angle < 70:
-				elif self.dist_to_closest < self.suppress_turn_threshold:
-					#It's not too close yet, but don't get any closer.
-					if angle < 0:
-						dontTurnLeft = True
-					else:
-						dontTurnRight = True
+			if abs_angle < self.danger_cone and self.dist_to_closest < self.suppress_turn_threshold:
+				#Angle to target, size of target, and self speed should all factor
+				#into a decision here.
+				#Figure out optimal speed and amount to turn
+				fraction = min(1.0, 
+					self.dist_to_closest / ((self.closest_sprite.collisionradius*abs_angle)*self.speed_safety_factor)
+					)
+				#Too close. It's vital that we turn away from the object.
+				dtheta = self.calculateDTheta()
+				if angle > 0: dtheta = -dtheta
+				speed = self.maxSpeed * fraction
+				dtheta = dtheta * (1.0 - fraction)
+			elif self.dist_to_closest < self.suppress_turn_threshold:
+				#It's not too close yet, but don't get any closer.
+				if angle < 0:
+					dontTurnLeft = True
+				else:
+					dontTurnRight = True
+				#Also, accelerate past the object. #TODO This can cause problems when the acceleration is low and we can't slow down fast enough. Maybe ships should have a max safe speed contingent on acceleration.
+				speed = self.maxSpeed
 			#Reset closest sprite.
 			self.closest_sprite = None
 			self.dist_to_closest = globalvars.MINSAFEDIST
@@ -408,8 +409,19 @@ class PhysicalObject(pygame.sprite.Sprite):
 		#print 'speed: '+str(speed)+'\ndtheta:'+str(dtheta)+'\nleft:'+str(dontTurnLeft)+'\nright:'+str(dontTurnRight) #TESTING
 		#If collisionAvoidance does not fully specify a vector then ask
 		#getRecommendedVector for a vector.
+		speed1=0; dtheta1=0
 		if speed is None or dtheta is None:
-			speed, dtheta = self.getRecommendedVector()
+			speed1, dtheta1 = self.getRecommendedVector()
+			if speed is None: speed = speed1
+			if dtheta is None: dtheta = dtheta1
+		self.performMoveMechanics(speed, dtheta, \
+				dontTurnLeft=dontTurnLeft, \
+				dontTurnRight=dontTurnRight, \
+				max_speed=max_speed,\
+				force_turn=force_turn)
+
+
+	def performMoveMechanics(self, speed, dtheta, dontTurnLeft=False, dontTurnRight=False, max_speed=False, force_turn=False):
 		#Finally turn the specified amount and direction and return the speed.
 		if force_turn or not((dtheta < 0 and dontTurnLeft) or (dtheta > 0 and dontTurnRight)):
 			self.turn(dtheta)

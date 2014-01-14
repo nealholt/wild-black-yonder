@@ -156,6 +156,8 @@ class Ship(PhysicalObject):
 		self.is_a = globalvars.SHIP
 		self.isPlayer = False
 
+		#Get to a cone +-15 behind the target before turning to shoot the target
+		self.flyby_angle = 180 - 30
 		#If the target is within self.target_front_center degrees of the axis of 
 		#our ship, then initiate a squat-and-shoot behavior.
 		self.target_front_center = 30
@@ -384,7 +386,7 @@ class Ship(PhysicalObject):
 
 	def flee(self):
 		#Get the direction in which to flee.
-        #Flee from previous destination which ought to be an enemy location.
+		#Flee from previous destination which ought to be an enemy location.
 		angle = geometry.angleFromPosition(self.destination, self.rect.center)
 		#Flee far away!
 		magnitude = 1000000
@@ -393,24 +395,49 @@ class Ship(PhysicalObject):
 		self.setDestination(objective)
 
 
-	def attackMove(self, dist_to_target, max_speed=False, force_turn=False):
+	def conservativeAttackMove(self):
+		'''Maneuver to location behind player before turning to attack
+		as opposed to just going straight for player's lead target indicator
+		moving behind player is more conservative. Good for less beefy ships.
+		Just calculate a point a certain distance behind player and move there.
+		Pre: self.angle_to_target is set'''
+		#Get the angle from target to self
+		angle_to_self = abs(self.target.getAngleToTarget(target=self.rect.center))
+		if self.flyby_angle > angle_to_self:
+			#Get behind
+			#Set destination to a point behind the target
+			angle = geometry.rotateAngle(self.target.theta, 180)
+			self.destination = geometry.translate(self.target.rect.center,\
+				angle, self.target_med_range)
+		#Otherwise destination defaults to target's lead indicator
+		self.performMove(update_angle=False)
+
+
+	def attackMove(self, dist_to_target):
 		'''Pre: self.angle_to_target is set '''
-		#If target is far or max_speed is true, increase goal speed.
-		recommended_targeting_speed = self.maxTurnSpeed
-		if dist_to_target > self.target_long_range:
-			recommended_targeting_speed = self.maxSpeed
-		elif dist_to_target > self.target_med_range:
-			recommended_targeting_speed = self.maxSpeed * 3./4.
-		elif dist_to_target > self.target_short_range:
-			recommended_targeting_speed = self.maxSpeed * 1./2.
-		else:
-			recommended_targeting_speed = self.maxTurnSpeed
-			#Only set speed to zero if target is infront of us
-			if abs(self.angle_to_target) < self.target_front_center:
-				recommended_targeting_speed = 0.0
-				#Ignore collision avoidance to turn towards the target.
-				force_turn = True
-		self.performMove(update_angle=False, force_turn=force_turn, max_speed=max_speed)
+		force_turn = False
+		#Get vector recommended by collisionAvoidance
+		speed, dtheta, dontTurnLeft, dontTurnRight = self.collisionAvoidance()
+		#getRecommendedVector for just dtheta vector.
+		if dtheta is None:
+			_, dtheta = self.getRecommendedVector()
+		#If target is far increase goal speed.
+		if speed is None:
+			speed = self.maxTurnSpeed
+			if dist_to_target > self.target_long_range:
+				speed = self.maxSpeed
+			elif dist_to_target > self.target_med_range:
+				speed = self.maxSpeed * 3./4.
+			elif dist_to_target > self.target_short_range:
+				speed = self.maxSpeed * 1./2.
+			else:
+				speed = self.maxTurnSpeed
+				#Only set speed to zero if target is infront of us
+				if abs(self.angle_to_target) < self.target_front_center:
+					speed = 0.0
+					#Ignore collision avoidance to turn towards the target.
+					force_turn = True
+		self.performMoveMechanics(speed, dtheta, dontTurnLeft=dontTurnLeft, dontTurnRight=dontTurnRight, force_turn=force_turn)
 
 
 	def setTarget(self):
@@ -438,7 +465,8 @@ class Ship(PhysicalObject):
 
 
 	def update(self):
-		'''The following code is mostly duplicated in the missile's update function. Eventually I'd like to break this out as a more general seeking behavior.'''
+		'''The following code is mostly duplicated in the missile's update function.
+		Eventually I'd like to break this out as a more general seeking behavior.'''
 		if self.state == KILL_PLAYER_STATE:
 			#Initialize target
 			if self.target is None or self.target.health <= 0:
@@ -461,7 +489,8 @@ class Ship(PhysicalObject):
 				self.performMove(update_angle=False, max_speed=True, force_turn=True)
 			#attacking enemy => attack
 			else:
-				self.attackMove(d)
+				self.conservativeAttackMove()
+				#self.attackMove(d)
 				#Check for firing solutions
 				self.shoot()
 				#Check for firing solutions for missiles

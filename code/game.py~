@@ -416,8 +416,8 @@ def run(countdown=-1, track_FPS=False, track_efficiency=False):
 
 		#First tell the ships what is closest to them
 		#so that they can avoid collisions
-		#setClosestSprites() #TODO LEFT OFF HERE
-		setClosestSpritesAlt()
+		setClosestSprites() #TODO LEFT OFF HERE
+		#setClosestSpritesAlt()
 
 		#Update all the sprites
 		globalvars.intangibles_bottom.update()
