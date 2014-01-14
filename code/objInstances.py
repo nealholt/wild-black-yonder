@@ -101,11 +101,13 @@ class Missile(PhysicalObject):
 			#move
 			self.move()
 
+
 	def die(self):
 		globalvars.intangibles_bottom.add(Explosion(\
 			x=self.rect.centerx,y=self.rect.centery))
 		#kill removes the calling sprite from all sprite groups
 		self.kill()
+
 
 	def handleCollisionWith(self, other_sprite):
 		''' '''
@@ -122,6 +124,7 @@ class Missile(PhysicalObject):
 			self.die()
 			died = True
 		return died
+
 
 
 class Mine(PhysicalObject):

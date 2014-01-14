@@ -6,6 +6,7 @@ import missile
 import mine
 import engine
 import random as rd
+import displayUtilities
 
 healthBarDefaultWidth = 20
 
@@ -175,6 +176,9 @@ class Ship(PhysicalObject):
 		#If the target is further away than this then recommended target engagement speed is 1/2 max speed.
 		#If the target is closer than this, then set to maxTurnSpeed
 		self.target_short_range = 200
+
+		#Frames between speech bubbles #TODO LEFT OFF HERE
+		self.speech_countdown = 5*globalvars.FPS
 
 
 	def initialize(self):
@@ -506,6 +510,13 @@ class Ship(PhysicalObject):
 		#Update my health bar
 		self.updateHealthBar()
 		self.setLeadIndicator()
+		#Potentially make a speech bubble
+		self.speech_countdown -= 1
+		if self.speech_countdown < 0:
+			temp = displayUtilities.SpeechBubble(speaker=self, text='Hello!', ttl=2*globalvars.FPS, width=30, height=12, fontSize=18, color=colors.black, bgcolor=colors.white)
+			globalvars.intangibles_top.add(temp)
+			self.speech_countdown = 60*globalvars.FPS
+
 
 
 	def updateHealthBar(self):

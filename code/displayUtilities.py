@@ -8,6 +8,7 @@ sys.path.append('code/cython-'+str(sys.platform)) #Import from a system-specific
 #Because cython files only work on the system they were compiled on.
 import cygeometry
 import physicalObject
+import drawable
 
 
 def trunc(f, n):
@@ -75,7 +76,7 @@ class TemporaryText(physicalObject.PhysicalObject):
 	'''Specify the position of the text, contents, whether or not the
 	text should flash and how fast it should do so in seconds, and the 
 	time for the text to live in seconds.
-	Font size and color can also be specified'''
+	Font size and color can also be specified.'''
         def __init__(self, x=0, y=0, text='', timeOn=1, timeOff=0, ttl=0, fontSize=12, color=colors.white, useOffset=False):
 		physicalObject.PhysicalObject.__init__(self)
 		self.is_a = globalvars.OTHER
@@ -121,6 +122,41 @@ class TemporaryText(physicalObject.PhysicalObject):
 		else:
 			#Call parent's method
 			physicalObject.PhysicalObject.isOnScreen(self, offset)
+
+
+class SpeechBubble(physicalObject.PhysicalObject):
+	'''Text is an array of text'''
+        def __init__(self, speaker=None, text='', ttl=0, width=0, height=0, fontSize=12, color=colors.black, bgcolor=colors.white):
+		physicalObject.PhysicalObject.__init__(self, width=width, height=height)
+		self.speaker = speaker
+		self.width = width
+		self.height = height
+		self.is_a = globalvars.OTHER
+		font = pygame.font.Font(None, fontSize)
+		self.text = font.render(text, 1, color)
+		self.ttl = ttl
+		self.color = color
+		self.bgcolor = bgcolor
+		self.drawable_rect = drawable.Rectangle(x1=0, y1=0, width=self.width, height=self.height, color=self.bgcolor, thickness=0)
+		self.rect = self.drawable_rect.rect
+
+
+	def update(self):
+		''' '''
+		angle = angleFromPosition(self.speaker.rect.center, globalvars.player.rect.center)
+		magnitude = 30
+		new_point = translate(self.speaker.rect.center, angle, magnitude)
+		self.rect = pygame.Rect(new_point[0], new_point[1], self.width, self.height)
+		self.ttl -= 1
+		if self.ttl < 0: self.kill()
+
+
+	def draw(self, offset):
+		pos = self.rect.topleft[0]-offset[0], self.rect.topleft[1]-offset[1]
+		self.drawable_rect.rect = pygame.Rect(pos[0], pos[1], self.width, self.height)
+		self.drawable_rect.draw()
+		globalvars.screen.blit(self.text, pos)
+
 
 
 class ShipStatsText(physicalObject.PhysicalObject):

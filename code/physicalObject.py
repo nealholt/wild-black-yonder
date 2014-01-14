@@ -461,6 +461,7 @@ class PhysicalObject(pygame.sprite.Sprite):
 		pos = x - offset[0], y - offset[1]
 		globalvars.screen.blit(self.image, pos)
 
+
 	def drawAt(self, position=(0,0)):
 		if self.angleChanged:
 			self.updateImageAngle()

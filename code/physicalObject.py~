@@ -349,7 +349,6 @@ class PhysicalObject(pygame.sprite.Sprite):
 				fraction = min(1.0, 
 					(self.dv*self.dist_to_closest) / (self.closest_sprite.collisionradius*abs_angle*self.turnRateDecay*self.speed_safety_factor)
 					)
-				#TODO LEFT OFF HERE
 				#Too close. It's vital that we turn away from the object.
 				dtheta = self.calculateDTheta()
 				if angle > 0: dtheta = -dtheta

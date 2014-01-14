@@ -6,8 +6,12 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** missiles are not cleaning themselves off the screen. Fix!
-Also missiles are targeting the player. Is it because I just added the player to whiskerables so the player always ends up as the nearest target?
+** generalize npc teams
+Make it so n teams are possible instead of just 2.
+Make it so ships can keep a list of enemy team indicies.
+** add npc ships that just want to travel between warp points
+they disappear when they arrive.
+Also they have different dialogue / speech bubbles
 ** a lived in world - npc traders
 NPC's randomly pick pairs of semi-close nodes.
 Then they pick a planet at each node.
@@ -171,6 +175,7 @@ Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volu
 Gem wild: This game can easily be made more difficult by adding asteroids (that the gems might or might not collide with), adding enemies (that either fight the player or also try to get gems, or adding solar storms.
 
 Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
+** missiles are not cleaning themselves off the screen. Fix!
 ** add more factions
 Change faction names to these and add a couple flags:
 Democratic Hive Mind

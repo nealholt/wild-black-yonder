@@ -80,11 +80,7 @@ class Missile(PhysicalObject):
 		closest = 999999.
 		for w in search_thru:
 			d = cygeometry.distance(w.rect.center, self.rect.center)
-			#print d
-			if d < closest and w.is_a == globalvars.SHIP:
-				#print 'nearer target found'
-				#print closest
-				#print d
+			if d < closest:
 				self.target = w
 				closest = d
 
