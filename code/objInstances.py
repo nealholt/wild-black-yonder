@@ -72,17 +72,7 @@ class Missile(PhysicalObject):
 		self.dontClipMe = shooter
 		self.is_a = globalvars.BULLET
 		#Find nearest enemy ship and set it as target.
-		self.target = None
-		search_thru = globalvars.RED_TEAM
-		if shooter.team == globalvars.REDTEAM:
-			search_thru = globalvars.BLUE_TEAM
-		#Search through the enemy team
-		closest = 999999.
-		for w in search_thru:
-			d = cygeometry.distance(w.rect.center, self.rect.center)
-			if d < closest:
-				self.target = w
-				closest = d
+		self.target = globalvars.team_manager.getNearestEnemy(self.rect.center, shooter.team)
 
 
 	def update(self):

@@ -87,11 +87,8 @@ faction_engine_tech_index = temp; temp+=1
 #Set to true in order to disable any menu access except for pause.
 disable_menu = False
 
-#There will be two sprite groups into which ships go. Ships in separate groups will be enemies.
-RED_TEAM = None
-BLUE_TEAM = None
-REDTEAM = 0
-BLUETEAM = 1
+#Manage ally and enemy ships with the team_manager
+team_manager = None
 
 story_keeper = None
 

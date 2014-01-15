@@ -27,6 +27,7 @@ import cygeometry
 import mission
 globalvars.mission_manager = mission.getMissionArray()
 import story_keeper
+import teamManager
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
@@ -39,10 +40,9 @@ globalvars.whiskerables = pygame.sprite.Group()
 globalvars.player = playerObj.Player('ship')
 
 #Instantiate the teams and put the player on the blue team
-globalvars.RED_TEAM = pygame.sprite.Group()
-globalvars.BLUE_TEAM = pygame.sprite.Group()
-globalvars.BLUE_TEAM.add(globalvars.player)
-globalvars.player.team = globalvars.BLUETEAM
+globalvars.team_manager = teamManager.TeamManager()
+globalvars.player.team = globalvars.team_manager.player_team
+globalvars.team_manager.addToTeam(globalvars.player, globalvars.team_manager.player_team)
 
 globalvars.galaxy = nodeManager.NodeManager()
 globalvars.galaxy.generateGalaxy(seed=4832568, nodecount=globalvars.NUMBEROFNODES, minimumNodeDist=4)

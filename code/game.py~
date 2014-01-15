@@ -27,6 +27,7 @@ import cygeometry
 import mission
 globalvars.mission_manager = mission.getMissionArray()
 import story_keeper
+import teamManager
 
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
@@ -39,10 +40,9 @@ globalvars.whiskerables = pygame.sprite.Group()
 globalvars.player = playerObj.Player('ship')
 
 #Instantiate the teams and put the player on the blue team
-globalvars.RED_TEAM = pygame.sprite.Group()
-globalvars.BLUE_TEAM = pygame.sprite.Group()
-globalvars.BLUE_TEAM.add(globalvars.player)
-globalvars.player.team = globalvars.BLUETEAM
+globalvars.team_manager = teamManager.TeamManager()
+globalvars.player.team = globalvars.team_manager.player_team
+
 
 globalvars.galaxy = nodeManager.NodeManager()
 globalvars.galaxy.generateGalaxy(seed=4832568, nodecount=globalvars.NUMBEROFNODES, minimumNodeDist=4)
@@ -416,8 +416,8 @@ def run(countdown=-1, track_FPS=False, track_efficiency=False):
 
 		#First tell the ships what is closest to them
 		#so that they can avoid collisions
-		setClosestSprites() #TODO LEFT OFF HERE
-		#setClosestSpritesAlt()
+		setClosestSprites()
+		#setClosestSpritesAlt() #TODO - This one should be more efficient and superior to the other, but it's not.
 
 		#Update all the sprites
 		globalvars.intangibles_bottom.update()
@@ -512,8 +512,6 @@ def setClosestSprites():
 					least_dist = dist
 					closest_sprite = B
 		#Set sprite A's closest sprite and the distance to that sprite.
-		#print closest_sprite #TODO LEFT OFF HERE
-		#print least_dist
 		A.setClosest(closest_sprite, least_dist)
 
 
@@ -538,7 +536,6 @@ def setClosestSpritesAlt():
 		closest_sprite = None
 		danger_factor = -10000000.0
 		dist_to_sprite = 10000000.0
-		#TODO LEFT OFF HERE
 		#Look forward through the sprite list.
 		#once the y-coordinates are more different than minsafedistance then we can stop
 		#looking through the list because it is sorted by y values of the sprites.
@@ -559,7 +556,7 @@ def setClosestSpritesAlt():
 				dist = cygeometry.distance(A.rect.center, B.rect.center) - \
 					(B.collisionradius + A.collisionradius)
 				#Calculate the danger factor for this sprite
-				temp = B.collisionradius - (angle*dist) #TODO LEFT OFF HERE
+				temp = B.collisionradius - (angle*dist) #TODO
 				#If this sprite represents the biggest danger so far, then update
 				if temp > danger_factor:
 					danger_factor = temp
@@ -582,7 +579,7 @@ def setClosestSpritesAlt():
 				dist = cygeometry.distance(A.rect.center, B.rect.center) - \
 					(B.collisionradius + A.collisionradius)
 				#Calculate the danger factor for this sprite
-				temp = B.collisionradius - (angle*dist) #TODO LEFT OFF HERE
+				temp = B.collisionradius - (angle*dist) #TODO
 				#If this sprite represents the biggest danger so far, then update
 				if temp > danger_factor:
 					danger_factor = temp

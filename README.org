@@ -7,34 +7,28 @@ python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
 ** generalize npc teams
-Make it so n teams are possible instead of just 2.
-Make it so ships can keep a list of enemy team indicies.
+Make it so n teams are possible instead of just 2. Make it so ships can keep a list of enemy team indicies. I created a new teamManager file. I'll make a global reference to it and manage all teams through it.
+
+I left off fixing hudHelpers.addNewEnemyToWorld and the places in scenarios.py where it is called.
 ** add npc ships that just want to travel between warp points
 they disappear when they arrive.
 Also they have different dialogue / speech bubbles
-** a lived in world - npc traders
-NPC's randomly pick pairs of semi-close nodes.
-Then they pick a planet at each node.
-The NPC then buys goods at one end and sells them at the other end.
-Once the route is not profitable, or drops below a threshold, then the NPC randomly picks a new route.
-Buying makes prices go up and selling makes them go down.
-Prices are periodically randomly reinitialized.
+** add npc ships that just want to travel between planets
+they disappear when they arrive.
+Also they have different dialogue / speech bubbles
+** new NPC behaviors: escort and protect a target
+NPCs won't attack until you get within range.
 
-You could have NPC traders and NPC pirates that hunt them. This could make the speech bubbles meaningful.
+Then add a mission where you take down a convoy before it reaches its destination
 
-I love this idea. If I then add shipyards for buying upgrades and repairs then I'm on my way toward a lived-in world with great opportunity for exploration.
-Also this: Long distances between nodes. Make the fuel constraint more of a constraint.
-Trade routes to discover.
-NPCs can also upgrade when they make enough money.
-Player could rescue escape capsules or prey on traders or charge a fee to escort traders.
-Cargo could spin out of destroyed ships.
-Tractor beam could slow down stuff that pops out of destroyed ships.
-You could cap the tech level that is allowed to be used at some nodes so that player can choose how to scale things up and you can make the game more game like without sacrificing freedom.
-When an NPC or pirate dies then they can reset to the low level nodes.
-Conflict between NPCs and pirates that takes place offscreen can be calculated relatively easily with tech level giving probability advantages to one or the other. Also you could code it up so that the NPCs escape battles and go lick their wounds. This can be added to the "lived in" nature of the universe.
-
-DISCOVERY: The player could be forced to discover ALL objects in the game. Player could follow NPC ships to learn the locations of new objects.
-If the player's ship drifts too far from a node center then search and rescue ships can spawn to guide the player back.
+** fleet objects
+Make a fleet object:
+  Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.
+  Fleets move and update independently each turn.
+** make fleet objects randomly spawn and move together to a warp point and then go into it
+** make pirates that just want to kill npcs or the player and then flee to a warp point
+** make NPCs that just want to harvest some gems from asteroids then leave through a warp point
+have the gems slow down after bursting from asteroid until they come to a stop
 ** other people's code
 Maybe read more of other people's code. See what they do.
 
@@ -62,6 +56,11 @@ http://www.reddit.com/r/gamedev/comments/i2ixn/publishing_a_pygame_game/
 ** STEP ONE: soul searching
 What do you want out of this game?
 What is the best thing you can do to move the game towards what you want? Do I need to look at the graphics library first? Get the code to compile on other machines?
+
+Do I want to look into multiplayer?
+
+I love the idea of scenarios and objectives. Campaigns that unfold organically but still give the player challenges. Hell, even a string of minigames would be great.
+http://www.youtube.com/watch?v=m85LgVPwchE
 ** what is the game you want?
 I like the idea of contextualizing actions and events that are large and multistep, but not opaque.
 
@@ -135,6 +134,29 @@ I've now created two attackMoves
 What if you think of ships as self-contained robots?
 Inputs: List of enemies, list of allies, closest sprite
 Output: target speed, dtheta, whether or not to shoot
+** a lived in world - npc traders
+NPC's randomly pick pairs of semi-close nodes.
+Then they pick a planet at each node.
+The NPC then buys goods at one end and sells them at the other end.
+Once the route is not profitable, or drops below a threshold, then the NPC randomly picks a new route.
+Buying makes prices go up and selling makes them go down.
+Prices are periodically randomly reinitialized.
+
+You could have NPC traders and NPC pirates that hunt them. This could make the speech bubbles meaningful.
+
+I love this idea. If I then add shipyards for buying upgrades and repairs then I'm on my way toward a lived-in world with great opportunity for exploration.
+Also this: Long distances between nodes. Make the fuel constraint more of a constraint.
+Trade routes to discover.
+NPCs can also upgrade when they make enough money.
+Player could rescue escape capsules or prey on traders or charge a fee to escort traders.
+Cargo could spin out of destroyed ships.
+Tractor beam could slow down stuff that pops out of destroyed ships.
+You could cap the tech level that is allowed to be used at some nodes so that player can choose how to scale things up and you can make the game more game like without sacrificing freedom.
+When an NPC or pirate dies then they can reset to the low level nodes.
+Conflict between NPCs and pirates that takes place offscreen can be calculated relatively easily with tech level giving probability advantages to one or the other. Also you could code it up so that the NPCs escape battles and go lick their wounds. This can be added to the "lived in" nature of the universe.
+
+DISCOVERY: The player could be forced to discover ALL objects in the game. Player could follow NPC ships to learn the locations of new objects.
+If the player's ship drifts too far from a node center then search and rescue ships can spawn to guide the player back.
 ** Little fun changes and additions
 Stealth 
 Sensors - detect enemies before they detect you. 
@@ -174,12 +196,7 @@ lasers - red. fast fire, low damage, does not interact with other lasers, is des
 kinetic - green. lower velocity unless boosted, velocity = firer's velocity + amount, reduces firer's velocity, is destroyed by contact with other kinetics but not lasers.
 
 ion - blue. very slow. disables target movement and causes slow rotation for a brief period of time. causes no damage.
-** new NPC behaviors
-*** escort and protect a target
-NPCs won't attack until you get within range.
-
-Then add a mission where you take down a convoy before it reaches its destination
-*** defend area of space
+** new NPC behaviors: defend area of space
 Should be easy once you get the previous behavior
 ** parameterize minigame difficulty
 Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volume of space (inner concentric circle), speeding up rocks, increasing the number of rocks created when one gets destroyed.
@@ -197,13 +214,9 @@ United Inorganic Life Forms
 Incorporated Mammalian Clans
 
 Set one of these to not start at a random location, but to start at the player's location with high alliance with the player.
-** fleet and shipyard objects
+** shipyard objects
 Make a ship yard object:
   stored at a node, the shipyard produces either little ships or capital ships of a particular tech level (class).
-
-Make a fleet object:
-  Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.
-  Fleets move and update independently each turn.
 
 Then give player more options for interacting with fleets. Try to make these organic. For example, killing ships at the node (make sure the ships are killed by player bullets, not accidental collisions) reduces faction's strength and the player's reputation with that faction, but increases player's reputation with opposing factions. Destroying tiny asteroids clears up the node and increases reputation with the owning faction. Destroying big asteroids that become small asteroids has the opposite effect. Harvesting gems decreases profitability, but releasing gems by shooting gem asteroids has the opposite effect. Player could get a summary of the effects of their actions at each waypoint.
 
@@ -482,6 +495,8 @@ Later you can make more realistic economies and interactions between the agents.
 For now, just smooth out the game elements, reach out to play testers and artists, and keep incrementally adding elements that you think will make it the most fun.
 
 Set a date in early Feb to contact the UNM GDC. You can always just say you are too busy.
+I have emailed them. See gmail.
+
 See if you can post your game on the pygame website to get it more press.
 Reach out to runner erik to see if he will be a play tester for you.
 
@@ -898,6 +913,7 @@ http://pygame.org/docs/tut/newbieguide.html
 It may be worth reconsidering how you read inputs later on.
 ** unm game development club
 gdcunm@gmail.com
+I have emailed them. See gmail.
 ** stardog
 Stardog initially got me started on this project. There might be further things to borrow from it such as screen sizing, how to do sounds, and probably more. See below.
 

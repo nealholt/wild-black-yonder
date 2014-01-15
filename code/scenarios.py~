@@ -460,8 +460,7 @@ def wipeOldScenario():
 	globalvars.intangibles_bottom.empty()
 	globalvars.intangibles_top.empty()
 	globalvars.whiskerables.empty()
-	globalvars.RED_TEAM.empty()
-	globalvars.BLUE_TEAM.empty()
+	globalvars.team_manager.reset()
 	globalvars.BGCOLOR = colors.black
 	globalvars.BGIMAGE = None
 	globalvars.score_keeper = None
@@ -470,7 +469,7 @@ def wipeOldScenario():
 	globalvars.player.setHealthBar()
 	globalvars.tangibles.add(globalvars.player)
 	globalvars.whiskerables.add(globalvars.player)
-	globalvars.BLUE_TEAM.add(globalvars.player)
+	globalvars.team_manager.addToTeam(globalvars.player, globalvars.team_manager.player_team)
 	#Immediately clear the panel
 	globalvars.menu.main_panel = None
 	#Reset the arena

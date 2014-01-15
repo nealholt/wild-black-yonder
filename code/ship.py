@@ -114,7 +114,7 @@ class Ship(PhysicalObject):
 		#Target is a physical object from which this ship can update its destination.
 		self.target = None
 		self.state = KILL_PLAYER_STATE
-		self.team = globalvars.REDTEAM
+		self.team = globalvars.team_manager.player_team + 1
 		self.health_index = rd.randint(0, len(health_classes)-1)
 		self.fuelcap_index = rd.randint(0, len(fuelcap_classes)-1)
 		self.cargospace_index = rd.randint(0, len(cargospace_classes)-1)
@@ -444,37 +444,15 @@ class Ship(PhysicalObject):
 		self.performMoveMechanics(speed, dtheta, dontTurnLeft=dontTurnLeft, dontTurnRight=dontTurnRight, force_turn=force_turn)
 
 
-	def setTarget(self):
-		if self.team == globalvars.REDTEAM:
-			#Pick a blue team target
-			limit = len(globalvars.BLUE_TEAM)
-			if limit > 1:
-				n = rd.randint(0, limit-1)
-				self.target = globalvars.BLUE_TEAM.sprites()[n]
-			elif limit == 1:
-				self.target = globalvars.BLUE_TEAM.sprites()[0]
-			else:
-				return True
-		else:
-			#Pick a red team target
-			limit = len(globalvars.RED_TEAM)
-			if limit > 1:
-				n = rd.randint(0, limit-1)
-				self.target = globalvars.RED_TEAM.sprites()[n]
-			elif limit == 1:
-				self.target = globalvars.RED_TEAM.sprites()[0]
-			else:
-				return True
-		return False
-
-
 	def update(self):
 		'''The following code is mostly duplicated in the missile's update function.
 		Eventually I'd like to break this out as a more general seeking behavior.'''
 		if self.state == KILL_PLAYER_STATE:
 			#Initialize target
 			if self.target is None or self.target.health <= 0:
-				if self.setTarget(): return True
+				self.target = globalvars.team_manager.getRandomEnemy(self.team)
+				#If target is still empty then just return. There is no target.
+				if self.target is None: return True
 			#Set target location
 			self.setDestination(self.target.lead_indicator)
 			#Get angle to target
@@ -569,7 +547,8 @@ class Ship(PhysicalObject):
 			self.myHealthBar.kill()
 			died = True
 			#Award points
-			if not globalvars.score_keeper is None and self.team == globalvars.REDTEAM:
+			if not globalvars.score_keeper is None and \
+			self.team != globalvars.team_manager.player_team:
 				globalvars.score_keeper.points += 1
 			#Chance to spawn an item
 			if rd.random() > 0.5:
