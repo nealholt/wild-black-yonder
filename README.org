@@ -7,6 +7,8 @@ python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
 ** new NPC behaviors: escort and protect a target
+See convoy.py
+
 convoy inherits from physical object.
 create a convoy object that you will add to intangibles_bottom.
 You can add ships to a sprite group in the convoy object.
