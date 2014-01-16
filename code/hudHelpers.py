@@ -94,6 +94,9 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 
 	physical_objs = []
 
+	#Make one NPC just headed for a warp point.
+
+
 	for _ in xrange(objects['capital_ship']):
 		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 		enemy_ship = getNewCapitalShip(x,y)

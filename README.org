@@ -6,7 +6,6 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** have node manager keep track of player's current node
 ** add npc ships that just want to travel between warp points
 they disappear when they arrive.
 Also they have different dialogue / speech bubbles

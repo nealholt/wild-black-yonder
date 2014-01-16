@@ -446,10 +446,22 @@ class Ship(PhysicalObject):
 
 
 	def goThruWarp(self):
-		#If destination is none, find a warp point and set it as the destination
+		#If target is none, find a random warp point and set it as the destination
+		if self.target is None:
+			#Ship assumes that it is at the same node as the player.
+			warps = globalvars.galaxy.player_node.warps
+			self.target = warps[rd.randint(0, len(warps)-1)]
+			self.destination = self.target.rect.center
 		#Move towards the warp.
+		self.performMove()
 		#When you get close enough, pass through the warp (for now, just vanish)
-		pass #TODO LEFT OFF HERE
+		#Get distance to target
+		d = cygeometry.distance(self.rect.center, self.destination)
+		if d < self.target.collisionradius+50:
+			temp = displayUtilities.SpeechBubble(speaker=self, text='Goodbye!', ttl=2*globalvars.FPS, width=30, height=12, fontSize=18, color=colors.black, bgcolor=colors.white)
+			globalvars.intangibles_top.add(temp)
+			self.speech_countdown = 60*globalvars.FPS
+			self.kill()
 
 
 	def update(self):
@@ -499,13 +511,28 @@ class Ship(PhysicalObject):
 		#Update my health bar
 		self.updateHealthBar()
 		self.setLeadIndicator()
+
+		self.speak()
+
+
+	def speak(self):
 		#Potentially make a speech bubble
 		self.speech_countdown -= 1
 		if self.speech_countdown < 0:
-			temp = displayUtilities.SpeechBubble(speaker=self, text='Hello!', ttl=2*globalvars.FPS, width=30, height=12, fontSize=18, color=colors.black, bgcolor=colors.white)
+			text = 'What state am I in?'
+			if self.state == KILL_PLAYER_STATE:
+				text = 'You die now!'
+			elif self.state == GOTO_STATE:
+				text = 'Help me reach my destination!'
+			elif self.state == GOTHRUWARP_STATE:
+				text = 'I\'m just passing through.'
+			width = len(text)*8
+			temp = displayUtilities.SpeechBubble(speaker=self, \
+				text=text, ttl=2*globalvars.FPS, width=width, \
+				height=12, fontSize=18, color=colors.black, \
+				bgcolor=colors.white)
 			globalvars.intangibles_top.add(temp)
 			self.speech_countdown = 60*globalvars.FPS
-
 
 
 	def updateHealthBar(self):
