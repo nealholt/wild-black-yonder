@@ -13,6 +13,7 @@ healthBarDefaultWidth = 20
 
 KILL_PLAYER_STATE = 0
 GOTO_STATE = 1
+GOTHRUWARP_STATE = 2
 
 
 num_ship_attributes = 6
@@ -444,6 +445,14 @@ class Ship(PhysicalObject):
 		self.performMoveMechanics(speed, dtheta, dontTurnLeft=dontTurnLeft, dontTurnRight=dontTurnRight, force_turn=force_turn)
 
 
+	def goThruWarp(self):
+		#If destination is none, find a warp point and set it as the destination
+		#Ship assumes that it is at the same node as the player.
+		#Move towards the warp.
+		#When you get close enough, pass through the warp (for now, just vanish)
+		pass #TODO LEFT OFF HERE
+
+
 	def update(self):
 		'''The following code is mostly duplicated in the missile's update function.
 		Eventually I'd like to break this out as a more general seeking behavior.'''
@@ -485,6 +494,9 @@ class Ship(PhysicalObject):
 		#going to location => go to
 		elif self.state == GOTO_STATE:
 			self.performMove()
+		#going thru a warp point
+		elif self.state == GOTHRUWARP_STATE:
+			self.goThruWarp()
 		#Update my health bar
 		self.updateHealthBar()
 		self.setLeadIndicator()

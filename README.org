@@ -6,20 +6,16 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** generalize npc teams
-Make it so n teams are possible instead of just 2. Make it so ships can keep a list of enemy team indicies. I created a new teamManager file. I'll make a global reference to it and manage all teams through it.
-
-I left off fixing hudHelpers.addNewEnemyToWorld and the places in scenarios.py where it is called.
-
-team manager needs a default enemy team that hudHelper, ship, and capitalship all use.
-
-
-
-make a todo for 
-teamManager to coordinate team ids and enemy lists without duplication with the faction_keeper.
+** have node manager keep track of player's current node
 ** add npc ships that just want to travel between warp points
 they disappear when they arrive.
 Also they have different dialogue / speech bubbles
+
+Left off at ship.def goThruWarp(self)
+
+Have such ships randomly spawn for now.
+** put NPC ships on the minimap
+color code them based on their affiliation
 ** add npc ships that just want to travel between planets
 they disappear when they arrive.
 Also they have different dialogue / speech bubbles
@@ -165,6 +161,8 @@ Conflict between NPCs and pirates that takes place offscreen can be calculated r
 
 DISCOVERY: The player could be forced to discover ALL objects in the game. Player could follow NPC ships to learn the locations of new objects.
 If the player's ship drifts too far from a node center then search and rescue ships can spawn to guide the player back.
+** coordinate teams
+team_manager needs to coordinate team ids and enemy lists without duplication with the faction_keeper.
 ** Little fun changes and additions
 Stealth 
 Sensors - detect enemies before they detect you. 

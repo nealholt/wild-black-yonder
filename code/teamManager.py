@@ -10,20 +10,24 @@ class TeamManager:
 	''' '''
 	def __init__(self):
 		#An array of sprite groups
-		self.teams = [pygame.sprite.Group()]
+		self.teams = None
 		#Index of the player's team
 		self.player_team = 0
+		self.default_enemy_team = 1
+		self.default_neutral_team = 2
 		#An array of int arrays. The index is the team and the integers in the
 		#array at that index are teams that are enemies of the indexed team.
-		self.enemies = [[]]
+		self.enemies = None
+		self.reset()
 
 
 	def reset(self):
 		#Initialize teams with an empty player team and empty default enemy team
-		self.teams = [pygame.sprite.Group(), pygame.sprite.Group()]
+		self.teams = [pygame.sprite.Group(), pygame.sprite.Group(), pygame.sprite.Group()]
 		self.player_team = 0
 		self.default_enemy_team = 1
-		self.enemies = [[1], [0]]
+		self.default_neutral_team = 2
+		self.enemies = [[1], [0], []]
 
 
 	def addToTeam(self, ship_to_add, team_index):

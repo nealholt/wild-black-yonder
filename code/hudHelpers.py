@@ -192,8 +192,6 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 	This allows the player to explore in effectively infinite space.'''
         def __init__(self, seed=0):
 		pygame.sprite.Sprite.__init__(self)
-		#The node that this infinite space generator is generating space for.
-		self.node = globalvars.galaxy.getNode(seed)
 		#Distance above which to depopulate the grid cells.
 		self.depopulatedistance = 4
 		self.seed = seed
@@ -271,17 +269,17 @@ class InfiniteSpaceGenerator(pygame.sprite.Sprite):
 			loc = str(x).zfill(3)+str(y).zfill(3)
 			if not loc in self.dict.keys():
 				#print 'testing the location '+str(loc)+' is empty so we are populating it'
-				self.node.refreshObstacles(seed=loc)
-				self.dict[loc] = populateSpace(objects=self.node.obstacles, 
+				globalvars.galaxy.player_node.refreshObstacles(seed=loc)
+				self.dict[loc] = populateSpace(objects=globalvars.galaxy.player_node.obstacles, 
 					width=self.space_length, height=self.space_length, 
 					center=(x*self.space_length, y*self.space_length), seed=loc,
-					ship_tech=self.node.pirate_ship_tech,
-					engine_tech=self.node.pirate_engine_tech,
-					weapon_tech=self.node.pirate_weapon_tech,
-					missile_tech=self.node.pirate_missile_tech,
-					mine_tech=self.node.pirate_mine_tech,
-					fuel_depots=self.node.fuel_depots,
-					planets=self.node.planets)
+					ship_tech=globalvars.galaxy.player_node.pirate_ship_tech,
+					engine_tech=globalvars.galaxy.player_node.pirate_engine_tech,
+					weapon_tech=globalvars.galaxy.player_node.pirate_weapon_tech,
+					missile_tech=globalvars.galaxy.player_node.pirate_missile_tech,
+					mine_tech=globalvars.galaxy.player_node.pirate_mine_tech,
+					fuel_depots=globalvars.galaxy.player_node.fuel_depots,
+					planets=globalvars.galaxy.player_node.planets)
 		return False
 
 	def draw(self, _):

@@ -216,7 +216,7 @@ class ScenarioManager:
 		npc_friend = hudHelpers.getNewEnemy(25.0,25.0,'ship',2,2,0,0,0)
 		npc_friend.setDestination(finish_line)
 		npc_friend.state = ship.GOTO_STATE
-		hudHelpers.addNewEnemyToWorld(npc_friend, add_to_blue=True)
+		hudHelpers.addNewEnemyToWorld(npc_friend, add_to_team=globalvars.team_manager.player_team)
 		#Display arrow to finish line
 		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(npc_friend))
 		#Display finish bullseye
@@ -261,14 +261,13 @@ class ScenarioManager:
 		n = 3
 		#Make n+1 enemy units starting to the left of the player:
 		start = (globalvars.player.rect.centerx-500, globalvars.player.rect.centery)
-		add_to_blue = False
 		for i in range(n+1):
 			enemy_ship = hudHelpers.getNewEnemy(start[0],start[1]+spacing*i,\
 				'destroyer',2,2,2,2,2)
-			hudHelpers.addNewEnemyToWorld(enemy_ship, add_to_blue=add_to_blue)
+			hudHelpers.addNewEnemyToWorld(enemy_ship)
 		#Add an enemy capital ship
 		enemy_ship = hudHelpers.getNewCapitalShip(start[0],start[1]+spacing*n)
-		hudHelpers.addNewEnemyToWorld(enemy_ship, add_to_blue=add_to_blue)
+		hudHelpers.addNewEnemyToWorld(enemy_ship)
 		#Make n friendly units:
 		start = (globalvars.player.rect.centerx+500, globalvars.player.rect.centery)
 		add_to_blue = True
@@ -276,10 +275,12 @@ class ScenarioManager:
 			friendly_ship = hudHelpers.getNewEnemy(start[0],start[1]+spacing*i,\
 				'ship',2,2,2,2,2)
 			friendly_ship.theta = 179.0 #Face the ship to the left
-			hudHelpers.addNewEnemyToWorld(friendly_ship, add_to_blue=add_to_blue)
+			hudHelpers.addNewEnemyToWorld(friendly_ship,\
+				add_to_team=globalvars.team_manager.player_team)
 		#Add a friendly capital ship
 		friendly_ship = hudHelpers.getNewCapitalShip(start[0],start[1]+spacing*n)
-		hudHelpers.addNewEnemyToWorld(friendly_ship, add_to_blue=add_to_blue)
+		hudHelpers.addNewEnemyToWorld(friendly_ship,\
+			add_to_team=globalvars.team_manager.player_team)
 		#Make the score keeper:
 		time_limit = 120 #time limit in seconds
 		text = ['BATTLE COMPLETED']
@@ -328,8 +329,11 @@ class ScenarioManager:
 		globalvars.player.nodeid = seed #Player's new node id is set to be the seed argument.
 		#Place warp portals
 		if not node is None:
+			globalvars.galaxy.player_node = node #Current node is updated
 			for w in node.warps:
 				globalvars.tangibles.add(w)
+		else: #Current node is updated
+			globalvars.galaxy.player_node = globalvars.galaxy.getNode(seed)
 		#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
 		globalvars.intangibles_bottom.add(hudHelpers.InfiniteSpaceGenerator(seed=seed))
 		#Display player location and speed info with the following:
@@ -418,10 +422,8 @@ class ScenarioManager:
 			return True
 		#Get the first node on the path:
 		next_node_id = globalvars.player.destinationNode[0]
-		#Get the current node so we can point towards the next node
-		node = globalvars.galaxy.getNode(globalvars.player.nodeid)
 		#Get the location of the destination node
-		for w in node.warps:
+		for w in globalvars.galaxy.player_node.warps:
 			if w.destinationNode == next_node_id:
 				#Set the warp as the destination for the arrow to point at
 				self.setArrowTarget(w)

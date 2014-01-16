@@ -384,6 +384,3 @@ class NodeManager():
 			n.setPiracyStrength(percent/2.0, min(1.0, percent))
 
 		for n in self.nodes: n.resetWarps()
-
-		self.player_node = self.getNode(0)
-

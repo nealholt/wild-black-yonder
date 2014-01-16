@@ -329,8 +329,11 @@ class ScenarioManager:
 		globalvars.player.nodeid = seed #Player's new node id is set to be the seed argument.
 		#Place warp portals
 		if not node is None:
+			globalvars.galaxy.player_node = node #Current node is updated
 			for w in node.warps:
 				globalvars.tangibles.add(w)
+		else: #Current node is updated
+			globalvars.galaxy.player_node = globalvars.galaxy.getNode(seed)
 		#Need a new hud helper that will generate the landscape and clean up distant objects on the fly.
 		globalvars.intangibles_bottom.add(hudHelpers.InfiniteSpaceGenerator(seed=seed))
 		#Display player location and speed info with the following:
@@ -359,7 +362,7 @@ class ScenarioManager:
 		visited_node_ids = [globalvars.player.nodeid]
 		old_bfs_array = []
 		new_bfs_array = []
-		current_node = globalvars.galaxy.getNode(globalvars.player.nodeid)
+		current_node = globalvars.galaxy.player_node
 		for connectid,location in current_node.connections:
 			#If connectid is the destination then we can shortcircuit here
 			if connectid == nodeid:
@@ -419,10 +422,8 @@ class ScenarioManager:
 			return True
 		#Get the first node on the path:
 		next_node_id = globalvars.player.destinationNode[0]
-		#Get the current node so we can point towards the next node
-		node = globalvars.galaxy.getNode(globalvars.player.nodeid)
 		#Get the location of the destination node
-		for w in node.warps:
+		for w in globalvars.galaxy.player_node.warps:
 			if w.destinationNode == next_node_id:
 				#Set the warp as the destination for the arrow to point at
 				self.setArrowTarget(w)

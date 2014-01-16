@@ -6,95 +6,139 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** npc behavior modifications. set up for personality
-1. figure out where to put each of these in the "personality file". I think a todo on this list is fine.
-2. For each one, see if we want to fix it in any way and do so in the code. This may trigger the creation of a whole new project and that's ok.
+** have node manager keep track of player's current node
 
-physicalObject.getRecommendedVector has magic numbers and other ugliness that you want to get rid of.
+** add npc ships that just want to travel between warp points
+they disappear when they arrive.
+Also they have different dialogue / speech bubbles
 
-Make some of the parameters more meaningful:
+Left off at ship.def goThruWarp(self)
 
-Ratio of distance to closest sprite over abs(angle to closest sprite) that corresponds to how self's speed should be set, assuming the ratio is less than one.
-Max angle at which we even pay attention to such a sprite is 90 degrees.
-100/20 degrees seems like a good threshold ratio.
-So how about when distance/(abs(angle)*3) is less than one, then our target speed should be no more than this ratio of our maximum speed.
-So in this case, 3 is the parameter. However, in reality, this depends on our acceleration and the object's size, but this will suffice for now.
-self.speed_safety_factor = 3.0
+Have such ships randomly spawn for now.
+** put NPC ships on the minimap
+color code them based on their affiliation
+** add npc ships that just want to travel between planets
+they disappear when they arrive.
+Also they have different dialogue / speech bubbles
+** new NPC behaviors: escort and protect a target
+NPCs won't attack until you get within range.
 
-   angle from an enemy to self below which an npc will panic and temporarily flee.
-Default +- 20 degrees.
-Was self.target_front_center
-rename to self.in_crosshairs
+Then add a mission where you take down a convoy before it reaches its destination
 
-   health fraction below which an npc will permanently flee.
-Default 10%
-Was and is self.min_percent_health. Don't change, just comment.
+You're going to use this for fleet objects.
+** fleet objects
+Make a fleet object:
+  Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.
+  Fleets move and update independently each turn.
+** make fleet objects randomly spawn and move together to a warp point and then go into it
+** make pirates that just want to kill npcs or the player and then flee to a warp point
+** make NPCs that just want to harvest some gems from asteroids then leave through a warp point
+have the gems slow down after bursting from asteroid until they come to a stop
+** other people's code
+Maybe read more of other people's code. See what they do.
 
-   What the npc considers optimal distance to target.
-Previously there are 3 different values 
-self.target_long_range
-Any range over this and the npc just wants to get to target as fast as possible.
-Below this range, slow to 1/2 max speed.
-self.target_med_range
-Below this range, slow to max turn speed.
-self.target_short_range
-Below this range, slow to a stop.
+http://pygame.org/project-Void+Infinity-2195-.html
+http://pygame.org/project-MICshooter-2342-.html
+http://pygame.org/project-wabbel-2370-.html
+http://pygame.org/project-Nebula+Wars-2559-.html
+http://pygame.org/project-Spaceace-2595-.html
+http://pygame.org/project-Python+Defender+2-2728-.html
+http://pygame.org/project-Miner-2871-.html
+http://pygame.org/project-Run%21-2608-.html
+http://pygame.org/project-Asteroids+2-2137-.html
+** Graphics libraries for python
+I have installed this on my mac. Check out next steps!
+http://www.panda3d.org/
 
-   What ratio of distance to target over abs(angle to target) the npc considers acceptable before the npc needs to reduce speed to improve turning. Put bounds on this ratio as a start.
-Cap the distance at one screen width.
-900/90 or greater = 10/1 = need to turn.
-Set the default ratio as anything over 10/1
-This is not currently implemented as a variable, but is roughly encoded in the goto method. Put it in a variable called:
-self.distance_angle_ratio = 10.0
-
-		#Angle within which npc should consider avoiding an object. If the 
-		#object is within + or - 90 degrees, for instance, then self will test 
-		#to see if the object is close enough to initiate an avoidance behavior.
-		#Only self.closest_sprite is evaluated for the danger cone.
-		self.danger_cone = 90
-
-#File all of this in one place with NPC personalities in this document for future use.
-		#If the distance between this object and self.closest_sprite is less than this 
-		#number of pixels, then self will turn away.
-		self.avoidance_threshold = 20
-
-		#If the distance between this object and another is less than this 
-		#number of pixels, then this object will not turn in the direction of 
-		#the object even if this object's target is in that direction.
-		self.suppress_turn_threshold = 40
-
-#The following are not well implemented. They are far too small, only triggered if distance is already less than self.avoidance_threshold, and do not take into account angle to the closest object. Change them.
-		#Set the recommended ship speed to 1/4 max speed if self.closest_sprite is on 
-		#a collision course with us and is danger_red_distance distance away, 
-		#1/2 max speed if yellow and otherwise 3/4 max speed.
-		self.danger_red_distance = 10
-		self.danger_yellow_distance = 20
-** Pygame for development
-Separate the following notes into
-1. motivation
-2. graphics libraries that interact with python that you want to look into.
-3. notes on how to compile python to an executable
-
-http://www.reddit.com/r/gamedev/comments/16d5ak/is_pygame_or_any_other_python_gamedev_library/
-My last pygame product made $30,000 last year. That was it's third year of being on sale.
-"You're right. I could have, but I'm most comfortable with Python. Pygame is wonderfully cross-platform across PC-Mac-Linux, soon Android. I code on a Mac, literally drag and drop sources into Windows or Linux and the game works. Period.
-You might be able to guess that I'm a no-fucking-hassle kind of guy. :-)"
+Next step:
+http://www.panda3d.org/manual/index.php/Getting_Started_on_OSX
+** pygame executable
+See the readme in the compiling folder for next steps.
 
 http://www.reddit.com/r/gamedev/comments/i2ixn/publishing_a_pygame_game/
 "Yes - and I've shipped a project with py2exe."
 "Check out PyInstaller which offers a wide variety of ways to package your project up for easy distribution."
+** STEP ONE: soul searching
+What do you want out of this game?
+What is the best thing you can do to move the game towards what you want? Do I need to look at the graphics library first? Get the code to compile on other machines?
 
-Graphics libraries for python:
-http://cocos2d.org/doc.html - checking out the video here is probably useful.
-http://www.panda3d.org/
-** pygame executable
-See the readme in the compiling folder for next steps.
+Do I want to look into multiplayer?
+
+I love the idea of scenarios and objectives. Campaigns that unfold organically but still give the player challenges. Hell, even a string of minigames would be great.
+http://www.youtube.com/watch?v=m85LgVPwchE
+** what is the game you want?
+I like the idea of contextualizing actions and events that are large and multistep, but not opaque.
+
+Ask yourself what games you like and what you like about them.
+  Urban Dead
+  Privateer 2
+  Freelancer mods
+  Nexus Wars
+  Starcraft
+  Romance of the Three Kingdoms
+  Ogame - good for the scaling!
+
+Your goal is to create a game you enjoy that others will also enjoy.
+Worry about making money off a game later. What could that game be like? A rogue-like with moving tiles and mazes?
+
+There are other ways to make this simple and game like, but I love the open world idea.
+Why do I love the open world idea? Because exploration and learning excite me. This means I should have things to learn and discover out there. Perhaps procedural stories are this.
+** npc personality parameters
+Use these to alter npc personalities and maybe even learn something about which parameters are best.
+*** physicalObject
+self.speed_safety_factor = 3.0 #Higher value == more conservative == slower near objects
+#Only used with self.closest_sprite
+
+#What ratio of distance to target over abs(angle to target) the npc considers acceptable before the npc needs to reduce speed to improve turning.
+#Set the default ratio as anything over 25/1
+#if dist / angle is less than this value then the ship will slow to maxTurnSpeed, otherwise ship will approach at maxSpeed.
+#dist / angle is small for an npc when target is behind the npc and larger when the target is infront of the npc.
+#Making this value larger encourages NPCs to slow down to angle towards their target more often.
+self.distance_angle_ratio = 25.0
+
+#Angle within which npc should consider avoiding an object. If the 
+#object is within + or - 90 degrees, for instance, then self will test 
+#to see if the object is close enough to initiate an avoidance behavior.
+#Only self.closest_sprite is evaluated for the danger cone.
+self.danger_cone = 90
+
+#If the distance between this object and another is less than this 
+#number of pixels, then this object will not turn in the direction of 
+#the object even if this object's target is in that direction.
+self.suppress_turn_threshold = 40
+*** ship
+#If ship's target is within +-self.target_front_center in front then slow to a stop and shoot.
+self.target_front_center = 30
+
+#If ship's target is within +-self.target_rear_center in front then slow to a stop and shoot. The 180 minus turns this into a rear-facing cone.
+self.target_rear_center = 180 - 30
+
+#health fraction below which an npc will permanently flee the battlefield.
+self.min_percent_health = 0.10
+
+#If the target is further away than this then recommended target engagement speed is max speed.
+self.target_long_range = 600
+
+#If the target is further away than this then recommended target engagement speed is 3/4 max speed.
+self.target_med_range = 400
+
+#If the target is further away than this then recommended target engagement speed is 1/2 max speed.
+#If the target is closer than this, then set to maxTurnSpeed
+self.target_short_range = 200
+
+#Initiate fly by if less than self.target_short_range to target and target's
+#angle to self is less than +-self.flyby_angle
+self.flyby_angle = 15
 ** npc behavior: fly by combat
 have enemy ships tend to shoot and fly past enemies rather than park in front of them continually unloading bullets until one dies.
 
-If npc is close to played and player's angle to the enemy ship is low then initiate a fly by. That is. Accelerate and turn away from player.
+I've now created two attackMoves
+	self.conservativeAttackMove()
+	#self.attackMove(d)
 
-The goTo methods else ifs may be fairly easy to improve, I think. Can't they be made more efficient? Can they be improved?
+What if you think of ships as self-contained robots?
+Inputs: List of enemies, list of allies, closest sprite
+Output: target speed, dtheta, whether or not to shoot
 ** a lived in world - npc traders
 NPC's randomly pick pairs of semi-close nodes.
 Then they pick a planet at each node.
@@ -118,26 +162,8 @@ Conflict between NPCs and pirates that takes place offscreen can be calculated r
 
 DISCOVERY: The player could be forced to discover ALL objects in the game. Player could follow NPC ships to learn the locations of new objects.
 If the player's ship drifts too far from a node center then search and rescue ships can spawn to guide the player back.
-** STEP ONE: soul searching
-What do you want out of this game?
-What is the best thing you can do to move the game towards what you want? Do I need to look at the graphics library first? Get the code to compile on other machines?
-** what is the game you want?
-I like the idea of contextualizing actions and events that are large and multistep, but not opaque.
-
-Ask yourself what games you like and what you like about them.
-  Urban Dead
-  Privateer 2
-  Freelancer mods
-  Nexus Wars
-  Starcraft
-  Romance of the Three Kingdoms
-  Ogame - good for the scaling!
-
-Your goal is to create a game you enjoy that others will also enjoy.
-Worry about making money off a game later. What could that game be like? A rogue-like with moving tiles and mazes?
-
-There are other ways to make this simple and game like, but I love the open world idea.
-Why do I love the open world idea? Because exploration and learning excite me. This means I should have things to learn and discover out there. Perhaps procedural stories are this.
+** coordinate teams
+team_manager needs to coordinate team ids and enemy lists without duplication with the faction_keeper.
 ** Little fun changes and additions
 Stealth 
 Sensors - detect enemies before they detect you. 
@@ -177,12 +203,7 @@ lasers - red. fast fire, low damage, does not interact with other lasers, is des
 kinetic - green. lower velocity unless boosted, velocity = firer's velocity + amount, reduces firer's velocity, is destroyed by contact with other kinetics but not lasers.
 
 ion - blue. very slow. disables target movement and causes slow rotation for a brief period of time. causes no damage.
-** new NPC behaviors
-*** escort and protect a target
-NPCs won't attack until you get within range.
-
-Then add a mission where you take down a convoy before it reaches its destination
-*** defend area of space
+** new NPC behaviors: defend area of space
 Should be easy once you get the previous behavior
 ** parameterize minigame difficulty
 Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volume of space (inner concentric circle), speeding up rocks, increasing the number of rocks created when one gets destroyed.
@@ -190,6 +211,7 @@ Asteroids: Difficulty can scale up by increasing number of rocks, shrinking volu
 Gem wild: This game can easily be made more difficult by adding asteroids (that the gems might or might not collide with), adding enemies (that either fight the player or also try to get gems, or adding solar storms.
 
 Race could be made more difficult with more enemies, less time, or a solar storm. Really it's just a lone time trial right now. You could make it a race. You could add booster pickups along the way.
+** missiles are not cleaning themselves off the screen. Fix!
 ** add more factions
 Change faction names to these and add a couple flags:
 Democratic Hive Mind
@@ -199,13 +221,9 @@ United Inorganic Life Forms
 Incorporated Mammalian Clans
 
 Set one of these to not start at a random location, but to start at the player's location with high alliance with the player.
-** fleet and shipyard objects
+** shipyard objects
 Make a ship yard object:
   stored at a node, the shipyard produces either little ships or capital ships of a particular tech level (class).
-
-Make a fleet object:
-  Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.
-  Fleets move and update independently each turn.
 
 Then give player more options for interacting with fleets. Try to make these organic. For example, killing ships at the node (make sure the ships are killed by player bullets, not accidental collisions) reduces faction's strength and the player's reputation with that faction, but increases player's reputation with opposing factions. Destroying tiny asteroids clears up the node and increases reputation with the owning faction. Destroying big asteroids that become small asteroids has the opposite effect. Harvesting gems decreases profitability, but releasing gems by shooting gem asteroids has the opposite effect. Player could get a summary of the effects of their actions at each waypoint.
 
@@ -484,6 +502,8 @@ Later you can make more realistic economies and interactions between the agents.
 For now, just smooth out the game elements, reach out to play testers and artists, and keep incrementally adding elements that you think will make it the most fun.
 
 Set a date in early Feb to contact the UNM GDC. You can always just say you are too busy.
+I have emailed them. See gmail.
+
 See if you can post your game on the pygame website to get it more press.
 Reach out to runner erik to see if he will be a play tester for you.
 
@@ -900,6 +920,7 @@ http://pygame.org/docs/tut/newbieguide.html
 It may be worth reconsidering how you read inputs later on.
 ** unm game development club
 gdcunm@gmail.com
+I have emailed them. See gmail.
 ** stardog
 Stardog initially got me started on this project. There might be further things to borrow from it such as screen sizing, how to do sounds, and probably more. See below.
 
@@ -934,6 +955,11 @@ This is still pre-alpha code.  I'm releasing it with hopes of attracting critism
 If you are interested in contributing to the code, graphics, art, AI, plot, etc., please email me.
 
 This source is given only under the GPL General Public License.  If you are interested in other licensing, please contact me.
+** Pygame for development motivation
+http://www.reddit.com/r/gamedev/comments/16d5ak/is_pygame_or_any_other_python_gamedev_library/
+My last pygame product made $30,000 last year. That was it's third year of being on sale.
+"You're right. I could have, but I'm most comfortable with Python. Pygame is wonderfully cross-platform across PC-Mac-Linux, soon Android. I code on a Mac, literally drag and drop sources into Windows or Linux and the game works. Period.
+You might be able to guess that I'm a no-fucking-hassle kind of guy. :-)"
 * git commands and notes
 ** changing the repository name
 Go to:
