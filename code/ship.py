@@ -114,7 +114,7 @@ class Ship(PhysicalObject):
 		#Target is a physical object from which this ship can update its destination.
 		self.target = None
 		self.state = KILL_PLAYER_STATE
-		self.team = globalvars.team_manager.player_team + 1
+		self.team = globalvars.team_manager.default_enemy_team
 		self.health_index = rd.randint(0, len(health_classes)-1)
 		self.fuelcap_index = rd.randint(0, len(fuelcap_classes)-1)
 		self.cargospace_index = rd.randint(0, len(cargospace_classes)-1)

@@ -70,6 +70,7 @@ def getNewCapitalShip(x,y):
 	return temp
 
 
+#TODO LEFT OFF HERE
 def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., ship_tech=0, engine_tech=0, weapon_tech=0, missile_tech=0, mine_tech=0, fuel_depots=None, planets=None):
 	'''This is the first draft of a method to randomly populate space with objects.
 	This is currently called by the racing minigame.

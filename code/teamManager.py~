@@ -77,7 +77,7 @@ class TeamManager:
 		return nearest
 
 
-	def getClosestLeadIndicator(self, location, ship_list):
+	def getClosestLeadIndicator(self, location, team_index):
 		'''Returns the nearest enemy by that enemy's lead indicator or None.'''
 		enemy_sprite_list = self.getAllEnemies(team_index)
 		nearest = None

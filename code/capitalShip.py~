@@ -10,22 +10,6 @@ sys.path.append('code/cython-'+str(sys.platform)) #Import from a system-specific
 import cygeometry
 
 
-def getClosestLeadIndicator(location, ship_list):
-	'''Returns the nearest ship in ship_list or None.'''
-	#If there are no ships then return None
-	if len(ship_list) == 0: return None
-	#Initialize min_dist and nearest from the 0th ship in the list.
-	nearest = ship_list[0]
-	min_dist = cygeometry.distance(location, ship_list[0].lead_indicator)
-	#Calculate the nearest ship to the location
-	for i in range(1, len(ship_list)):
-		d = cygeometry.distance(location, ship_list[i].lead_indicator)
-		if d < min_dist:
-			min_dist = d
-			nearest = ship_list[i]
-	return nearest
-
-
 class CapitalShip(physicalObject.PhysicalObject):
 
 	def __init__(self, centerx=0, centery=0, image_name='default'):
@@ -37,7 +21,7 @@ class CapitalShip(physicalObject.PhysicalObject):
 			centery=centery, image_name=image_name,\
 			collisiontopleft=(100,120), collisionwidth=890,  collisionheight=140)
 
-		self.team = globalvars.REDTEAM
+		self.team = globalvars.team_manager.player_team + 1
 		self.weapons=[]
 		#Load some weapons on the capital ship
 		#Initially 3 basic lasers
@@ -98,17 +82,10 @@ class CapitalShip(physicalObject.PhysicalObject):
 		for w in self.weapons: w.cool()
 
 
-	def setTarget(self):
-		if self.team == globalvars.REDTEAM:
-			#Pick blue team targets
-			for i in range(len(self.gunlocs)):
-				self.targets[i] = getClosestLeadIndicator(self.gunlocs[i],\
-							globalvars.BLUE_TEAM.sprites())
-		else:
-			#Pick red team targets
-			for i in range(len(self.gunlocs)):
-				self.targets[i] = getClosestLeadIndicator(self.gunlocs[i],\
-							globalvars.RED_TEAM.sprites())
+	def setTargets(self):
+		for i in range(len(self.gunlocs)):
+			self.targets[i] = globalvars.team_manager.getClosestLeadIndicator(\
+					self.gunlocs[i], self.team)
 
 
 	def update(self):
@@ -119,7 +96,7 @@ class CapitalShip(physicalObject.PhysicalObject):
 		#Update targets
 		self.target_update_count += 1
 		if self.target_update_count > self.target_update_wait:
-			self.setTarget()
+			self.setTargets()
 			self.target_update_count = 0
 
 
@@ -153,7 +130,8 @@ class CapitalShip(physicalObject.PhysicalObject):
 			self.kill()
 			died = True
 			#Award points
-			if not globalvars.score_keeper is None and self.team == globalvars.REDTEAM:
+			if not globalvars.score_keeper is None and \
+			self.team != globalvars.team_manager.player_team:
 				globalvars.score_keeper.points += 100
 		return died
 

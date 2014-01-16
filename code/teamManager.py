@@ -19,9 +19,11 @@ class TeamManager:
 
 
 	def reset(self):
-		self.teams = [pygame.sprite.Group()]
+		#Initialize teams with an empty player team and empty default enemy team
+		self.teams = [pygame.sprite.Group(), pygame.sprite.Group()]
 		self.player_team = 0
-		self.enemies = [[]]
+		self.default_enemy_team = 1
+		self.enemies = [[1], [0]]
 
 
 	def addToTeam(self, ship_to_add, team_index):

@@ -114,7 +114,7 @@ class Ship(PhysicalObject):
 		#Target is a physical object from which this ship can update its destination.
 		self.target = None
 		self.state = KILL_PLAYER_STATE
-		self.team = globalvars.REDTEAM
+		self.team = globalvars.team_manager.player_team + 1
 		self.health_index = rd.randint(0, len(health_classes)-1)
 		self.fuelcap_index = rd.randint(0, len(fuelcap_classes)-1)
 		self.cargospace_index = rd.randint(0, len(cargospace_classes)-1)
@@ -547,7 +547,8 @@ class Ship(PhysicalObject):
 			self.myHealthBar.kill()
 			died = True
 			#Award points
-			if not globalvars.score_keeper is None and self.team == globalvars.REDTEAM:
+			if not globalvars.score_keeper is None and \
+			self.team != globalvars.team_manager.player_team:
 				globalvars.score_keeper.points += 1
 			#Chance to spawn an item
 			if rd.random() > 0.5:

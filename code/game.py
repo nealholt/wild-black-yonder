@@ -29,6 +29,9 @@ globalvars.mission_manager = mission.getMissionArray()
 import story_keeper
 import teamManager
 
+#Instantiate the teams
+globalvars.team_manager = teamManager.TeamManager()
+
 #instantiate sprite groups
 globalvars.tangibles = pygame.sprite.Group()
 globalvars.intangibles_bottom = pygame.sprite.Group()
@@ -39,8 +42,7 @@ globalvars.whiskerables = pygame.sprite.Group()
 #Player must be created before scenario is called.
 globalvars.player = playerObj.Player('ship')
 
-#Instantiate the teams and put the player on the blue team
-globalvars.team_manager = teamManager.TeamManager()
+#put the player on a team
 globalvars.player.team = globalvars.team_manager.player_team
 globalvars.team_manager.addToTeam(globalvars.player, globalvars.team_manager.player_team)
 

@@ -21,7 +21,7 @@ class CapitalShip(physicalObject.PhysicalObject):
 			centery=centery, image_name=image_name,\
 			collisiontopleft=(100,120), collisionwidth=890,  collisionheight=140)
 
-		self.team = globalvars.team_manager.player_team + 1
+		self.team = globalvars.team_manager.default_enemy_team
 		self.weapons=[]
 		#Load some weapons on the capital ship
 		#Initially 3 basic lasers

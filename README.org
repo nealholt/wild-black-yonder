@@ -10,6 +10,13 @@ It seems to be faster when using -flip.
 Make it so n teams are possible instead of just 2. Make it so ships can keep a list of enemy team indicies. I created a new teamManager file. I'll make a global reference to it and manage all teams through it.
 
 I left off fixing hudHelpers.addNewEnemyToWorld and the places in scenarios.py where it is called.
+
+team manager needs a default enemy team that hudHelper, ship, and capitalship all use.
+
+
+
+make a todo for 
+teamManager to coordinate team ids and enemy lists without duplication with the faction_keeper.
 ** add npc ships that just want to travel between warp points
 they disappear when they arrive.
 Also they have different dialogue / speech bubbles
@@ -21,6 +28,7 @@ NPCs won't attack until you get within range.
 
 Then add a mission where you take down a convoy before it reaches its destination
 
+You're going to use this for fleet objects.
 ** fleet objects
 Make a fleet object:
   Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.

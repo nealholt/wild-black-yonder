@@ -161,7 +161,8 @@ class ScenarioManager:
 		mindist = 200
 		maxdist = 800
 		#Make enemy units:
-		for _ in xrange(3):
+		points_to_win = 3 #Same as the number of enemies
+		for _ in xrange(points_to_win):
 			x,y = getCoordsNearLoc(globalvars.player.rect.center, mindist, maxdist, maxdist)
 			enemy_ship = hudHelpers.getNewEnemy(x,y,'destroyer',2,2,2,2,2)
 			hudHelpers.addNewEnemyToWorld(enemy_ship)
@@ -170,7 +171,7 @@ class ScenarioManager:
 		text = ['FURBALL COMPLETED']
 		#Display timer and score count with the following:
 		globalvars.score_keeper = displayUtilities.TimeLimitDisplay(text, \
-			points_to_win=3, time_limit=time_limit, mission=mission)
+			points_to_win=points_to_win, time_limit=time_limit, mission=mission)
 		globalvars.intangibles_top.add(globalvars.score_keeper)
 		#Draw the new background and flip the whole screen.
 		globalvars.screen.blit(globalvars.BGIMAGE, (0,0))
@@ -215,7 +216,7 @@ class ScenarioManager:
 		npc_friend = hudHelpers.getNewEnemy(25.0,25.0,'ship',2,2,0,0,0)
 		npc_friend.setDestination(finish_line)
 		npc_friend.state = ship.GOTO_STATE
-		hudHelpers.addNewEnemyToWorld(npc_friend, add_to_blue=True)
+		hudHelpers.addNewEnemyToWorld(npc_friend, add_to_team=globalvars.team_manager.player_team)
 		#Display arrow to finish line
 		globalvars.intangibles_top.add(displayUtilities.ArrowToDestination(npc_friend))
 		#Display finish bullseye
@@ -260,14 +261,13 @@ class ScenarioManager:
 		n = 3
 		#Make n+1 enemy units starting to the left of the player:
 		start = (globalvars.player.rect.centerx-500, globalvars.player.rect.centery)
-		add_to_blue = False
 		for i in range(n+1):
 			enemy_ship = hudHelpers.getNewEnemy(start[0],start[1]+spacing*i,\
 				'destroyer',2,2,2,2,2)
-			hudHelpers.addNewEnemyToWorld(enemy_ship, add_to_blue=add_to_blue)
+			hudHelpers.addNewEnemyToWorld(enemy_ship)
 		#Add an enemy capital ship
 		enemy_ship = hudHelpers.getNewCapitalShip(start[0],start[1]+spacing*n)
-		hudHelpers.addNewEnemyToWorld(enemy_ship, add_to_blue=add_to_blue)
+		hudHelpers.addNewEnemyToWorld(enemy_ship)
 		#Make n friendly units:
 		start = (globalvars.player.rect.centerx+500, globalvars.player.rect.centery)
 		add_to_blue = True
@@ -275,10 +275,12 @@ class ScenarioManager:
 			friendly_ship = hudHelpers.getNewEnemy(start[0],start[1]+spacing*i,\
 				'ship',2,2,2,2,2)
 			friendly_ship.theta = 179.0 #Face the ship to the left
-			hudHelpers.addNewEnemyToWorld(friendly_ship, add_to_blue=add_to_blue)
+			hudHelpers.addNewEnemyToWorld(friendly_ship,\
+				add_to_team=globalvars.team_manager.player_team)
 		#Add a friendly capital ship
 		friendly_ship = hudHelpers.getNewCapitalShip(start[0],start[1]+spacing*n)
-		hudHelpers.addNewEnemyToWorld(friendly_ship, add_to_blue=add_to_blue)
+		hudHelpers.addNewEnemyToWorld(friendly_ship,\
+			add_to_team=globalvars.team_manager.player_team)
 		#Make the score keeper:
 		time_limit = 120 #time limit in seconds
 		text = ['BATTLE COMPLETED']
