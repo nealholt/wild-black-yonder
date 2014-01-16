@@ -98,12 +98,13 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 	x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
 	#Generate a pirate ship with the node's level of tech
 	temp = getNewEnemy(x,y,'destroyer',\
-				ship_tech, \
+				ship_tech+10, \
 				engine_tech, \
 				weapon_tech, \
 				missile_tech, \
 				mine_tech)
 	temp.team = globalvars.team_manager.default_neutral_team
+	temp.state = ship.GOTHRUWARP_STATE
 	physical_objs.append(temp)
 
 	for _ in xrange(objects['capital_ship']):

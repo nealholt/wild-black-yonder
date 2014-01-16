@@ -458,10 +458,13 @@ class Ship(PhysicalObject):
 		#Get distance to target
 		d = cygeometry.distance(self.rect.center, self.destination)
 		if d < self.target.collisionradius+50:
-			temp = displayUtilities.SpeechBubble(speaker=self, text='Goodbye!', ttl=2*globalvars.FPS, width=30, height=12, fontSize=18, color=colors.black, bgcolor=colors.white)
+			#Say goodbye
+			temp = displayUtilities.SpeechBubble(speaker=self, text='Goodbye!', ttl=2*globalvars.FPS, width=50, height=12, fontSize=18, color=colors.black, bgcolor=colors.white)
 			globalvars.intangibles_top.add(temp)
 			self.speech_countdown = 60*globalvars.FPS
+			#Kill self
 			self.kill()
+			self.myHealthBar.kill()
 
 
 	def update(self):
