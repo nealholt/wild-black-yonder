@@ -270,7 +270,6 @@ class Menu:
 	def setMinimapPanel(self):
 		self.setStandardMenu()
 		#get all the locations you want to plot.
-		node = globalvars.galaxy.getNode(globalvars.player.nodeid)
 		#Draw a circle like a radar.
 		radius = height/2-font_size
 		center = (left+width/2, top+height/2)
@@ -282,17 +281,17 @@ class Menu:
 		#Plot all the other objects initially as letters.
 		to_plot = []
 		#Plot warps
-		for x in node.warps:
+		for x in globalvars.galaxy.player_node.warps:
 			angle = angleFromPosition(globalvars.player.rect.center, x.rect.center)
 			dist = cygeometry.distance(globalvars.player.rect.center, x.rect.center)
 			to_plot.append(['W',angle,dist, x])
 		#Plot planets
-		for x in node.planets:
+		for x in globalvars.galaxy.player_node.planets:
 			angle = angleFromPosition(globalvars.player.rect.center, x.rect.center)
 			dist = cygeometry.distance(globalvars.player.rect.center, x.rect.center)
 			to_plot.append(['P',angle,dist, x])
 		#Plot fuel depots
-		for x in node.fuel_depots:
+		for x in globalvars.galaxy.player_node.fuel_depots:
 			angle = angleFromPosition(globalvars.player.rect.center, x.rect.center)
 			dist = cygeometry.distance(globalvars.player.rect.center, x.rect.center)
 			to_plot.append(['F',angle,dist, x])
@@ -480,7 +479,7 @@ class Menu:
 			self.main_panel.addDrawable(temp)
 		#Draw a thicker orange line over the player's path
 		if len(globalvars.player.destinationNode) > 0:
-			start = globalvars.galaxy.getNode(globalvars.player.nodeid)
+			start = globalvars.galaxy.player_node
 			end = globalvars.galaxy.getNode(globalvars.player.destinationNode[0])
 			temp = drawable.Line(x1=start.loc[0], y1=start.loc[1],\
 					x2=end.loc[0], y2=end.loc[1],\
@@ -506,8 +505,6 @@ class Menu:
 		magnitude = 4
 		#Center the player node location
 		playerNodeLoc = (globalvars.CENTERX, globalvars.CENTERY)
-		#Get the player's node
-		playerNode = globalvars.galaxy.getNode(globalvars.player.nodeid)
 		#Draw player node in the center of the menu.
 		subpanel = Panel()
 		subpanel.argument = globalvars.player.nodeid
@@ -526,15 +523,15 @@ class Menu:
 
 		#Draw all the on-screen nodes and the connections between them
 		for n in globalvars.galaxy.nodes:
-			angle = angleFromPosition(playerNode.loc, n.loc)
-			dist = cygeometry.distance(playerNode.loc, n.loc)
+			angle = angleFromPosition(globalvars.galaxy.player_node.loc, n.loc)
+			dist = cygeometry.distance(globalvars.galaxy.player_node.loc, n.loc)
 			position = translate(playerNodeLoc, angle, dist*magnitude)
 			#If it is on screen...
 			if position[0] > globalvars.MENU_PADDING+globalvars.MENU_BORDER_PADDING and \
 			position[0] < globalvars.WIDTH-globalvars.MENU_PADDING-globalvars.MENU_BORDER_PADDING and \
 			position[1] > globalvars.MENU_PADDING+globalvars.MENU_BORDER_PADDING and \
 			position[1] < globalvars.HEIGHT-globalvars.MENU_PADDING-globalvars.MENU_BORDER_PADDING and \
-			n.id != playerNode.id:
+			n.id != globalvars.galaxy.player_node.id:
 				#Draw it
 				subpanel = Panel()
 				subpanel.argument = n.id

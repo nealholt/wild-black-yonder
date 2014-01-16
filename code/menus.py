@@ -642,6 +642,8 @@ class Menu:
 		'Press "y" profile a variety of methods.',
 		'Press "u" profile game.run(), then exit.',
 		'Press "i" to display efficiency data, then exit.',
+		'Press "l" Start the collision avoidance test.',
+		'Press "o" to profile using the new standardized profiling object, then exit.',
 		'Press "h" Display help info.',
 		'Press "p" to save a screenshot to the screenshots folder.']
 		#Then draw the contents of the menu
