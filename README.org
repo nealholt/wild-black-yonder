@@ -6,19 +6,23 @@ It runs with the following command on my mac:
 python2.7-32 playGame.py
 The bad news is that it is slow as fuck.
 It seems to be faster when using -flip.
-** add npc ships that just want to travel between warp points
-they disappear when they arrive.
-Also they have different dialogue / speech bubbles
-
-Left off at ship.def goThruWarp(self)
-
-Have such ships randomly spawn for now.
-** put NPC ships on the minimap
-color code them based on their affiliation
-** add npc ships that just want to travel between planets
-they disappear when they arrive.
-Also they have different dialogue / speech bubbles
 ** new NPC behaviors: escort and protect a target
+convoy inherits from physical object.
+create a convoy object that you will add to intangibles_bottom.
+You can add ships to a sprite group in the convoy object.
+The obj has a team affiliation and a goal destination.
+obj has a danger close threshold
+destination threshold.
+
+every one second, the convoy object checks all enemies to see if any are danger close. If they are, then the enemies are given as targets to the ships in the convoy and those ships are transitioned to the kill state.
+If no enemies are near, then all the ships are transitioned to a goto state and given positions in a circle around the convoy's location.
+
+every update, the convoy moves slowly towards its destination and for any of its ships in the goto state, transitions those ships to new locations around the convoy.
+
+Thus the convoy ships ought to move in formation but also respond to threats. And deescalate and return to formation if the convoy moves far enough away.
+
+Once convoy reaches destination, all ships are stopped and one at a time are sent into the destination, at which point, for now, the ships just disappear.
+*** notes
 NPCs won't attack until you get within range.
 
 Then add a mission where you take down a convoy before it reaches its destination
@@ -29,6 +33,8 @@ Make a fleet object:
   Fleet stores numbers of ships and capital ships of each class, owning faction, destination node to conquer for the faction.
   Fleets move and update independently each turn.
 ** make fleet objects randomly spawn and move together to a warp point and then go into it
+** put NPC ships on the minimap
+color code them based on their affiliation
 ** make pirates that just want to kill npcs or the player and then flee to a warp point
 ** make NPCs that just want to harvest some gems from asteroids then leave through a warp point
 have the gems slow down after bursting from asteroid until they come to a stop
@@ -81,6 +87,20 @@ Worry about making money off a game later. What could that game be like? A rogue
 
 There are other ways to make this simple and game like, but I love the open world idea.
 Why do I love the open world idea? Because exploration and learning excite me. This means I should have things to learn and discover out there. Perhaps procedural stories are this.
+** images: image list
+planets
+space stations - for trading, buying components, repair
+neutral trader ships
+pirate ships
+faction ships
+all ships with different chassis, weapon, engine, etc classes
+fuel depots
+warp points
+capital ships
+asteroids
+pickups - addons, gems, health packs
+missiles
+faction flags
 ** npc personality parameters
 Use these to alter npc personalities and maybe even learn something about which parameters are best.
 *** physicalObject
@@ -510,7 +530,6 @@ You could share with Tomio, Lavonna and others after the holidays.
 You could get harvesting ships and special resources to harvest from asteroids. You could add a tractor beam.
 
 http://apod.nasa.gov/apod/image/1311/2013-11_C2P_2048px.jpg
-** Image list for Marie
 ** next
 I like the idea of lots of new objects:
   pirate base
@@ -685,16 +704,7 @@ Interesting specializations. I think this is key!!!
   racer/messenger
 Define success/failure for each of the above. Then determine the minimial game contents needed to make each specialty meaningful. Preferrably make the specialties interact with each other.
 
-May want to add a time or fuel mechanic. Or both.
-May want to add more nimble random enemies in infinite space.
-
 Keep it very simple, like FTL. Simple identifiable agents, like that game with the bat, keys, and dragons where things can just pick up and put down items.
-
-Tentative object list:
-	station - type, owerner, location, stock
-	agent - faction affiliation, location, owned ships, owned stations
-	ship - located at node. has crew (agents) and addons
-	ship addons - price and effects on a ship
 
 Each node in a system ought to be a location like:
   low planet orbit
