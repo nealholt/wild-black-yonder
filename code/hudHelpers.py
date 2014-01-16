@@ -104,6 +104,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 				missile_tech, \
 				mine_tech)
 	temp.team = globalvars.team_manager.default_neutral_team
+	temp.state = ship.GOTHRUWARP_STATE
 	physical_objs.append(temp)
 
 	for _ in xrange(objects['capital_ship']):

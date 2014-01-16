@@ -520,13 +520,15 @@ class Ship(PhysicalObject):
 		self.speech_countdown -= 1
 		if self.speech_countdown < 0:
 			text = 'What state am I in?'
+			width = 0
 			if self.state == KILL_PLAYER_STATE:
 				text = 'You die now!'
 			elif self.state == GOTO_STATE:
 				text = 'Help me reach my destination!'
 			elif self.state == GOTHRUWARP_STATE:
 				text = 'I\'m just passing through.'
-			width = len(text)*5
+				width = 135
+			if width == 0: width = len(text)*5
 			temp = displayUtilities.SpeechBubble(speaker=self, \
 				text=text, ttl=2*globalvars.FPS, width=width, \
 				height=12, fontSize=18, color=colors.black, \

@@ -526,7 +526,7 @@ class Ship(PhysicalObject):
 				text = 'Help me reach my destination!'
 			elif self.state == GOTHRUWARP_STATE:
 				text = 'I\'m just passing through.'
-			width = len(text)*8
+			width = len(text)*5
 			temp = displayUtilities.SpeechBubble(speaker=self, \
 				text=text, ttl=2*globalvars.FPS, width=width, \
 				height=12, fontSize=18, color=colors.black, \
