@@ -95,7 +95,16 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 	physical_objs = []
 
 	#Make one NPC just headed for a warp point.
-
+	x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
+	#Generate a pirate ship with the node's level of tech
+	temp = getNewEnemy(x,y,'destroyer',\
+				ship_tech, \
+				engine_tech, \
+				weapon_tech, \
+				missile_tech, \
+				mine_tech)
+	temp.team = globalvars.team_manager.default_neutral_team
+	physical_objs.append(temp)
 
 	for _ in xrange(objects['capital_ship']):
 		x,y = geometry.getCoordsNearLoc(center, 0, course_length, course_height)
@@ -166,7 +175,7 @@ def populateSpace(objects=None, width=1000, height=1000, center=(0,0), seed=0., 
 			#puts the health bar in intangibles so the health bar ends up
 			#floating in space with no one to ever remove it.
 			if p.is_a == globalvars.SHIP or p.is_a == globalvars.CAPITALSHIP:
-				addNewEnemyToWorld(p)
+				addNewEnemyToWorld(p, add_to_team=p.team)
 			else:
 				globalvars.tangibles.add(p)
 				globalvars.whiskerables.add(p)
