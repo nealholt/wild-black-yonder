@@ -38,6 +38,9 @@ Make a fleet object:
 ** put NPC ships on the minimap
 color code them based on their affiliation
 ** make pirates that just want to kill npcs or the player and then flee to a warp point
+** make injured NPCs flee through a warp point rather than flee to some arbitrary far away destination
+** give player ability to hail NPC ships
+You could have numbers correspond to different hails and then different ships will respond in different ways. You could ask the ships about their class, cargo, destination, affiliation, any news or gossip they have, their mood, etc.
 ** make NPCs that just want to harvest some gems from asteroids then leave through a warp point
 have the gems slow down after bursting from asteroid until they come to a stop
 ** other people's code
@@ -90,6 +93,10 @@ Worry about making money off a game later. What could that game be like? A rogue
 There are other ways to make this simple and game like, but I love the open world idea.
 Why do I love the open world idea? Because exploration and learning excite me. This means I should have things to learn and discover out there. Perhaps procedural stories are this.
 ** images: image list
+You could procedurally generate a ton of images. If you can't do it by specifying shapes and their colors by editing text files of open office draw then you could even just do it by making the images in pygame and having them get output to a file.
+For instance, you could have a basic ship object with different bodies being squares, ovals, or triangles, then you could have lines or little triangles of varying size off the front be guns. Little rectangles in the back could be thrusters. Then you could modify size, color, and swap in and out different guns and thrusters for all different types.
+It would also be nice to have a muzzle flash image for each and a thrust on/off image.
+
 planets
 space stations - for trading, buying components, repair
 neutral trader ships
